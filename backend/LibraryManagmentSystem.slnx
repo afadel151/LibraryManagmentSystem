@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="LibraryManagmentSystem.BookSearch/LibraryManagmentSystem.BookSearch.csproj" />
+  <Project Path="LibraryManagmentSystem.Borrowing/LibraryManagmentSystem.Borrowing.csproj" />
+  <Project Path="LibraryManagmentSystem.Shared/LibraryManagmentSystem.Shared.csproj" />
+  <Project Path="LibraryManagmentSystem.Stock/LibraryManagmentSystem.Stock.csproj" />
+</Solution>
