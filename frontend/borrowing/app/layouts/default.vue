@@ -4,11 +4,11 @@ import AppSidebar from '~/components/AppSidebar.vue';
 </script>
 
 <template>
-    <div class="drawer lg:drawer-open">
+    <div class="drawer lg:drawer-open h-screen">
         <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
-        <div class="drawer-content">
+        <div class="drawer-content h-screen ">
             <!-- Navbar -->
-            <nav class="navbar w-full bg-base-300">
+            <nav class="navbar w-full h-[8%] bg-base-300">
                 <label for="my-drawer-4" aria-label="open sidebar" class="btn btn-square btn-ghost">
                     <!-- Sidebar toggle icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linejoin="round"
@@ -23,7 +23,7 @@ import AppSidebar from '~/components/AppSidebar.vue';
                 <div class="px-4">CAT.lib Borrows</div>
             </nav>
             <!-- Page content here -->
-            <div class="p-4">
+            <div class="p-2 h-[91%]">
                 <slot />
             </div>
         </div>

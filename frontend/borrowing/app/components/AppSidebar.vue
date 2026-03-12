@@ -15,7 +15,7 @@ const items = [
     },
     
     {
-        title: 'Prets',
+        title: 'Borrows',
         url: '/borrows',
         icon: 'file-output'
     },
