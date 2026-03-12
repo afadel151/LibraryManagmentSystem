@@ -20,7 +20,7 @@ import AppSidebar from '~/components/AppSidebar.vue';
                         <path d="M14 10l2 2l-2 2"></path>
                     </svg>
                 </label>
-                <div class="px-4">Borrowing App</div>
+                <div class="px-4">CAT.lib Borrows</div>
             </nav>
             <!-- Page content here -->
             <div class="p-4">

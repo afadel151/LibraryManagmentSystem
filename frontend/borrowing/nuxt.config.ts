@@ -11,7 +11,8 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   modules: ['@nuxt/icon'],
   icon: {
-    size: '26px', // default <Icon> size applied
+    
+    size: '34px', // default <Icon> size applied
     class: 'icon', // default <Icon> class applied
     mode: 'css', // default <Icon> mode applied
     aliases: {
