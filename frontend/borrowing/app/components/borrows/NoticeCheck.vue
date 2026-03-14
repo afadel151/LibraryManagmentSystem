@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const emit = defineEmits(['checked', 'failed'])
+const emit = defineEmits(['checked', 'failed', 'copy_selected'])
 
 
 const loading = ref(false)
@@ -25,10 +25,17 @@ async function check() {
         if (selected_copy.value == 0) {
             error_message.value = 'Vous devez selectionner un exemplaire'
         }else{
-            emit('checked',notice_num,selected_copy)
+            emit('checked',notice_num)
         }
     }, 2000)
 }
+watch(selected_copy,
+    ()=>{
+        if (selected_copy.value != 0) {
+            emit('copy_selected',selected_copy.value)
+        }
+    }
+)
 </script>
 
 <template>

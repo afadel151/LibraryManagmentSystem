@@ -12,7 +12,9 @@ const insertModal = ref<HTMLDialogElement | null>(null)
 
 const member_num = ref('')
 const notice_num = ref('')
+
 const exemplaire_num = ref(0)
+
 const date_pret = ref(`${day}/${month}/${year}`)
 const date_retour = ref('')
 
@@ -21,11 +23,12 @@ function checked_member(num: string,date_r: string) {
     date_retour.value = date_r
 }
 
-function checked_notice(num: string,exemplaire:number) {
+function checked_notice(num: string) {
     notice_num.value = num
+}
+function selected_copy(exemplaire:number){
     exemplaire_num.value = exemplaire
 }
-
 
 async function insertBorrow(){
     
@@ -47,7 +50,7 @@ async function insertBorrow(){
                 
                 <MemberCheck @checked="checked_member" :date="date_pret" />
                 
-                <NoticeCheck class="w-full" @checked="checked_notice" />
+                <NoticeCheck class="w-full" @checked="checked_notice" @copy_selected="selected_copy" />
 
                 <div class="text-lg w-full grid grid-cols-2 ">
                     <span> Date de pret : </span> <span class="font-bold">{{ date_pret }}</span>
@@ -62,7 +65,8 @@ async function insertBorrow(){
                         Fermer
                     </button>
                 </form>
-                <button @click="insertBorrow"  class="btn btn-primary " :class="member_num =='' || notice_num== '' ? 'btn-disabled' : ''">
+
+                <button @click="insertBorrow"  class="btn btn-primary " :disabled="member_num == '' || notice_num == '' || exemplaire_num != 0">
                     Inserer
                 </button>
             </div>
