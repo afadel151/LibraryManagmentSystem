@@ -2,53 +2,57 @@
 import MemberCheck from './MemberCheck.vue';
 import NoticeCheck from './NoticeCheck.vue';
 
+const today = new Date();
 
-const loading = ref(false)
-const Member = ref(null)
-const Notice = ref(null)
+const day = String(today.getDate()).padStart(2, '0');
+const month = String(today.getMonth() + 1).padStart(2, '0');
+const year = today.getFullYear();
+
+const insertModal = ref<HTMLDialogElement | null>(null)
+
+const member_num = ref('')
+const notice_num = ref('')
+const exemplaire_num = ref(0)
+const date_pret = ref(`${day}/${month}/${year}`)
+const date_retour = ref('')
+
+function checked_member(num: string,date_r: string) {
+    member_num.value = num
+    date_retour.value = date_r
+}
+
+function checked_notice(num: string,exemplaire:number) {
+    notice_num.value = num
+    exemplaire_num.value = exemplaire
+}
+
+
+async function insertBorrow(){
+    
+    insertModal.value?.close()
+}
 </script>
 
 <template>
 
-    <button class="btn btn-primary" onclick="my_modal_1.showModal()">
+    <button class="btn btn-primary" @click="insertModal?.showModal()">
         <Icon name="lucide:circle-plus" size="24px" />
         Ajouter un pret
     </button>
-    <dialog id="my_modal_1" class="modal">
+    <dialog ref="insertModal" class="modal">
         <div class="modal-box">
             <h3 class="text-lg font-bold">Inserer un nouveau pret</h3>
             <div class="mt-4 space-y-2 flex  flex-col justify-center items-start">
 
-                <div class="bg-blue- w-full">
-                    <label class="label">Numero carte de l'adherent</label>
-                    <div class="flex justify-between w-full">
-                        <input class="input w-full" />
+                
+                <MemberCheck @checked="checked_member" :date="date_pret" />
+                
+                <NoticeCheck class="w-full" @checked="checked_notice" />
 
-                        <button class="btn ml-2 w-32">
-                            <Icon v-if="loading" name="lucide:loader-circle" size="24px" class="animate-spin" />
-                            <p>
-                                Verifier
-                            </p>
-                        </button>
-                    </div>
-                </div>
-                <MemberCheck name="FADEL AKRAM" :authorized="true" />
-                <div class="bg-blue- w-full">
-                    <label class="label">Numero de cote</label>
-                    <div class="flex justify-between w-full">
-                        <input class="input w-full" />
-                        <button class="btn ml-2  w-32">
-                            <Icon v-if="loading" name="lucide:loader-circle" size="24px" class="animate-spin" />
-                            <p>
-                                Chercher
-                            </p>
-                        </button>
-                    </div>
-                </div>
-                <NoticeCheck class="w-full" title="Homeland" :available="true" />
                 <div class="text-lg w-full grid grid-cols-2 ">
-                    <span> Date de pret : </span> <span class="font-bold">12-03-2026</span>
-                    <span>Date de retour: </span> <span class="font-bold">01-04-2026</span>
+                    <span> Date de pret : </span> <span class="font-bold">{{ date_pret }}</span>
+                    <span>Date de retour: </span> <span class="font-bold" :class="date_retour != '' ? 'text-green-600' : ''">{{ date_retour == '' ? 'specifier l\'adherent' : date_retour }}</span>
+
                 </div>
             </div>
             <div class="modal-action">
@@ -58,7 +62,7 @@ const Notice = ref(null)
                         Fermer
                     </button>
                 </form>
-                <button class="btn btn-primary">
+                <button @click="insertBorrow"  class="btn btn-primary " :class="member_num =='' || notice_num== '' ? 'btn-disabled' : ''">
                     Inserer
                 </button>
             </div>

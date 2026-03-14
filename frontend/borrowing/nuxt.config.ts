@@ -9,7 +9,7 @@ export default defineNuxtConfig({
  },
 
   css: ['~/assets/css/main.css'],
-  modules: ['@nuxt/icon'],
+  modules: ['@nuxt/icon', '@nuxt/image'],
   icon: {
     
     size: '34px', // default <Icon> size applied

@@ -9,48 +9,48 @@ const items = [
         icon: 'warehouse',
     },
     {
-        title: 'Members',
+        title: 'Gestion des Adherents',
         url: '/members',
         icon: 'users'
     },
     
     {
-        title: 'Borrows',
+        title: 'Gestions des prets',
         url: '/borrows',
         icon: 'file-output'
     },
     {
-        title: 'Restitutions',
+        title: 'Gestions des Restitutions',
         url: '/restitutions',
         icon: 'file-input'
     },
     {
-        title: 'Document Managment',
+        title: 'Gestion des documents',
         url: '/documents',
         icon: 'book-open'
     },
     {
-        title: 'Holds',
+        title: 'Avis des disponibilite',
         url: '/holds',
         icon: 'timer'
     },
     {
-        title: 'Borrowed Documents',
+        title: 'Documents en pret',
         url: '/borrowed',
         icon: 'book-up'
     },
     {
-        title: 'Reminders',
+        title: 'Gestion de relances',
         url: '/reminders',
         icon: 'bell-ring'
     },
     {
-        title: 'Reserved Docs',
+        title: 'Documents reserves',
         url: '/reserved_docs',
         icon: 'clipboard-clock'
     },
     {
-        title: 'Categories',
+        title: 'Gestion des categories',
         url: '/categories',
         icon: 'align-justify'
     }

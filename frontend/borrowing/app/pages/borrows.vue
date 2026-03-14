@@ -6,23 +6,24 @@ import InsertBorrow from '~/components/borrows/InsertBorrow.vue';
 <template>
     <div class="w-full h-full ">
         <div class="grid grid-cols-4 gap-2">
-            <StatCard title="Books borrowed" data="15 books" footer="2" />
-            <StatCard title="Members borrowing" data="3 members" footer="3" :indicator="false" />
-            <StatCard title="Late for return" data="2 books" />
-            <StatCard title="returned this month" data="12 books" footer="1" />
+            <StatCard title="Documents en pret" data="15 documents" footer="2" />
+            <StatCard title="Adherents en pret" data="3 membres" footer="3" :indicator="false" />
+            <StatCard title="Documents en retard" data="2 documens" />
+            <StatCard title="Retournee ce mois" data="12 documents" footer="1" />
         </div>
         <div class="w-full mt-5 flex justify-between items-center p-2">
-            <p class="text-3xl font-bold">Borrows table</p>
+            <p class="text-3xl font-bold">Table des prets</p>
             <InsertBorrow />
         </div>
         <div class="w-full mt-5 p-2">
             <table class="table">
                 <thead>
                     <tr>                        
-                        <th>Nom</th>
-                        <th>Categorie</th>
+                        <th>Nom d'adherent</th>
+                        <th>Categorie d'adherent</th>
                         <th>Titre du notice</th>
                         <th>Cote</th>
+                        <th>Exemplaire</th>
                         <th>Date de pret</th>
                         <th>Date de retour</th>
                         <th>Action</th>
