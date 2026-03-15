@@ -15,49 +15,6 @@ import InsertBorrow from '~/components/borrows/InsertBorrow.vue';
             <p class="text-3xl font-bold">Table des prets</p>
             <InsertBorrow />
         </div>
-        <div class="w-full mt-5 p-2">
-            <table class="table">
-                <thead>
-                    <tr>                        
-                        <th>Nom d'adherent</th>
-                        <th>Categorie d'adherent</th>
-                        <th>Titre du notice</th>
-                        <th>Cote</th>
-                        <th>Exemplaire</th>
-                        <th>Date de pret</th>
-                        <th>Date de retour</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="hover:bg-base-200">
-                        <td>Cy Ganderton</td>
-                        <td>Quality Control Specialist</td>
-                        <td>Blue</td>
-                        <td>M12345</td>
-                        <td>2026-01-01</td>
-                        <td>2026-01-01</td>
-                    </tr>
-                    <tr class="hover:bg-base-200">
-                        <td>Hart Hagerty</td>
-                        <td>Desktop Support Technician</td>
-                        <td>Purple</td>
-                        <td>M12345</td>
-                        <td>2026-01-01</td>
-                        <td>2026-01-01</td>
-
-                    </tr>
-                    <tr class="hover:bg-base-200">
-                        <td>Brice Swyre</td>
-                        <td>Tax Accountant</td>
-                        <td>Red</td>
-                        <td>M12345</td>
-                        <td>2026-01-01</td>
-                        <td>2026-01-01</td>
-
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <BorrowsTable />
     </div>
 </template>

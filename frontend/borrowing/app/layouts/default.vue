@@ -23,7 +23,7 @@ import AppSidebar from '~/components/AppSidebar.vue';
                 <div class="px-4">CAT.lib Pret</div>
             </nav>
             <!-- Page content here -->
-            <div class="p-2 h-[91%]">
+            <div class="p-4 h-[91%] overflow-y-scroll">
                 <slot />
             </div>
         </div>
