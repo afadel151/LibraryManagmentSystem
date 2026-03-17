@@ -1,0 +1,31 @@
+﻿@inherits LayoutComponentBase
+
+<RadzenLayout>
+    <RadzenHeader>
+        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+                     AlignItems="AlignItems.Center" Gap="0" class="rz-pr-4">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+                <RadzenSidebarToggle @rendermode="RenderMode.InteractiveServer" Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+                <RadzenLabel Text="MVCxBlazor" />
+            </RadzenStack>
+            <RadzenAppearanceToggle />
+        </RadzenStack>
+    </RadzenHeader>
+    <RadzenSidebar FullHeight="true" @bind-Expanded="@sidebarExpanded">
+        <RadzenPanelMenu>
+            <RadzenPanelMenuItem Text="Home" Icon="home" Path="/" />
+            <RadzenPanelMenuItem Text="Users" Icon="account_box" Path='/counter' />
+            <RadzenPanelMenuItem Text="Users" Icon="account_box" Path='/weather' />
+        </RadzenPanelMenu>
+    </RadzenSidebar>
+
+    <RadzenBody>
+        <div class="rz-p-4">
+            @Body
+        </div>
+    </RadzenBody>
+</RadzenLayout>
+
+@code {
+    bool sidebarExpanded = true;
+}
