@@ -1,0 +1,15 @@
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/bin/Debug/net10.0/Shared.deps.json
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/bin/Debug/net10.0/Shared.runtimeconfig.json
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/bin/Debug/net10.0/Shared.dll
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/bin/Debug/net10.0/Shared.pdb
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/Shared.csproj.AssemblyReference.cache
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/Shared.GeneratedMSBuildEditorConfig.editorconfig
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/Shared.AssemblyInfoInputs.cache
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/Shared.AssemblyInfo.cs
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/Shared.csproj.CoreCompileInputs.cache
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/Shared.sourcelink.json
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/Shared.dll
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/refint/Shared.dll
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/Shared.pdb
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/Shared.genruntimeconfig.cache
+/home/fadel/GitHub/LibraryManagmentSystem/Shared/obj/Debug/net10.0/ref/Shared.dll

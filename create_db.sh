@@ -12,13 +12,16 @@ run_folder() {
   echo "=== Running: $folder ==="
   for f in /DB_schema/$folder/*.sql; do
     echo "  -> $f"
-    sqlplus -s "$CONN" @"$f"
+    sqlplus -s "$CONN" <<EOF
+@$f
+EXIT;
+EOF
   done
 }
 
 run_folder "TABLES"
+run_folder "INDEXES"
 run_folder "CONSTRAINTS"
 run_folder "REF_CONSTRAINTS"
-run_folder "INDEXES"
 
 echo "Done!"
