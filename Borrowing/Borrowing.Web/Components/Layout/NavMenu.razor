@@ -1,10 +1,26 @@
-﻿
+﻿@rendermode InteractiveAuto
+<RadzenHeader style="position: static">
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+        <RadzenSidebarToggle @rendermode="@RenderMode.InteractiveServer" Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+        <RadzenLabel Text="Header" />
+    </RadzenStack>
+</RadzenHeader>
 
-
-
-
-
+<RadzenSidebar FullHeight="true" @bind-Expanded="@sidebarExpanded">
+    <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)">
+        <RadzenPanelMenuItem Text="Dashboard" Icon="apps" Path="/" />
+        <RadzenPanelMenuItem Text="Gestion des Prets" Icon="hand_package" Path="/borrows" />
+        <RadzenPanelMenuItem Text="Gestion des Adherents" Icon="person" Path="/adherents" />
+        <RadzenPanelMenuItem Text="Gestion des Restitution" Icon="source_notes" Path="/restitutions" />
+        <RadzenPanelMenuItem Text="Gestion des Documents" Icon="newsstand" Path="/documents" />
+        <RadzenPanelMenuItem Text="Avis de Disponibilite" Icon="timelapse" Path="/reservations" />
+        <RadzenPanelMenuItem Text="Documents en pret" Icon="assignment_turned_in" Path="/borrowed_documents" />
+        <RadzenPanelMenuItem Text="Documents Reservees" Icon="date_range" Path="reserved_documents"/>
+        <RadzenPanelMenuItem Text="Gestion des relances" Icon="notifications_active" Path="/relances" />
+        <RadzenPanelMenuItem Text="Gestion des categories" Icon="category" Path="/categories" />
+        
+    </RadzenPanelMenu>
+</RadzenSidebar>
 @code {
     bool sidebarExpanded = true;
 }
-

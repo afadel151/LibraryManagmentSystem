@@ -10,3 +10,15 @@
 /home/fadel/GitHub/LibraryManagmentSystem/Borrowing/Borrowing.Shared/obj/Debug/net10.0/refint/Borrowing.Shared.dll
 /home/fadel/GitHub/LibraryManagmentSystem/Borrowing/Borrowing.Shared/obj/Debug/net10.0/Borrowing.Shared.pdb
 /home/fadel/GitHub/LibraryManagmentSystem/Borrowing/Borrowing.Shared/obj/Debug/net10.0/ref/Borrowing.Shared.dll
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\bin\Debug\net10.0\Borrowing.Shared.deps.json
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\bin\Debug\net10.0\Borrowing.Shared.dll
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\bin\Debug\net10.0\Borrowing.Shared.pdb
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\obj\Debug\net10.0\Borrowing.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\obj\Debug\net10.0\Borrowing.Shared.AssemblyInfoInputs.cache
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\obj\Debug\net10.0\Borrowing.Shared.AssemblyInfo.cs
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\obj\Debug\net10.0\Borrowing.Shared.csproj.CoreCompileInputs.cache
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\obj\Debug\net10.0\Borrowing.Shared.sourcelink.json
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\obj\Debug\net10.0\Borrowing.Shared.dll
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\obj\Debug\net10.0\refint\Borrowing.Shared.dll
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\obj\Debug\net10.0\Borrowing.Shared.pdb
+C:\Users\FADEL\Documents\GitHub\LibraryManagmentSystem\Borrowing\Borrowing.Shared\obj\Debug\net10.0\ref\Borrowing.Shared.dll
