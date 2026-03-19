@@ -6,6 +6,7 @@ builder.Services.AddRazorComponents()
                     .AddInteractiveServerComponents();
 builder.Services.AddRadzenComponents();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
