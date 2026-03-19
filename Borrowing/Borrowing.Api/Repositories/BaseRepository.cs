@@ -51,4 +51,9 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         _dbSet.Remove(entity);
         await _context.SaveChangesAsync();
     }
+
+    public virtual IQueryable<T> GetQueryable()
+    {
+        return _dbSet.AsQueryable();
+    }
 }
