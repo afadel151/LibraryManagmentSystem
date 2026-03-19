@@ -22,6 +22,7 @@ public static class ServiceExtensions
         services.AddScoped<IPenaliteAdherentRepository, PenaliteAdherentRepository>();
         services.AddScoped<IPenaliteAdherentTempRepository, PenaliteAdherentTempRepository>();
         services.AddScoped<IPenaliteRepository, PenaliteRepository>();
+        services.AddScoped<IPositionRepository, PositionRepository>();
         services.AddScoped<IPretRepository, PretRepository>();
         services.AddScoped<IReservationRepository, ReservationRepository>();
 
