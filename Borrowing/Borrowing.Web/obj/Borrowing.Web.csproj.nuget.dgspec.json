@@ -4,14 +4,14 @@
     "C:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Web\\Borrowing.Web.csproj": {}
   },
   "projects": {
-    "c:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj": {
+    "C:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj",
+        "projectUniqueName": "C:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj",
         "projectName": "Borrowing.Shared",
-        "projectPath": "c:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj",
+        "projectPath": "C:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj",
         "packagesPath": "C:\\Users\\FADEL\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\obj\\",
+        "outputPath": "C:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -49,6 +49,20 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Relational": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Oracle.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.23.26100, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -371,8 +385,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "c:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj": {
-                "projectPath": "c:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj"
+              "C:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj": {
+                "projectPath": "C:\\Users\\FADEL\\Documents\\GitHub\\LibraryManagmentSystem\\Borrowing\\Borrowing.Shared\\Borrowing.Shared.csproj"
               }
             }
           }
