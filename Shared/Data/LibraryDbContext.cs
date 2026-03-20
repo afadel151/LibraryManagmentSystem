@@ -125,7 +125,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<Ville> Villes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseOracle("User Id=MATAOUI;Password=mataoui123;Data Source=localhost:1521/XEPDB1;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -213,13 +213,13 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.IdFonction, "LIEN_161_FK");
 
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.IdMentionRes)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_MENTION_RES");
             entity.Property(e => e.IdFonction)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_FONCTION");
 
             entity.HasOne(d => d.IdFonctionNavigation).WithMany(p => p.AuteurSecondaires)
@@ -266,7 +266,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("COLLECTION");
 
             entity.Property(e => e.IdCollection)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_COLLECTION");
             entity.Property(e => e.IssnCollection)
                 .HasMaxLength(10)
@@ -299,10 +299,10 @@ public partial class LibraryDbContext : DbContext
                         j.HasIndex(new[] { "IdCollection" }, "LIEN_163_FK");
                         j.HasIndex(new[] { "IdMentionRes" }, "LIEN_164_FK");
                         j.IndexerProperty<decimal>("IdCollection")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_COLLECTION");
                         j.IndexerProperty<decimal>("IdMentionRes")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_MENTION_RES");
                     });
         });
@@ -361,7 +361,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("DIPLOME");
 
             entity.Property(e => e.IdDiplome)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_DIPLOME");
             entity.Property(e => e.Diplome1)
                 .HasMaxLength(100)
@@ -376,7 +376,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("DISCIPLINE");
 
             entity.Property(e => e.IdDiscipline)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_DISCIPLINE");
             entity.Property(e => e.Discipline1)
                 .HasMaxLength(100)
@@ -391,7 +391,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("EDITEUR");
 
             entity.Property(e => e.IdEditeur)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_EDITEUR");
             entity.Property(e => e.Editeur1)
                 .HasMaxLength(255)
@@ -406,7 +406,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("ETABLISSEMENT");
 
             entity.Property(e => e.IdEtablissement)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_ETABLISSEMENT");
             entity.Property(e => e.Etablissement1)
                 .HasMaxLength(255)
@@ -474,7 +474,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("FONCTION");
 
             entity.Property(e => e.IdFonction)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_FONCTION");
             entity.Property(e => e.Fonction1)
                 .HasMaxLength(100)
@@ -614,7 +614,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("MENTION_EDITION");
 
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.Mention)
                 .HasMaxLength(100)
@@ -637,7 +637,7 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.Nom, "INDEX_NOM_AUTEUR");
 
             entity.Property(e => e.IdMentionRes)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_MENTION_RES");
             entity.Property(e => e.AutrePartie)
                 .HasMaxLength(255)
@@ -660,10 +660,10 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("MOTS_CLES");
 
             entity.Property(e => e.IdMotCle)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_MOT_CLE");
             entity.Property(e => e.IsIndexed)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("IS_INDEXED");
             entity.Property(e => e.MotCle)
                 .HasMaxLength(255)
@@ -690,7 +690,7 @@ public partial class LibraryDbContext : DbContext
                 .ToTable("NEWACQUIS");
 
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
         });
 
@@ -709,7 +709,7 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.IdType, "TYPE_NOTICE_FK");
 
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.Accessibilite)
                 .HasMaxLength(1)
@@ -749,13 +749,13 @@ public partial class LibraryDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("ID_PERIODICITE");
             entity.Property(e => e.IdSourceArticle)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_SOURCE_ARTICLE");
             entity.Property(e => e.IdType)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_TYPE");
             entity.Property(e => e.IsIndexed)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("IS_INDEXED");
             entity.Property(e => e.Isbn)
                 .HasMaxLength(255)
@@ -774,7 +774,7 @@ public partial class LibraryDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("N_PARTIE");
             entity.Property(e => e.NbrExemple)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("NBR_EXEMPLE");
             entity.Property(e => e.NoteGenerale)
                 .HasMaxLength(255)
@@ -840,7 +840,7 @@ public partial class LibraryDbContext : DbContext
                         j.HasIndex(new[] { "IdNotice" }, "LIEN_152_FK");
                         j.HasIndex(new[] { "IdLangue" }, "LIEN_153_FK");
                         j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_NOTICE");
                         j.IndexerProperty<string>("IdLangue")
                             .HasMaxLength(3)
@@ -865,10 +865,10 @@ public partial class LibraryDbContext : DbContext
                         j.HasIndex(new[] { "IdNotice" }, "LIEN_140_FK");
                         j.HasIndex(new[] { "IdMentionRes" }, "LIEN_141_FK");
                         j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_NOTICE");
                         j.IndexerProperty<decimal>("IdMentionRes")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_MENTION_RES");
                     });
 
@@ -889,10 +889,10 @@ public partial class LibraryDbContext : DbContext
                         j.HasIndex(new[] { "IdNotice" }, "LIEN_139_FK");
                         j.HasIndex(new[] { "IdMentionRes" }, "LIEN_142_FK");
                         j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_NOTICE");
                         j.IndexerProperty<decimal>("IdMentionRes")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_MENTION_RES");
                     });
 
@@ -913,10 +913,10 @@ public partial class LibraryDbContext : DbContext
                         j.HasIndex(new[] { "IdNotice" }, "LIEN_159_FK");
                         j.HasIndex(new[] { "IdMotCle" }, "LIEN_160_FK");
                         j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_NOTICE");
                         j.IndexerProperty<decimal>("IdMotCle")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_MOT_CLE");
                     });
 
@@ -937,7 +937,7 @@ public partial class LibraryDbContext : DbContext
                         j.HasIndex(new[] { "IdNotice" }, "LIEN_148_FK");
                         j.HasIndex(new[] { "IdPays" }, "LIEN_149_FK");
                         j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_NOTICE");
                         j.IndexerProperty<string>("IdPays")
                             .HasMaxLength(10)
@@ -957,10 +957,10 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.IdCollection, "LIEN_145_FK");
 
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.IdCollection)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_COLLECTION");
             entity.Property(e => e.NumeroDansCollection)
                 .HasMaxLength(10)
@@ -992,20 +992,20 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.IdDiscipline, "LIEN_157_FK");
 
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.AnneSoutenance)
                 .HasMaxLength(6)
                 .IsUnicode(false)
                 .HasColumnName("ANNE_SOUTENANCE");
             entity.Property(e => e.IdDiplome)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_DIPLOME");
             entity.Property(e => e.IdDiscipline)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_DISCIPLINE");
             entity.Property(e => e.IdEtablissement)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_ETABLISSEMENT");
             entity.Property(e => e.NoteTexte)
                 .HasMaxLength(255)
@@ -1047,13 +1047,13 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.IdNotice, "LIEN_900_FK");
 
             entity.Property(e => e.IdVille)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_VILLE");
             entity.Property(e => e.IdEditeur)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_EDITEUR");
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.DateEdition)
                 .HasMaxLength(8)
@@ -1082,7 +1082,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("NOTICE_MENTION_EDITION");
 
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.MentionEdition)
                 .HasMaxLength(2048)
@@ -1101,13 +1101,13 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.IdNotice, "LIEN_508_FK");
 
             entity.Property(e => e.IdTerme)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_TERME");
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.PoidsTerme)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("POIDS_TERME");
 
             entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.NoticeTermes)
@@ -1127,13 +1127,13 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("NOTICE_TERME_EXACT");
 
             entity.Property(e => e.IdTermeExact)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_TERME_EXACT");
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.PoidsTerme)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("POIDS_TERME");
         });
 
@@ -1148,7 +1148,7 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.IdTheme, "LIEN_151_FK");
 
             entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.IdTheme)
                 .HasMaxLength(15)
@@ -1163,7 +1163,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("OPERATION");
 
             entity.Property(e => e.IdOperation)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_OPERATION");
             entity.Property(e => e.Operation1)
                 .HasMaxLength(50)
@@ -1338,7 +1338,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("SELECTION");
 
             entity.Property(e => e.IdSelection)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_SELECTION");
             entity.Property(e => e.LibelleSelection)
                 .HasMaxLength(50)
@@ -1361,10 +1361,10 @@ public partial class LibraryDbContext : DbContext
                         j.HasKey("IdSelection", "IdNotice").HasName("SELECTION_NOTICE_PK");
                         j.ToTable("SELECTION_NOTICE");
                         j.IndexerProperty<decimal>("IdSelection")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_SELECTION");
                         j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)")
+                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_NOTICE");
                     });
         });
@@ -1378,7 +1378,7 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.DatePubArticle, "INDEX_DATE_PUB_ARTICLE");
 
             entity.Property(e => e.IdSourceArticle)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_SOURCE_ARTICLE");
             entity.Property(e => e.DatePubArticle)
                 .HasMaxLength(25)
@@ -1427,7 +1427,7 @@ public partial class LibraryDbContext : DbContext
             entity.HasIndex(e => e.Terme1, "INDEX_TERME");
 
             entity.Property(e => e.IdTerme)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_TERME");
             entity.Property(e => e.Terme1)
                 .HasMaxLength(50)
@@ -1442,7 +1442,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("TERME_EXACT");
 
             entity.Property(e => e.IdTermeExact)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_TERME_EXACT");
             entity.Property(e => e.TermeExact1)
                 .HasMaxLength(50)
@@ -1473,7 +1473,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("TYPE_NOTICE");
 
             entity.Property(e => e.IdType)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_TYPE");
             entity.Property(e => e.TypeNotice1)
                 .HasMaxLength(25)
@@ -1519,7 +1519,7 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("VILLE");
 
             entity.Property(e => e.IdVille)
-                .HasColumnType("NUMBER(38)")
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_VILLE");
             entity.Property(e => e.Ville1)
                 .HasMaxLength(50)
