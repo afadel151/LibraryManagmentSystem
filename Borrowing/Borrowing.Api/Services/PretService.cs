@@ -1,4 +1,5 @@
-using Borrowing.Api.DTOs;
+using Borrowing.Shared.Requests.Pret;
+using Borrowing.Shared.Responses.Pret;
 using Borrowing.Api.Repositories;
 using Shared.Models;
 using System.Linq;
@@ -8,8 +9,10 @@ namespace Borrowing.Api.Services;
 
 public interface IPretService
 {
-    Task<Pret?> CreatePretAsync(Pret pret);
+    Task<Pret?> CreatePretAsync(CreatePretRequestDTo pretRequestDTo);
+
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PretQueryParameters queryParameters);
+
 }
 
 public class PretService : IPretService
@@ -40,8 +43,15 @@ public class PretService : IPretService
         _noticesRepository = noticesRepository;
     }
 
-    public async Task<Pret?> CreatePretAsync(Pret pret)
+    public async Task<Pret?> CreatePretAsync(CreatePretRequestDTo pretRequestDTo)
     {
+        var pret = new Pret
+        {
+            IdAdherent = pretRequestDTo.AdherentId,
+            IdExemplaire = pretRequestDTo.NoticeId,
+            DatePret = pretRequestDTo.DatePret,
+            // EtatDuree = pretRequestDTo.DateRetourPrevu
+        };
         await _pretRepository.AddAsync(pret);
         return pret;
     }
@@ -68,9 +78,9 @@ public class PretService : IPretService
                     {
                         AdherentNom = a.Nom ?? string.Empty,
                         AdherentPrenom = a.Prenom ?? string.Empty,
-                        AdherentPosition = pos != null ? pos.LibellePosition ?? string.Empty : string.Empty,
                         AdherentCategorie = c != null ? c.LibelleCategorie ?? string.Empty : string.Empty,
                         NoticeTitrePropre = n != null ? n.TitrePropre ?? string.Empty : string.Empty,
+                        NoticeCote = n != null ? n.Cote ?? string.Empty : string.Empty,
                         DatePret = p.DatePret,
                         EtatDuree = p.EtatDuree
                     };

@@ -24,10 +24,19 @@ public class AdherentService(
         
         if (adherent != null)
         {
-            // You can also use other repositories here if needed
-            // var etat = await _etatAdherentRepository.GetByIdAsync(adherent.EtatId);
+            return adherent;
         }
-        
-        return adherent;
+        return null;
+    }
+
+    public async Task<Categorie?> GetAdherentCategorie(string adherentId)
+    {
+        var adherents = _adherentRepository.GetQueryable();
+        var categories = _categorieRepository.GetQueryable();
+        var query = from adherent in adherents
+                    join categorie in categories on adherent.IdCategorie equals categorie.IdCategorie
+                    where adherent.IdAdherent == adherentId
+                    select categorie;
+            return await query.FirstOrDefaultAsync();
     }
 }
