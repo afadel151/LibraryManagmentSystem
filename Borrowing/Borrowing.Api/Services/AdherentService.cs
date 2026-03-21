@@ -1,19 +1,23 @@
 using Borrowing.Api.Repositories;
 using Shared.Models;
-
+using Microsoft.EntityFrameworkCore;
 namespace Borrowing.Api.Services;
 
 public interface IAdherentService
 {
     Task<Adherent?> GetAdherentWithDetailsAsync(string adherentId);
+    Task<Categorie?> GetAdherentCategorie(string adherentId);
 }
 
 public class AdherentService(
     IAdherentRepository adherentRepository,
-    IEtatAdherentRepository etatAdherentRepository) : IAdherentService
+    IEtatAdherentRepository etatAdherentRepository,
+    ICategorieRepository categorieRepository
+) : IAdherentService
 {
     private readonly IAdherentRepository _adherentRepository = adherentRepository;
     private readonly IEtatAdherentRepository _etatAdherentRepository = etatAdherentRepository;
+    private readonly ICategorieRepository _categorieRepository = categorieRepository;
 
     // Sample method to demonstrate repository usage
 
@@ -21,7 +25,7 @@ public class AdherentService(
     {
         // Example: retrieve adherent by ID
         var adherent = await _adherentRepository.GetByIdAsync(adherentId);
-        
+
         if (adherent != null)
         {
             return adherent;
@@ -31,12 +35,15 @@ public class AdherentService(
 
     public async Task<Categorie?> GetAdherentCategorie(string adherentId)
     {
-        var adherents = _adherentRepository.GetQueryable();
-        var categories = _categorieRepository.GetQueryable();
-        var query = from adherent in adherents
-                    join categorie in categories on adherent.IdCategorie equals categorie.IdCategorie
-                    where adherent.IdAdherent == adherentId
-                    select categorie;
-            return await query.FirstOrDefaultAsync();
+        return await _adherentRepository
+            .GetQueryable()
+            .Where(a => a.IdAdherent == adherentId)
+            .Join(
+                _categorieRepository.GetQueryable(),
+                    a => a.IdCategorie,
+                c => c.IdCategorie,
+                (a, c) => c
+            )
+            .FirstOrDefaultAsync();
     }
 }

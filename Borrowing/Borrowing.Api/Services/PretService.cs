@@ -2,7 +2,6 @@ using Borrowing.Shared.Requests.Pret;
 using Borrowing.Shared.Responses.Pret;
 using Borrowing.Api.Repositories;
 using Shared.Models;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace Borrowing.Api.Services;
@@ -12,6 +11,8 @@ public interface IPretService
     Task<Pret?> CreatePretAsync(CreatePretRequestDTo pretRequestDTo);
 
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PretQueryParameters queryParameters);
+
+    Task<int> CountAdherentActiveLoans(string AdherentId);
 
 }
 
@@ -118,5 +119,14 @@ public class PretService : IPretService
             PageNumber = queryParameters.PageNumber,
             PageSize = queryParameters.PageSize
         };
+    }
+
+    public async Task<int> CountAdherentActiveLoans(string adherentId)
+    {
+        return await _pretRepository.GetQueryable()
+                    .Where(
+                        p => p.IdAdherent == adherentId
+                    )
+                    .CountAsync();
     }
 }
