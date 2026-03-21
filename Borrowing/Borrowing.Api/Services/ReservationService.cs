@@ -1,4 +1,5 @@
 using Borrowing.Api.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
 namespace Borrowing.Api.Services;
@@ -33,5 +34,14 @@ public class ReservationService : IReservationService
         // Example: save a reservation
         await _reservationRepository.AddAsync(reservation);
         return reservation;
+    }
+
+    public async Task<bool?> CheckAdherentReservingCote(string AdherentId,string cote)
+    {
+        int count = await _reservationRepository.GetQueryable()
+                .Where(
+                    r => r.IdAdherent == AdherentId && r.Cote == cote
+                ).CountAsync();
+        return count > 0;
     }
 }

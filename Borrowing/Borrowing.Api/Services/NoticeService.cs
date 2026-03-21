@@ -1,11 +1,12 @@
 using Borrowing.Api.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
 namespace Borrowing.Api.Services;
 
 public interface INoticeService
 {
-    Task<Notice?> GetNoticeWithExemplairesAsync(int noticeId);
+    Task<Notice?> GetNoticeAsync(string cote);
 }
 
 public class NoticeService : INoticeService
@@ -22,11 +23,19 @@ public class NoticeService : INoticeService
     }
 
     // Sample method to demonstrate repository usage
-    public async Task<Notice?> GetNoticeWithExemplairesAsync(int noticeId)
+    public async Task<Notice?> GetNoticeAsync(string cote)
     {
-        // Example: retrieve notice
-        // var notice = await _noticesRepository.GetByIdAsync(noticeId);
-        // return notice;
-        return null;
+        return await _noticesRepository.GetQueryable()
+            .Where(
+                n => n.Cote == cote 
+            ).FirstOrDefaultAsync();
     }
+    public async Task<List<Exemplaire>> GetAvailableCopies(string cote)
+    {
+        return await _exemplairesRepository.GetQueryable()
+                .Where(
+                    e => e.Cote == cote && e.IdEtat == 1
+                ).ToListAsync();
+    }
+    
 }
