@@ -12,12 +12,12 @@ public class BorrowingController : ControllerBase
     private readonly IPretService _pretService;
     private readonly IAdherentService _adherentService;
 
-    public BorrowingController(IPretService pretService,IAdherentService adherentService)
+    public BorrowingController(IPretService pretService, IAdherentService adherentService)
     {
         _pretService = pretService;
         _adherentService = adherentService;
     }
-    
+
     [HttpGet("/")]
     public async Task<ActionResult<PagedResult<PretResponseDto>>> Get([FromQuery] PretQueryParameters queryParameters)
     {
@@ -36,21 +36,44 @@ public class BorrowingController : ControllerBase
     public async Task<IActionResult> LookuMember(string id)
     {
         var adherent = await _adherentService.GetAdherentWithDetailsAsync(id);
-        if (adherent!= null)
+        if (adherent != null)
         {
             if (adherent.EtatAdherent == 1)
             {
                 Categorie? categorie = await _adherentService.GetAdherentCategorie(id);
                 if (categorie != null)
-                {   
+                {
                     int activeLoans = await _pretService.CountAdherentActiveLoans(id);
                     if (activeLoans < categorie.NombreDocument)
                     {
                         return Ok(new { allowed = true });
                     }
+                    else
+                    {
+                        return BadRequest(new { allowed = false });
+                    }
+                }
+                else
+                {
+                    return NotFound(new { message = "Categorie de l'adherent non trouvee" });
                 }
             }
+            else
+            {
+                return BadRequest(new { allowed = false });
+            }
         }
-        return BadRequest(new { allowed = false });
+        else
+        {
+            return NotFound(new { message = "Adherent non trouvee" });
+        }
+
+    }
+
+    [HttpGet("lookup_notice/{cote}")]
+    public async Task<IActionResult> LookupNotice(string cote)
+    {
+        return Ok();
     }
 }
+

@@ -8,6 +8,18 @@ using Shared.Data;
 
 namespace Borrowing.Api.Repositories;
 
+
+public interface IBaseRepository<T> where T : class
+{
+    Task<IEnumerable<T>> GetAllAsync();
+    Task<T?> GetByIdAsync(params object[] keyValues);
+    Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+    Task AddAsync(T entity);
+    Task UpdateAsync(T entity);
+    Task DeleteAsync(T entity);
+    IQueryable<T> GetQueryable();
+}
+
 public class BaseRepository<T> : IBaseRepository<T> where T : class
 {
     protected readonly LibraryDbContext _context;
