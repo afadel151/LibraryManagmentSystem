@@ -2,6 +2,8 @@
 @using Borrowing.Web.Services
 @using Borrowing.Shared.Responses.Pret
 @using Borrowing.Shared.Requests.Pret
+
+@rendermode InteractiveAuto
 @inject IBorrowingService BorrowingService
 
 <RadzenRow class="rz-text-align-center " Gap="1rem">
@@ -31,7 +33,7 @@
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
-                             JustifyContent="JustifyContent.SpaceBetween">
+                            JustifyContent="JustifyContent.SpaceBetween">
                     <RadzenText TextStyle="TextStyle.H6">Reservations</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-warning rz-m-0">15</RadzenText>
                 </RadzenStack>
@@ -40,12 +42,19 @@
     </RadzenColumn>
 </RadzenRow>
 
+<RadzenRow class="rz-mt-4" JustifyContent="JustifyContent.End">
+    <NavLink class="nav-link" href="/borrows/insert">
+
+    <RadzenButton  Text="Inserer un Pret" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base" />
+    </NavLink>
+</RadzenRow>
 <RadzenRow class="rz-mt-4">
     <RadzenColumn>
         <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@prets" Count="@count" LoadData="@LoadData"
                         IsLoading="@isLoading"                        TItem="PretResponseDto" AllowPaging="true" PageSize="10" AllowSorting="true"
-                        ColumnWidth="150px">
+                        >
             <Columns>
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="AdherentId" Title="Id Adhérent" />
                 <RadzenDataGridColumn TItem="PretResponseDto" Property="AdherentNom" Title="Nom Adhérent" />
                 <RadzenDataGridColumn TItem="PretResponseDto" Property="AdherentPrenom" Title="Prénom" />
                 <RadzenDataGridColumn TItem="PretResponseDto" Property="AdherentCategorie" Title="Catégorie" />

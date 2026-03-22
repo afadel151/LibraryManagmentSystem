@@ -29,7 +29,6 @@ public class BorrowingService : IBorrowingService
         var response = await _httpClient.GetAsync(url);
 
         var content = await response.Content.ReadAsStringAsync();
-        // Console.WriteLine(content);
 
         response.EnsureSuccessStatusCode();
 
