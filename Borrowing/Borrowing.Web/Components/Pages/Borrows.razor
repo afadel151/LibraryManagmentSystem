@@ -1,4 +1,95 @@
 @page "/borrows"
+@using Borrowing.Web.Services
+@using Borrowing.Shared.Responses.Pret
+@using Borrowing.Shared.Requests.Pret
+@inject IBorrowingService BorrowingService
 
+<RadzenRow class="rz-text-align-center " Gap="1rem">
+    <RadzenColumn>
+        <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
+            <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H6">Prets en cours</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-color-success rz-m-0">15</RadzenText>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+    <RadzenColumn>
+        <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
+            <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H6">En retard</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-color-info rz-m-0">15</RadzenText>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+    <RadzenColumn>
+        <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
+            <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H6">Reservations</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-color-warning rz-m-0">15</RadzenText>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
 
-<p>borrows</p>
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn>
+        <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@prets" Count="@count" LoadData="@LoadData"
+                        IsLoading="@isLoading"                        TItem="PretResponseDto" AllowPaging="true" PageSize="10" AllowSorting="true"
+                        ColumnWidth="150px">
+            <Columns>
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="AdherentNom" Title="Nom Adhérent" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="AdherentPrenom" Title="Prénom" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="AdherentCategorie" Title="Catégorie" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="NoticeTitrePropre" Title="Titre" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="NoticeCote" Title="Cote" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="DatePret" Title="Date Prêt"
+                                    FormatString="{0:d}" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="EtatDuree" Title="État Durée" />
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    private IEnumerable<PretResponseDto>? prets;
+    private int count;
+    private bool isLoading;
+
+    private async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+
+        try
+        {
+            int skip = args.Skip ?? 0;
+            int top = args.Top ?? 10;
+
+            int pageNumber = (skip / top) + 1;
+
+            var queryParams = new PretQueryParameters
+            {
+                PageNumber = pageNumber,
+                PageSize = top,
+                OrderBy = args.OrderBy ?? "DatePret desc"
+            };
+
+            var result = await BorrowingService.GetPretsAsync(queryParams);
+
+            prets = result.Data;
+            count = result.TotalCount;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
