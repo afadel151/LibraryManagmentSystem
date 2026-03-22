@@ -21,7 +21,7 @@ public class BorrowingController : ControllerBase
         _noticeService = noticeService;
     }
 
-    [HttpGet("/")]
+    [HttpGet]
     public async Task<ActionResult<PagedResult<PretResponseDto>>> Get([FromQuery] PretQueryParameters queryParameters)
     {
         var result = await _pretService.GetPretsAsync(queryParameters);
@@ -34,6 +34,14 @@ public class BorrowingController : ControllerBase
         var result = await _pretService.CreatePretAsync(pretRequestDto);
         return Ok(result);
     }
+
+    // [HttpGet("stats")]
+    // public async Task<IActionResult> GetStats()
+    // {
+    //      var result = await _pretService.GetStatsAsync();
+    //      return Ok(result);
+    // }
+
 
     [HttpGet("lookup_member/{id}")]
     public async Task<IActionResult> LookuMember(string id)
