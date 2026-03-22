@@ -77,6 +77,7 @@ public class PretService : IPretService
                     from n in noticeGrp.DefaultIfEmpty()
                     select new PretResponseDto
                     {
+                        AdherentId = a.IdAdherent ?? string.Empty,
                         AdherentNom = a.Nom ?? string.Empty,
                         AdherentPrenom = a.Prenom ?? string.Empty,
                         AdherentCategorie = c != null ? c.LibelleCategorie ?? string.Empty : string.Empty,
