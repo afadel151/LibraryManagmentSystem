@@ -1,0 +1,14 @@
+services: 
+  oracle-db: 
+    image: container-registry.oracle.com/database/express:21.3.0-xe 
+    container_name: oracle-database 
+    ports:
+      - "1521:1521" 
+      - "5500:5500" 
+    environment: 
+      - ORACLE_PWD=fadelakram 
+    volumes: 
+      - oracle-data:/opt/oracle/oradata 
+
+volumes: 
+  oracle-data:
