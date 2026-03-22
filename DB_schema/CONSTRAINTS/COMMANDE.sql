@@ -1,0 +1,8 @@
+--------------------------------------------------------
+--  Constraints for Table COMMANDE
+--------------------------------------------------------
+
+  ALTER TABLE "MATAOUI"."COMMANDE" ADD CONSTRAINT "COMMANDE_PK" PRIMARY KEY ("NUM_COMMANDE")
+  USING INDEX PCTFREE 10 INITRANS 2 MAXTRANS 255 COMPUTE STATISTICS 
+  TABLESPACE "USERS"  ENABLE;
+  ALTER TABLE "MATAOUI"."COMMANDE" MODIFY ("NUM_COMMANDE" NOT NULL ENABLE);

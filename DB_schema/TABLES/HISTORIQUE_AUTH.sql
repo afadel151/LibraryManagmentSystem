@@ -1,0 +1,13 @@
+--------------------------------------------------------
+--  DDL for Table HISTORIQUE_AUTH
+--------------------------------------------------------
+
+  CREATE TABLE "MATAOUI"."HISTORIQUE_AUTH" 
+   (	"ID_ADMIN" VARCHAR2(10 BYTE), 
+	"DATE_OPERATION" TIMESTAMP (6), 
+	"ID_ADHERENT" VARCHAR2(10 BYTE), 
+	"ID_TYPE_OPERATION" NUMBER
+   ) SEGMENT CREATION DEFERRED 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;

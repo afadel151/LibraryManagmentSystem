@@ -1,0 +1,8 @@
+--------------------------------------------------------
+--  Constraints for Table NOTICE_MOT_CLE
+--------------------------------------------------------
+
+  ALTER TABLE "MATAOUI"."NOTICE_MOT_CLE" ADD CONSTRAINT "PK_NOTICE_MOT_CLE" PRIMARY KEY ("ID_NOTICE", "ID_MOT_CLE")
+  USING INDEX "MATAOUI"."PK_NOTICE_MOT_CLE"  ENABLE;
+  ALTER TABLE "MATAOUI"."NOTICE_MOT_CLE" MODIFY ("ID_NOTICE" NOT NULL ENABLE);
+  ALTER TABLE "MATAOUI"."NOTICE_MOT_CLE" MODIFY ("ID_MOT_CLE" NOT NULL ENABLE);

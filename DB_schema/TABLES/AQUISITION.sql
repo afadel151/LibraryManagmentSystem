@@ -1,0 +1,12 @@
+--------------------------------------------------------
+--  DDL for Table AQUISITION
+--------------------------------------------------------
+
+  CREATE TABLE "MATAOUI"."AQUISITION" 
+   (	"NUM_COMMANDE" VARCHAR2(32 BYTE), 
+	"ID_EXEMPLAIRE" VARCHAR2(15 BYTE), 
+	"PRIX_UNITAIRE" VARCHAR2(10 BYTE)
+   ) SEGMENT CREATION DEFERRED 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;

@@ -1,0 +1,11 @@
+--------------------------------------------------------
+--  DDL for Table NOTICE_MENTION_EDITION
+--------------------------------------------------------
+
+  CREATE TABLE "MATAOUI"."NOTICE_MENTION_EDITION" 
+   (	"ID_NOTICE" NUMBER(38,0), 
+	"MENTION_EDITION" VARCHAR2(2048 BYTE)
+   ) SEGMENT CREATION DEFERRED 
+  PCTFREE 10 PCTUSED 40 INITRANS 1 MAXTRANS 255 
+ NOCOMPRESS LOGGING
+  TABLESPACE "USERS" ;

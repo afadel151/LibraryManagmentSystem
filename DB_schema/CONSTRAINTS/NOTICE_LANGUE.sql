@@ -1,0 +1,8 @@
+--------------------------------------------------------
+--  Constraints for Table NOTICE_LANGUE
+--------------------------------------------------------
+
+  ALTER TABLE "MATAOUI"."NOTICE_LANGUE" ADD CONSTRAINT "PK_NOTICE_LANGUE" PRIMARY KEY ("ID_NOTICE", "ID_LANGUE")
+  USING INDEX "MATAOUI"."PK_NOTICE_LANGUE"  ENABLE;
+  ALTER TABLE "MATAOUI"."NOTICE_LANGUE" MODIFY ("ID_NOTICE" NOT NULL ENABLE);
+  ALTER TABLE "MATAOUI"."NOTICE_LANGUE" MODIFY ("ID_LANGUE" NOT NULL ENABLE);

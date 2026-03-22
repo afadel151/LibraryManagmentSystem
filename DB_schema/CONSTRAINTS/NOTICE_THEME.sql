@@ -1,0 +1,8 @@
+--------------------------------------------------------
+--  Constraints for Table NOTICE_THEME
+--------------------------------------------------------
+
+  ALTER TABLE "MATAOUI"."NOTICE_THEME" ADD CONSTRAINT "PK_NOTICE_THEME" PRIMARY KEY ("ID_NOTICE", "ID_THEME")
+  USING INDEX "MATAOUI"."PK_NOTICE_THEME"  ENABLE;
+  ALTER TABLE "MATAOUI"."NOTICE_THEME" MODIFY ("ID_NOTICE" NOT NULL ENABLE);
+  ALTER TABLE "MATAOUI"."NOTICE_THEME" MODIFY ("ID_THEME" NOT NULL ENABLE);
