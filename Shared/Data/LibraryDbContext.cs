@@ -64,7 +64,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<Langue> Langues { get; set; }
 
     public virtual DbSet<MentionEdition> MentionEditions { get; set; }
-     public virtual DbSet<MensionResCollection> MensionResCollections { get; set; }
+     public virtual DbSet<MentionResCollection> MentionResCollections { get; set; }
     public virtual DbSet<MentionResponsabilite> MentionResponsabilites { get; set; }
 
     public virtual DbSet<MotsCle> MotsCles { get; set; }
@@ -666,28 +666,28 @@ public partial class LibraryDbContext : DbContext
                 .HasColumnName("LANGUE");
         });
 
-        modelBuilder.Entity<MensionResCollection>(entity =>
+        modelBuilder.Entity<MentionResCollection>(entity =>
         {
-            entity.HasKey(e => new { e.IdNotice, e.IdMentionRes }).HasName("MENTION_RES_COLLECTION_PK");
+            entity.HasKey(e => new { e.IdCollection, e.IdMentionRes }).HasName("MENTION_RES_COLLECTION_PK");
 
             entity.ToTable("MENTION_RES_COLLECTION");
 
-            entity.HasIndex(e => e.IdNotice, "LIEN_138_FK");
+            entity.HasIndex(e => e.IdCollection, "LIEN_163_FK");
 
             entity.HasIndex(e => e.IdMentionRes, "LIEN_143_FK");
 
-            entity.Property(e => e.IdNotice)
+            entity.Property(e => e.IdCollection)
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                .HasColumnName("ID_NOTICE");
+                .HasColumnName("ID_COLLECTION");
             entity.Property(e => e.IdMentionRes)
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_MENTION_RES");
 
-            entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.MensionResCollections)
-                .HasForeignKey(d => d.IdNotice)
-                .HasConstraintName("MENTION_RES_COLLECTION_NOTICE_FK1");
+            entity.HasOne(d => d.IdCollectionNavigation).WithMany(p => p.MentionResCollections)
+                .HasForeignKey(d => d.IdCollection)
+                .HasConstraintName("MENTION_RES_COLLECTION_COLLECTION_FK1");
 
-            entity.HasOne(d => d.IdMentionResNavigation).WithMany(p => p.MensionResCollections)
+            entity.HasOne(d => d.IdMentionResNavigation).WithMany(p => p.MentionResCollections)
                 .HasForeignKey(d => d.IdMentionRes)
                 .HasConstraintName("MENTION_RES_COLLECTION_MENTION_FK1");
         });
@@ -1056,30 +1056,7 @@ public partial class LibraryDbContext : DbContext
                             .HasColumnName("ID_COLLECTION");
                     });
             
-            entity.HasMany(d => d.IdPays).WithMany(p => p.IdNotices)
-                .UsingEntity<Dictionary<string, object>>(
-                    "PaysPublication",
-                    r => r.HasOne<Pay>().WithMany()
-                        .HasForeignKey("IdPays")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_PAYS_PUBLICATION_LIEN_149_PAYS"),
-                    l => l.HasOne<Notice>().WithMany()
-                        .HasForeignKey("IdNotice")
-                        .HasConstraintName("FK_PAYS_PUBLICATION_LIEN_148_NOTICE"),
-                    j =>
-                    {
-                        j.HasKey("IdNotice", "IdPays");
-                        j.ToTable("PAYS_PUBLICATION");
-                        j.HasIndex(new[] { "IdNotice" }, "LIEN_148_FK");
-                        j.HasIndex(new[] { "IdPays" }, "LIEN_149_FK");
-                        j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                            .HasColumnName("ID_NOTICE");
-                        j.IndexerProperty<string>("IdPays")
-                            .HasMaxLength(10)
-                            .IsUnicode(false)
-                            .HasColumnName("ID_PAYS");
-                    });
+            
             
             entity.HasMany(d => d.IdSelections).WithMany(p => p.IdNotices)
                 .UsingEntity<Dictionary<string, object>>(
