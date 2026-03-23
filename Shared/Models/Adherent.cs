@@ -20,4 +20,8 @@ public partial class Adherent
     public virtual ICollection<HistoriqueAuth> HistoriqueAuths { get; set; } = new List<HistoriqueAuth>();
 
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+    
+    public virtual Position? Position { get; set; }
+    public virtual Categorie? Categorie { get; set; }
+
 }

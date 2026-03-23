@@ -64,7 +64,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<Langue> Langues { get; set; }
 
     public virtual DbSet<MentionEdition> MentionEditions { get; set; }
-     public virtual DbSet<MentionResCollection> MentionResCollections { get; set; }
+    public virtual DbSet<MentionResCollection> MentionResCollections { get; set; }
     public virtual DbSet<MentionResponsabilite> MentionResponsabilites { get; set; }
 
     public virtual DbSet<MotsCle> MotsCles { get; set; }
@@ -80,7 +80,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<NoticeDipDisEtab> NoticeDipDisEtabs { get; set; }
 
     public virtual DbSet<NoticeEdition> NoticeEditions { get; set; }
-    
+
 
 
     public virtual DbSet<NoticeMentionEdition> NoticeMentionEditions { get; set; }
@@ -96,7 +96,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<ParametresCatlibPret> ParametresCatlibPrets { get; set; }
 
     public virtual DbSet<Pay> Pays { get; set; }
-    
+
     public virtual DbSet<PaysPublication> PaysPublications { get; set; }
     public virtual DbSet<Penalite> Penalites { get; set; }
 
@@ -113,7 +113,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<Reservation> Reservations { get; set; }
 
     public virtual DbSet<Selection> Selections { get; set; }
-    
+
 
     public virtual DbSet<SourceArticle> SourceArticles { get; set; }
 
@@ -132,7 +132,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<Ville> Villes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-// #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseOracle("User Id=MATAOUI;Password=mataoui123;Data Source=localhost:1521/XEPDB1;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -151,6 +151,7 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("ID_ADHERENT");
+
             entity.Property(e => e.EtatAdherent)
                 .HasColumnType("NUMBER")
                 .HasColumnName("ETAT_ADHERENT");
@@ -169,8 +170,15 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("PRENOM");
+
+            entity.HasOne(a => a.Position)
+                .WithMany()
+                .HasForeignKey(a => a.IdPosition);
+            entity.HasOne(a => a.Categorie)
+                .WithMany()
+                .HasForeignKey(a => a.IdCategorie);
         });
-        
+
         modelBuilder.Entity<Admin>(entity =>
         {
             entity.HasKey(e => e.IdAdmin).HasName("ADMIN_PK");
@@ -222,7 +230,7 @@ public partial class LibraryDbContext : DbContext
             entity.Property(e => e.IdMentionRes)
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_MENTION_RES");
-            
+
             entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.Auteurs)
                 .HasForeignKey(d => d.IdNotice)
                 .HasConstraintName("FK_AUTEUR_LIEN_138_NOTICE");
@@ -306,7 +314,7 @@ public partial class LibraryDbContext : DbContext
             entity.Property(e => e.IdMentionRes)
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_MENTION_RES");
-            
+
             entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.CoAuteurs)
                 .HasForeignKey(d => d.IdNotice)
                 .HasConstraintName("FK_COAUTEUR_LIEN_138_NOTICE");
@@ -314,7 +322,7 @@ public partial class LibraryDbContext : DbContext
             entity.HasOne(d => d.IdMentionResNavigation).WithMany(p => p.CoAuteurs)
                 .HasForeignKey(d => d.IdMentionRes)
                 .HasConstraintName("FK_COAUTEUR_LIEN_143_MENTION");
-            
+
         });
         modelBuilder.Entity<Collection>(entity =>
         {
@@ -338,7 +346,7 @@ public partial class LibraryDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("TITRE_COLLECTION");
 
-            
+
         });
 
         modelBuilder.Entity<Commande>(entity =>
@@ -907,11 +915,6 @@ public partial class LibraryDbContext : DbContext
                             .IsUnicode(false)
                             .HasColumnName("ID_LANGUE");
                     });
-
-            
-
-           
-
             entity.HasMany(d => d.IdMotCles).WithMany(p => p.IdNotices)
                 .UsingEntity<Dictionary<string, object>>(
                     "NoticeMotCle",
@@ -960,7 +963,7 @@ public partial class LibraryDbContext : DbContext
                             .IsUnicode(false)
                             .HasColumnName("ID_PAYS");
                     });
-            
+
             entity.HasMany(d => d.IdSelections).WithMany(p => p.IdNotices)
                 .UsingEntity<Dictionary<string, object>>(
                     "SelectionNotice",
@@ -984,7 +987,7 @@ public partial class LibraryDbContext : DbContext
                             .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                             .HasColumnName("ID_SELECTION");
                     });
-            
+
         });
 
         modelBuilder.Entity<NoticeCollection>(entity =>
@@ -1116,7 +1119,7 @@ public partial class LibraryDbContext : DbContext
                 .HasConstraintName("FK_NOTICE_E_LIEN_898_VILLE");
         });
 
-        
+
         modelBuilder.Entity<NoticeMentionEdition>(entity =>
         {
             entity.HasKey(e => e.IdNotice).HasName("NOTICE_MENTION_EDITION_PK");
@@ -1437,7 +1440,7 @@ public partial class LibraryDbContext : DbContext
                     });
         });
 
-       
+
         modelBuilder.Entity<SourceArticle>(entity =>
         {
             entity.HasKey(e => e.IdSourceArticle);
