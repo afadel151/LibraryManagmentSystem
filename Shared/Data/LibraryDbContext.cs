@@ -22,10 +22,13 @@ public partial class LibraryDbContext : DbContext
 
     public virtual DbSet<Aquisition> Aquisitions { get; set; }
 
+    public virtual DbSet<Auteur> Auteurs { get; set; }
+
     public virtual DbSet<AuteurSecondaire> AuteurSecondaires { get; set; }
 
     public virtual DbSet<Categorie> Categories { get; set; }
 
+    public virtual DbSet<CoAuteur> CoAuteurs { get; set; }
     public virtual DbSet<Collection> Collections { get; set; }
 
     public virtual DbSet<Commande> Commandes { get; set; }
@@ -61,7 +64,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<Langue> Langues { get; set; }
 
     public virtual DbSet<MentionEdition> MentionEditions { get; set; }
-
+     public virtual DbSet<MensionResCollection> MensionResCollections { get; set; }
     public virtual DbSet<MentionResponsabilite> MentionResponsabilites { get; set; }
 
     public virtual DbSet<MotsCle> MotsCles { get; set; }
@@ -77,6 +80,9 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<NoticeDipDisEtab> NoticeDipDisEtabs { get; set; }
 
     public virtual DbSet<NoticeEdition> NoticeEditions { get; set; }
+    
+    public virtual DbSet<NoticeLangue> NoticeLangues { get; set; }
+
 
     public virtual DbSet<NoticeMentionEdition> NoticeMentionEditions { get; set; }
 
@@ -91,7 +97,8 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<ParametresCatlibPret> ParametresCatlibPrets { get; set; }
 
     public virtual DbSet<Pay> Pays { get; set; }
-
+    
+    public virtual DbSet<PaysPublication> PaysPublications { get; set; }
     public virtual DbSet<Penalite> Penalites { get; set; }
 
     public virtual DbSet<PenaliteAdherent> PenaliteAdherents { get; set; }
@@ -107,6 +114,8 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<Reservation> Reservations { get; set; }
 
     public virtual DbSet<Selection> Selections { get; set; }
+    
+    public virtual DbSet<SelectionNotice> SelectionNotices { get; set; }
 
     public virtual DbSet<SourceArticle> SourceArticles { get; set; }
 
