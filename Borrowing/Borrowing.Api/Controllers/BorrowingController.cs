@@ -55,8 +55,6 @@ public class BorrowingController : ControllerBase
     }
 
 
-   
-
     [HttpGet("lookup_notice/{id}/{cote}")]
     public async Task<IActionResult> LookupNotice(string id, string cote)
     {
