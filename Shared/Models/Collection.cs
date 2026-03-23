@@ -17,7 +17,5 @@ public partial class Collection
     public virtual ICollection<Collection> Collections { get; set; } = new List<Collection>();
     public virtual ICollection<MentionResCollection> MentionResCollections { get; set; } = new List<MentionResCollection>();
 
-    public virtual ICollection<MentionResponsabilite> IdMentionRes { get; set; } = new List<MentionResponsabilite>();
 
-    public virtual ICollection<Notice> IdNotices { get; set; } = new List<Notice>();
 }

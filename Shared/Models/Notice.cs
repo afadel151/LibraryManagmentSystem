@@ -79,7 +79,6 @@ public partial class Notice
 
     public virtual ICollection<Langue> IdLangues { get; set; } = new List<Langue>();
 
-    public virtual ICollection<MentionResponsabilite> IdMentionRes { get; set; } = new List<MentionResponsabilite>();
 
     public virtual ICollection<MotsCle> IdMotCles { get; set; } = new List<MotsCle>();
 
@@ -87,11 +86,8 @@ public partial class Notice
 
     public virtual ICollection<Selection> IdSelections { get; set; } = new List<Selection>();
 
-    public virtual ICollection<Collection> IdCollections { get; set; } = new List<Collection>();
 
-    public virtual ICollection<NoticeLangue> NoticeLangues { get; set; } = new List<NoticeLangue>();
 
     public virtual ICollection<PaysPublication> PaysPublications { get; set; } = new List<PaysPublication>();
 
-    public virtual ICollection<SelectionNotice> SelectionNotices { get; set; } = new List<SelectionNotice>();
 }

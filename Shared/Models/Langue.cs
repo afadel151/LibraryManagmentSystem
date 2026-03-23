@@ -11,5 +11,4 @@ public partial class Langue
 
     public virtual ICollection<Notice> IdNotices { get; set; } = new List<Notice>();
 
-    public virtual ICollection<NoticeLangue> NoticeLangues { get; set; } = new List<NoticeLangue>();
 }

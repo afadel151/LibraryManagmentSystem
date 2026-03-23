@@ -5,7 +5,7 @@ namespace Shared.Models;
 
 public partial class EtatAdherent
 {
-    public bool IdEtat { get; set; }
+    public decimal IdEtat { get; set; }
 
     public string? DescEtat { get; set; }
 }

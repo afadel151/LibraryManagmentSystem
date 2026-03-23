@@ -11,5 +11,4 @@ public partial class Selection
 
     public virtual ICollection<Notice> IdNotices { get; set; } = new List<Notice>();
 
-    public virtual ICollection<SelectionNotice> SelectionNotices { get; set; } = new List<SelectionNotice>();
 }
