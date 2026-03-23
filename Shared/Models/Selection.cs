@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Shared.Models;
@@ -10,4 +10,6 @@ public partial class Selection
     public string? LibelleSelection { get; set; }
 
     public virtual ICollection<Notice> IdNotices { get; set; } = new List<Notice>();
+
+    public virtual ICollection<SelectionNotice> SelectionNotices { get; set; } = new List<SelectionNotice>();
 }

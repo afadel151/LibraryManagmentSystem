@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Shared.Models;
@@ -56,6 +56,8 @@ public partial class Notice
     public string? TypeDonneesResourceElec { get; set; }
 
     public virtual ICollection<AuteurSecondaire> AuteurSecondaires { get; set; } = new List<AuteurSecondaire>();
+    public virtual ICollection<Auteur> Auteurs { get; set; } = new List<Auteur>();
+    public virtual ICollection<CoAuteur> CoAuteurs { get; set; } = new List<CoAuteur>();
 
     public virtual TableCdd? CddNavigation { get; set; }
 
@@ -84,4 +86,12 @@ public partial class Notice
     public virtual ICollection<Pay> IdPays { get; set; } = new List<Pay>();
 
     public virtual ICollection<Selection> IdSelections { get; set; } = new List<Selection>();
+
+    public virtual ICollection<Collection> IdCollections { get; set; } = new List<Collection>();
+
+    public virtual ICollection<NoticeLangue> NoticeLangues { get; set; } = new List<NoticeLangue>();
+
+    public virtual ICollection<PaysPublication> PaysPublications { get; set; } = new List<PaysPublication>();
+
+    public virtual ICollection<SelectionNotice> SelectionNotices { get; set; } = new List<SelectionNotice>();
 }

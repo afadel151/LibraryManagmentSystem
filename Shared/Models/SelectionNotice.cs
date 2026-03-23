@@ -9,4 +9,7 @@ public partial class SelectionNotice
 
     public decimal IdSelection  { get; set; }
 
+    public virtual Notice IdNoticeNavigation { get; set; } = null!;
+    public virtual Selection IdSelectionNavigation { get; set; } = null!;
+
 }

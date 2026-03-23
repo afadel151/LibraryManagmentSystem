@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Shared.Models;
 
-public partial class Auteur
+public partial class MentionResCollection
 {
-    public decimal IdNotice { get; set; }
+    public decimal IdCollection { get; set; }
 
     public decimal IdMentionRes { get; set; }
 
-    public virtual Notice IdNoticeNavigation { get; set; } = null!;
+    public virtual Collection IdCollectionNavigation { get; set; } = null!;
     public virtual MentionResponsabilite IdMentionResNavigation { get; set; } = null!;
 
 }
