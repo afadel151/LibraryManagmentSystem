@@ -18,6 +18,7 @@ public interface IBaseRepository<T> where T : class
     Task UpdateAsync(T entity);
     Task DeleteAsync(T entity);
     IQueryable<T> GetQueryable();
+    IQueryable<T> GetQueryable(params Expression<Func<T, object>>[] includes);
 }
 
 public class BaseRepository<T> : IBaseRepository<T> where T : class
@@ -67,5 +68,18 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
     public virtual IQueryable<T> GetQueryable()
     {
         return _dbSet.AsQueryable();
+    }
+
+    public virtual IQueryable<T> GetQueryable(params Expression<Func<T, object>>[] includes)
+    {
+        IQueryable<T> query = _dbSet.AsQueryable();
+        if (includes != null)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+        return query;
     }
 }
