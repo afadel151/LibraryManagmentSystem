@@ -9,7 +9,7 @@
 
   
   <ItemGroup>
-    <ProjectReference Include="..\Borrowing.Shared\Borrowing.Shared.csproj" />
+    <ProjectReference Include="..\Borrowing.SharedClasses\Borrowing.SharedClasses.csproj" />
   </ItemGroup>
 
   
