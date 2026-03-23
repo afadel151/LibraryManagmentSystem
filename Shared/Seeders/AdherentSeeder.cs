@@ -10,7 +10,10 @@ public class AdherentSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.Adherents.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.ADHERENT")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
         var adherents = new List<Adherent>
         {

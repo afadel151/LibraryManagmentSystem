@@ -10,8 +10,10 @@ public class TypeNoticeSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.TypeNotices.AnyAsync()) return;
-
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.TYPE_NOTICE")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
         var types = new List<TypeNotice>
         {
             new() { IdType = 1, TypeNotice1 = "Livre" },

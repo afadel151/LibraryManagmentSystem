@@ -10,17 +10,24 @@ public class HistoriquePretSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.HistoriquePrets.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.HISTORIQUE_PRET")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
-        var historiques = new List<HistoriquePret>
+        var historiques = new List<(string IdAdherent, string IdExemplaire, DateTime DatePret, DateTime? DateRetour)>
+    {
+        ("B/001", "EX002", new DateTime(2026, 1, 10), new DateTime(2026, 1, 22)),
+        ("B/002", "EX005", new DateTime(2026, 1, 15), new DateTime(2026, 1, 28)),
+        ("B/003", "EX008", new DateTime(2026, 2, 1),  new DateTime(2026, 2, 18)),
+        ("B/004", "EX006", new DateTime(2026, 2, 5),  new DateTime(2026, 2, 25)),
+    };
+
+        foreach (var h in historiques)
         {
-            new() { IdAdherent = "ADH001", IdExemplaire = "EX002", DatePret = new DateTime(2026, 1, 10), DateRetour = new DateTime(2026, 1, 22) },
-            new() { IdAdherent = "ADH002", IdExemplaire = "EX005", DatePret = new DateTime(2026, 1, 15), DateRetour = new DateTime(2026, 1, 28) },
-            new() { IdAdherent = "ADH003", IdExemplaire = "EX008", DatePret = new DateTime(2026, 2, 1), DateRetour = new DateTime(2026, 2, 18) },
-            new() { IdAdherent = "ADH006", IdExemplaire = "EX006", DatePret = new DateTime(2026, 2, 5), DateRetour = new DateTime(2026, 2, 25) },
-        };
-
-        await context.HistoriquePrets.AddRangeAsync(historiques);
-        await context.SaveChangesAsync();
+            await context.Database.ExecuteSqlRawAsync(
+                "INSERT INTO MATAOUI.HISTORIQUE_PRET (ID_ADHERENT, ID_EXEMPLAIRE, DATE_PRET, DATE_RETOUR) VALUES (:p0, :p1, :p2, :p3)",
+                h.IdAdherent, h.IdExemplaire, h.DatePret, h.DateRetour);
+        }
     }
 }

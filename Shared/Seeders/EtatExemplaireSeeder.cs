@@ -10,7 +10,10 @@ public class EtatExemplaireSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.EtatExemplaires.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.ETAT_EXEMPLAIRE")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
         var etats = new List<EtatExemplaire>
         {

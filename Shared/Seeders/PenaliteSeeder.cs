@@ -10,7 +10,10 @@ public class PenaliteSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.Penalites.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.PENALITE")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
         var penalites = new List<Penalite>
         {

@@ -10,11 +10,14 @@ public class PenaliteAdherentSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.PenaliteAdherents.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.PENALITE_ADHERENT")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
         var penalitesAdherents = new List<PenaliteAdherent>
         {
-            new() { IdAdherent = "ADH006", DatePenalite = new DateTime(2026, 2, 15), NombreJoursPenalite = 7 },
+            new() { IdAdherent = "B/001", DatePenalite = new DateTime(2026, 2, 15), NombreJoursPenalite = 7 },
         };
 
         await context.PenaliteAdherents.AddRangeAsync(penalitesAdherents);

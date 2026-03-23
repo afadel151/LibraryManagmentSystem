@@ -10,7 +10,10 @@ public class PositionSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.Positions.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.POSITION")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
         var positions = new List<Position>
         {

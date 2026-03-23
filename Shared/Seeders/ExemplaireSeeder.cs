@@ -10,7 +10,10 @@ public class ExemplaireSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.Exemplaires.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.EXEMPLAIRE")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
         var exemplaires = new List<Exemplaire>
         {
@@ -24,6 +27,13 @@ public class ExemplaireSeeder : ISeeder
             new() { IdExemplaire = "EX008", IdEtat = 1, Cote = "HIS-001" },
             new() { IdExemplaire = "EX009", IdEtat = 4, Cote = "CHM-001" },
             new() { IdExemplaire = "EX010", IdEtat = 1, Cote = "DRT-001" },
+            new() { IdExemplaire = "EX011", IdEtat = 1, Cote = "DRT-001" },
+            new() { IdExemplaire = "EX012", IdEtat = 1, Cote = "DRT-001" },
+            new() { IdExemplaire = "EX013", IdEtat = 1, Cote = "DRT-001" },
+            new() { IdExemplaire = "EX014", IdEtat = 1, Cote = "DRT-001" },
+            new() { IdExemplaire = "EX015", IdEtat = 1, Cote = "DRT-001" },
+            new() { IdExemplaire = "EX016", IdEtat = 1, Cote = "INF-001" },
+
         };
 
         await context.Exemplaires.AddRangeAsync(exemplaires);

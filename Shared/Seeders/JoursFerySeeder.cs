@@ -10,7 +10,10 @@ public class JoursFerySeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.JoursFeries.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.JOURS_FERIES")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
         var joursFeries = new List<JoursFery>
         {

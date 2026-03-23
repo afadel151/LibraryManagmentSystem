@@ -10,7 +10,10 @@ public class NoticeSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.Notices.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.NOTICE")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
         var notices = new List<Notice>
         {

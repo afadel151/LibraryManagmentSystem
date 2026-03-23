@@ -10,7 +10,10 @@ public class CategorieSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.Categories.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.CATEGORIE")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
 
         var categories = new List<Categorie>
         {

@@ -10,11 +10,13 @@ public class HistoriquePenaliteAdherentSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.HistoriquePenaliteAdherents.AnyAsync()) return;
-
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.HISTORIQUE_PENALITE_ADHERENT")
+            .FirstOrDefaultAsync();
+        if (count > 0) return;
         var historiques = new List<HistoriquePenaliteAdherent>
         {
-            new() { IdAdherent = "ADH006", DatePenalite = new DateTime(2026, 2, 15), NombreJoursPenalite = 7 },
+            new() { IdAdherent = "C/002", DatePenalite = new DateTime(2026, 2, 15), NombreJoursPenalite = 7 },
         };
 
         await context.HistoriquePenaliteAdherents.AddRangeAsync(historiques);

@@ -10,12 +10,16 @@ public class EtatAdherentSeeder : ISeeder
 
     public async Task SeedAsync(LibraryDbContext context)
     {
-        if (await context.EtatAdherents.AnyAsync()) return;
+        var count = await context.Database
+            .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.ETAT_ADHERENT")
+            .FirstOrDefaultAsync();
+
+        if (count > 0) return;
 
         var etats = new List<EtatAdherent>
         {
-            new() { IdEtat = false, DescEtat = "Inactif" },
-            new() { IdEtat = true, DescEtat = "Actif" }
+            new() { IdEtat = 0, DescEtat = "Inactif" },
+            new() { IdEtat = 1, DescEtat = "Actif" }
         };
 
         await context.EtatAdherents.AddRangeAsync(etats);
