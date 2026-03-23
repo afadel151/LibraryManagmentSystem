@@ -1,5 +1,6 @@
-using Borrowing.Shared.Requests.Pret;
-using Borrowing.Shared.Responses.Pret;
+using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Requests.Pret;
+using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.Api.Repositories;
 using Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace Borrowing.Api.Services;
 public interface IPretService
 {
     Task<Pret?> CreatePretAsync(CreatePretRequestDTo pretRequestDTo);
-
+    Task<int> CountAsync();
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PretQueryParameters queryParameters);
 
     Task<int> CountAdherentActiveLoans(string AdherentId);
@@ -92,18 +93,32 @@ public class PretService : IPretService
         {
             query = queryParameters.OrderBy.ToLower() switch
             {
-                "datepret desc" => query.OrderByDescending(x => x.DatePret),
                 "datepret asc" => query.OrderBy(x => x.DatePret),
-                "nom desc" => query.OrderByDescending(x => x.AdherentNom),
-                "nom asc" => query.OrderBy(x => x.AdherentNom),
-                "titre desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
+                "datepret desc" => query.OrderByDescending(x => x.DatePret),
+
+                "adherentid asc" => query.OrderBy(x => x.AdherentId),
+                "adherentid desc" => query.OrderByDescending(x => x.AdherentId),
+
+                "adherentnom asc" => query.OrderBy(x => x.AdherentNom),
+                "adherentnom desc" => query.OrderByDescending(x => x.AdherentNom),
+
+                "adherentprenom asc" => query.OrderBy(x => x.AdherentPrenom),
+                "adherentprenom desc" => query.OrderByDescending(x => x.AdherentPrenom),
+
+                "adherentcategorie asc" => query.OrderBy(x => x.AdherentCategorie),
+                "adherentcategorie desc" => query.OrderByDescending(x => x.AdherentCategorie),
+                
+                "noticetitrepropre asc" => query.OrderBy(x => x.NoticeTitrePropre),
+                "noticetitrepropre desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
+
                 "titre asc" => query.OrderBy(x => x.NoticeTitrePropre),
-                _ => query.OrderByDescending(x => x.DatePret) // Default ordering
+                "titre desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
+                _ => query.OrderByDescending(x => x.DatePret) // defalt 
             };
         }
         else
         {
-            query = query.OrderByDescending(x => x.DatePret); // Default ordering
+            query = query.OrderByDescending(x => x.DatePret); // Default orderin
         }
 
         var totalCount = await query.CountAsync();
@@ -129,5 +144,9 @@ public class PretService : IPretService
                         p => p.IdAdherent == adherentId
                     )
                     .CountAsync();
+    }
+    public async Task<int> CountAsync()
+    {
+        return await _pretRepository.GetQueryable().CountAsync();
     }
 }

@@ -7,6 +7,7 @@ namespace Borrowing.Api.Services;
 public interface IReservationService
 {
     Task<Reservation?> CreateReservationAsync(Reservation reservation);
+    Task<int> CountAsync();
 }
 
 public class ReservationService : IReservationService
@@ -43,5 +44,9 @@ public class ReservationService : IReservationService
                     r => r.IdAdherent == AdherentId && r.Cote == cote
                 ).CountAsync();
         return count > 0;
+    }
+    public async Task<int> CountAsync()
+    {
+        return await _reservationRepository.GetQueryable().CountAsync();
     }
 }

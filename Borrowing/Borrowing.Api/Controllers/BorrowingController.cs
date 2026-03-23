@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Borrowing.Api.Services;
-using Borrowing.Shared.Requests.Pret;
-using Borrowing.Shared.Responses.Pret;
+using Borrowing.SharedClasses.Requests.Pret;
+using Borrowing.SharedClasses.Responses.Pret;
+using Borrowing.SharedClasses.Responses.Adherent;
+using Borrowing.SharedClasses.Common;
 using Shared.Models;
 namespace Borrowing.Api.Controllers;
 
@@ -10,15 +12,17 @@ namespace Borrowing.Api.Controllers;
 public class BorrowingController : ControllerBase
 {
     private readonly IPretService _pretService;
+    private readonly IReservationService _reservationService;
     private readonly IAdherentService _adherentService;
 
     private readonly INoticeService _noticeService;
 
-    public BorrowingController(IPretService pretService, IAdherentService adherentService,INoticeService noticeService)
+    public BorrowingController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService)
     {
         _pretService = pretService;
         _adherentService = adherentService;
         _noticeService = noticeService;
+        _reservationService = reservationService;
     }
 
     [HttpGet]
@@ -35,54 +39,26 @@ public class BorrowingController : ControllerBase
         return Ok(result);
     }
 
-    // [HttpGet("stats")]
-    // public async Task<IActionResult> GetStats()
-    // {
-    //      var result = await _pretService.GetStatsAsync();
-    //      return Ok(result);
-    // }
-
-
-    [HttpGet("lookup_member/{id}")]
-    public async Task<IActionResult> LookuMember(string id)
+    [HttpGet("stats")]
+    public async Task<ActionResult<PretStatsDto>> GetStats()
     {
-        var adherent = await _adherentService.GetAdherentWithDetailsAsync(id);
-        if (adherent != null)
+        int prets = await _pretService.CountAsync();
+        int reservations = await _reservationService.CountAsync();
+        int retard = 5;
+        var result = new PretStatsDto
         {
-            if (adherent.EtatAdherent == 1)
-            {
-                Categorie? categorie = await _adherentService.GetAdherentCategorie(id);
-                if (categorie != null)
-                {
-                    int activeLoans = await _pretService.CountAdherentActiveLoans(id);
-                    if (activeLoans < categorie.NombreDocument)
-                    {
-                        return Ok(new { allowed = true });
-                    }
-                    else
-                    {
-                        return BadRequest(new { allowed = false });
-                    }
-                }
-                else
-                {
-                    return NotFound(new { message = "Categorie de l'adherent non trouvee" });
-                }
-            }
-            else
-            {
-                return BadRequest(new { allowed = false });
-            }
-        }
-        else
-        {
-            return NotFound(new { message = "Adherent non trouvee" });
-        }
-
+            Prets = prets,
+            Reservations = reservations,
+            Retard = retard
+        };
+        return Ok(result);
     }
 
+
+   
+
     [HttpGet("lookup_notice/{id}/{cote}")]
-    public async Task<IActionResult> LookupNotice(string id,string cote)
+    public async Task<IActionResult> LookupNotice(string id, string cote)
     {
         var notice = await _noticeService.GetNoticeAsync(cote);
         if (notice != null)

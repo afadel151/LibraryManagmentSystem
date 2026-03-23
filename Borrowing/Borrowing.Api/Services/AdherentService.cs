@@ -24,8 +24,8 @@ public class AdherentService(
     public async Task<Adherent?> GetAdherentWithDetailsAsync(string adherentId)
     {
         // Example: retrieve adherent by ID
-        var adherent = await _adherentRepository.GetByIdAsync(adherentId);
-
+        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!).FirstOrDefaultAsync(a=> a.IdAdherent == adherentId);
+        
         if (adherent != null)
         {
             return adherent;
