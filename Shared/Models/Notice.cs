@@ -79,8 +79,6 @@ public partial class Notice
 
     public virtual ICollection<MentionResponsabilite> IdMentionRes { get; set; } = new List<MentionResponsabilite>();
 
-    public virtual ICollection<MentionResponsabilite> IdMentionResNavigation { get; set; } = new List<MentionResponsabilite>();
-
     public virtual ICollection<MotsCle> IdMotCles { get; set; } = new List<MotsCle>();
 
     public virtual ICollection<Pay> IdPays { get; set; } = new List<Pay>();
