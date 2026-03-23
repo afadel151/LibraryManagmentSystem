@@ -1,6 +1,6 @@
 using Borrowing.Api.Extensions;
 using Shared.Data;
-
+using Shared.Seeders;
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -26,4 +26,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+    var seeder = new DatabaseSeeder(context);
+    await seeder.SeedAllAsync();
+}
+
 app.Run();
+
