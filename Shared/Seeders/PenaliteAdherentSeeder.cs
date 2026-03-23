@@ -17,7 +17,7 @@ public class PenaliteAdherentSeeder : ISeeder
 
         var penalitesAdherents = new List<PenaliteAdherent>
         {
-            new() { IdAdherent = "B/001", DatePenalite = new DateTime(2026, 2, 15), NombreJoursPenalite = 7 },
+            new() { IdAdherent = "B001", DatePenalite = new DateTime(2026, 2, 15), NombreJoursPenalite = 7 },
         };
 
         await context.PenaliteAdherents.AddRangeAsync(penalitesAdherents);

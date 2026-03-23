@@ -17,10 +17,10 @@ public class HistoriquePretSeeder : ISeeder
 
         var historiques = new List<(string IdAdherent, string IdExemplaire, DateTime DatePret, DateTime? DateRetour)>
     {
-        ("B/001", "EX002", new DateTime(2026, 1, 10), new DateTime(2026, 1, 22)),
-        ("B/002", "EX005", new DateTime(2026, 1, 15), new DateTime(2026, 1, 28)),
-        ("B/003", "EX008", new DateTime(2026, 2, 1),  new DateTime(2026, 2, 18)),
-        ("B/004", "EX006", new DateTime(2026, 2, 5),  new DateTime(2026, 2, 25)),
+        ("B001", "EX002", new DateTime(2026, 1, 10), new DateTime(2026, 1, 22)),
+        ("B002", "EX005", new DateTime(2026, 1, 15), new DateTime(2026, 1, 28)),
+        ("B003", "EX008", new DateTime(2026, 2, 1),  new DateTime(2026, 2, 18)),
+        ("B004", "EX006", new DateTime(2026, 2, 5),  new DateTime(2026, 2, 25)),
     };
 
         foreach (var h in historiques)

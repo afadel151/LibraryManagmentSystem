@@ -16,7 +16,7 @@ public class HistoriquePenaliteAdherentSeeder : ISeeder
         if (count > 0) return;
         var historiques = new List<HistoriquePenaliteAdherent>
         {
-            new() { IdAdherent = "C/002", DatePenalite = new DateTime(2026, 2, 15), NombreJoursPenalite = 7 },
+            new() { IdAdherent = "C002", DatePenalite = new DateTime(2026, 2, 15), NombreJoursPenalite = 7 },
         };
 
         await context.HistoriquePenaliteAdherents.AddRangeAsync(historiques);
