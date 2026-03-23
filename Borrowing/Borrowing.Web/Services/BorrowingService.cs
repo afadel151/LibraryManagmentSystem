@@ -1,11 +1,12 @@
 namespace Borrowing.Web.Services;
 
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Borrowing.Shared.Requests.Pret;
-using Borrowing.Shared.Responses.Pret;
+using Borrowing.SharedClasses.Requests.Pret;
+using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Responses.Pret;
+using Borrowing.SharedClasses.Responses.Adherent;
 
 public class BorrowingService : IBorrowingService
 {
@@ -33,6 +34,30 @@ public class BorrowingService : IBorrowingService
         response.EnsureSuccessStatusCode();
 
         return JsonSerializer.Deserialize<PagedResult<PretResponseDto>>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+    }
+
+    public async Task<PretStatsDto> GetStats()
+    {
+        var response = await _httpClient.GetAsync("api/Borrowing/stats");
+        var content = await response.Content.ReadAsStringAsync();
+
+        response.EnsureSuccessStatusCode();
+        return JsonSerializer.Deserialize<PretStatsDto>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+    }
+
+    public async Task<CheckAdhResponseDto> CheckAdherent(string id)
+    {
+        var response = await _httpClient.GetAsync($"api/Adherent/pret/check/{id}");
+        var content = await response.Content.ReadAsStringAsync();
+
+        response.EnsureSuccessStatusCode();
+        return JsonSerializer.Deserialize<CheckAdhResponseDto>(content, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         })!;
