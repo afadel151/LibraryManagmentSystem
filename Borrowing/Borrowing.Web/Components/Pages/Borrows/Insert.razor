@@ -1,7 +1,10 @@
 @page "/borrows/insert"
+@using Borrowing.SharedClasses.Responses.Adherent
+@using Borrowing.Web.Services
 @using Radzen
 @using Radzen.Blazor
-
+@using Shared.Models
+@inject IBorrowingService BorrowingService
 @inject NotificationService NotificationService
 
 <RadzenText TextStyle="TextStyle.H3">Inserer un Pret</RadzenText>
@@ -12,111 +15,125 @@
             <RadzenText TextStyle="TextStyle.H5">Information Adhérent</RadzenText>
 
             <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
-                <RadzenTextBox Placeholder="Saisir l'ID Adhérent..." @bind-Value="memberIdInput"
-                            Change=@(args => OnMemberIdChanged(args)) class="w-100" />
+                <RadzenTextBox Placeholder="Saisir l'ID Adhérent..." @bind-Value="memberIdInput" Change=@(args =>
+                                                                                                                                         OnMemberIdChanged(args)) class="w-100" />
 
                 @if (isLoadingMember)
                 {
                     <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
                 }
-                else if (currentMember != null)
+                else if (adherentCheck != null)
                 {
                     <RadzenRow>
                         <RadzenColumn Size="4">
-                            <img src="@GetMemberPhotoUrl(currentMember.IdAdherent)" style="width: 100%; border-radius: 8px;" onerror="this.style.display='none'" />
+                            <img src="@(adherentCheck.picture)" style="width: 100%; border-radius: 8px;"
+                                onerror="this.style.display='none'" />
                         </RadzenColumn>
                         <RadzenColumn Size="8">
-                            <RadzenText TextStyle="TextStyle.Subtitle1"><b>@(currentMember.Nom?.ToUpper()) @currentMember.Prenom</b></RadzenText>
-                            <RadzenText TextStyle="TextStyle.Body2">Catégorie: @currentCategory?.LibelleCategorie</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Subtitle1"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
+                                @adherentCheck.Adherent?.Prenom</b></RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body2">Catégorie:
+                                    @adherentCheck.Adherent?.Categorie?.LibelleCategorie
+                                </RadzenText>
 
-                            @if (currentMember.EtatAdherent == 1)
-                            {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Actif" class="rz-mb-2" />
+                                @if (adherentCheck.Adherent?.EtatAdherent == 1)
+                                {
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Actif" class="rz-mb-2" />
+                                }
+                                else
+                                {
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="Suspendu/Pénalisé" class="rz-mb-2" />
+                                }
+
+                                @if (adherentCheck.Adherent?.EtatAdherent == 1)
+                                {
+                                    <div class="rz-mt-2">
+                                        <RadzenText TextStyle="TextStyle.Body2">Quota: @adherentCheck.ActiveLoans /
+                                            @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
+                                            @if (adherentCheck.Allowed)
+                                            {
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-success"><b>Prêt Autorisé</b>
+                                                </RadzenText>
+
+                                                <div class="rz-mt-3">
+                                                    <RadzenText TextStyle="TextStyle.Body2">Date du Prêt:</RadzenText>
+                                                    <RadzenDatePicker @bind-Value="loanDate" Disabled="true"  class="w-100" />
+                                                </div>
+
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Date Retour Prévue:
+                                                    <b>@adherentCheck.ExpectedReturnDate.ToShortDateString()</b>
+                                                </RadzenText>
+                                            }
+                                            else
+                                            {
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger"><b>A atteint le nombre de
+                                                    prêts autorisés</b></RadzenText>
+                                                }
+                                            </div>
+                                        }
+                                    </RadzenColumn>
+                                </RadzenRow>
                             }
-                            else
+                                else if (hasSearchedMember)
                             {
-                                <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="Suspendu/Pénalisé" class="rz-mb-2" />
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Adhérent introuvable.</RadzenText>
                             }
+                        </RadzenStack>
+                    </RadzenCard>
+                </RadzenColumn>
 
-                            @if (currentMember.EtatAdherent == 1)
+                <RadzenColumn Size="12" SizeMD="6">
+                    <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
+                        <RadzenText TextStyle="TextStyle.H5">Information Document & Exemplaire</RadzenText>
+
+                        <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
+                            <RadzenTextBox Placeholder="Saisir la Cote et appuyez sur Entrée..." @bind-Value="coteInput"
+                                        Change=@(args => OnCoteChanged(args)) class="w-100" />
+
+                            @if (isLoadingDocument)
                             {
-                                <div class="rz-mt-2">
-                                    <RadzenText TextStyle="TextStyle.Body2">Quota: @activeLoansCount / @currentCategory?.NombreDocument</RadzenText>
-                                    @if (isQuotaAuthorized)
-                                    {
-                                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-success"><b>Prêt Autorisé</b></RadzenText>
-
-                                        <div class="rz-mt-3">
-                                            <RadzenText TextStyle="TextStyle.Body2">Date du Prêt:</RadzenText>
-                                            <RadzenDatePicker @bind-Value="loanDate" Change="@OnLoanDateChanged" class="w-100" />
-                                        </div>
-
-                                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Date Retour Prévue: <b>@expectedReturnDate.ToShortDateString()</b></RadzenText>
-                                    }
-                                    else
-                                    {
-                                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger"><b>A atteint le nombre de prêts autorisés</b></RadzenText>
-                                    }
-                                </div>
+                                <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
                             }
-                        </RadzenColumn>
-                    </RadzenRow>
-                }
-                else if (hasSearchedMember)
+                            else if (currentNotice != null)
+                            {
+                                <RadzenText TextStyle="TextStyle.Subtitle1"><b>@currentNotice.TitrePropre</b></RadzenText>
+
+                                @if (!string.IsNullOrEmpty(reservationMessage))
+                                {
+                                    <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">@reservationMessage
+                                    </RadzenAlert>
+                                }
+
+                                @if (availableCopies.Any() || showReserveButton)
+                                {
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Sélectionner un exemplaire :</RadzenText>
+                                    <RadzenDropDown @bind-Value="selectedCopyId" Data="@availableCopies" TextProperty="IdExemplaire"
+                                                    ValueProperty="IdExemplaire" class="w-100" />
+                                }
+
+                                @if (showReserveButton)
+                                {
+                                    <RadzenButton class="rz-mt-2" Text="Réserver ce document" ButtonStyle="ButtonStyle.Secondary"
+                                                Click="ReserveDocumentAsync" />
+                                }
+                            }
+                            else if (hasSearchedDocument)
+                            {
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Document introuvable avec cette cote.
+                                </RadzenText>
+                            }
+                        </RadzenStack>
+                    </RadzenCard>
+                </RadzenColumn>
+            </RadzenRow>
+
+            <RadzenRow class="rz-mt-4" JustifyContent="JustifyContent.End">
+                @if (IsLoanValidatable)
                 {
-                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Adhérent introuvable.</RadzenText>
+                    <RadzenButton Text="Valider Prêt" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="SubmitLoanAsync"
+                                class="rz-mr-2" />
                 }
-            </RadzenStack>
-        </RadzenCard>
-    </RadzenColumn>
-
-    <RadzenColumn Size="12" SizeMD="6">
-        <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
-            <RadzenText TextStyle="TextStyle.H5">Information Document & Exemplaire</RadzenText>
-
-            <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
-                <RadzenTextBox Placeholder="Saisir la Cote et appuyez sur Entrée..." @bind-Value="coteInput"
-                            Change=@(args => OnCoteChanged(args)) class="w-100" />
-
-                @if (isLoadingDocument)
-                {
-                    <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
-                }
-                else if (currentNotice != null)
-                {
-                    <RadzenText TextStyle="TextStyle.Subtitle1"><b>@currentNotice.TitrePropre</b></RadzenText>
-
-                    @if (!string.IsNullOrEmpty(reservationMessage))
-                    {
-                        <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">@reservationMessage</RadzenAlert>
-                    }
-
-                    @if (availableCopies.Any() || showReserveButton)
-                    {
-                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Sélectionner un exemplaire :</RadzenText>
-                        <RadzenDropDown @bind-Value="selectedCopyId" Data="@availableCopies" TextProperty="IdExemplaire" ValueProperty="IdExemplaire" class="w-100" />
-                    }
-
-                    @if (showReserveButton)
-                    {
-                        <RadzenButton class="rz-mt-2" Text="Réserver ce document" ButtonStyle="ButtonStyle.Secondary" Click="ReserveDocumentAsync" />
-                    }
-                }
-                else if (hasSearchedDocument)
-                {
-                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Document introuvable avec cette cote.</RadzenText>
-                }
-            </RadzenStack>
-        </RadzenCard>
-    </RadzenColumn>
-</RadzenRow>
-
-<RadzenRow class="rz-mt-4" JustifyContent="JustifyContent.End">
-    @if (IsLoanValidatable)
-    {
-        <RadzenButton Text="Valider Prêt" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="SubmitLoanAsync" class="rz-mr-2" />
-    }
-</RadzenRow>
+            </RadzenRow>
 
 @code {
     // UI Bound Variables
@@ -125,15 +142,12 @@
     string? selectedCopyId;
     DateTime loanDate = DateTime.Now.Date;
 
+    bool IsLoanValidatable = false;
     // Member State
     bool isLoadingMember = false;
     bool hasSearchedMember = false;
-    AdherentMock? currentMember;
-    CategorieMock? currentCategory;
-    int activeLoansCount = 0;
-    bool isQuotaAuthorized = false;
-    DateTime expectedReturnDate;
-
+    CheckAdhResponseDto? adherentCheck;
+    
     // Document State
     bool isLoadingDocument = false;
     bool hasSearchedDocument = false;
@@ -146,15 +160,9 @@
     // Validation State
     bool dateAutorise = true;
 
-    bool IsLoanValidatable =>
-        currentMember?.EtatAdherent == 1 &&
-        isQuotaAuthorized &&
-        !string.IsNullOrEmpty(selectedCopyId) &&
-        dateAutorise;
+    
 
-    // ==========================================
-    // OPERATION 1: Member Lookup
-    // ==========================================
+    // adherent check
     private async Task OnMemberIdChanged(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -167,89 +175,30 @@
         hasSearchedMember = true;
         StateHasChanged();
 
-        // 1. Query adherent (Placeholder API)
-        string searchId = value.Trim().ToUpper();
-        currentMember = await MockApi_GetAdherentAsync(searchId);
+        string searchId = value.Trim().ToUpper().Replace("/","");
+        adherentCheck = await BorrowingService.CheckAdherent(searchId);
 
-        if (currentMember != null)
+        if (adherentCheck == null)
         {
-            // Check ETAT_ADHERENT
-            if (currentMember.EtatAdherent == 1)
-            {
-                // Fetch Category and Quota
-                currentCategory = await MockApi_GetCategorieAsync(currentMember.IdCategorie);
-
-                if (currentCategory != null)
-                {
-                    // Calculate expected return date
-                    expectedReturnDate = AdjustDate(loanDate.AddDays(currentCategory.DureePret));
-
-                    // Quota check
-                    activeLoansCount = await MockApi_CountActiveLoansAsync(currentMember.IdAdherent);
-                    isQuotaAuthorized = activeLoansCount < currentCategory.NombreDocument;
-                }
-            }
-            else
-            {
-                // Member suspended, hide validate button
-                isQuotaAuthorized = false;
-            }
-        }
-        else
-        {
+            ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Reponse Nulle", Detail = "Erruer lors de verification d'adherent", Duration = 4000 });
             ResetMemberState();
+        }else{
+            if (adherentCheck.Allowed == false)
+            {
+                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Caution", Detail = adherentCheck.message, Duration = 4000 });
+            }
         }
 
         isLoadingMember = false;
         await ReevaluateDocumentStateAsync(); // Re-eval document UI if member changes
     }
     
-    private void OnLoanDateChanged(DateTime? value)
-    {
-        if (value.HasValue)
-        {
-            loanDate = value.Value.Date;
-            dateAutorise = loanDate <= DateTime.Now.Date;
-            
-            if (!dateAutorise) 
-            {
-                NotificationService.Notify(NotificationSeverity.Error, "Erreur Date", "La date de prêt ne peut pas être dans le futur.");
-            }
-            
-            // Recalculate expected return date
-            if (currentCategory != null)
-            {
-                expectedReturnDate = AdjustDate(loanDate.AddDays(currentCategory.DureePret));
-            }
-        }
-        else
-        {
-            // If empty, force invalid
-            dateAutorise = false;
-        }
-    }
+    
 
     private void ResetMemberState()
     {
-        currentMember = null;
-        currentCategory = null;
-        activeLoansCount = 0;
-        isQuotaAuthorized = false;
+        adherentCheck = null;
         hasSearchedMember = false;
-    }
-
-    private string GetMemberPhotoUrl(string id)
-    {
-        var safeId = id.Replace("/", "-");
-        // Windows Share convention
-        return "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBy606CYdQuQNTxOH0mHl6Lxdker4OH8Nvvg&s";
-    }
-
-    private DateTime AdjustDate(DateTime date)
-    {
-        // Operation 5 Placeholder function for date adjustment (e.g., skip weekends/holidays)
-        if (date.DayOfWeek == DayOfWeek.Sunday) return date.AddDays(1);
-        return date;
     }
 
     // ==========================================
@@ -317,15 +266,15 @@
         selectedCopyId = null;
         isReservateur = false;
 
-        string currentMemberId = currentMember?.IdAdherent ?? "";
+        string adherentCheckId = adherentCheck?.Adherent?.IdAdherent ?? "";
 
         // Check current physical copies (id_etat = 1)
         var physicalCopies = await MockApi_GetExemplairesAsync(currentNotice.Cote, 1);
         int totalPhysicalAvailable = physicalCopies.Count;
 
         // Check if member has reservation
-        bool memberHasReservation = !string.IsNullOrEmpty(currentMemberId) &&
-            await MockApi_HasReservationAsync(currentMemberId, currentNotice.Cote);
+        bool memberHasReservation = !string.IsNullOrEmpty(adherentCheckId) &&
+            await MockApi_HasReservationAsync(adherentCheckId, currentNotice.Cote);
 
         // Check locked copies (idAdherent = '99/999')
         var lockedCopies = await MockApi_GetLockedCopiesAsync(currentNotice.Cote);
@@ -339,12 +288,14 @@
             var reservations = await MockApi_GetReservationsForCoteAsync(currentNotice.Cote);
             var activeQueueWindow = reservations.OrderBy(r => r.HeureReservation).Take(lockedCount).ToList();
 
-            bool inWindow = activeQueueWindow.Any(r => string.Equals(r.IdAdherent, currentMemberId, StringComparison.OrdinalIgnoreCase));
+            bool inWindow = activeQueueWindow.Any(r => string.Equals(r.IdAdherent, adherentCheckId,
+StringComparison.OrdinalIgnoreCase));
 
             if (inWindow)
             {
                 // Member is entitled! Find their designated locked copy.
-                int queueIndex = activeQueueWindow.FindIndex(r => string.Equals(r.IdAdherent, currentMemberId, StringComparison.OrdinalIgnoreCase));
+                int queueIndex = activeQueueWindow.FindIndex(r => string.Equals(r.IdAdherent, adherentCheckId,
+StringComparison.OrdinalIgnoreCase));
                 if (queueIndex >= 0 && queueIndex < lockedCopies.Count)
                 {
                     var assignedCopyId = lockedCopies.OrderBy(p => p.DatePret).ElementAt(queueIndex).IdExemplaire;
@@ -364,7 +315,7 @@
             {
                 availableCopies = physicalCopies.OrderBy(c => c.IdExemplaire).ToList();
             }
-            else if (!string.IsNullOrEmpty(currentMemberId))
+            else if (!string.IsNullOrEmpty(adherentCheckId))
             {
                 showReserveButton = true;
             }
@@ -373,9 +324,9 @@
 
     private async Task ReserveDocumentAsync()
     {
-        if (currentMember == null || currentNotice == null) return;
+        if (adherentCheck == null || currentNotice == null) return;
 
-        await MockApi_CreateReservationAsync(currentMember.IdAdherent, currentNotice.Cote);
+        await MockApi_CreateReservationAsync(adherentCheck.Adherent.IdAdherent, currentNotice.Cote);
         NotificationService.Notify(NotificationSeverity.Success, "Réservation", "Document réservé avec succès.");
         await ReevaluateDocumentStateAsync();
     }
@@ -386,15 +337,15 @@
     private async Task SubmitLoanAsync()
     {
         // Pre-validation checks live
-        if (currentMember == null || string.IsNullOrWhiteSpace(currentMember.IdAdherent))
+        if (adherentCheck == null || string.IsNullOrWhiteSpace(adherentCheck.Adherent?.IdAdherent))
         {
             NotificationService.Notify(NotificationSeverity.Error, "Erreur", "L'identifiant adhérent est requis.");
             return;
         }
 
         // Live Quota re-check
-        int liveActiveLoans = await MockApi_CountActiveLoansAsync(currentMember.IdAdherent);
-        if (currentCategory != null && liveActiveLoans >= currentCategory.NombreDocument)
+        @* int liveActiveLoans = await MockApi_CountActiveLoansAsync(adherentCheck.Adherent.IdAdherent); *@
+        if (adherentCheck.Adherent.Categorie != null && adherentCheck.ActiveLoans >= adherentCheck.Adherent.Categorie.NombreDocument)
         {
             NotificationService.Notify(NotificationSeverity.Error, "Quota dépassé", "Ce membre a atteint sa limite de prêts.");
             return;
@@ -407,12 +358,12 @@
             dateAutorise = false;
             return;
         }
-        else 
+        else
         {
             dateAutorise = true;
         }
 
-        if (currentMember.EtatAdherent != 1)
+        if (adherentCheck.Adherent.EtatAdherent != 1)
         {
             NotificationService.Notify(NotificationSeverity.Error, "Adhérent suspendu", "L'adhérent n'est pas actif au moment de la validation.");
             return;
@@ -425,7 +376,7 @@
         }
 
         // Action Validation
-        await MockApi_SubmitPretAsync(currentMember.IdAdherent, selectedCopyId, loanDate);
+        await MockApi_SubmitPretAsync(adherentCheck.Adherent.IdAdherent, selectedCopyId, loanDate);
         NotificationService.Notify(NotificationSeverity.Success, "Succès", "Prêt enregistré avec succès.");
 
         // Clear UI and Refresh
@@ -440,26 +391,8 @@
     // MOCK API PLACEHOLDERS
     // ==========================================
 
-    private async Task<AdherentMock?> MockApi_GetAdherentAsync(string id)
-    {
-        await Task.Delay(200); // simulate network
-        // Return active member if "123", suspended if "BAD", null otherwise.
-        if (id == "123") return new AdherentMock { IdAdherent = "123", Nom = "Fadel", Prenom = "Akram", IdCategorie = "C1", EtatAdherent = 1 };
-        if (id == "BAD") return new AdherentMock { IdAdherent = "BAD", Nom = "Martin", Prenom = "Paul", IdCategorie = "C1", EtatAdherent = 0 };
-        return null;
-    }
 
-    private async Task<CategorieMock?> MockApi_GetCategorieAsync(string id)
-    {
-        await Task.Delay(50);
-        return new CategorieMock { IdCategorie = "C1", LibelleCategorie = "Etudiant", DureePret = 15, NombreDocument = 3 };
-    }
 
-    private async Task<int> MockApi_CountActiveLoansAsync(string idAdherent)
-    {
-        await Task.Delay(50);
-        return idAdherent == "123" ? 1 : 0;
-    }
 
     private async Task<NoticeMock?> MockApi_GetNoticeByCoteAsync(string cote)
     {
@@ -514,10 +447,27 @@
     }
 
     // Local Mock Models (Used to bypass dependency on Shared.Models and exact DbContext setup)
-    public class AdherentMock { public string IdAdherent { get; set; } = ""; public string Nom { get; set; } = ""; public string Prenom { get; set; } = ""; public string IdCategorie { get; set; } = ""; public decimal EtatAdherent { get; set; } }
-    public class CategorieMock { public string IdCategorie { get; set; } = ""; public string LibelleCategorie { get; set; } = ""; public int DureePret { get; set; } public int NombreDocument { get; set; } }
+    
+   
     public class NoticeMock { public string Cote { get; set; } = ""; public string TitrePropre { get; set; } = ""; }
-    public class ExemplaireMock { public string IdExemplaire { get; set; } = ""; public string Cote { get; set; } = ""; public decimal IdEtat { get; set; } }
-    public class PretMock { public string IdAdherent { get; set; } = ""; public string IdExemplaire { get; set; } = ""; public DateTime DatePret { get; set; } }
-    public class ReservationMock { public string IdAdherent { get; set; } = ""; public string Cote { get; set; } = ""; public DateTime HeureReservation { get; set; } }
+    public class ExemplaireMock
+    {
+        public string IdExemplaire { get; set; } = ""; public string Cote { get; set; } = "";
+        public decimal IdEtat { get; set; }
+    }
+    public class PretMock
+    {
+        public string IdAdherent { get; set; } = ""; public string IdExemplaire { get; set; } = "";
+        public DateTime DatePret { get; set; }
+    }
+    public class ReservationMock
+    {
+        public string IdAdherent { get; set; } = ""; public string Cote { get; set; } = "";
+        public DateTime HeureReservation { get; set; }
+    }
+
+    void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
+    }
 }
