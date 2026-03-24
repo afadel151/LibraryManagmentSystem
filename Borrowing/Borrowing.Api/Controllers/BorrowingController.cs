@@ -32,14 +32,14 @@ public class BorrowingController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("create")]
+    [HttpPost("Create")]
     public async Task<ActionResult<CreatePretResponseDto>> CreatePret([FromBody] CreatePretRequestDTo pretRequestDto)
     {
         var result = await _pretService.CreatePretAsync(pretRequestDto);
         return Ok(result);
     }
 
-    [HttpGet("stats")]
+    [HttpGet("Stats")]
     public async Task<ActionResult<PretStatsDto>> GetStats()
     {
         int prets = await _pretService.CountAsync();
@@ -55,7 +55,7 @@ public class BorrowingController : ControllerBase
     }
 
 
-    [HttpGet("lookup_notice/{id}/{cote}")]
+    [HttpGet("LookupNotice/{id}/{cote}")]
     public async Task<IActionResult> LookupNotice(string id, string cote)
     {
         var notice = await _noticeService.GetNoticeAsync(cote);

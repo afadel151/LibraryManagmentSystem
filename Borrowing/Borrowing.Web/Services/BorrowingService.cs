@@ -41,7 +41,7 @@ public class BorrowingService : IBorrowingService
 
     public async Task<PretStatsDto> GetStats()
     {
-        var response = await _httpClient.GetAsync("api/Borrowing/stats");
+        var response = await _httpClient.GetAsync("api/Borrowing/Stats");
         var content = await response.Content.ReadAsStringAsync();
 
         response.EnsureSuccessStatusCode();
@@ -53,7 +53,7 @@ public class BorrowingService : IBorrowingService
 
     public async Task<CheckAdhResponseDto> CheckAdherent(string id)
     {
-        var response = await _httpClient.GetAsync($"api/Adherent/pret/check/{id}");
+        var response = await _httpClient.GetAsync($"api/Adherent/Pret/Check/{id}");
         var content = await response.Content.ReadAsStringAsync();
 
         response.EnsureSuccessStatusCode();

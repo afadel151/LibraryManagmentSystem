@@ -1377,6 +1377,10 @@ public partial class LibraryDbContext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("'F'\n   ")
                 .HasColumnName("ETAT_DUREE");
+            entity.HasOne(e => e.ExemplaireNavigation)
+        .WithMany(e => e.Prets)
+        .HasForeignKey(e => e.IdExemplaire)
+        .HasConstraintName("PRET_EXEMPLAIRE_FK");
         });
 
         modelBuilder.Entity<Reservation>(entity =>

@@ -12,4 +12,5 @@ public partial class Pret
     public DateTime DatePret { get; set; }
 
     public string? EtatDuree { get; set; }
+    public virtual Exemplaire? ExemplaireNavigation { get; set; }
 }

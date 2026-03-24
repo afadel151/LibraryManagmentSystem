@@ -26,8 +26,8 @@ public class AdherentController : ControllerBase
         _reservationService = reservationService;
     }
 
-    [HttpGet("pret/check/{id}")]
-    public async Task<ActionResult<CheckAdhResponseDto>> LookuMember(string id)
+    [HttpGet("Pret/Check/{id}")]
+    public async Task<ActionResult<CheckAdhResponseDto>> CheckAdherent(string id)
     {
         var adherent = await _adherentService.GetAdherentWithDetailsAsync(id);
         if (adherent != null)

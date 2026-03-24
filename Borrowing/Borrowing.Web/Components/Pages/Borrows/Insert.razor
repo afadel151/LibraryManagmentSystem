@@ -185,7 +185,7 @@
                 Severity = NotificationSeverity.Error,
                 Summary = "Reponse Nulle",
                 Detail =
-"Erruer lors de verification d'adherent",
+                    "Erruer lors de verification d'adherent",
                 Duration = 4000
             });
             ResetMemberState();
@@ -198,13 +198,11 @@
                 {
                     Severity = NotificationSeverity.Warning,
                     Summary = "Caution",
-                    Detail =
-adherentCheck.message,
+                    Detail = adherentCheck.message,
                     Duration = 4000
                 });
             }
         }
-
         isLoadingMember = false;
         await ReevaluateDocumentStateAsync(); // Re-eval document UI if member changes
     }
