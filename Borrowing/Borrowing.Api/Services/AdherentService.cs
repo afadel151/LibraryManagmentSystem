@@ -22,11 +22,8 @@ public class AdherentService(
     private readonly ICategorieRepository _categorieRepository = categorieRepository;
     private readonly IJoursFeriesRepository _joursFeriesRepository = joursFeriesRepository;
 
-    // Sample method to demonstrate repository usage
-
     public async Task<Adherent?> GetAdherentWithDetailsAsync(string adherentId)
     {
-        // Example: retrieve adherent by ID
         var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
 
         if (adherent != null)

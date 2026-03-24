@@ -16,7 +16,7 @@
 
             <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
                 <RadzenTextBox Placeholder="Saisir l'ID Adhérent..." @bind-Value="memberIdInput" Change=@(args =>
-                                                                                                                                         OnMemberIdChanged(args)) class="w-100" />
+                                                                                                                                                                                                                                                          OnMemberIdChanged(args)) class="w-100" />
 
                 @if (isLoadingMember)
                 {
@@ -27,7 +27,7 @@
                     <RadzenRow>
                         <RadzenColumn Size="4">
                             <img src="@(adherentCheck.picture)" style="width: 100%; border-radius: 8px;"
-                                onerror="this.style.display='none'" />
+                                 onerror="this.style.display='none'" />
                         </RadzenColumn>
                         <RadzenColumn Size="8">
                             <RadzenText TextStyle="TextStyle.Subtitle1"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
@@ -57,7 +57,7 @@
 
                                                 <div class="rz-mt-3">
                                                     <RadzenText TextStyle="TextStyle.Body2">Date du Prêt:</RadzenText>
-                                                    <RadzenDatePicker @bind-Value="loanDate" Disabled="true"  class="w-100" />
+                                                    <RadzenDatePicker @bind-Value="loanDate" Disabled="true" class="w-100" />
                                                 </div>
 
                                                 <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Date Retour Prévue:
@@ -88,7 +88,7 @@
 
                         <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
                             <RadzenTextBox Placeholder="Saisir la Cote et appuyez sur Entrée..." @bind-Value="coteInput"
-                                        Change=@(args => OnCoteChanged(args)) class="w-100" />
+                                           Change=@(args => OnCoteChanged(args)) class="w-100" />
 
                             @if (isLoadingDocument)
                             {
@@ -114,7 +114,7 @@
                                 @if (showReserveButton)
                                 {
                                     <RadzenButton class="rz-mt-2" Text="Réserver ce document" ButtonStyle="ButtonStyle.Secondary"
-                                                Click="ReserveDocumentAsync" />
+                                                  Click="ReserveDocumentAsync" />
                                 }
                             }
                             else if (hasSearchedDocument)
@@ -131,7 +131,7 @@
                 @if (IsLoanValidatable)
                 {
                     <RadzenButton Text="Valider Prêt" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="SubmitLoanAsync"
-                                class="rz-mr-2" />
+                                  class="rz-mr-2" />
                 }
             </RadzenRow>
 
@@ -175,26 +175,42 @@
         hasSearchedMember = true;
         StateHasChanged();
 
-        string searchId = value.Trim().ToUpper().Replace("/","");
+        string searchId = value.Trim().ToUpper().Replace("/", "");
         adherentCheck = await BorrowingService.CheckAdherent(searchId);
 
         if (adherentCheck == null)
         {
-            ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Reponse Nulle", Detail = "Erruer lors de verification d'adherent", Duration = 4000 });
+            ShowNotification(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Reponse Nulle",
+                Detail =
+"Erruer lors de verification d'adherent",
+                Duration = 4000
+            });
             ResetMemberState();
-        }else{
+        }
+        else
+        {
             if (adherentCheck.Allowed == false)
             {
-                ShowNotification(new NotificationMessage { Severity = NotificationSeverity.Warning, Summary = "Caution", Detail = adherentCheck.message, Duration = 4000 });
+                ShowNotification(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Warning,
+                    Summary = "Caution",
+                    Detail =
+adherentCheck.message,
+                    Duration = 4000
+                });
             }
         }
 
         isLoadingMember = false;
         await ReevaluateDocumentStateAsync(); // Re-eval document UI if member changes
     }
-    
-    
 
+    
+    
     private void ResetMemberState()
     {
         adherentCheck = null;
@@ -310,7 +326,6 @@ StringComparison.OrdinalIgnoreCase));
         }
         else
         {
-            // Not a reservator
             if (totalPhysicalAvailable > 0)
             {
                 availableCopies = physicalCopies.OrderBy(c => c.IdExemplaire).ToList();
@@ -326,7 +341,7 @@ StringComparison.OrdinalIgnoreCase));
     {
         if (adherentCheck == null || currentNotice == null) return;
 
-        await MockApi_CreateReservationAsync(adherentCheck.Adherent.IdAdherent, currentNotice.Cote);
+        await MockApi_CreateReservationAsync(adherentCheck.Adherent?.IdAdherent!, currentNotice.Cote);
         NotificationService.Notify(NotificationSeverity.Success, "Réservation", "Document réservé avec succès.");
         await ReevaluateDocumentStateAsync();
     }
@@ -345,7 +360,8 @@ StringComparison.OrdinalIgnoreCase));
 
         // Live Quota re-check
         @* int liveActiveLoans = await MockApi_CountActiveLoansAsync(adherentCheck.Adherent.IdAdherent); *@
-        if (adherentCheck.Adherent.Categorie != null && adherentCheck.ActiveLoans >= adherentCheck.Adherent.Categorie.NombreDocument)
+        if (adherentCheck.Adherent.Categorie != null && adherentCheck.ActiveLoans >=
+adherentCheck.Adherent.Categorie.NombreDocument)
         {
             NotificationService.Notify(NotificationSeverity.Error, "Quota dépassé", "Ce membre a atteint sa limite de prêts.");
             return;
@@ -447,8 +463,8 @@ StringComparison.OrdinalIgnoreCase));
     }
 
     // Local Mock Models (Used to bypass dependency on Shared.Models and exact DbContext setup)
+
     
-   
     public class NoticeMock { public string Cote { get; set; } = ""; public string TitrePropre { get; set; } = ""; }
     public class ExemplaireMock
     {

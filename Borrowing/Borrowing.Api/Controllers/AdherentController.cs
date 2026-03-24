@@ -40,6 +40,7 @@ public class AdherentController : ControllerBase
                     int activeLoans = await _pretService.CountAdherentActiveLoans(id); // count active loans
                     if (activeLoans < categorie.NombreDocument)
                     {
+                        DateTime expectedReturnDate = await _adherentService.CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)categorie.DureePret!);
                         return Ok(
                             new CheckAdhResponseDto
                             {
@@ -47,6 +48,7 @@ public class AdherentController : ControllerBase
                                 Adherent = adherent,
                                 picture = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBy606CYdQuQNTxOH0mHl6Lxdker4OH8Nvvg&s",
                                 ActiveLoans = activeLoans,
+                                ExpectedReturnDate = expectedReturnDate
                                 
                             }
                         );
