@@ -1,0 +1,57 @@
+object Form_choix_adherents: TForm_choix_adherents
+  Left = 433
+  Top = 171
+  Width = 421
+  Height = 263
+  Caption = 'Choisir un Adherent'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  OnActivate = FormActivate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object DBGrid1: TDBGrid
+    Left = 8
+    Top = 32
+    Width = 401
+    Height = 153
+    DataSource = DataSource1
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'MS Sans Serif'
+    TitleFont.Style = []
+  end
+  object Button1: TButton
+    Left = 128
+    Top = 192
+    Width = 153
+    Height = 25
+    Caption = 'Choisir'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 1
+    OnClick = Button1Click
+  end
+  object Query11: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+  end
+  object DataSource1: TDataSource
+    DataSet = Query1
+    Left = 32
+  end
+  object Query1: TADOQuery
+    Connection = Form_Connexion.ADOConnection1
+    Parameters = <>
+    Left = 64
+  end
+end

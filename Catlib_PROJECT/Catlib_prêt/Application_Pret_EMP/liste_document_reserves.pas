@@ -1,0 +1,115 @@
+unit liste_document_reserves;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls, DB, DBTables, Grids, DBGrids, ADODB;
+
+type
+  TForm_liste_docs_reserves = class(TForm)
+    DBGrid1: TDBGrid;
+    Query_listes_docs_reserves1: TQuery;
+    DataSource_docs_reserves: TDataSource;
+    Panel2: TPanel;
+    quitter: TButton;
+    Button_trier_par_adherent: TButton;
+    Button_trier_par_exemplaire: TButton;
+    Button_trier_par_date_pret: TButton;
+    Query_listes_docs_reserves: TADOQuery;
+    procedure quitterClick(Sender: TObject);
+    procedure Button_trier_par_adherentClick(Sender: TObject);
+    procedure Button_trier_par_exemplaireClick(Sender: TObject);
+    procedure Button_trier_par_date_pretClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form_liste_docs_reserves: TForm_liste_docs_reserves;
+
+implementation
+
+uses Unit_Connexion ;
+{$R *.dfm}
+
+procedure TForm_liste_docs_reserves.quitterClick(Sender: TObject);
+begin
+Close;
+end;
+
+procedure TForm_liste_docs_reserves.Button_trier_par_adherentClick(Sender: TObject);
+begin
+Query_listes_docs_reserves.Active := false ;
+
+Query_listes_docs_reserves.SQL.Text :=
+
+'select  R.id_adherent, A.nom || '' '' || A.prenom as "Nom & Prénom" , R.cote, R.heure_reservation ' +
+' from reservation  R, adherent A ' +
+' where R.id_adherent = A.id_adherent order by R.id_adherent ' ;
+
+Query_listes_docs_reserves.Active := true ;
+
+DBGrid1.Columns[0].Width := 85 ;
+DBGrid1.Columns[1].Width := 220 ;
+DBGrid1.Columns[2].Width := 100 ;
+DBGrid1.Columns[3].Width := 150 ;
+
+
+
+end;
+
+procedure TForm_liste_docs_reserves.Button_trier_par_exemplaireClick(Sender: TObject);
+begin
+Query_listes_docs_reserves.Active := false ;
+
+Query_listes_docs_reserves.SQL.Text :=
+
+'select  R.id_adherent, A.nom || '' '' || A.prenom as "Nom & Prénom" , R.cote, R.heure_reservation ' +
+' from reservation  R, adherent A ' +
+' where R.id_adherent = A.id_adherent order by R.cote ' ;
+
+Query_listes_docs_reserves.Active := true ;
+
+DBGrid1.Columns[0].Width := 85 ;
+DBGrid1.Columns[1].Width := 220 ;
+DBGrid1.Columns[2].Width := 100 ;
+DBGrid1.Columns[3].Width := 150 ;
+
+end;
+
+procedure TForm_liste_docs_reserves.Button_trier_par_date_pretClick(Sender: TObject);
+begin
+Query_listes_docs_reserves.Active := false ;
+
+Query_listes_docs_reserves.SQL.Text :=
+
+'select  R.id_adherent, A.nom || '' '' || A.prenom as "Nom & Prénom" , R.cote, R.heure_reservation ' +
+' from reservation  R, adherent A ' +
+' where R.id_adherent = A.id_adherent order by R.heure_reservation ' ;
+
+Query_listes_docs_reserves.Active := true ;
+
+DBGrid1.Columns[0].Width := 85 ;
+DBGrid1.Columns[1].Width := 220 ;
+DBGrid1.Columns[2].Width := 100 ;
+DBGrid1.Columns[3].Width := 150 ;
+
+end;
+
+procedure TForm_liste_docs_reserves.FormActivate(Sender: TObject);
+begin
+Query_listes_docs_reserves.Active := false ;
+Query_listes_docs_reserves.Active := true ;
+
+DBGrid1.Columns[0].Width := 85 ;
+DBGrid1.Columns[1].Width := 220 ;
+DBGrid1.Columns[2].Width := 100 ;
+DBGrid1.Columns[3].Width := 150 ;
+
+end;
+
+end.

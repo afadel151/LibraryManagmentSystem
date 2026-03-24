@@ -1,0 +1,24 @@
+object Form_Connexion: TForm_Connexion
+  Left = 502
+  Top = 526
+  Width = 229
+  Height = 117
+  Caption = 'Form_Connexion'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object ADOConnection1: TADOConnection
+    ConnectionString = 
+      'Provider=OraOLEDB.Oracle.1;Persist Security Info=False;User ID=b' +
+      'ibliotheque;Data Source=Library'
+    Provider = 'OraOLEDB.Oracle.1'
+    Left = 56
+    Top = 16
+  end
+end

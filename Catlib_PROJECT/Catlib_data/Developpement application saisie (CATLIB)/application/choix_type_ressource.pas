@@ -1,0 +1,48 @@
+unit choix_type_ressource;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, StdCtrls, DBCtrls, DBTables, Grids, DBGrids, ADODB;
+
+type
+  Tchoix_type = class(TForm)
+    DataSource1: TDataSource;
+    DBGrid1: TDBGrid;
+    Query11: TQuery;
+    Query1: TADOQuery;
+    procedure DBGrid1DblClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  choix_type: Tchoix_type;
+
+implementation
+
+uses Unit1, Unit_Connexion;
+
+{$R *.dfm}
+
+procedure Tchoix_type.DBGrid1DblClick(Sender: TObject);
+begin
+
+Form_Principal.Edit2.text := DBGrid1.Fields[0].AsString ;
+Close ;
+
+end;
+
+procedure Tchoix_type.FormActivate(Sender: TObject);
+begin
+     Query1.Active := False ;
+     Query1.Active := True ;
+     DBGrid1.Columns.Items[0].Width := 75 ;
+     DBGrid1.Columns.Items[1].Width := 150 ;     
+end;
+
+end.

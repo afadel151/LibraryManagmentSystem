@@ -1,0 +1,114 @@
+unit liste_document_pretes;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Grids, DBGrids, DB, DBTables, StdCtrls, ExtCtrls, ADODB;
+
+type
+  TForm_liste_docs_pretes = class(TForm)
+    DataSource_docs_pretes: TDataSource;
+    DBGrid1: TDBGrid;
+    Panel2: TPanel;
+    quitter: TButton;
+    Button_trier_par_adherent: TButton;
+    Button_trier_par_exemplaire: TButton;
+    Button_trier_par_date_pret: TButton;
+    Query_listes_docs_pretes: TADOQuery;
+    procedure quitterClick(Sender: TObject);
+    procedure Button_trier_par_adherentClick(Sender: TObject);
+    procedure Button_trier_par_exemplaireClick(Sender: TObject);
+    procedure Button_trier_par_date_pretClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form_liste_docs_pretes: TForm_liste_docs_pretes;
+
+implementation
+
+uses Unit_Connexion ;
+{$R *.dfm}
+
+procedure TForm_liste_docs_pretes.quitterClick(Sender: TObject);
+begin
+Close;
+end;
+
+procedure TForm_liste_docs_pretes.Button_trier_par_adherentClick(Sender: TObject);
+begin
+
+Query_listes_docs_pretes.Active := false ;
+
+Query_listes_docs_pretes.SQL.Text :=
+'select   row_number() over (order by P.id_adherent) Numero, P.id_adherent, A.nom || '' '' || A.prenom as "Nom-et-Prénom" , P.id_exemplaire, P.date_pret ' +
+'from pret P, adherent A where P.id_adherent <> ''99/999''' +
+' and P.id_adherent = A.id_adherent order by P.id_adherent ' ;
+
+Query_listes_docs_pretes.Active := true ;
+
+DBGrid1.Columns[0].Width := 85 ;
+DBGrid1.Columns[1].Width := 85 ;
+DBGrid1.Columns[2].Width := 220 ;
+DBGrid1.Columns[3].Width := 100 ;
+DBGrid1.Columns[4].Width := 100 ;
+
+end;
+
+procedure TForm_liste_docs_pretes.Button_trier_par_exemplaireClick(Sender: TObject);
+begin
+Query_listes_docs_pretes.Active := false ;
+
+Query_listes_docs_pretes.SQL.Text :=
+'select   row_number() over (order by P.id_exemplaire) Numero, P.id_adherent, A.nom || '' '' || A.prenom as "Nom-et-Prénom" , P.id_exemplaire, P.date_pret ' +
+'from pret P, adherent A where P.id_adherent <> ''99/999''' +
+' and P.id_adherent = A.id_adherent order by P.id_exemplaire ' ;
+
+Query_listes_docs_pretes.Active := true ;
+
+DBGrid1.Columns[0].Width := 85 ;
+DBGrid1.Columns[1].Width := 85 ;
+DBGrid1.Columns[2].Width := 220 ;
+DBGrid1.Columns[3].Width := 100 ;
+DBGrid1.Columns[4].Width := 100 ;
+
+end;
+
+procedure TForm_liste_docs_pretes.Button_trier_par_date_pretClick(Sender: TObject);
+begin
+Query_listes_docs_pretes.Active := false ;
+
+Query_listes_docs_pretes.SQL.Text :=
+'select   row_number() over (order by P.date_pret) Numero, P.id_adherent, A.nom || '' '' || A.prenom as "Nom-et-Prénom" , P.id_exemplaire, P.date_pret ' +
+'from pret P, adherent A where P.id_adherent <> ''99/999''' +
+' and P.id_adherent = A.id_adherent order by P.date_pret ' ;
+
+Query_listes_docs_pretes.Active := true ;
+
+DBGrid1.Columns[0].Width := 85 ;
+DBGrid1.Columns[1].Width := 85 ;
+DBGrid1.Columns[2].Width := 220 ;
+DBGrid1.Columns[3].Width := 100 ;
+DBGrid1.Columns[4].Width := 100 ;
+
+end;
+
+procedure TForm_liste_docs_pretes.FormActivate(Sender: TObject);
+begin
+
+Query_listes_docs_pretes.Active := false ;
+Query_listes_docs_pretes.Active := true ;
+
+DBGrid1.Columns[0].Width := 85 ;
+DBGrid1.Columns[1].Width := 85 ;
+DBGrid1.Columns[2].Width := 220 ;
+DBGrid1.Columns[3].Width := 100 ;
+DBGrid1.Columns[4].Width := 100 ;
+end;
+
+end.

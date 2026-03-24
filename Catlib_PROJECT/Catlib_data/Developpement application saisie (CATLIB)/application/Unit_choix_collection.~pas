@@ -1,0 +1,299 @@
+unit Unit_choix_collection;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, DBTables, StdCtrls, ExtCtrls, Grids, DBGrids, DBCtrls, Mask,
+  ADODB;
+
+type
+  TForm_choix_collection = class(TForm)
+    DBGrid1: TDBGrid;
+    Edit2: TEdit;
+    Panel1: TPanel;
+    Edit1: TEdit;
+    DataSource1: TDataSource;
+    Query11: TQuery;
+    GroupBox1: TGroupBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Edit3: TEdit;
+    DBEdit1: TDBEdit;
+    DBMemo1: TDBMemo;
+    DBMemo2: TDBMemo;
+    DBEdit2: TDBEdit;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Panel2: TPanel;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    _id_collection: TEdit;
+    _Sous_Titre_Collection: TMemo;
+    _ISSN_Collection: TEdit;
+    Panel3: TPanel;
+    Button1: TButton;
+    Button6: TButton;
+    _Titre_collection: TMemo;
+    Query1: TADOQuery;
+    Button77: TButton;
+    procedure Edit1Change(Sender: TObject);
+    procedure Edit3Change(Sender: TObject);
+    procedure DBGrid1DblClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure DBEdit1Change(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure Button77Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form_choix_collection: TForm_choix_collection;
+
+implementation
+
+uses ajout_monographie_unit, Unit_inserer_collection, Unit_Connexion,
+  ajout_resource_electronique_unit;
+
+{$R *.dfm}
+
+procedure TForm_choix_collection.Edit1Change(Sender: TObject);
+begin
+
+Edit3.Text := '' ;
+//-----------------------------------------------------------------------------------------//
+
+Query1.SQL.Text := 'select * from collection '  ;
+
+if (Edit1.Text <> '') then Query1.SQL.Text := Query1.SQL.Text + ' where 1 = 1 ' ;
+
+if ( Edit1.Text <> '' ) then Query1.SQL.Text := Query1.SQL.Text + ' and upper(TITRE_COLLECTION) like upper(''%' + replace_char(Edit1.Text, char(39), chr(180)) + '%'')'  ;
+
+
+///----- executer de nouveau la requete
+
+Query1.Active := false ; Query1.Active := true  ;
+
+//-----------------------------------------------------------------------------------------//
+
+end;
+
+procedure TForm_choix_collection.Edit3Change(Sender: TObject);
+begin
+
+Edit1.Text := '' ;
+//-----------------------------------------------------------------------------------------//
+
+Query1.SQL.Text := 'select * from collection '  ;
+
+if (Edit1.Text <> '') then Query1.SQL.Text := Query1.SQL.Text + ' where 1 = 1 ' ;
+
+if ( Edit1.Text <> '' ) then Query1.SQL.Text := Query1.SQL.Text + ' and upper(ISSN_COLLECTION) like upper(''%' + replace_char(Edit2.Text, char(39), chr(180)) + '%'')'  ;
+
+
+///----- executer de nouveau la requete
+
+Query1.Active := false ; Query1.Active := true  ;
+
+//-----------------------------------------------------------------------------------------//
+
+
+end;
+
+procedure TForm_choix_collection.DBGrid1DblClick(Sender: TObject);
+begin
+if (Edit2.Text = '1') then
+        begin
+        //------- Pub en série
+        end ;
+
+if (Edit2.Text = '2') then
+        begin
+        //----- Thèse
+        end ;
+
+if (Edit2.Text = '3') then
+        begin
+        //----- Monographie
+
+                ajout_monographie._ID_Collection.Text := DBEdit1.Text ;
+
+                ajout_monographie._Titre_Collection.Text := DBMemo1.Text ;
+
+                ajout_monographie._Sous_Titre_Collection.Text :=  DBMemo2.Text ;
+
+                ajout_monographie._ISSN_Collection.Text := DBEdit2.Text ;
+
+                close;
+        end ;
+
+if (Edit2.Text = '4') then
+        begin
+        //-----  Article
+        end ;
+
+if (Edit2.Text = '5') then
+        begin
+        //-----  Tiré-à-Part
+        end ;
+
+if (Edit2.Text = '6') then
+        begin
+        //-----  Ressource électronique
+        end ;
+
+end;
+
+procedure TForm_choix_collection.Button1Click(Sender: TObject);
+begin
+Form_Inserer_nouvelle_collection.Showmodal ;
+end;
+
+procedure TForm_choix_collection.Button2Click(Sender: TObject);
+begin
+Query1.Active := false ;
+Query1.SQL.Text := 'select * from collection order by id_collection desc' ;
+Query1.Active := true ;
+
+end;
+
+procedure TForm_choix_collection.Button4Click(Sender: TObject);
+begin
+Query1.Active := false ;
+Query1.SQL.Text := 'select * from collection order by id_collection asc' ;
+Query1.Active := true ;
+end;
+
+procedure TForm_choix_collection.Button3Click(Sender: TObject);
+begin
+Query1.Active := false ;
+Query1.SQL.Text := 'select * from collection order by TITRE_COLLECTION desc' ;
+Query1.Active := true ;
+end;
+
+procedure TForm_choix_collection.Button5Click(Sender: TObject);
+begin
+Query1.Active := false ;
+Query1.SQL.Text := 'select * from collection order by TITRE_COLLECTION asc' ;
+Query1.Active := true ;
+end;
+
+procedure TForm_choix_collection.DBEdit1Change(Sender: TObject);
+begin
+_id_collection.Text := Dbedit1.Text ;
+_Titre_collection.Text := DBMemo1.Text ;
+_Sous_Titre_Collection.Text := DBMemo2.Text ;
+_ISSN_Collection.Text := Dbedit2.Text ;
+end;
+
+procedure TForm_choix_collection.Button6Click(Sender: TObject);
+var
+_Titre_coll, _Sous_Titre_Coll, _ISSN_Coll, _id_coll  : String ;
+
+begin
+
+//-------------------------------------------------
+_Titre_coll := _Titre_collection.Text ;
+_Sous_Titre_Coll := _Sous_Titre_Collection.Text ;
+_ISSN_Coll := _ISSN_Collection.Text ;
+_id_coll := _id_collection.Text ;
+//-------------------------------------------------
+
+Query1.Active := False ;
+Query1.SQL.Text := 'update collection set TITRE_COLLECTION = ''' + _Titre_coll + ''',SOUS_TITRE_COLLECTION=''' + _Sous_Titre_Coll + ''', ISSN_COLLECTION=''' + _ISSN_Coll + ''' where ID_COLLECTION= ''' + _id_coll + '''' ;
+Query1.ExecSQL ;
+
+Query1.Active := False ;
+Query1.SQL.Text := 'commit' ;
+Query1.ExecSQL ;
+
+
+Query1.Active := False ;
+Query1.SQL.Text := 'select * from collection' ;
+Query1.Active := True ;
+
+end;
+
+procedure TForm_choix_collection.FormActivate(Sender: TObject);
+begin
+Query1.Active := False ;
+Query1.SQL.Text := 'select * from collection' ;
+Query1.Active := True ;
+
+end;
+
+procedure TForm_choix_collection.Button77Click(Sender: TObject);
+begin
+
+if (Edit2.Text = '1') then
+        begin
+        //------- Pub en série
+        end ;
+
+if (Edit2.Text = '2') then
+        begin
+        //----- Thèse
+        end ;
+
+if (Edit2.Text = '3') then
+        begin
+        //----- Monographie
+
+                ajout_monographie._ID_Collection.Text := DBEdit1.Text ;
+
+                ajout_monographie._Titre_Collection.Text := DBMemo1.Text ;
+
+                ajout_monographie._Sous_Titre_Collection.Text :=  DBMemo2.Text ;
+
+                ajout_monographie._ISSN_Collection.Text := DBEdit2.Text ;
+
+                close;
+        end ;
+
+if (Edit2.Text = '4') then
+        begin
+        //-----  Article
+        end ;
+
+if (Edit2.Text = '5') then
+        begin
+        //-----  Tiré-à-Part
+        end ;
+
+if (Edit2.Text = '6') then
+        begin
+
+
+        //-----  Ressource électronique
+
+                ajout_resource_electronique._ID_Collection.Text := DBEdit1.Text ;
+
+                ajout_resource_electronique._Titre_Collection.Text := DBMemo1.Text ;
+
+                ajout_resource_electronique._Sous_Titre_Collection.Text :=  DBMemo2.Text ;
+
+                ajout_resource_electronique._ISSN_Collection.Text := DBEdit2.Text ;
+
+                close;
+
+        end ;
+
+
+end;
+
+end.
+
+

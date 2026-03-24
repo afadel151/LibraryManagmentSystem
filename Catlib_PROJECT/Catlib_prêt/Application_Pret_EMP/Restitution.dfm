@@ -1,0 +1,385 @@
+object Form_Restitution: TForm_Restitution
+  Left = 179
+  Top = 156
+  Width = 934
+  Height = 396
+  Caption = ' **** Restitution ****'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object DBEdit_prenom: TDBEdit
+    Left = 376
+    Top = 344
+    Width = 89
+    Height = 21
+    DataSource = DataSource_nom_adherent
+    TabOrder = 0
+    Visible = False
+  end
+  object DBEdit_nom: TDBEdit
+    Left = 552
+    Top = 344
+    Width = 33
+    Height = 21
+    DataSource = DataSource_nom_adherent
+    TabOrder = 1
+    Visible = False
+  end
+  object DBEdit_id_notice: TDBEdit
+    Left = 600
+    Top = 344
+    Width = 25
+    Height = 21
+    DataSource = DataSource_Titre
+    TabOrder = 2
+    Visible = False
+  end
+  object DBEdit_id_categorie: TDBEdit
+    Left = 472
+    Top = 344
+    Width = 73
+    Height = 21
+    DataSource = DataSource_nom_adherent
+    TabOrder = 3
+    Visible = False
+  end
+  object DBEdit_id_etat: TDBEdit
+    Left = 272
+    Top = 344
+    Width = 65
+    Height = 21
+    DataSource = DataSource_nom_adherent
+    TabOrder = 4
+    Visible = False
+  end
+  object GroupBox1: TGroupBox
+    Left = 2
+    Top = 4
+    Width = 705
+    Height = 333
+    Caption = '   Saisie des informations de la Restitution    '
+    TabOrder = 5
+    object Label1: TLabel
+      Left = 17
+      Top = 45
+      Width = 116
+      Height = 13
+      Caption = 'Num'#233'ro carte Adh'#233'rent :'
+    end
+    object Label4: TLabel
+      Left = 72
+      Top = 139
+      Width = 61
+      Height = 13
+      Caption = 'Titre Propre :'
+    end
+    object Label2: TLabel
+      Left = 9
+      Top = 77
+      Width = 124
+      Height = 13
+      Caption = 'Nom et pr'#233'nom Adh'#233'rent :'
+    end
+    object Label3: TLabel
+      Left = 44
+      Top = 110
+      Width = 89
+      Height = 13
+      Caption = 'Choisir l'#39'Exemplaire'
+    end
+    object Label5: TLabel
+      Left = 79
+      Top = 241
+      Width = 54
+      Height = 13
+      Caption = 'Date Pr'#234't : '
+    end
+    object Label6: TLabel
+      Left = 66
+      Top = 272
+      Width = 67
+      Height = 13
+      Caption = 'Date Retour : '
+    end
+    object Message_Etat_adherent: TDBText
+      Left = 320
+      Top = 40
+      Width = 225
+      Height = 25
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clRed
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Visible = False
+    end
+    object id_adherent: TEdit
+      Left = 152
+      Top = 41
+      Width = 145
+      Height = 24
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      OnChange = id_adherentChange
+    end
+    object liste_exemplaire_disponible: TComboBox
+      Left = 152
+      Top = 105
+      Width = 145
+      Height = 24
+      Style = csDropDownList
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ItemHeight = 16
+      ParentFont = False
+      Sorted = True
+      TabOrder = 1
+      OnChange = liste_exemplaire_disponibleChange
+    end
+    object DBMemo1: TDBMemo
+      Left = 152
+      Top = 136
+      Width = 537
+      Height = 89
+      DataSource = DataSource_Titre
+      Font.Charset = ARABIC_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 3
+    end
+    object nom_prenom: TEdit
+      Left = 152
+      Top = 73
+      Width = 273
+      Height = 24
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = []
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 5
+    end
+    object DBEdit_date_pret: TDBEdit
+      Left = 152
+      Top = 236
+      Width = 145
+      Height = 21
+      DataSource = DataSource_date_pret
+      ReadOnly = True
+      TabOrder = 6
+    end
+    object date_retour: TEdit
+      Left = 152
+      Top = 268
+      Width = 145
+      Height = 21
+      TabOrder = 4
+      Text = 'date_retour'
+      OnChange = date_retourChange
+    end
+    object Button_afficher_notice: TButton
+      Left = 304
+      Top = 104
+      Width = 145
+      Height = 25
+      Caption = 'Afficher la Notice CATLIB'
+      TabOrder = 2
+      OnClick = Button_afficher_noticeClick
+    end
+  end
+  object Panel1: TPanel
+    Left = 712
+    Top = 8
+    Width = 193
+    Height = 201
+    TabOrder = 6
+    object Image_adherent: TImage
+      Left = 17
+      Top = 13
+      Width = 160
+      Height = 177
+      Stretch = True
+    end
+  end
+  object Panel2: TPanel
+    Left = 712
+    Top = 216
+    Width = 193
+    Height = 121
+    TabOrder = 7
+    object retour: TButton
+      Left = 30
+      Top = 83
+      Width = 147
+      Height = 33
+      Caption = 'Retour'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+      OnClick = retourClick
+    end
+    object valider_restitution: TButton
+      Left = 30
+      Top = 6
+      Width = 147
+      Height = 33
+      Cursor = crHandPoint
+      Caption = 'Valider'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlue
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnClick = valider_restitutionClick
+    end
+    object renouvelement: TButton
+      Left = 30
+      Top = 44
+      Width = 147
+      Height = 33
+      Cursor = crHandPoint
+      Caption = 'Renouvellement'
+      Font.Charset = ANSI_CHARSET
+      Font.Color = clBlue
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+      OnClick = renouvelementClick
+    end
+  end
+  object DBEdit_COTE: TDBEdit
+    Left = 600
+    Top = 368
+    Width = 25
+    Height = 21
+    DataSource = DataSource_Titre
+    TabOrder = 8
+    Visible = False
+  end
+  object Query_nom_adherent1: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+    Left = 104
+    Top = 344
+  end
+  object DataSource_nom_adherent: TDataSource
+    DataSet = Query_nom_adherent
+    Left = 136
+    Top = 344
+  end
+  object Query_Liste_exemplaire1: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+    Left = 168
+    Top = 344
+  end
+  object Query_titre1: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+    Left = 200
+    Top = 344
+  end
+  object DataSource_Titre: TDataSource
+    DataSet = Query_titre
+    Left = 232
+    Top = 344
+  end
+  object Query_valider_restitution1: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+    Left = 72
+    Top = 344
+  end
+  object DataSource_date_pret: TDataSource
+    DataSet = Query_date_pret
+    Left = 40
+    Top = 344
+  end
+  object Query_date_pret1: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+    Left = 8
+    Top = 344
+  end
+  object Requete_date1: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+    Left = 344
+    Top = 344
+  end
+  object Query_renouvellement1: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+    Left = 632
+    Top = 344
+  end
+  object Query_date_pret: TADOQuery
+    Connection = Form_Connexion.ADOConnection1
+    CursorType = ctDynamic
+    LockType = ltUnspecified
+    Parameters = <>
+    Left = 8
+    Top = 376
+  end
+  object Query_valider_restitution: TADOQuery
+    Connection = Form_Connexion.ADOConnection1
+    Parameters = <>
+    Left = 72
+    Top = 376
+  end
+  object Query_nom_adherent: TADOQuery
+    Connection = Form_Connexion.ADOConnection1
+    Parameters = <>
+    Left = 104
+    Top = 376
+  end
+  object Query_Liste_exemplaire: TADOQuery
+    Connection = Form_Connexion.ADOConnection1
+    Parameters = <>
+    Left = 168
+    Top = 376
+  end
+  object Query_titre: TADOQuery
+    Connection = Form_Connexion.ADOConnection1
+    Parameters = <>
+    Left = 200
+    Top = 376
+  end
+  object Requete_date: TADOQuery
+    Connection = Form_Connexion.ADOConnection1
+    Parameters = <>
+    Left = 344
+    Top = 376
+  end
+  object Query_renouvellement: TADOQuery
+    Connection = Form_Connexion.ADOConnection1
+    Parameters = <>
+    Left = 632
+    Top = 376
+  end
+end

@@ -1,0 +1,78 @@
+unit gestion_categorie;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, Grids, DBGrids, DBTables, ExtCtrls, DBCtrls, StdCtrls, ADODB;
+
+type
+  TForm_gestion_categories = class(TForm)
+    Table_categorie1: TTable;
+    DBGrid1: TDBGrid;
+    DataSource_table_categorie: TDataSource;
+    Panel1: TPanel;
+    DBNavigator1: TDBNavigator;
+    Panel2: TPanel;
+    Button1: TButton;
+    Button_Actualiser: TButton;
+    Button_annuler_modification: TButton;
+    Table_categorie: TADOTable;
+    procedure Button1Click(Sender: TObject);
+    procedure Button_ActualiserClick(Sender: TObject);
+    procedure Button_annuler_modificationClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form_gestion_categories: TForm_gestion_categories;
+
+implementation
+
+uses Unit_Connexion ;
+{$R *.dfm}
+
+procedure TForm_gestion_categories.Button1Click(Sender: TObject);
+begin
+Close;
+end;
+
+procedure TForm_gestion_categories.Button_ActualiserClick(Sender: TObject);
+begin
+
+Table_categorie.Active := false;
+Table_categorie.Active := true;
+
+DBGrid1.Columns[0].Width := 100 ;
+DBGrid1.Columns[1].Width := 200 ;
+DBGrid1.Columns[2].Width := 120 ;
+DBGrid1.Columns[3].Width := 120 ;
+
+end;
+
+procedure TForm_gestion_categories.Button_annuler_modificationClick(
+  Sender: TObject);
+begin
+Table_categorie.CancelUpdates;
+Table_categorie.Cancel;
+
+DBGrid1.Columns[0].Width := 100 ;
+DBGrid1.Columns[1].Width := 200 ;
+DBGrid1.Columns[2].Width := 120 ;
+DBGrid1.Columns[3].Width := 120 ;
+
+end;
+
+procedure TForm_gestion_categories.FormActivate(Sender: TObject);
+begin
+DBGrid1.Columns[0].Width := 100 ;
+DBGrid1.Columns[1].Width := 200 ;
+DBGrid1.Columns[2].Width := 120 ;
+DBGrid1.Columns[3].Width := 120 ;
+end;
+
+end.

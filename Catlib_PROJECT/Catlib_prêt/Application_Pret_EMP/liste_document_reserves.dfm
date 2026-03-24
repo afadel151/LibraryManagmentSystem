@@ -1,0 +1,130 @@
+object Form_liste_docs_reserves: TForm_liste_docs_reserves
+  Left = 286
+  Top = 194
+  Width = 676
+  Height = 531
+  Caption = 'Listes des documents R'#233'serv'#233's'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poScreenCenter
+  OnActivate = FormActivate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object DBGrid1: TDBGrid
+    Left = 8
+    Top = 8
+    Width = 649
+    Height = 345
+    DataSource = DataSource_docs_reserves
+    Options = [dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines]
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'MS Sans Serif'
+    TitleFont.Style = []
+  end
+  object Panel2: TPanel
+    Left = 8
+    Top = 360
+    Width = 649
+    Height = 129
+    Color = clMedGray
+    TabOrder = 1
+    object quitter: TButton
+      Left = 226
+      Top = 80
+      Width = 200
+      Height = 35
+      Caption = 'Retour'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnClick = quitterClick
+    end
+    object Button_trier_par_adherent: TButton
+      Left = 18
+      Top = 16
+      Width = 200
+      Height = 35
+      Caption = 'Trier par Adh'#233'rent'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+      OnClick = Button_trier_par_adherentClick
+    end
+    object Button_trier_par_exemplaire: TButton
+      Left = 226
+      Top = 16
+      Width = 200
+      Height = 35
+      Caption = 'Trier par Cote'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+      OnClick = Button_trier_par_exemplaireClick
+    end
+    object Button_trier_par_date_pret: TButton
+      Left = 434
+      Top = 16
+      Width = 200
+      Height = 35
+      Caption = 'Trier par Date de Pr'#234't'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+      OnClick = Button_trier_par_date_pretClick
+    end
+  end
+  object Query_listes_docs_reserves1: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+    SQL.Strings = (
+      
+        'select  R.id_adherent, A.nom || '#39' '#39' || A.prenom as "Nom & Pr'#233'nom' +
+        '" , R.cote, R.heure_reservation '
+      'from reservation  R, adherent A '
+      'where R.id_adherent = A.id_adherent'
+      'order by R.cote')
+    Left = 24
+    Top = 424
+  end
+  object DataSource_docs_reserves: TDataSource
+    DataSet = Query_listes_docs_reserves
+    Left = 104
+    Top = 424
+  end
+  object Query_listes_docs_reserves: TADOQuery
+    Connection = Form_Connexion.ADOConnection1
+    Parameters = <>
+    SQL.Strings = (
+      
+        'select  R.id_adherent, A.nom || '#39' '#39' || A.prenom as "Nom & Pr'#233'nom' +
+        '" , R.cote, R.heure_reservation '
+      'from reservation  R, adherent A '
+      'where R.id_adherent = A.id_adherent'
+      'order by R.cote')
+    Left = 64
+    Top = 424
+  end
+end

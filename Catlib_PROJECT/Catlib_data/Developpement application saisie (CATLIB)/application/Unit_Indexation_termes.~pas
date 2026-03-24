@@ -1,0 +1,878 @@
+unit Unit_Indexation_termes;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, xmldom, XMLIntf, StdCtrls, ExtCtrls, DB, DBTables, msxmldom,
+  XMLDoc, ComCtrls, ADODB;
+
+type
+  TForm_indexation_termes = class(TForm)
+    Label1: TLabel;
+    RichEdit1: TRichEdit;
+    ProgressBar1: TProgressBar;
+    XMLDocument1: TXMLDocument;
+    OpenDialog1: TOpenDialog;
+    DataSource1: TDataSource;
+    Query11: TQuery;
+    Query21: TQuery;
+    Query31: TQuery;
+    Query41: TQuery;
+    Panel1: TPanel;
+    Button4: TButton;
+    Button3: TButton;
+    Query1: TADOQuery;
+    Query2: TADOQuery;
+    Query3: TADOQuery;
+    Query4: TADOQuery;
+    Edit_ID_TYPE_Notice: TEdit;
+    procedure Button4Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+  function replace_char(chaine : string; const S :char; const D : char  ) : string;
+  function Split1( delim : String ; chaine : string ) : TStringList;
+  procedure Split2( const delim : char ; input : string ; const Strings : TStrings );
+  function SplitString(const Source,ch:string):TStringList;
+  function is_mot_vide(chaine : string ;     const Query: TADOQuery) : boolean;
+
+var
+  Form_indexation_termes: TForm_indexation_termes;
+
+
+
+implementation
+
+uses Unit_Connexion, Unit1;
+
+{$R *.dfm}
+
+function Split1( delim : String ; chaine : string ) : TStringList;
+
+var
+L : TstringList ;
+begin
+     L := TStringList.create ;
+     L.Text := StringReplace(chaine, delim, #13#10, [rfReplaceAll]) ;
+     Split1 := L ;
+
+end ;
+
+
+procedure Split2( const delim : char ; input : string ; const Strings : TStrings );
+
+begin
+   Assert(Assigned(Strings)) ;
+   Strings.Clear ;
+   Strings.Delimiter := delim ;
+   Strings.DelimitedText := input ;
+end ;
+
+
+function SplitString(const Source,ch:string):TStringList;
+var
+        temp:String;
+        i:Integer;
+begin
+        Result:=TStringList.Create;
+        //if source is empty return null String List
+        if Source='' then exit;
+        temp:=Source;
+
+        i:=pos(ch,Source);
+        while i<>0 do
+                begin
+                        Result.add(copy(temp,0,i-1));
+                        Delete(temp,1,i);
+                        i:=pos(ch,temp);
+                end;
+        Result.add(temp);
+end;
+
+
+function is_mot_vide(chaine : string ;     const Query: TADOQuery) : boolean;
+var
+i : integer ;
+begin
+     Query.SQL.Text := 'select * from mots_vides where lower(mot_vide) = ''' + LowerCase(chaine) + '''' ;
+
+     Query.ExecSQL ; Query.Active := true ; Query.First ;
+
+             if (Query.Fields.FieldByNumber(1).AsString = '') then
+                begin
+
+                        is_mot_vide := false ;
+                end
+             else
+                begin
+                        is_mot_vide := true ;
+                end;
+
+
+end;
+
+function replace_char(chaine : string; const S :char; const D : char  ) : string;
+var
+i : integer ;
+begin
+
+for i := 0 to strlen(Pchar(chaine)) do
+        begin
+             if ( chaine[i] = S ) then chaine[i] := D ;
+        end;
+replace_char := chaine ;
+end;
+
+
+procedure TForm_indexation_termes.Button4Click(Sender: TObject);
+var
+liste_termes, copy_liste_termes : TStringList ;
+i , j , nbr_notice , nbr_mots_cles , max_id_terme, poids_terme  : integer ;
+valeur_champ, id_terme, id_notice_actuelle, id_mot_cle : string ;
+begin
+
+// extraire le nombre de notice
+Query1.SQL.Text := 'select count(*) from notice';
+Query1.ExecSQL ; Query1.Active := true;Query1.First ;
+nbr_notice := strtoint(Query1.Fields.FieldByNumber(1).AsString) ;
+
+
+
+// -------- indexation des mots du titre
+Query2.SQL.Text := 'select id_notice, titre_propre, sous_titre, resume, is_indexed from notice where id_type = ' + Edit_ID_TYPE_Notice.Text ;
+Query2.ExecSQL ; Query2.Active := true;
+
+Label1.Caption := 'Progression : Indexation termes en cours ... ' ;
+
+RichEdit1.Lines.Add('Début Indexation termes ... ') ;
+
+ProgressBar1.Min := 0;
+ProgressBar1.Max := nbr_notice;
+RichEdit1.Lines.Add('') ;
+RichEdit1.Lines.Add('Indexation des titres propres, sous titres, résumés et mots clés ....') ;
+RichEdit1.Lines.Add('') ;
+//Showmessage('le nombre de notice est : ' + inttostr(nbr_notice)) ;
+
+Query2.First ;  //---- Piinter La premiere notice
+
+if ( nbr_notice > 0 )  then  //---- On ne fait la boucle que si 
+
+for i := 0 to nbr_notice do
+
+    begin ///------- (1)
+         Form_indexation_termes.Caption := 'Indexation des Termes : ' + inttostr(i) + ' sur ' +  inttostr(nbr_notice) ;
+         ProgressBar1.Position := i ;
+        //================================================================================================
+        //--- Si la notice en cours ni pas indexee donc on va l'indexer (Si is_indexed = 0 alors indexer)
+        //================================================================================================
+      if (strtoint(Query2.Fields.FieldByNumber(5).AsString) = 0) then
+        begin   ///------- (2)
+         id_notice_actuelle := Query2.Fields.FieldByNumber(1).AsString ;
+
+         //Showmessage('cette notice n''est pas indexée , donc, on va commencer le remplissage') ;
+
+//==================================================================================================================================
+//-------- Indexation des termes du  titre propre
+//==================================================================================================================================
+
+                //------ le separateur utilise est le blanc (espace)
+         valeur_champ:= Query2.Fields.FieldByNumber(2).AsString ;
+         if (valeur_champ <> '') then
+            begin     ///------- (3)
+                //-------- l'instruction suivante permet d'eliminer les caracteres speciaux , exemple : (, ), ;, [, ] ...
+                //=========================================================================================================
+                valeur_champ := replace_char(valeur_champ, '(',' ') ;
+                valeur_champ := replace_char(valeur_champ, ')',' ') ;
+                valeur_champ := replace_char(valeur_champ, ',',' ') ;
+                valeur_champ := replace_char(valeur_champ, '.',' ') ;
+                valeur_champ := replace_char(valeur_champ, '[',' ') ;
+                valeur_champ := replace_char(valeur_champ, ']',' ') ;
+                valeur_champ := replace_char(valeur_champ, ';',' ') ;
+                valeur_champ := replace_char(valeur_champ, '/',' ') ;
+                valeur_champ := replace_char(valeur_champ, '\',' ') ;
+                valeur_champ := replace_char(valeur_champ, ':',' ') ;
+                valeur_champ := replace_char(valeur_champ, '´',' ') ;
+
+                valeur_champ := replace_char(valeur_champ, '?',' ') ;
+                valeur_champ := replace_char(valeur_champ, '!',' ') ;
+                valeur_champ := replace_char(valeur_champ, 'é','e') ;
+                valeur_champ := replace_char(valeur_champ, 'è','e') ;
+                valeur_champ := replace_char(valeur_champ, 'ê','e') ;
+                valeur_champ := replace_char(valeur_champ, 'ë','e') ;
+
+
+                //=========================================================================================================
+
+                liste_termes := Split1(' ', valeur_champ) ;
+                copy_liste_termes := Split1(' ', valeur_champ) ;
+
+                // ------ parcourir la liste des termes de chaque enregistrement
+
+                for j := 0 to liste_termes.Count - 1 do
+                        begin  ///------- (4)
+                                // verifier est ce Que le terme existe dans la table terme ou pas
+                            if ((liste_termes.Strings[j] <> '') and (strlen(Pchar(liste_termes.Strings[j])) > 1) and (not is_mot_vide(liste_termes.Strings[j],Query4))) then
+                                begin   ///------- (5)
+                                        liste_termes.Strings[j] := Copy(liste_termes.Strings[j], 0,5) ; //=== Pour faire la troncature a 5 caraceteres
+                                        Query1.SQL.Text := 'select id_terme from terme where lower(terme) = ''' + LowerCase(liste_termes.Strings[j]) + '''';
+                                        Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                     //Showmessage('le terme est : ' + LowerCase(liste_termes.Strings[j])) ;
+                                     if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                        begin    ///------- (6)
+                                                // ----- selectionner le max des id_terme
+                                                //Showmessage('le terme : ' + LowerCase(liste_termes.Strings[j]) + ' n existe pas ') ;
+                                                Query1.SQL.Text := 'select max(id_terme) from terme';
+                                                Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                                begin ///------- (7)
+                                                        max_id_terme := 0 ;
+                                                end  ///------- (*7)
+                                                else max_id_terme := strtoint(Query1.Fields.FieldByNumber(1).AsString) + 1 ;
+
+                                                //---- insertion dans la table : terme
+                                                id_terme := inttostr(max_id_terme) ;
+                                                Query1.SQL.Text := 'insert into terme values('''+ id_terme + ''',''' + LowerCase(liste_termes.Strings[j]) +  ''')';
+                                                //Showmessage('la requete insertion terme = ' + Query1.SQL.Text) ;
+                                                Query1.ExecSQL ;
+                                        end  ///------- (*6)
+                                     else
+                                        begin ///------- (6)
+                                                id_terme := Query1.Fields.FieldByNumber(1).AsString ;
+                                                //------ ne fait rien, le terme existe
+                                        end;  ///------- (*6)
+
+                                //===================================================================
+                                // --- Insertion dans la table Notice_terme avec calcul des poids
+                                //===================================================================
+                                Query1.SQL.Text := 'select * from notice_terme where id_terme = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                Query1.ExecSQL ; Query1.Active := true ; Query1.First ;
+                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                   begin ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme n'existe pas donc inserer
+                                        //================== calcul du poids du terme
+                                        poids_terme := 10 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'insert into notice_terme values(''' + id_terme + ''',''' + id_notice_actuelle +  ''',''' + inttostr(poids_terme) + ''')';
+                                        //Showmessage('la requete insertion dans notice_terme :  ' + Query1.SQL.Text) ;
+                                        Query1.ExecSQL ;
+                                   end ///------- (*6)
+                                else
+                                   begin  ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme existe donc recalculer juste son poids
+                                        //================== calcul du poids du terme
+                                        poids_terme := strtoint(Query1.Fields.FieldByNumber(3).AsString) ;
+                                        poids_terme := poids_terme + 10 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'update notice_terme set poids_terme =''' + inttostr(poids_terme) + ''' where id_terme = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                        //Showmessage('la requete update dans notice_terme :  ' + Query1.SQL.Text) ;
+                                        Query1.ExecSQL ;
+
+                                   end;  ///------- (*6)
+                            end;  ///------- (*5)
+                        end;  ///------- (*4)
+
+            //end; ///------- (*3)
+
+
+//---------------------- Partie consacré aux termes exacts  --------------------------------------------------------//
+
+                for j := 0 to copy_liste_termes.Count - 1 do
+                        begin ///------- (4)
+                                // verifier est ce Que le terme existe dans la table terme ou pas
+                            if ((copy_liste_termes.Strings[j] <> '') and (strlen(Pchar(copy_liste_termes.Strings[j])) > 1) and (not is_mot_vide(copy_liste_termes.Strings[j],Query4))) then
+                                begin ///------- (5)
+                                        //liste_termes.Strings[j] := Copy(liste_termes.Strings[j], 0,5) ; //=== Pour faire la troncature a 5 caraceteres
+                                        Query1.SQL.Text := 'select id_terme_exact from terme_exact where lower(terme_exact) = ''' + LowerCase(copy_liste_termes.Strings[j]) + '''';
+                                        Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                     if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                        begin  ///------- (6)
+                                                // ----- selectionner le max des id_terme
+
+                                                Query1.SQL.Text := 'select max(id_terme_exact) from terme_exact';
+                                                Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                                begin ///------- (7)
+                                                        max_id_terme := 0 ;
+                                                end  ///------- (*7)
+                                                else max_id_terme := strtoint(Query1.Fields.FieldByNumber(1).AsString) + 1 ;
+
+                                                //---- insertion dans la table : terme
+                                                id_terme := inttostr(max_id_terme) ;
+                                                Query1.SQL.Text := 'insert into terme_exact values('''+ id_terme + ''',''' + LowerCase(copy_liste_termes.Strings[j]) +  ''')';
+                                                Query1.ExecSQL ;
+                                        end ///------- (*6)
+                                     else
+                                        begin  ///------- (6)
+                                                id_terme := Query1.Fields.FieldByNumber(1).AsString ;
+                                                //------ ne fait rien, le terme existe
+                                        end; ///------- (*6)
+
+                                //===================================================================
+                                // --- Insertion dans la table Notice_terme avec calcul des poids
+                                //===================================================================
+                                Query1.SQL.Text := 'select * from notice_terme_exact where id_terme_exact = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                Query1.ExecSQL ; Query1.Active := true ; Query1.First ;
+                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                   begin ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme n'existe pas donc inserer
+                                        //================== calcul du poids du terme
+                                        poids_terme := 10 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'insert into notice_terme_exact values(''' + id_terme + ''',''' + id_notice_actuelle +  ''',''' + inttostr(poids_terme) + ''')';
+                                        Query1.ExecSQL ;
+                                   end   ///------- (*6)
+                                else
+                                   begin  ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme existe donc recalculer juste son poids
+                                        //================== calcul du poids du terme
+                                        poids_terme := strtoint(Query1.Fields.FieldByNumber(3).AsString) ;
+                                        poids_terme := poids_terme + 10 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'update notice_terme_exact set poids_terme =''' + inttostr(poids_terme) + ''' where id_terme_exact = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                        Query1.ExecSQL ;
+
+                                   end;  ///------- (*6)
+                            end;    ///------- (*5)
+                        end;  ///------- (*4)
+
+            end; ///------- (*3)
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+//==================================================================================================================================
+//-------- Indexation des termes des  sous propres
+//==================================================================================================================================
+
+                //------ le separateur utilise est le blanc (espace)
+         valeur_champ:= Query2.Fields.FieldByNumber(3).AsString ;
+         if (valeur_champ <> '') then
+            begin ///------- (3)
+                //-------- l'instruction suivante permet d'eliminer les caracteres speciaux , exmple : (, ), ;, [, ] ...
+                //=========================================================================================================
+                valeur_champ := replace_char(valeur_champ, '(',' ') ;
+                valeur_champ := replace_char(valeur_champ, ')',' ') ;
+                valeur_champ := replace_char(valeur_champ, ',',' ') ;
+                valeur_champ := replace_char(valeur_champ, '.',' ') ;
+                valeur_champ := replace_char(valeur_champ, '[',' ') ;
+                valeur_champ := replace_char(valeur_champ, ']',' ') ;
+                valeur_champ := replace_char(valeur_champ, ';',' ') ;
+                valeur_champ := replace_char(valeur_champ, '/',' ') ;
+                valeur_champ := replace_char(valeur_champ, '\',' ') ;
+                valeur_champ := replace_char(valeur_champ, ':',' ') ;
+                valeur_champ := replace_char(valeur_champ, '´',' ') ;
+
+
+                valeur_champ := replace_char(valeur_champ, '?',' ') ;
+                valeur_champ := replace_char(valeur_champ, '!',' ') ;
+                valeur_champ := replace_char(valeur_champ, 'é','e') ;
+                valeur_champ := replace_char(valeur_champ, 'è','e') ;
+                valeur_champ := replace_char(valeur_champ, 'ê','e') ;
+                valeur_champ := replace_char(valeur_champ, 'ë','e') ;
+                //=========================================================================================================
+
+                liste_termes := Split1(' ', valeur_champ) ;
+                copy_liste_termes := Split1(' ', valeur_champ) ;
+
+                // ------ parcourir la liste des termes de chaque enregistrement
+
+                for j := 0 to liste_termes.Count - 1 do
+                        begin  ///------- (4)
+                                // verifier est ce aue le terme existe dans la table terme ou pas
+                            if ((liste_termes.Strings[j] <> '') and (strlen(Pchar(liste_termes.Strings[j])) > 1) and (not is_mot_vide(liste_termes.Strings[j],Query4))) then
+                                begin  ///------- (5)
+                                        liste_termes.Strings[j] := Copy(liste_termes.Strings[j], 0,5) ; //=== Pour faire la troncature a 5 caraceteres
+                                        Query1.SQL.Text := 'select id_terme from terme where lower(terme) = ''' + LowerCase(liste_termes.Strings[j]) + '''';
+                                        Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                     if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                        begin   ///------- (6)
+                                                // ----- selectionner le max des id_terme
+
+                                                Query1.SQL.Text := 'select max(id_terme) from terme';
+                                                Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                                begin  ///------- (7)
+                                                        max_id_terme := 0 ;
+                                                end    ///------- (*7)
+                                                else max_id_terme := strtoint(Query1.Fields.FieldByNumber(1).AsString) + 1 ;
+
+                                                //---- insertion dans la table : terme
+                                                id_terme := inttostr(max_id_terme) ;
+                                                Query1.SQL.Text := 'insert into terme values('''+ id_terme + ''',''' + LowerCase(liste_termes.Strings[j]) +  ''')';
+                                                Query1.ExecSQL ;
+                                        end   ///------- (*6)
+                                     else
+                                        begin  ///------- (6)
+                                                id_terme := Query1.Fields.FieldByNumber(1).AsString ;
+                                                //------ ne fait rien, le terme existe
+                                        end;   ///------- (*6)
+
+                                //===================================================================
+                                // --- Insertion dans la table Notice_terme avec calcul des poids
+                                //===================================================================
+                                Query1.SQL.Text := 'select * from notice_terme where id_terme = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                Query1.ExecSQL ; Query1.Active := true ; Query1.First ;
+                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                   begin   ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme n'existe pas donc inserer
+                                        //================== calcul du poids du terme
+                                        poids_terme := 8 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'insert into notice_terme values(''' + id_terme + ''',''' + id_notice_actuelle +  ''',''' + inttostr(poids_terme) + ''')';
+                                        Query1.ExecSQL ;
+                                   end   ///------- (*6)
+                                else
+                                   begin  ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme existe donc recalculer juste son poids
+                                        //================== calcul du poids du terme
+                                        poids_terme := strtoint(Query1.Fields.FieldByNumber(3).AsString) ;
+                                        poids_terme := poids_terme + 8 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'update notice_terme set poids_terme =''' + inttostr(poids_terme) + ''' where id_terme = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                        Query1.ExecSQL ;
+
+                                   end; ///------- (*6)
+                                //showmessage(liste_termes.Strings[j]) ;
+                            end;   ///------- (*5)
+                        end;  ///------- (*4)
+
+            //end;    ///------- (3)
+
+//---------------------- Partie consacré aux termes exacts  --------------------------------------------------------//
+
+                for j := 0 to copy_liste_termes.Count - 1 do
+                        begin  ///------- (4)
+                                // verifier est ce Que le terme existe dans la table terme ou pas
+                            if ((copy_liste_termes.Strings[j] <> '') and (strlen(Pchar(copy_liste_termes.Strings[j])) > 1) and (not is_mot_vide(copy_liste_termes.Strings[j],Query4))) then
+                                begin  ///------- (5)
+                                        //liste_termes.Strings[j] := Copy(liste_termes.Strings[j], 0,5) ; //=== Pour faire la troncature a 5 caraceteres
+                                        Query1.SQL.Text := 'select id_terme_exact from terme_exact where lower(terme_exact) = ''' + LowerCase(copy_liste_termes.Strings[j]) + '''';
+                                        Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                     if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                        begin  ///------- (6)
+                                                // ----- selectionner le max des id_terme
+
+                                                Query1.SQL.Text := 'select max(id_terme_exact) from terme_exact';
+                                                Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                                begin  ///------- (7)
+                                                        max_id_terme := 0 ;
+                                                end   ///------- (*7)
+                                                else max_id_terme := strtoint(Query1.Fields.FieldByNumber(1).AsString) + 1 ;
+
+                                                //---- insertion dans la table : terme
+                                                id_terme := inttostr(max_id_terme) ;
+                                                Query1.SQL.Text := 'insert into terme_exact values('''+ id_terme + ''',''' + LowerCase(copy_liste_termes.Strings[j]) +  ''')';
+                                                Query1.ExecSQL ;
+                                        end  ///------- (*6)
+                                     else
+                                        begin  ///------- (6)
+                                                id_terme := Query1.Fields.FieldByNumber(1).AsString ;
+                                                //------ ne fait rien, le terme existe
+                                        end;   ///------- (*6)
+
+                                //===================================================================
+                                // --- Insertion dans la table Notice_terme avec calcul des poids
+                                //===================================================================
+                                Query1.SQL.Text := 'select * from notice_terme_exact where id_terme_exact = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                Query1.ExecSQL ; Query1.Active := true ; Query1.First ;
+                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                   begin   ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme n'existe pas donc inserer
+                                        //================== calcul du poids du terme
+                                        poids_terme := 10 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'insert into notice_terme_exact values(''' + id_terme + ''',''' + id_notice_actuelle +  ''',''' + inttostr(poids_terme) + ''')';
+                                        Query1.ExecSQL ;
+                                   end  ///------- (*6)
+                                else
+                                   begin  ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme existe donc recalculer juste son poids
+                                        //================== calcul du poids du terme
+                                        poids_terme := strtoint(Query1.Fields.FieldByNumber(3).AsString) ;
+                                        poids_terme := poids_terme + 8 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'update notice_terme_exact set poids_terme =''' + inttostr(poids_terme) + ''' where id_terme_exact = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                        Query1.ExecSQL ;
+
+                                   end;  ///------- (*6)
+                            end;  ///------- (*5)
+                        end;      ///------- (*4)
+
+            end;    ///------- (*3)
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+//==================================================================================================================================
+//-------- Indexation des termes des  resumes
+//==================================================================================================================================
+
+                //------ le separateur utilise est le blanc (espace)
+         valeur_champ:= Query2.Fields.FieldByNumber(4).AsString ;
+         if (valeur_champ <> '') then
+            begin   ///------- (3)
+                //-------- l'instruction suivante permet d'eliminer les caracteres speciaux , exmple : (, ), ;, [, ] ...
+                //=========================================================================================================
+                valeur_champ := replace_char(valeur_champ, '(',' ') ;
+                valeur_champ := replace_char(valeur_champ, ')',' ') ;
+                valeur_champ := replace_char(valeur_champ, ',',' ') ;
+                valeur_champ := replace_char(valeur_champ, '.',' ') ;
+                valeur_champ := replace_char(valeur_champ, '[',' ') ;
+                valeur_champ := replace_char(valeur_champ, ']',' ') ;
+                valeur_champ := replace_char(valeur_champ, ';',' ') ;
+                valeur_champ := replace_char(valeur_champ, '/',' ') ;
+                valeur_champ := replace_char(valeur_champ, '\',' ') ;
+                valeur_champ := replace_char(valeur_champ, ':',' ') ;
+                valeur_champ := replace_char(valeur_champ, '´',' ') ;
+
+
+
+                valeur_champ := replace_char(valeur_champ, '?',' ') ;
+                valeur_champ := replace_char(valeur_champ, '!',' ') ;
+                valeur_champ := replace_char(valeur_champ, 'é','e') ;
+                valeur_champ := replace_char(valeur_champ, 'è','e') ;
+                valeur_champ := replace_char(valeur_champ, 'ê','e') ;
+                valeur_champ := replace_char(valeur_champ, 'ë','e') ;
+                //=========================================================================================================
+
+                liste_termes := Split1(' ', valeur_champ) ;
+                copy_liste_termes := Split1(' ', valeur_champ) ;
+
+                // ------ parcourir la liste des termes de chaque enregistrement
+
+                for j := 0 to liste_termes.Count - 1 do
+                        begin  ///------- (4)
+                                // verifier est ce aue le terme existe dans la table terme ou pas
+                            if ((liste_termes.Strings[j] <> '') and (strlen(Pchar(liste_termes.Strings[j])) > 1) and (not is_mot_vide(liste_termes.Strings[j],Query4))) then
+                                begin   ///------- (5)
+                                        liste_termes.Strings[j] := Copy(liste_termes.Strings[j], 0,5) ; //=== Pour faire la troncature a 5 caraceteres
+                                        Query1.SQL.Text := 'select id_terme from terme where lower(terme) = ''' + LowerCase(liste_termes.Strings[j]) + '''';
+                                        Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                     if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                        begin   ///------- (6)
+                                                // ----- selectionner le max des id_terme
+
+                                                Query1.SQL.Text := 'select max(id_terme) from terme';
+                                                Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                                begin  ///------- (7)
+                                                        max_id_terme := 0 ;
+                                                end    ///------- (*7)
+                                                else max_id_terme := strtoint(Query1.Fields.FieldByNumber(1).AsString) + 1 ;
+
+                                                //---- insertion dans la table : terme
+                                                id_terme := inttostr(max_id_terme) ;
+                                                Query1.SQL.Text := 'insert into terme values('''+ id_terme + ''',''' + LowerCase(liste_termes.Strings[j]) +  ''')';
+                                                Query1.ExecSQL ;
+                                        end     ///------- (*6)
+                                     else
+                                        begin   ///------- (6)
+                                                id_terme := Query1.Fields.FieldByNumber(1).AsString ;
+                                                //------ ne fait rien, le terme existe
+                                        end;    ///------- (*6)
+
+                                //===================================================================
+                                // --- Insertion dans la table Notice_terme avec calcul des poids
+                                //===================================================================
+                                Query1.SQL.Text := 'select * from notice_terme where id_terme = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                Query1.ExecSQL ; Query1.Active := true ; Query1.First ;
+                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                   begin    ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme n'existe pas donc inserer
+                                        //================== calcul du poids du terme
+                                        poids_terme := 2 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'insert into notice_terme values(''' + id_terme + ''',''' + id_notice_actuelle +  ''',''' + inttostr(poids_terme) + ''')';
+                                        Query1.ExecSQL ;
+                                   end      ///------- (*6)
+                                else
+                                   begin    ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme existe donc recalculer juste son poids
+                                        //================== calcul du poids du terme
+                                        poids_terme := strtoint(Query1.Fields.FieldByNumber(3).AsString) ;
+                                        poids_terme := poids_terme + 2 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'update notice_terme set poids_terme =''' + inttostr(poids_terme) + ''' where id_terme = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                        Query1.ExecSQL ;
+
+                                   end;    ///------- (*6)
+                            end;   ///------- (*5)
+                        end;       ///------- (*4)
+
+            //end;
+
+
+            //---------------------- Partie consacré aux termes exacts  --------------------------------------------------------//
+
+                for j := 0 to copy_liste_termes.Count - 1 do
+                        begin   ///------- (4)
+                                // verifier est ce Que le terme existe dans la table terme ou pas
+                            if ((copy_liste_termes.Strings[j] <> '') and (strlen(Pchar(copy_liste_termes.Strings[j])) > 1) and (not is_mot_vide(copy_liste_termes.Strings[j],Query4))) then
+                                begin   ///------- (5)
+                                        //liste_termes.Strings[j] := Copy(liste_termes.Strings[j], 0,5) ; //=== Pour faire la troncature a 5 caraceteres
+                                        Query1.SQL.Text := 'select id_terme_exact from terme_exact where lower(terme_exact) = ''' + LowerCase(copy_liste_termes.Strings[j]) + '''';
+                                        Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                     if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                        begin   ///------- (6)
+                                                // ----- selectionner le max des id_terme
+
+                                                Query1.SQL.Text := 'select max(id_terme_exact) from terme_exact';
+                                                Query1.ExecSQL ; Query1.Active := true; Query1.First ;
+                                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                                        begin  ///------- (7)
+                                                                max_id_terme := 0 ;
+                                                        end    ///------- (*7)
+                                                else max_id_terme := strtoint(Query1.Fields.FieldByNumber(1).AsString) + 1 ;
+
+                                                //---- insertion dans la table : terme
+                                                id_terme := inttostr(max_id_terme) ;
+                                                Query1.SQL.Text := 'insert into terme_exact values('''+ id_terme + ''',''' + LowerCase(copy_liste_termes.Strings[j]) +  ''')';
+                                                Query1.ExecSQL ;
+                                        end   ///------- (*6)
+                                     else
+                                        begin   ///------- (6)
+                                                id_terme := Query1.Fields.FieldByNumber(1).AsString ;
+                                                //------ ne fait rien, le terme existe
+                                        end;    ///------- (*6)
+
+                                //===================================================================
+                                // --- Insertion dans la table Notice_terme avec calcul des poids
+                                //===================================================================
+                                Query1.SQL.Text := 'select * from notice_terme_exact where id_terme_exact = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                Query1.ExecSQL ; Query1.Active := true ; Query1.First ;
+                                if (Query1.Fields.FieldByNumber(1).AsString = '') then
+                                   begin   ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme n'existe pas donc inserer
+                                        //================== calcul du poids du terme
+                                        poids_terme := 10 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'insert into notice_terme_exact values(''' + id_terme + ''',''' + id_notice_actuelle +  ''',''' + inttostr(poids_terme) + ''')';
+                                        Query1.ExecSQL ;
+                                   end    ///------- (*6)
+                                else
+                                   begin  ///------- (6)
+                                        //------- C'est a dire que l'occurence notice_terme existe donc recalculer juste son poids
+                                        //================== calcul du poids du terme
+                                        poids_terme := strtoint(Query1.Fields.FieldByNumber(3).AsString) ;
+                                        poids_terme := poids_terme + 2 ; // parceque c'est un titre
+                                        Query1.SQL.Text := 'update notice_terme_exact set poids_terme =''' + inttostr(poids_terme) + ''' where id_terme_exact = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                        Query1.ExecSQL ;
+
+                                   end;  ///------- (*6)
+                            end;   ///------- (*5)
+                        end;       ///------- (*4)
+
+            end;  ///------- (*3)
+
+//---------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+//==================================================================================================================================
+//-------- Indexation des termes des  mots cles
+//==================================================================================================================================
+        //---- extraire les mots clés d'une notice
+        Query1.SQL.Text := 'select id_mot_cle from NOTICE_MOT_CLE where id_notice = ''' + id_notice_actuelle + '''';
+        Query1.ExecSQL ; Query1.Active := true;Query1.First ;
+
+        while (not Query1.Eof) do
+                begin
+
+                        //------
+                        id_mot_cle := Query1.Fields.FieldByNumber(1).AsString ;
+                        Query3.SQL.Text := 'select MOT_CLE from MOTS_CLES where ID_MOT_CLE = ''' + id_mot_cle + '''' ;
+                        Query3.ExecSQL ; Query3.Active := true ; Query3.First ;
+                        valeur_champ := Query3.Fields.FieldByNumber(1).AsString ;
+
+                        if (valeur_champ <> '') then
+                                begin
+                                        //-------- l'instruction suivante permet d'eliminer les caracteres speciaux , exmple : (, ), ;, [, ] ...
+                                        //=========================================================================================================
+                                        valeur_champ := replace_char(valeur_champ, '(',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, ')',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, ',',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, '.',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, '[',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, ']',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, ';',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, '/',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, '\',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, ':',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, '´',' ') ;
+
+
+                                        valeur_champ := replace_char(valeur_champ, '?',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, '!',' ') ;
+                                        valeur_champ := replace_char(valeur_champ, 'é','e') ;
+                                        valeur_champ := replace_char(valeur_champ, 'è','e') ;
+                                        valeur_champ := replace_char(valeur_champ, 'ê','e') ;
+                                        valeur_champ := replace_char(valeur_champ, 'ë','e') ;
+                                        //=========================================================================================================
+                                end;  //--- end de :  if (valeur_champ <> '') then
+
+                        liste_termes := Split1(' ', valeur_champ) ;
+                        copy_liste_termes := Split1(' ', valeur_champ) ;
+
+//---------------------------------------------------------------------------------------------------//
+//-------------------- Verifier  : est ce que le terme existe dans la table terme ou pas
+//---------------------------------------------------------------------------------------------------//
+
+                for j := 0 to liste_termes.Count - 1 do
+                        begin
+
+                            if ((liste_termes.Strings[j] <> '') and (strlen(Pchar(liste_termes.Strings[j])) > 1) and (not is_mot_vide(liste_termes.Strings[j],Query4))) then
+                                begin
+                                        liste_termes.Strings[j] := Copy(liste_termes.Strings[j], 0,5) ; //=== Pour faire la troncature a 5 caraceteres
+                                        Query3.SQL.Text := 'select id_terme from terme where lower(terme) = ''' + LowerCase(liste_termes.Strings[j]) + '''';
+                                        Query3.ExecSQL ; Query3.Active := true; Query3.First ;
+                                     if (Query3.Fields.FieldByNumber(1).AsString = '') then
+                                        begin
+                                                // ----- selectionner le max des id_terme
+                                                Query3.Active := false;
+                                                Query3.SQL.Text := 'select max(id_terme) from terme';
+                                                Query3.ExecSQL ; Query3.Active := true; Query3.First ;
+                                                if (Query3.Fields.FieldByNumber(1).AsString = '') then
+                                                        begin
+                                                                max_id_terme := 0 ;
+                                                        end
+
+                                                else            max_id_terme := strtoint(Query3.Fields.FieldByNumber(1).AsString) + 1 ;
+
+                                                //---- insertion dans la table : terme
+                                                id_terme := inttostr(max_id_terme) ;
+                                                Query3.Active := false;
+                                                Query3.SQL.Text := 'insert into terme values('''+ id_terme + ''',''' + LowerCase(liste_termes.Strings[j]) +  ''')';
+                                                Query3.ExecSQL ;
+                                        end
+                                     else
+                                        begin
+                                                id_terme := Query3.Fields.FieldByNumber(1).AsString ;
+                                                //------ ne fait rien, le terme existe
+                                        end;
+
+
+                                        Query3.SQL.Text := 'select * from notice_terme where id_terme = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                        Query3.ExecSQL ; Query3.Active := true ; Query3.First ;
+                                        if (Query3.Fields.FieldByNumber(1).AsString = '') then
+                                                begin
+                                                        //------- C'est a dire que l'occurence notice_terme n'existe pas donc inserer
+                                                        //================== calcul du poids du terme
+                                                        poids_terme := 6 ; // parceque c'est un titre
+                                                        Query3.Active := false ;
+                                                        Query3.SQL.Text := 'insert into notice_terme values(''' + id_terme + ''',''' + id_notice_actuelle +  ''',''' + inttostr(poids_terme) + ''')';
+                                                        Query3.ExecSQL ;
+                                                end
+                                        else
+                                                begin
+                                                        //------- C'est a dire que l'occurence notice_terme existe donc recalculer juste son poids
+                                                        //================== calcul du poids du terme
+                                                        poids_terme := strtoint(Query3.Fields.FieldByNumber(3).AsString) ;
+                                                        poids_terme := poids_terme + 6 ; // parceque c'est un titre
+                                                        Query3.Active := false ;
+                                                        Query3.SQL.Text := 'update notice_terme set poids_terme =''' + inttostr(poids_terme) + ''' where id_terme = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                                        Query3.ExecSQL ;
+
+                                                end;
+
+                            end;           // -- end de   : if ((liste_termes.Strings[j] <> '') and (strlen(Pchar(liste_termes.Strings[j])) > 1) and (not is_mot_vide(liste_termes.Strings[j],Query4)))
+                        end;               // -- end de   : for j := 0 to liste_termes.Count - 1 do
+
+//---------------------------------------------------------------------------------------------------//
+//--------------- Insertion et Indexation des termes exactes
+//---------------------------------------------------------------------------------------------------//
+
+                for j := 0 to copy_liste_termes.Count - 1 do
+                        begin
+
+                            if ((copy_liste_termes.Strings[j] <> '') and (strlen(Pchar(copy_liste_termes.Strings[j])) > 1) and (not is_mot_vide(copy_liste_termes.Strings[j],Query4))) then
+                                begin
+                                        //--- copy_liste_termes.Strings[j] := Copy(copy_liste_termes.Strings[j], 0,5) ; //=== Pour faire la troncature a 5 caraceteres
+                                        Query3.SQL.Text := 'select id_terme_exact from terme_exact where lower(terme_exact) = ''' + LowerCase(copy_liste_termes.Strings[j]) + '''';
+
+                                        //Query3.ExecSQL ;
+                                        Query3.Active := true; Query3.First ;
+                                     if (Query3.Fields.FieldByNumber(1).AsString = '') then
+                                        begin
+                                                // ----- selectionner le max des id_terme
+                                                Query3.Active := false;
+                                                Query3.SQL.Text := 'select max(id_terme_exact) from terme_exact';
+                                                Query3.ExecSQL ; Query3.Active := true; Query3.First ;
+                                                if (Query3.Fields.FieldByNumber(1).AsString = '') then
+                                                        begin
+                                                                max_id_terme := 0 ;
+                                                        end
+
+                                                else            max_id_terme := strtoint(Query3.Fields.FieldByNumber(1).AsString) + 1 ;
+
+                                                //---- insertion dans la table : terme
+                                                id_terme := inttostr(max_id_terme) ;
+                                                Query3.Active := false;
+                                                Query3.SQL.Text := 'insert into terme_exact values('''+ id_terme + ''',''' + LowerCase(copy_liste_termes.Strings[j]) +  ''')';
+                                                Query3.ExecSQL ;
+                                        end
+                                     else
+                                        begin
+                                                id_terme := Query3.Fields.FieldByNumber(1).AsString ;
+                                                //------ ne fait rien, le terme existe
+                                        end;
+
+
+                                        Query3.SQL.Text := 'select * from notice_terme_exact where id_terme_exact = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+                                        Query3.ExecSQL ; Query3.Active := true ; Query3.First ;
+                                        if (Query3.Fields.FieldByNumber(1).AsString = '') then
+                                                begin
+                                                        //------- C'est a dire que l'occurence notice_terme n'existe pas donc inserer
+                                                        //================== calcul du poids du terme
+                                                        poids_terme := 6 ; // parceque c'est un titre
+                                                        Query3.Active := false ;
+                                                        Query3.SQL.Text := 'insert into notice_terme_exact values(''' + id_terme + ''',''' + id_notice_actuelle +  ''',''' + inttostr(poids_terme) + ''')';
+                                                        Query3.ExecSQL ;
+                                                end
+                                        else
+                                                begin
+                                                        //------- C'est a dire que l'occurence notice_terme existe donc recalculer juste son poids
+                                                        //================== calcul du poids du terme
+                                                        poids_terme := strtoint(Query3.Fields.FieldByNumber(3).AsString) ;
+                                                        poids_terme := poids_terme + 6 ; // parceque c'est un titre
+                                                        Query3.Active := false ;
+                                                        Query3.SQL.Text := 'update NOTICE_TERME_EXACT set POIDS_TERME =''' + inttostr(poids_terme) + ''' where id_terme_exact = ''' + id_terme + ''' and id_notice = ''' + id_notice_actuelle + '''';
+
+                                                        Query3.ExecSQL ;
+
+                                                end;
+
+                            end;           // -- end de   : if ((liste_termes.Strings[j] <> '') and (strlen(Pchar(liste_termes.Strings[j])) > 1) and (not is_mot_vide(liste_termes.Strings[j],Query4)))
+                        end;               // -- end de   : for j := 0 to liste_termes.Count - 1 do
+
+
+
+//---------------------------------------------------------------------------------------------------//
+//---------------------------------------------------------------------------------------------------//
+
+                        Query1.Next ; //--- Pointer vers le prochain id_mot_cle de la table : " notice_mot_cle "
+
+                end;  //---- end de : while (not Query1.eof) do
+
+            //===================== Changer le champ "is_indexed" dans la table notice, sa veut dire que la notice en cours est indexee
+            //=============== pour changer l'etat d'une notice ; ceci sert a ne pas l'indexer une autre fois
+        end; ///------- (*2)  : if (strtoint(Query2.Fields.FieldByNumber(5).AsString) = 0) then
+
+        Query1.Active := false ;
+        Query1.SQL.Text := 'update notice set is_indexed =''1'' where id_notice = ''' + id_notice_actuelle + '''';
+        Query1.ExecSQL ;
+
+      Query2.Next ;
+
+        //------- end for i = 0 to nbr_notice
+    end;  ///------- (*1)
+
+
+Label1.Caption := 'Progression : Indexation termes terminée ... ' ;
+RichEdit1.Lines.Add('Fin Indexation des termes ... ') ;
+end;
+
+procedure TForm_indexation_termes.Button3Click(Sender: TObject);
+begin
+Close ;
+end;
+
+procedure TForm_indexation_termes.FormActivate(Sender: TObject);
+begin
+        Edit_ID_TYPE_Notice.Text := Form_Principal.Edit2.Text ;
+end;
+
+end.

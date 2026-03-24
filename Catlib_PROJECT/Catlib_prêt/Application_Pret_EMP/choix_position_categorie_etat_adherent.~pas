@@ -1,0 +1,138 @@
+unit choix_position_categorie_etat_adherent;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, DBTables, StdCtrls, Grids, DBGrids, Mask, DBCtrls, ExtCtrls,
+  ADODB;
+
+type
+  TForm_choix_position_categorie_etat_adherent = class(TForm)
+    Query11: TQuery;
+    DBGrid1: TDBGrid;
+    DataSource1: TDataSource;
+    Panel1: TPanel;
+    DBEdit1: TDBEdit;
+    DBEdit2: TDBEdit;
+    Panel2: TPanel;
+    Button_valider: TButton;
+    Button2: TButton;
+    Query1: TADOQuery;
+    procedure FormActivate(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Button_validerClick(Sender: TObject);
+    procedure DBGrid1DblClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form_choix_position_categorie_etat_adherent: TForm_choix_position_categorie_etat_adherent;
+
+implementation
+
+uses gestion_adherents , Unit_Connexion;
+
+{$R *.dfm}
+
+procedure TForm_choix_position_categorie_etat_adherent.FormActivate(
+  Sender: TObject);
+begin
+
+DBGrid1.Columns[0].Width := 120 ;
+DBGrid1.Columns[1].Width := 120 ;
+
+
+if (Form_gestion_adherents.type_modification = 1) then //--- C'est à dire qu'on veut modifier la position
+        begin
+             Query1.Active := false;
+             DBEdit1.DataField := 'ID_POSITION';
+             DBEdit2.DataField := 'LIBELLE_POSITION';
+             Query1.SQL.Text := 'select * from position';
+             Query1.ExecSQL;
+             Query1.Active := true;
+        end;
+
+if (Form_gestion_adherents.type_modification = 2) then //--- C'est à dire qu'on veut modifier la categorie
+        begin
+             Query1.Active := false;
+             DBEdit1.DataField := 'ID_CATEGORIE';
+             DBEdit2.DataField := 'LIBELLE_CATEGORIE';
+             Query1.SQL.Text := 'select ID_CATEGORIE, LIBELLE_CATEGORIE from categorie';
+             Query1.ExecSQL;
+             Query1.Active := true;
+        end;
+
+if (Form_gestion_adherents.type_modification = 3) then //--- C'est à dire qu'on veut modifier la etat adherent
+        begin
+             Query1.Active := false;
+             DBEdit1.DataField := 'ID_ETAT';
+             DBEdit2.DataField := 'DESC_ETAT';
+             Query1.SQL.Text := 'select * from ETAT_ADHERENT';
+             Query1.ExecSQL;
+             Query1.Active := true;             
+        end;
+
+end;
+
+procedure TForm_choix_position_categorie_etat_adherent.Button2Click(
+  Sender: TObject);
+begin
+Close;
+end;
+
+procedure TForm_choix_position_categorie_etat_adherent.Button_validerClick(
+  Sender: TObject);
+begin
+
+if (Form_gestion_adherents.type_modification = 1) then //--- C'est à dire qu'on veut modifier la position
+        begin
+             Form_gestion_adherents.Edit_id_position_adherent.Text := DBEdit1.Text;
+             Form_gestion_adherents.Edit_libelle_position.Text := DBEdit2.Text;
+             Close;
+        end;
+
+if (Form_gestion_adherents.type_modification = 2) then //--- C'est à dire qu'on veut modifier la categorie
+        begin
+             Form_gestion_adherents.Edit_categorie_adherent.Text := DBEdit1.Text;
+             Form_gestion_adherents.Edit_libelle_categorie.Text := DBEdit2.Text;
+             Close;
+             end;
+
+if (Form_gestion_adherents.type_modification = 3) then //--- C'est à dire qu'on veut modifier la etat adherent
+        begin
+             Form_gestion_adherents.Edit_etat_adherent.Text := DBEdit1.Text;
+             Form_gestion_adherents.Edit_desc_etat_adherent.Text := DBEdit2.Text;
+             Close;
+        end;
+end;
+
+procedure TForm_choix_position_categorie_etat_adherent.DBGrid1DblClick(
+  Sender: TObject);
+begin
+if (Form_gestion_adherents.type_modification = 1) then //--- C'est à dire qu'on veut modifier la position
+        begin
+             Form_gestion_adherents.Edit_id_position_adherent.Text := DBEdit1.Text;
+             Form_gestion_adherents.Edit_libelle_position.Text := DBEdit2.Text;
+             Close;
+        end;
+
+if (Form_gestion_adherents.type_modification = 2) then //--- C'est à dire qu'on veut modifier la categorie
+        begin
+             Form_gestion_adherents.Edit_categorie_adherent.Text := DBEdit1.Text;
+             Form_gestion_adherents.Edit_libelle_categorie.Text := DBEdit2.Text;
+             Close;
+             end;
+
+if (Form_gestion_adherents.type_modification = 3) then //--- C'est à dire qu'on veut modifier la etat adherent
+        begin
+             Form_gestion_adherents.Edit_etat_adherent.Text := DBEdit1.Text;
+             Form_gestion_adherents.Edit_desc_etat_adherent.Text := DBEdit2.Text;
+             Close;
+        end;
+end;
+
+end.

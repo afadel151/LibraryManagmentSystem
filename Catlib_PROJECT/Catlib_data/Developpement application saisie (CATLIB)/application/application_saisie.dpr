@@ -1,0 +1,67 @@
+program application_saisie;
+
+uses
+  Forms,
+  Unit1 in 'Unit1.pas' {Form_Principal},
+  choix_type_ressource in 'choix_type_ressource.pas' {choix_type},
+  ajout_these_unit in 'ajout_these_unit.pas' {ajout_these},
+  ajout_monographie_unit in 'ajout_monographie_unit.pas' {ajout_monographie},
+  ajout_article_unit in 'ajout_article_unit.pas' {ajout_Article},
+  Unit_choix_theme in 'Unit_choix_theme.pas' {Form_choisir_theme},
+  Unit_choix_langue in 'Unit_choix_langue.pas' {Form_choisir_langue},
+  Unit_choix_pays in 'Unit_choix_pays.pas' {Form_choisir_pays},
+  Unit_choix_auteur in 'Unit_choix_auteur.pas' {Form_choix_auteur},
+  Unit_choix_mots_cles in 'Unit_choix_mots_cles.pas' {Form_choix_mots_cles},
+  Unit_choix_fonction_auteur_secondaire in 'Unit_choix_fonction_auteur_secondaire.pas' {Form_choix_fonction_auteur_secondaire},
+  Unit_choix_diplome in 'Unit_choix_diplome.pas' {Form_choisir_diplome},
+  Unit_choix_discipline in 'Unit_choix_discipline.pas' {Form_choix_discipline},
+  Unit_choix_etablissement in 'Unit_choix_etablissement.pas' {Form_choix_etablissement},
+  Unit_choix_ville in 'Unit_choix_ville.pas' {Form_choix_ville},
+  Unit_choix_collection in 'Unit_choix_collection.pas' {Form_choix_collection},
+  Unit_choix_editeur in 'Unit_choix_editeur.pas' {Form_choix_editeur},
+  Unit_inserer_collection in 'Unit_inserer_collection.pas' {Form_Inserer_nouvelle_collection},
+  Unit_ajouter_adresse_bibliographique in 'Unit_ajouter_adresse_bibliographique.pas' {Form_ajout_adresse_bibliographique},
+  Unit_choix_notice_pour_MAJ in 'Unit_choix_notice_pour_MAJ.pas' {Form_choix_notice_pour_MAJ},
+  Unit_choix_CDD in 'Unit_choix_CDD.pas' {Form_choisir_CDD},
+  Unit_Indexation_termes in 'Unit_Indexation_termes.pas' {Form_indexation_termes},
+  Unit_Connexion in 'Unit_Connexion.pas' {Form_Connexion},
+  ajout_periodique_unit in 'ajout_periodique_unit.pas' {ajout_periodique},
+  Unit_Choix_Periodicite in 'Unit_Choix_Periodicite.pas' {Form_Choix_Periodicite},
+  Unit_gestion_aquisitions in 'Unit_gestion_aquisitions.pas' {Form_gestion_aquisitions},
+  ajout_Tire_a_Part_unit in 'ajout_tire_a_part_unit.pas' {ajout_Tire_a_Part},
+  ajout_resource_electronique_unit in 'ajout_resource_electronique_unit.pas' {ajout_resource_electronique};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.CreateForm(TForm_Principal, Form_Principal);
+  Application.CreateForm(TForm_Connexion, Form_Connexion);
+  Application.CreateForm(Tchoix_type, choix_type);
+  Application.CreateForm(Tajout_these, ajout_these);
+  Application.CreateForm(Tajout_monographie, ajout_monographie);
+  Application.CreateForm(Tajout_Article, ajout_Article);
+  Application.CreateForm(TForm_choisir_theme, Form_choisir_theme);
+  Application.CreateForm(TForm_choisir_langue, Form_choisir_langue);
+  Application.CreateForm(TForm_choisir_pays, Form_choisir_pays);
+  Application.CreateForm(TForm_choix_auteur, Form_choix_auteur);
+  Application.CreateForm(TForm_choix_mots_cles, Form_choix_mots_cles);
+  Application.CreateForm(TForm_choix_fonction_auteur_secondaire, Form_choix_fonction_auteur_secondaire);
+  Application.CreateForm(TForm_choisir_diplome, Form_choisir_diplome);
+  Application.CreateForm(TForm_choix_discipline, Form_choix_discipline);
+  Application.CreateForm(TForm_choix_etablissement, Form_choix_etablissement);
+  Application.CreateForm(TForm_choix_ville, Form_choix_ville);
+  Application.CreateForm(TForm_choix_collection, Form_choix_collection);
+  Application.CreateForm(TForm_choix_editeur, Form_choix_editeur);
+  Application.CreateForm(TForm_Inserer_nouvelle_collection, Form_Inserer_nouvelle_collection);
+  Application.CreateForm(TForm_ajout_adresse_bibliographique, Form_ajout_adresse_bibliographique);
+  Application.CreateForm(TForm_choix_notice_pour_MAJ, Form_choix_notice_pour_MAJ);
+  Application.CreateForm(TForm_choisir_CDD, Form_choisir_CDD);
+  Application.CreateForm(TForm_indexation_termes, Form_indexation_termes);
+  Application.CreateForm(Tajout_periodique, ajout_periodique);
+  Application.CreateForm(TForm_Choix_Periodicite, Form_Choix_Periodicite);
+  Application.CreateForm(TForm_gestion_aquisitions, Form_gestion_aquisitions);
+  Application.CreateForm(Tajout_Tire_a_Part, ajout_Tire_a_Part);
+  Application.CreateForm(Tajout_resource_electronique, ajout_resource_electronique);
+  Application.Run;
+end.

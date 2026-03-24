@@ -1,0 +1,134 @@
+object Form_choix_fonction_auteur_secondaire: TForm_choix_fonction_auteur_secondaire
+  Left = 396
+  Top = 189
+  Width = 433
+  Height = 395
+  Caption = 'Choix Fonction'
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
+  OnActivate = FormActivate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 72
+    Top = 5
+    Width = 57
+    Height = 13
+    Caption = 'Trier par :'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
+  object DBGrid1: TDBGrid
+    Left = 25
+    Top = 104
+    Width = 375
+    Height = 252
+    DataSource = DataSource1
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'MS Sans Serif'
+    TitleFont.Style = []
+    OnDblClick = DBGrid1DblClick
+  end
+  object Panel2: TPanel
+    Left = 80
+    Top = 24
+    Width = 273
+    Height = 73
+    Color = clMoneyGreen
+    TabOrder = 1
+    object Button2: TButton
+      Left = 7
+      Top = 8
+      Width = 122
+      Height = 25
+      Caption = 'ID_Fonction - Desc'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnClick = Button2Click
+    end
+    object Button4: TButton
+      Left = 7
+      Top = 40
+      Width = 122
+      Height = 25
+      Caption = 'ID_Fonction - Asc '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+      OnClick = Button4Click
+    end
+    object Button5: TButton
+      Left = 135
+      Top = 40
+      Width = 131
+      Height = 25
+      Caption = 'Fonction - Asc  '
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+      OnClick = Button5Click
+    end
+    object Button3: TButton
+      Left = 135
+      Top = 8
+      Width = 131
+      Height = 25
+      Caption = 'Fonction - Desc'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+      OnClick = Button3Click
+    end
+  end
+  object DataSource1: TDataSource
+    DataSet = Query1
+    Left = 352
+    Top = 8
+  end
+  object Query11: TQuery
+    DatabaseName = 'ORCL_Library_Server'
+    SQL.Strings = (
+      'select * from fonction')
+    Left = 384
+    Top = 8
+  end
+  object Query1: TADOQuery
+    Active = True
+    Connection = Form_Connexion.ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'select * from fonction')
+    Left = 384
+    Top = 40
+  end
+end

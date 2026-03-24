@@ -1,0 +1,274 @@
+unit Unit_inserer_collection;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, DB, DBTables, ExtCtrls, Mask, DBCtrls, Grids, ADODB;
+
+type
+  TForm_Inserer_nouvelle_collection = class(TForm)
+    Button_Valider: TButton;
+    Panel1: TPanel;
+    Requete_Validation1: TQuery;
+    _Titre_Collection: TMemo;
+    Label1: TLabel;
+    _Sous_Titre_Collection: TMemo;
+    Label2: TLabel;
+    _ISSN_Collection: TEdit;
+    Label3: TLabel;
+    Button1: TButton;
+    Button2: TButton;
+    DBEdit1: TDBEdit;
+    DataSource_requete_validation: TDataSource;
+    DataSource1: TDataSource;
+    Tableau_Auteurs: TStringGrid;
+    Label4: TLabel;
+    Button4: TButton;
+    Button5: TButton;
+    Button13: TButton;
+    Requete_Validation: TADOQuery;
+    procedure Button_ValiderClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure Button13Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+  function replace_char(chaine : string; const S :char; const D : char  ) : string;
+  procedure supprimer_ligne_TstringGrid(Tableau : TStringGrid ; ligne : Integer) ;
+
+  
+var
+  Form_Inserer_nouvelle_collection: TForm_Inserer_nouvelle_collection;
+
+implementation
+
+uses Unit_choix_collection, Unit_choix_auteur, Unit_Connexion;
+
+{$R *.dfm}
+
+procedure TForm_Inserer_nouvelle_collection.Button_ValiderClick(Sender: TObject);
+label suite1 ;
+var
+id_collection , ID_MENTION_RES : string ;
+i : Integer ;
+begin
+                //-------------------------------------------------------------------
+                //------------- Inserer la collection dans la base
+                //-------------------------------------------------------------------
+
+if ( _Titre_Collection.Text <> '' ) then
+        begin
+                                _Titre_Collection.Text := replace_char(_Titre_Collection.Text, char(39), chr(180)) ;   //--- enlever les  : " ' "
+                                _Sous_Titre_Collection.Text := replace_char(_Sous_Titre_Collection.Text, char(39), chr(180)) ;   //--- enlever les  : " ' "
+
+                                Requete_Validation.active := false ;
+                                DBedit1.DataField:= 'ID_COLLECTION' ;
+                                Requete_Validation.SQL.Text := 'select ID_COLLECTION from COLLECTION where upper(TITRE_COLLECTION) = ''' + strupper(Pchar(_Titre_Collection.Text)) + '''' ;
+                                Requete_Validation.active := true ;
+                                if (DBedit1.Text <> '') then //--- C'est à dire que la COLLECTION existe déjà dans la base
+                                        begin
+                                                Showmessage('Cette collection existe déjà !!!')
+                                        end
+                                else                         //--- C'est à dire que la COLLECTION n'existe pas dans la base
+                                        begin
+                                                //---- On va créer le THEME et extraire son identifiant
+
+                                                Requete_Validation.active := false ;
+                                                Requete_Validation.SQL.Text := 'select MAX(ID_COLLECTION) from COLLECTION' ;
+                                                DBedit1.DataField := 'MAX(ID_COLLECTION)' ;
+                                                Requete_Validation.active := true ;
+                                                id_collection := inttostr( strtoint(DBedit1.Text) + 1 ) ;
+
+                                                //---- On va inserer le THEME avec son identifiant
+
+                                                Requete_Validation.active := false ;
+                                                Requete_Validation.SQL.Text := 'insert into COLLECTION ( ID_COLLECTION , TITRE_COLLECTION , SOUS_TITRE_COLLECTION , ISSN_COLLECTION ) values (''' + id_collection + ''', ''' + _Titre_Collection.Text+ ''', ''' + _Sous_Titre_Collection.Text + ''', ''' +  _ISSN_Collection.Text +  ''')' ;                                                DBedit1.DataField := '' ;
+                                                Showmessage (Requete_Validation.SQL.Text) ;
+                                                Requete_Validation.ExecSQL ;  //*******//
+                                                Showmessage ('Collection insérée avec succès.') ;
+
+                                                _Titre_Collection.Text := '' ;
+                                                _Sous_Titre_Collection.Text := '' ;
+                                                _ISSN_Collection.Text := '' ;
+                                                Form_Choix_collection.Query1.Active := false ;
+                                                Form_Choix_collection.Query1.Active := true  ;                                                
+
+
+                                        end;
+
+
+
+                //-------------------------------------------------------------------
+                //------------- Inserer les Mentions de Responsabilités
+                //-------------------------------------------------------------------                
+
+                //---- On doit parcourir le StringGrid élement par élément
+
+if  (( ( Tableau_Auteurs.Cells[0,1] = '' ) and ( Tableau_Auteurs.Cells[1,1] = '' ) ) and ( Tableau_Auteurs.Cells[2,1] = '' ) ) then  goto suite1 ;
+
+        for i :=  1 to Tableau_Auteurs.RowCount - 1 do
+            begin
+
+            if (Tableau_Auteurs.Cells[1,i] <> '') then
+                begin
+                        if (Tableau_Auteurs.Cells[0,i] <> '') then  ID_MENTION_RES := Tableau_Auteurs.Cells[0,i]
+                        else
+                                begin //---- On va essayer de chercher est ce que la  MENTION_RESPONSABILITE existe ou pas
+                                      //     s'il n'existe pas on va l'inserer
+
+                                        Tableau_Auteurs.Cells[1,i] := replace_char(Tableau_Auteurs.Cells[1,i], char(39), chr(180)) ;   //--- enlever les  : " ' "
+                                        Tableau_Auteurs.Cells[2,i] := replace_char(Tableau_Auteurs.Cells[2,i], char(39), chr(180)) ;   //--- enlever les  : " ' "
+
+                                        Requete_Validation.active := false ;
+                                        DBedit1.DataField:= 'ID_MENTION_RES' ;
+                                        if (Tableau_Auteurs.Cells[2,i] = '') then
+                                                Requete_Validation.SQL.Text := 'select ID_MENTION_RES from MENTION_RESPONSABILITE where upper(NOM) = ''' + strupper(Pchar(Tableau_Auteurs.Cells[1,i])) + '''' //---- c'est à dire que le prénom n'a pas été cité
+                                        else
+                                                Requete_Validation.SQL.Text := 'select ID_MENTION_RES from MENTION_RESPONSABILITE where upper(NOM) = ''' + strupper(Pchar(Tableau_Auteurs.Cells[1,i])) + ''' and upper(AUTRE_PARTIE) = ''' + strupper(Pchar(Tableau_Auteurs.Cells[2,i])) + '''' ;
+
+                                        Requete_Validation.active := true ;
+
+                                        if (DBedit1.Text <> '') then //--- C'est à dire que la MENTION_RESPONSABILITE existe déjà dans la base
+                                                begin
+                                                        ID_MENTION_RES := DBedit1.Text ;
+                                                end
+                                        else                         //--- C'est à dire que la MENTION_RESPONSABILITE n'existe pas dans la base
+                                                begin
+                                                        //---- On va créer la MENTION_RESPONSABILITE et extraire son identifiant
+
+                                                        Requete_Validation.active := false ;
+                                                        Requete_Validation.SQL.Text := 'select MAX(ID_MENTION_RES) from MENTION_RESPONSABILITE' ;
+                                                        DBedit1.DataField := 'MAX(ID_MENTION_RES)' ;
+                                                        Requete_Validation.active := true ;
+                                                        ID_MENTION_RES := inttostr( strtoint(DBedit1.Text) + 1 ) ;
+
+                                                        //---- On va inserer la MENTION_RESPONSABILITE avec son identifiant
+
+                                                        Requete_Validation.active := false ;
+                                                        Requete_Validation.SQL.Text := 'insert into MENTION_RESPONSABILITE ( ID_MENTION_RES , NOM , AUTRE_PARTIE , COLLECTIVITE ) values (''' + ID_MENTION_RES + ''', ''' + Tableau_Auteurs.Cells[1,i] + ''', ''' + Tableau_Auteurs.Cells[2,i] + ''', ''' + Tableau_Auteurs.Cells[3,i] + ''')' ;
+                                                        DBedit1.DataField := '' ;
+                                                        Requete_Validation.ExecSQL ;  //*******//
+
+                                                end;
+
+                                end;
+
+                        //---- Avant d'inserer ici, il faut verifier l'inexistence des données dans la base
+
+                        Requete_Validation.active := false ;
+                        Requete_Validation.SQL.Text := ' select ID_COLLECTION from  MENTION_RES_COLLECTION  where ID_COLLECTION = ''' + id_collection + ''' and ID_MENTION_RES =''' + ID_MENTION_RES + '''' ;
+                        DBedit1.DataField := 'ID_COLLECTION' ;
+                        Requete_Validation.active := true ;
+
+                        if (DBedit1.Text = '') then
+                                begin
+                                        //---- c'est à dire ici que l'enregistrement n'existe pas dans la base donc on va l'inserer
+
+                                        Requete_Validation.active := false ;
+                                        Requete_Validation.SQL.Text := ' insert into MENTION_RES_COLLECTION ( ID_COLLECTION, ID_MENTION_RES ) ' +
+                                                                       ' values (''' + id_collection + ''', ''' + ID_MENTION_RES + ''')' ;
+                                        DBedit1.DataField := '' ;
+                                        Requete_Validation.ExecSQL ;  //*******//
+                                end ;
+
+                        end ; //----- Fin du : if (Tableau_Auteurs.Cells[1,i] <> '')
+                end ; //----- Fin du :   for i :=  1 to Tableau_Auteurs.Rows
+
+suite1 :
+
+        end;
+
+
+end;
+
+
+procedure TForm_Inserer_nouvelle_collection.Button1Click(Sender: TObject);
+begin
+_Titre_Collection.Text := '' ;
+_Sous_Titre_Collection.Text := '' ;
+_ISSN_Collection.Text := '' ;
+Tableau_Auteurs.RowCount := 2 ;
+Tableau_Auteurs.Rows[1].Clear ;
+
+
+end;
+
+
+
+
+
+function replace_char(chaine : string; const S :char; const D : char  ) : string;
+var
+i : integer ;
+begin
+
+if (chaine <> '' ) then
+    begin
+        for i := 0 to strlen(Pchar(chaine)) do
+                begin
+                        if ( chaine[i] = S ) then chaine[i] := D ;
+                end;
+        replace_char := chaine ;
+    end;
+
+end;
+
+
+procedure TForm_Inserer_nouvelle_collection.Button2Click(Sender: TObject);
+begin
+Close;
+end;
+
+procedure TForm_Inserer_nouvelle_collection.FormActivate(Sender: TObject);
+begin
+Tableau_Auteurs.Cells[0,0] := 'ID_Mention' ;
+Tableau_Auteurs.Cells[1,0] := 'Nom_Mention' ;
+Tableau_Auteurs.Cells[2,0] := 'Autre_Partie_Mention' ;
+Tableau_Auteurs.Cells[3,0] := 'Collectivité' ;
+
+end;
+
+procedure TForm_Inserer_nouvelle_collection.Button13Click(Sender: TObject);
+begin
+Tableau_Auteurs.RowCount := 2 ;
+Tableau_Auteurs.Rows[1].Clear ;
+
+end;
+
+procedure TForm_Inserer_nouvelle_collection.Button4Click(Sender: TObject);
+begin
+Form_choix_auteur.Edit_fenetre.text := '99' ; /// -- c'est à dire que la fenetre appellante concerne formulaire ajout d'une nouvelle collection
+Form_choix_auteur.Edit_type_auteur.text := '2' ; //-- type d'auteur qu'on va choisir est auteur (CO auteurs : parceque on a une StringGrid)
+Form_choix_auteur.ShowModal ;
+
+end;
+
+procedure TForm_Inserer_nouvelle_collection.Button5Click(Sender: TObject);
+begin
+
+     if (Tableau_Auteurs.RowCount > 2) then supprimer_ligne_TstringGrid(Tableau_Auteurs, Tableau_Auteurs.Row )
+     else Tableau_Auteurs.Rows[1].Clear ;
+
+end;
+
+
+procedure supprimer_ligne_TstringGrid(Tableau : TStringGrid ; ligne : Integer) ;
+var
+i : Integer ;
+begin
+for i := ligne to Tableau.RowCount do
+        Tableau.Rows[i] := Tableau.Rows[i+1] ;
+
+Tableau.Rowcount := Tableau.Rowcount - 1 ;
+end;
+
+
+end.

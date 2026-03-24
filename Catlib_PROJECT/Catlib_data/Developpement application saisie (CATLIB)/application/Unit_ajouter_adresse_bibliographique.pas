@@ -1,0 +1,177 @@
+unit Unit_ajouter_adresse_bibliographique;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls;
+
+type
+  TForm_ajout_adresse_bibliographique = class(TForm)
+    Panel1: TPanel;
+    Label24: TLabel;
+    _ID_Editeur: TEdit;
+    _Editeur: TEdit;
+    Button17: TButton;
+    Button18: TButton;
+    _Ville: TEdit;
+    _ID_Ville: TEdit;
+    Label25: TLabel;
+    Label26: TLabel;
+    _Date_Edition: TEdit;
+    Button1: TButton;
+    Edit1: TEdit;
+    procedure Button17Click(Sender: TObject);
+    procedure Button18Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form_ajout_adresse_bibliographique: TForm_ajout_adresse_bibliographique;
+
+implementation
+
+uses Unit_choix_editeur, Unit_choix_ville, ajout_monographie_unit,
+  ajout_these_unit, ajout_periodique_unit, ajout_resource_electronique_unit;
+
+{$R *.dfm}
+
+procedure TForm_ajout_adresse_bibliographique.Button17Click(
+  Sender: TObject);
+begin
+Form_choix_editeur.Edit2.Text := '99' ;
+Form_choix_editeur.Showmodal ;
+end;
+
+procedure TForm_ajout_adresse_bibliographique.Button18Click(
+  Sender: TObject);
+begin
+Form_choix_ville.Edit2.Text := '99' ;
+Form_choix_ville.Showmodal ;
+end;
+
+procedure TForm_ajout_adresse_bibliographique.Button1Click(
+  Sender: TObject);
+begin
+
+if (Edit1.Text = '1') then
+        begin
+
+                if (_Editeur.Text <> '') then //--- C'est à dire que le champ  id_editeur n'est pas vide
+                        begin
+                             if (ajout_periodique._Tableau_Adresse_Bibliographique.Cells[3,1] = '') then  //--- c'est la premiere adresse bibliographique
+                                begin
+                                      ajout_periodique._Tableau_Adresse_Bibliographique.Cells[0,1] := _ID_Ville.Text ;
+                                      ajout_periodique._Tableau_Adresse_Bibliographique.Cells[1,1] := _Ville.Text ;
+                                      ajout_periodique._Tableau_Adresse_Bibliographique.Cells[2,1] := _ID_Editeur.Text ;
+                                      ajout_periodique._Tableau_Adresse_Bibliographique.Cells[3,1] := _Editeur.Text ;
+                                      //ajout_periodique._Tableau_Adresse_Bibliographique.Cells[4,1] := _Date_Edition.Text ;
+
+                                end
+                             else
+                                begin
+                                      ajout_periodique._Tableau_Adresse_Bibliographique.Cells[0,ajout_periodique._Tableau_Adresse_Bibliographique.RowCount] := _ID_Ville.Text ;
+                                      ajout_periodique._Tableau_Adresse_Bibliographique.Cells[1,ajout_periodique._Tableau_Adresse_Bibliographique.RowCount] := _Ville.Text ;
+                                      ajout_periodique._Tableau_Adresse_Bibliographique.Cells[2,ajout_periodique._Tableau_Adresse_Bibliographique.RowCount] := _ID_Editeur.Text ;
+                                      ajout_periodique._Tableau_Adresse_Bibliographique.Cells[3,ajout_periodique._Tableau_Adresse_Bibliographique.RowCount] := _Editeur.Text ;
+                                      //ajout_periodique._Tableau_Adresse_Bibliographique.Cells[4,ajout_periodique._Tableau_Adresse_Bibliographique.RowCount] := _Date_Edition.Text ;
+                                      ajout_periodique._Tableau_Adresse_Bibliographique.RowCount := ajout_periodique._Tableau_Adresse_Bibliographique.RowCount + 1 ;
+                                end;
+                        end;
+          end ;
+
+if (Edit1.Text = '3') then
+        begin
+
+                if (_Editeur.Text <> '') then //--- C'est à dire que le champ  id_editeur n'est pas vide
+                        begin
+                             if (ajout_monographie._Tableau_Adresse_Bibliographique.Cells[3,1] = '') then  //--- c'est la premiere adresse bibliographique
+                                begin
+                                      ajout_monographie._Tableau_Adresse_Bibliographique.Cells[0,1] := _ID_Ville.Text ;
+                                      ajout_monographie._Tableau_Adresse_Bibliographique.Cells[1,1] := _Ville.Text ;
+                                      ajout_monographie._Tableau_Adresse_Bibliographique.Cells[2,1] := _ID_Editeur.Text ;
+                                      ajout_monographie._Tableau_Adresse_Bibliographique.Cells[3,1] := _Editeur.Text ;
+                                      ajout_monographie._Tableau_Adresse_Bibliographique_Annee.Cells[0,1] := _Date_Edition.Text ;
+
+                                end
+                             else
+                                begin
+                                      ajout_monographie._Tableau_Adresse_Bibliographique.Cells[0,ajout_monographie._Tableau_Adresse_Bibliographique.RowCount] := _ID_Ville.Text ;
+                                      ajout_monographie._Tableau_Adresse_Bibliographique.Cells[1,ajout_monographie._Tableau_Adresse_Bibliographique.RowCount] := _Ville.Text ;
+                                      ajout_monographie._Tableau_Adresse_Bibliographique.Cells[2,ajout_monographie._Tableau_Adresse_Bibliographique.RowCount] := _ID_Editeur.Text ;
+                                      ajout_monographie._Tableau_Adresse_Bibliographique.Cells[3,ajout_monographie._Tableau_Adresse_Bibliographique.RowCount] := _Editeur.Text ;
+                                      ajout_monographie._Tableau_Adresse_Bibliographique_Annee.Cells[0,ajout_monographie._Tableau_Adresse_Bibliographique_Annee.RowCount] := _Date_Edition.Text ;
+
+                                      ajout_monographie._Tableau_Adresse_Bibliographique.RowCount := ajout_monographie._Tableau_Adresse_Bibliographique.RowCount + 1 ;
+                                      ajout_monographie._Tableau_Adresse_Bibliographique_Annee.RowCount := ajout_monographie._Tableau_Adresse_Bibliographique_Annee.RowCount + 1 ;
+
+                                end;
+                        end;
+          end ;
+
+if (Edit1.Text = '6') then
+        begin
+
+                if (_Editeur.Text <> '') then //--- C'est à dire que le champ  id_editeur n'est pas vide
+                        begin
+                             if (ajout_resource_electronique._Tableau_Adresse_Bibliographique.Cells[3,1] = '') then  //--- c'est la premiere adresse bibliographique
+                                begin
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique.Cells[0,1] := _ID_Ville.Text ;
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique.Cells[1,1] := _Ville.Text ;
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique.Cells[2,1] := _ID_Editeur.Text ;
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique.Cells[3,1] := _Editeur.Text ;
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique_Annee.Cells[0,1] := _Date_Edition.Text ;
+
+                                end
+                             else
+                                begin
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique.Cells[0,ajout_resource_electronique._Tableau_Adresse_Bibliographique.RowCount] := _ID_Ville.Text ;
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique.Cells[1,ajout_resource_electronique._Tableau_Adresse_Bibliographique.RowCount] := _Ville.Text ;
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique.Cells[2,ajout_resource_electronique._Tableau_Adresse_Bibliographique.RowCount] := _ID_Editeur.Text ;
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique.Cells[3,ajout_resource_electronique._Tableau_Adresse_Bibliographique.RowCount] := _Editeur.Text ;
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique_Annee.Cells[0,ajout_resource_electronique._Tableau_Adresse_Bibliographique_Annee.RowCount] := _Date_Edition.Text ;
+
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique.RowCount := ajout_resource_electronique._Tableau_Adresse_Bibliographique.RowCount + 1 ;
+                                      ajout_resource_electronique._Tableau_Adresse_Bibliographique_Annee.RowCount := ajout_resource_electronique._Tableau_Adresse_Bibliographique_Annee.RowCount + 1 ;
+
+                                end;
+                        end;
+          end ;
+
+
+//------ Remettre les champs à vide (Ré-initialisation)
+
+        _ID_Ville.Text := '' ;
+        _Ville.Text := '' ;
+        _ID_Editeur.Text := '' ;
+        _Editeur.Text := '' ;
+        _Date_Edition.Text := '' ;
+
+
+end;
+
+procedure TForm_ajout_adresse_bibliographique.FormActivate(
+  Sender: TObject);
+begin
+if (Edit1.Text = '1') then      //--- Periodique
+        begin
+             Label26.Visible := False ;
+             _Date_Edition.Visible := False ;
+        end ;
+
+if (Edit1.Text = '3') then      //--- Monographie
+        begin
+             Label26.Visible := True ;
+             _Date_Edition.Visible := True ;
+
+        end ;
+
+
+end;
+
+end.

@@ -1,0 +1,11 @@
+delete from mataoui.notice_dip_dis_etab  where id_diplome = '22' ; 
+delete from mataoui.diplome  where id_diplome = '22' ;
+delete from mataoui.discipline  where id_discipline = '228' ;
+delete from mataoui.etablissement  where id_etablissement = '147' ;
+delete from mataoui.notice_theme  where id_notice = '30351' ;
+delete from mataoui.notice_langue  where id_notice = '30351' ;
+delete from mataoui.notice  where id_notice = '30351' ;
+
+
+select * from mataoui.notice  where id_notice = '30351' ;
+select * from mataoui.notice_dip_dis_etab  where id_notice = '30351' ;

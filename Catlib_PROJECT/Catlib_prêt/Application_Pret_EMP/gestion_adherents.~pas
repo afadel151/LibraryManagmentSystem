@@ -1,0 +1,437 @@
+unit gestion_adherents;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, DB, DBTables, ExtCtrls, Mask, DBCtrls, Jpeg, ADODB;
+
+type
+  TForm_gestion_adherents = class(TForm)
+    Query_recherche_adherent1: TQuery;
+    Panel1: TPanel;
+    Button_retour: TButton;
+    Button_valider_modification: TButton;
+    Button_supprimer_adherent: TButton;
+    Button_ajouter_adherent: TButton;
+    GroupBox1: TGroupBox;
+    id_adherent: TEdit;
+    nom_adherent: TEdit;
+    Button1_search: TButton;
+    Button2_search: TButton;
+    Label1: TLabel;
+    Label2: TLabel;
+    GroupBox2: TGroupBox;
+    DataSource_adherent: TDataSource;
+    Edit_id_adherent: TEdit;
+    Edit_nom_adherent: TEdit;
+    Edit_prenom_adherent: TEdit;
+    Edit_categorie_adherent: TEdit;
+    Edit_etat_adherent: TEdit;
+    Edit_id_position_adherent: TEdit;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Query11: TQuery;
+    Edit_libelle_position: TEdit;
+    Edit_libelle_categorie: TEdit;
+    Edit_desc_etat_adherent: TEdit;
+    DBEdit_id_adherent: TDBEdit;
+    DBEdit_nom_adherent: TDBEdit;
+    DBEdit_prenom_adherent: TDBEdit;
+    DBEdit_id_position_adherent: TDBEdit;
+    DBEdit_categorie_adherent: TDBEdit;
+    DBEdit_etat_adherent: TDBEdit;
+    Button_Modifier_position: TButton;
+    Button_Modifier_categorie: TButton;
+    Panel2: TPanel;
+    Image_adherent: TImage;
+    Button_detail_adherent: TButton;
+    Query_recherche_adherent: TADOQuery;
+    Query1: TADOQuery;
+    procedure Button_retourClick(Sender: TObject);
+    procedure Button1_searchClick(Sender: TObject);
+    procedure Button2_searchClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure Button_valider_modificationClick(Sender: TObject);
+    procedure Button_supprimer_adherentClick(Sender: TObject);
+    procedure Button_ajouter_adherentClick(Sender: TObject);
+    procedure Button_Modifier_positionClick(Sender: TObject);
+    procedure Button_Modifier_categorieClick(Sender: TObject);
+    procedure Button_Modifier_etatClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure Button_detail_adherentClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+  type_recherche, type_modification : Integer ;
+  ouverture:Integer ;
+  Image1 : TJPEGImage ;
+  nom_photo : String ;
+    { Public declarations }
+  end;
+
+var
+  Form_gestion_adherents: TForm_gestion_adherents;
+
+implementation
+
+uses choix_position_categorie_etat_adherent, pret, Unit_choix_adherents , unit_Connexion;
+
+{$R *.dfm}
+
+procedure TForm_gestion_adherents.Button_retourClick(Sender: TObject);
+begin
+Close;
+end;
+
+procedure TForm_gestion_adherents.FormActivate(Sender: TObject);
+begin
+Query_recherche_adherent.Active := false ;
+{
+if (id_adherent.Text <> '') then
+        begin
+                Button1_search.Click;
+        end;
+}
+end;
+
+
+procedure TForm_gestion_adherents.Button1_searchClick(Sender: TObject);
+
+begin
+type_recherche := 1 ;
+
+//------- Initialisation
+
+        nom_adherent.Text := '' ;
+        Edit_id_adherent.Text := '' ;
+        Edit_nom_adherent.Text := '' ;
+        Edit_prenom_adherent.Text := '' ;
+        Edit_id_position_adherent.Text := '' ;
+        Edit_categorie_adherent.Text := '' ;
+        Edit_etat_adherent.Text := '' ;
+        Edit_libelle_position.Text := '' ;
+        Edit_libelle_categorie.Text := '' ;
+        Edit_desc_etat_adherent.Text := '' ;
+
+Query_recherche_adherent.SQL.Text := 'select * from adherent where upper(id_adherent) = ''' + strupper(Pchar(id_adherent.Text)) + '''' ;
+Query_recherche_adherent.ExecSQL;
+Query_recherche_adherent.Active := true ;
+Query_recherche_adherent.First;
+
+while not Query_recherche_adherent.eof do
+     begin
+        Edit_id_adherent.Text := DBEdit_id_adherent.Text ;
+        Edit_nom_adherent.Text := DBEdit_nom_adherent.Text ;
+        Edit_prenom_adherent.Text := DBEdit_prenom_adherent.Text ;
+        Edit_id_position_adherent.Text := DBEdit_id_position_adherent.Text ;
+        Edit_categorie_adherent.Text := DBEdit_categorie_adherent.Text ;
+        Edit_etat_adherent.Text := DBEdit_etat_adherent.Text ;
+
+        //-------- Extraire libelle position
+
+        Query1.SQL.Text := 'select libelle_position from position where upper(id_position) = ''' + strupper(Pchar(Edit_id_position_adherent.Text)) + '''' ;
+        Query1.ExecSQL; Query1.Active := true ; Query1.First;
+        Edit_libelle_position.Text := Query1.Fields.FieldByNumber(1).AsString ;
+
+        //-------- Extraire la catégorie
+
+        Query1.SQL.Text := 'select LIBELLE_CATEGORIE from CATEGORIE where upper(id_categorie) = ''' + strupper(Pchar(Edit_categorie_adherent.Text)) + '''' ;
+        Query1.ExecSQL; Query1.Active := true ; Query1.First;
+        Edit_libelle_categorie.Text := Query1.Fields.FieldByNumber(1).AsString ;
+
+        //-------- Extraire l'état de l'adhérent
+
+        Query1.SQL.Text := 'select DESC_ETAT from etat_adherent where id_etat = ''' + Edit_etat_adherent.Text + '''' ;
+        Query1.ExecSQL; Query1.Active := true ; Query1.First;
+        Edit_desc_etat_adherent.Text := Query1.Fields.FieldByNumber(1).AsString ;
+
+        //------- affichage de la photo ---------------
+
+        nom_photo := DBEdit_id_adherent.Text ;
+        nom_photo[Pos('/', nom_photo)] := '-'; // ----------remplacer le caractere / dans le num adherent par - pour traieter son fichier image
+
+        Image1 := TJPEGImage.Create;
+
+        if ( FileExists ('\\library-server\photos_adherents\'+ nom_photo +'.JPG') ) then
+                begin
+                Image1.LoadFromFile('\\library-server\photos_adherents\'+ nom_photo +'.JPG') ;
+                Image_adherent.Picture.Graphic := Image1 ;
+                Image_adherent.Visible := True;
+                end
+        else
+                begin
+                Image1.Destroy ; Image1 := TJPEGImage.Create;
+                Image_adherent.Visible := False;
+                end;
+         Query_recherche_adherent.Next ;
+     end;
+
+
+ if ( DBEdit_id_adherent.Text = '' ) then Edit_id_adherent.Enabled := True ;
+
+
+end;
+
+procedure TForm_gestion_adherents.Button2_searchClick(Sender: TObject);
+begin
+type_recherche := 2 ;
+
+
+//------- Initialisation
+        id_adherent.Text := '' ;
+        Edit_id_adherent.Text := '' ;
+        Edit_nom_adherent.Text := '' ;
+        Edit_prenom_adherent.Text := '' ;
+        Edit_id_position_adherent.Text := '' ;
+        Edit_categorie_adherent.Text := '' ;
+        Edit_etat_adherent.Text := '' ;
+        Edit_libelle_position.Text := '' ;
+        Edit_libelle_categorie.Text := '' ;
+        Edit_desc_etat_adherent.Text := '' ;
+
+        Form_choix_adherents.Query1.Active := False ;
+        Form_choix_adherents.Query1.SQL.Text :=  'select * from adherent where upper(nom) like ''' + strupper(Pchar(nom_adherent.Text)) + '%''' ;
+        Form_choix_adherents.Query1.ExecSQL;
+        Form_choix_adherents.Query1.Active := True ;
+
+        Form_choix_adherents.ShowModal ;
+
+
+
+Query_recherche_adherent.SQL.Text := 'select * from adherent where upper(id_adherent) = ''' + strupper(Pchar(id_adherent.Text)) + '''' ;
+Query_recherche_adherent.ExecSQL;
+Query_recherche_adherent.Active := true ;
+Query_recherche_adherent.First;
+
+
+while not Query_recherche_adherent.eof do
+     begin
+        Edit_id_adherent.Text := DBEdit_id_adherent.Text ;
+        Edit_nom_adherent.Text := DBEdit_nom_adherent.Text ;
+        Edit_prenom_adherent.Text := DBEdit_prenom_adherent.Text ;
+        Edit_id_position_adherent.Text := DBEdit_id_position_adherent.Text ;
+        Edit_categorie_adherent.Text := DBEdit_categorie_adherent.Text ;
+        Edit_etat_adherent.Text := DBEdit_etat_adherent.Text ;
+
+        //-------- Extraire libelle position
+
+        Query1.SQL.Text := 'select libelle_position from position where upper(id_position) = ''' + strupper(Pchar(Edit_id_position_adherent.Text)) + '''' ;
+        Query1.ExecSQL; Query1.Active := true ; Query1.First;
+        Edit_libelle_position.Text := Query1.Fields.FieldByNumber(1).AsString ;
+
+        //-------- Extraire la catégorie
+
+        Query1.SQL.Text := 'select LIBELLE_CATEGORIE from CATEGORIE where upper(id_categorie) = ''' + strupper(Pchar(Edit_categorie_adherent.Text)) + '''' ;
+        Query1.ExecSQL; Query1.Active := true ; Query1.First;
+        Edit_libelle_categorie.Text := Query1.Fields.FieldByNumber(1).AsString ;
+
+        //-------- Extraire l'état de l'adhérent
+
+        Query1.SQL.Text := 'select DESC_ETAT from etat_adherent where id_etat = ''' + Edit_etat_adherent.Text + '''' ;
+        Query1.ExecSQL; Query1.Active := true ; Query1.First;
+        Edit_desc_etat_adherent.Text := Query1.Fields.FieldByNumber(1).AsString ;
+
+        //------- affichage de la photo ---------------
+
+        nom_photo := DBEdit_id_adherent.Text ;
+        nom_photo[Pos('/', nom_photo)] := '-'; // ----------remplacer le caractere / dans le num adherent par - pour traieter son fichier image
+
+        Image1 := TJPEGImage.Create;
+
+        if ( FileExists ('\\library-server\photos_adherents\'+ nom_photo +'.JPG') ) then
+                begin
+                Image1.LoadFromFile('\\library-server\photos_adherents\'+ nom_photo +'.JPG') ;
+                Image_adherent.Picture.Graphic := Image1 ;
+                Image_adherent.Visible := True;
+                end
+        else
+                begin
+                Image1.Destroy ; Image1 := TJPEGImage.Create;
+                Image_adherent.Visible := False;
+                end;
+         Query_recherche_adherent.Next ;
+     end;
+
+end;
+
+
+procedure TForm_gestion_adherents.Button_valider_modificationClick(
+  Sender: TObject);
+var
+Chaine_Inter1, Chaine_Inter2 : String ;
+i, j : Integer ;
+
+begin
+
+//---- Mettre à jours les infomations dans la base
+if MessageDlg('Voulez vous vraiment valider les modifications ?', mtConfirmation, [mbyes, mbNo], 0) = mrYes then
+   begin
+        if (Edit_id_adherent.Text <> '') then
+                begin
+                        //--------------------------------------------------------------------------------
+                        //------- Traiter le nom et prenom pour eviter le probleme des apostrophes
+                        //--------------------------------------------------------------------------------
+
+                        Query1.SQL.Text := 'update adherent set nom =''' + Edit_nom_adherent.Text
+                                + ''', prenom = '''        + Edit_prenom_adherent.Text
+                                + ''', id_position  = '''  + Edit_id_position_adherent.Text
+                                + ''', id_categorie = '''  + Edit_categorie_adherent.Text
+                                + ''', etat_adherent= '''  + Edit_etat_adherent.Text
+                                + ''' where upper(id_adherent) = ''' + strupper(Pchar(DBEdit_id_adherent.Text)) + '''' ;
+                        Query1.ExecSQL;
+                end
+        else
+                begin
+                     Showmessage('Il faut choisir l''adhérent avant (par Recherche)!!!!');
+                end;
+   end;
+end;
+
+procedure TForm_gestion_adherents.Button_supprimer_adherentClick(
+  Sender: TObject);
+begin
+
+
+if MessageDlg('Voulez vous vraiment Supprimer cet Adhérent ?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+   begin
+        if (DBEdit_id_adherent.Text <> '') then
+                begin
+
+                        Query1.SQL.Text := 'select count(*) from pret where upper(id_adherent) = ''' + strupper(Pchar(DBEdit_id_adherent.Text)) + '''' ;
+                        Query1.ExecSQL;Query1.Active := true ; Query1.First;
+
+                        if (Query1.Fields.FieldByNumber(1).AsInteger > 0) then
+                                begin
+                                     Showmessage('Cet Adhérent Possède des Prêt en cours. Suppression Impossible !!!');
+                                end
+                        else
+                                begin
+                                        //------------- Cette requete doit etre modifiée 
+                                        Query1.SQL.Text := 'delete  from adherent cascade where upper(id_adherent) = ''' + strupper(Pchar(DBEdit_id_adherent.Text)) + '''' ;
+                                        Query1.ExecSQL;
+                                end;
+                        //--------- Remetre le tous à vide
+                        FormShow(nil);
+                end
+        else
+                begin
+                     Showmessage('Il faut choisir l''adhérent avant (par Recherche)!!!!');
+                end;
+   end;
+
+
+end;
+
+procedure TForm_gestion_adherents.Button_ajouter_adherentClick(
+  Sender: TObject);
+begin
+
+if MessageDlg('Voulez vous vraiment Ajouter cet adhérent ?', mtConfirmation, [mbOK, mbCancel], 0) = mrOK then
+   begin
+        if ((Edit_id_adherent.Text <> '') and (Edit_nom_adherent.Text <> '') and ( Edit_prenom_adherent.Text <> '') and (Edit_id_position_adherent.Text <> '') and (Edit_categorie_adherent.Text <> '') ) then
+                begin
+
+                        //--------------------------------------------------------------------------------
+                        //------- Traiter le nom et prenom pour eviter le probleme des apostrophes
+                        //--------------------------------------------------------------------------------
+                        Query1.active := false ;
+                        Query1.SQL.Text := 'select count(*) from adherent where upper(id_adherent) = ''' + strupper(Pchar(Edit_id_adherent.Text)) + '''' ;
+                        Query1.ExecSQL;
+                        Query1.active := True ;
+                        if ( Query1.Fields.FieldByNumber(1).AsInteger < 1 ) then //---- C'est à dire qu'il n ya aucun adherent avec ce code
+                                begin
+                                                Query1.SQL.Text := 'insert into adherent values(''' + strupper(Pchar(Edit_id_adherent.Text))
+                                                + ''','''   + Edit_nom_adherent.Text
+                                                + ''','''   + Edit_prenom_adherent.Text
+                                                + ''','''   + Edit_id_position_adherent.Text
+                                                + ''','''   + Edit_categorie_adherent.Text
+                                                + ''',''1'')' ;
+                                                Showmessage(Query1.SQL.Text) ;
+                                                Query1.ExecSQL;
+                                                FormShow(nil);
+                                end
+                        else
+                                Showmessage('Ce code Adhrérent existe déjà !!!') ;
+                end
+        else
+                begin
+                     Showmessage('Il faut Remplir toutes kles informations !!!');
+                end;
+   end;
+
+end;
+
+procedure TForm_gestion_adherents.Button_Modifier_positionClick(
+  Sender: TObject);
+begin
+type_modification := 1 ; //--- modifier la position
+Form_choix_position_categorie_etat_adherent.Show;
+end;
+
+procedure TForm_gestion_adherents.Button_Modifier_categorieClick(
+  Sender: TObject);
+begin
+type_modification := 2 ; //--- modifier la categorie
+Form_choix_position_categorie_etat_adherent.Show;
+end;
+
+procedure TForm_gestion_adherents.Button_Modifier_etatClick(
+  Sender: TObject);
+begin
+type_modification := 3 ; //--- modifier la etat categorie
+Form_choix_position_categorie_etat_adherent.Show;
+end;
+
+procedure TForm_gestion_adherents.FormShow(Sender: TObject);
+begin
+Query_recherche_adherent.Active := false ;
+DBEdit_id_adherent.DataField            := 'ID_ADHERENT' ;
+DBEdit_nom_adherent.DataField           := 'NOM' ;
+DBEdit_prenom_adherent.DataField        := 'PRENOM' ;
+DBEdit_id_position_adherent.DataField   := 'ID_POSITION' ;
+DBEdit_categorie_adherent.DataField     := 'ID_CATEGORIE' ;
+DBEdit_etat_adherent.DataField          := 'ETAT_ADHERENT' ;
+
+                        //--------- Remetre le tous à vide
+                        id_adherent.Text := '' ;
+                        nom_adherent.Text := '' ;
+                        Edit_id_adherent.Text := '' ;
+                        Edit_nom_adherent.Text := '' ;
+                        Edit_prenom_adherent.Text := '' ;
+                        Edit_id_position_adherent.Text := '' ;
+                        Edit_categorie_adherent.Text := '' ;
+                        Edit_etat_adherent.Text := '' ;
+                        Edit_libelle_position.Text := '' ;
+                        Edit_libelle_categorie.Text := '' ;
+                        Edit_desc_etat_adherent.Text := '' ;
+end;
+
+procedure TForm_gestion_adherents.Button_detail_adherentClick(Sender: TObject);
+begin
+if (id_adherent.Text <> '') then
+        begin
+                //-------- Verifier est ce que cet adherent existe
+                Query1.SQL.Text := 'select count(*) from adherent where upper(id_adherent) = ''' + strupper(Pchar(id_adherent.Text)) + '''' ;
+                Query1.ExecSQL ; Query1.Active := true ; Query1.First ;
+
+                if (Query1.Fields.FieldByNumber(1).AsInteger = 1 ) then   //--- c'est à dire que l'adhérent existe
+                        begin
+                                form_pret.date_pret.Text := datetostr(date) ;
+                                form_pret.id_adherent.Text := id_adherent.Text ;
+                                form_pret.Button_detail.Click;
+                        end
+                else    Showmessage('Cet Adhérent n''existe pas dans la base, veuillez vérifier!!!') ;
+        end
+else
+        begin
+                Showmessage('Veuillez saisir un ID Adhérent !!!') ;
+        end;
+
+end;
+
+end.

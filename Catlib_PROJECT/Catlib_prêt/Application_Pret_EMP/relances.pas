@@ -1,0 +1,243 @@
+unit relances;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, DB, DBTables, StdCtrls, Grids, DBGrids, Psock, NMsmtp, NMpop3, IdCoder3To4,
+  ExtCtrls, ADODB;
+
+type
+  TForm_relances = class(TForm)
+    Query_relances11: TQuery;
+    Liste_relance: TStringGrid;
+    Query_relances21: TQuery;
+    Mail: TNMSMTP;
+    Query_relances31: TQuery;
+    Panel1: TPanel;
+    send_mails: TButton;
+    Button_imprimer: TButton;
+    retour: TButton;
+    SaveDialog1: TSaveDialog;
+    Query_relances1: TADOQuery;
+    Query_relances2: TADOQuery;
+    Query_relances3: TADOQuery;
+    procedure retourClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure send_mailsClick(Sender: TObject);
+    procedure Button_imprimerClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form_relances: TForm_relances;
+
+implementation
+uses Unit_Connexion ;
+{$R *.dfm}
+
+procedure TForm_relances.retourClick(Sender: TObject);
+begin
+Close;
+end;
+
+procedure TForm_relances.FormActivate(Sender: TObject);
+var
+N, i, ligne_en_cours, compteur  : Integer ;
+Cote : String ;
+cote_a, Pointer : PChar ;
+
+begin
+
+ligne_en_cours := 1 ;
+liste_relance.ColCount := 5 ;
+liste_relance.RowCount := 2 ;
+liste_relance.FixedRows := 1 ;
+liste_relance.FixedCols := 1 ;
+liste_relance.Cells[1,0] := 'ID  Adhérent' ;
+liste_relance.Cells[2,0] := 'NOM & PRENOM' ;
+liste_relance.Cells[3,0] := 'POSITION' ;
+liste_relance.Cells[4,0] := 'COTE' ;
+
+
+
+Query_relances1.SQL.Text := 'select distinct(cote) from reservation' ;
+Query_relances1.ExecSQL;
+Query_relances1.Active := true ;
+Query_relances1.First;
+
+
+
+while not Query_relances1.Eof do
+        begin
+
+                Cote := Query_relances1.Fields.FieldByNumber(1).AsString ;
+
+                cote_a := PChar(Cote) ;
+                Pointer := StrRScan(cote_a, ';') ; Pointer[0] := Chr(0); //--- Pour enlever le ';'
+
+                Query_relances2.SQL.Text := 'select count(*) from pret where upper(id_exemplaire) like ''' + strupper(cote_a) +'/%'' and id_adherent = ''99/999''' ;
+
+                Query_relances2.ExecSQL;
+                Query_relances2.Active := true ;
+                Query_relances2.First;
+                N := Query_relances2.Fields.FieldByNumber(1).AsInteger ;
+
+                Query_relances2.SQL.Text := 'select * from reservation where upper(cote) = ''' + strupper(Pchar(Cote)) + ';'' order by heure_reservation asc' ;
+                Query_relances2.ExecSQL;
+                Query_relances2.Active := true ;
+                Query_relances2.First;
+
+                for i := 1 to N do
+                        begin
+                             liste_relance.Cells[0,ligne_en_cours] := inttostr(ligne_en_cours) ;
+                             liste_relance.Cells[1,ligne_en_cours] := Query_relances2.Fields.FieldByNumber(1).AsString ;
+
+                             //----- Selectionner le nom et prénom de l'adhérent en cours
+                                Query_relances3.SQL.Text := 'select nom, prenom,id_position from adherent where upper(id_adherent) = ''' + strupper(Pchar(Query_relances2.Fields.FieldByNumber(1).AsString)) + '''' ;
+                                Query_relances3.ExecSQL;
+                                Query_relances3.Active := true ;
+                                Query_relances3.First;
+
+                             liste_relance.Cells[2,ligne_en_cours] := Query_relances3.Fields.FieldByNumber(1).AsString + ' ' + Query_relances3.Fields.FieldByNumber(2).AsString;
+
+                             //----- Selectionner la position de l'adhérent en cours
+                                Query_relances3.SQL.Text := 'select libelle_position from position where id_position = ''' + Query_relances3.Fields.FieldByNumber(3).AsString + '''' ;
+                                Query_relances3.ExecSQL;
+                                Query_relances3.Active := true ;
+                                Query_relances3.First;
+
+                             liste_relance.Cells[3,ligne_en_cours] := Query_relances3.Fields.FieldByNumber(1).AsString ;
+
+                             liste_relance.Cells[4,ligne_en_cours] := Query_relances2.Fields.FieldByNumber(2).AsString ;
+                             ligne_en_cours := ligne_en_cours + 1 ;
+                             liste_relance.RowCount := liste_relance.RowCount + 1 ; // ---- ajouter une nouvelle ligne
+                             Query_relances2.Next ;
+
+
+                        end;
+
+                Query_relances1.Next;
+        end;
+
+                             liste_relance.RowCount := liste_relance.RowCount - 1 ; // ---- ajouter une nouvelle ligne
+
+end;
+
+procedure TForm_relances.send_mailsClick(Sender: TObject);
+var
+id_adherent : String ;
+inter, Pointer : Pchar ;
+i : Integer ;
+begin
+if (Mail.Connected) then Mail.Disconnect;
+Mail.UserID := 'bibliotheque';  //----- il faut changer ici de sorte à indiquer le compte messagerie qui va envoyé les messages de notifications
+Mail.Host := 'mail-server.emp.mdn' ; Mail.Connect;
+if (Mail.Connected) then
+        begin
+
+        //---- ce travail a été fait par faouzi
+        //-------- Il faut ici encoder le numero et le mot de passe de la bibliotheque
+        Mail.Writeln('Helo biblio');
+        Mail.Writeln('AUTH LOGIN ' + Base64Encode(Mail.UserID));
+        Mail.Writeln(Base64Encode('ISTCEDOC'));
+
+                for i := 1 to  liste_relance.RowCount - 1 do
+                    begin
+                        Showmessage('debut d''envoi') ;
+                        Mail.PostMessage.Body.Clear;  //----- Ré-initialiser le Body du Message à vide
+
+                        Mail.PostMessage.FromAddress := Mail.UserID + '@emp.mdn' ;
+                        id_adherent := liste_relance.Cells[1,i] ;
+                        Pointer := nil ;
+                        inter := PChar(id_adherent) ; Pointer := StrRScan(inter, '/') ;
+                        if (Pointer <> nil) then Pointer[0] := '-';
+
+                        Mail.PostMessage.ToAddress.Text := id_adherent + '@emp.mdn' ;
+
+
+
+                        //----------------------------- Ici on sélectionne le titre de l'ouvrage
+
+                        Query_relances2.SQL.Text := 'select titre_propre from notice where upper(cote) = ''' + strupper(Pchar(liste_relance.Cells[4,i])) + '''' ;
+                        Query_relances2.ExecSQL;
+                        Query_relances2.Active := true ;
+                        Query_relances2.First;
+
+                        //------------------------ Le Body du Message qui sera envoyé ---------------------
+                        Mail.PostMessage.Subject := 'Avis de Disponibilité' ;
+
+                        Mail.PostMessage.Body.Add('Avis de disponibilité') ;
+                        Mail.PostMessage.Body.Add('') ;
+                        Mail.PostMessage.Body.Add('') ;
+                        Mail.PostMessage.Body.Add('') ;
+                        Mail.PostMessage.Body.Add('') ;
+                        Mail.PostMessage.Body.Add('Nous portons à votre connaissance que le document : " ' + Query_relances2.Fields.FieldByNumber(1).AsString + ' " ') ;
+                        Mail.PostMessage.Body.Add('Qui porte la cote : " ' + liste_relance.Cells[4,i] + ' "' + ' est disponible au niveau de la bibliothèque.') ;
+                        Mail.PostMessage.Body.Add('Il vous est reservé pour une période de 48h.') ;
+                        Mail.PostMessage.Body.Add('') ;
+                        Mail.PostMessage.Body.Add('') ;
+                        Mail.PostMessage.Body.Add('') ;
+                        Mail.PostMessage.Body.Add('') ;
+                        Mail.PostMessage.Body.Add('') ;
+                        Mail.PostMessage.Body.Add('CEDOC/Bibliothèque') ;
+
+                        Mail.SendMail;
+                    end;
+
+        Mail.Disconnect;
+        end
+else
+        begin
+        Showmessage('Vous n''etes pas connecté');
+        end;
+end;
+
+procedure TForm_relances.Button_imprimerClick(Sender: TObject);
+var
+  F1: TextFile;
+  i : Integer ;
+begin
+//----- Saisir un nom de fichier dans une position donnée
+
+    if SaveDialog1.Execute then
+        begin
+              AssignFile(F1, SaveDialog1.Filename);
+              Rewrite(F1);
+              for i := 1 to liste_relance.RowCount - 1 do
+                        begin
+
+                                Writeln(F1,'--------------------------------------------------------------------');
+                                Writeln(F1,'Avis de disponibilité');
+                                Writeln(F1,'');
+                                Writeln(F1,'');
+                                Writeln(F1,'Id Adhérent     : ', liste_relance.Cells[1,i]);
+                                Writeln(F1,'Nom & Prénom    : ', liste_relance.Cells[2,i]);
+                                Writeln(F1,'Position        : ', liste_relance.Cells[3,i]);
+                                Writeln(F1,'');
+                                Writeln(F1,'');
+                                Query_relances2.SQL.Text := 'select titre_propre from notice where upper(cote) = ''' + strupper(Pchar(liste_relance.Cells[4,i])) + '''' ;
+                                Query_relances2.ExecSQL;
+                                Query_relances2.Active := true ;
+                                Query_relances2.First;
+
+                                Writeln(F1,'Nous portons à votre connaissance que le document : "', Query_relances2.Fields.FieldByNumber(1).AsString, '"' ) ;
+                                Writeln(F1,'Qui porte la cote : " ', liste_relance.Cells[4,i], '"' , ' est disponible au niveau de la bibliothèque.');
+                                Writeln(F1,'Il vous est reservé pour une période de 48h.');
+                                //----------------------------- Ici on sélectionne le titre de l'ouvrage
+                                Writeln(F1,'');
+                                Writeln(F1,'');                                
+                                Writeln(F1,'CEDOC/Bibliothèque');
+                                Writeln(F1,'--------------------------------------------------------------------');
+                        end;
+
+        end;
+        CloseFile(F1);
+
+
+end;
+
+end.
