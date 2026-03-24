@@ -5,6 +5,7 @@ using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Common;
 using Shared.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace Borrowing.Api.Controllers;
 
 [ApiController]
@@ -31,12 +32,12 @@ public class AdherentController : ControllerBase
         var adherent = await _adherentService.GetAdherentWithDetailsAsync(id);
         if (adherent != null)
         {
-            if (adherent.EtatAdherent == 1)
+            if (adherent.EtatAdherent == 1) // allowed
             {
                 Categorie? categorie = await _adherentService.GetAdherentCategorie(id);
-                if (categorie != null)
+                if (categorie != null) // categorie exists
                 {
-                    int activeLoans = await _pretService.CountAdherentActiveLoans(id);
+                    int activeLoans = await _pretService.CountAdherentActiveLoans(id); // count active loans
                     if (activeLoans < categorie.NombreDocument)
                     {
                         return Ok(
@@ -90,7 +91,7 @@ public class AdherentController : ControllerBase
         }
         else
         {
-            return NotFound(
+            return Ok(
                 new CheckAdhResponseDto
                 {
                     Allowed = false,
@@ -100,5 +101,8 @@ public class AdherentController : ControllerBase
         }
 
     }
+
+
+    
 
 }
