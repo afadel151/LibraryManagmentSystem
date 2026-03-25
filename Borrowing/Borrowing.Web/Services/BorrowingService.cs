@@ -7,6 +7,7 @@ using Borrowing.SharedClasses.Requests.Pret;
 using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
+using Borrowing.SharedClasses.Responses.Notice;
 
 public class BorrowingService : IBorrowingService
 {
@@ -58,6 +59,18 @@ public class BorrowingService : IBorrowingService
 
         response.EnsureSuccessStatusCode();
         return JsonSerializer.Deserialize<CheckAdhResponseDto>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+    }
+
+    public async Task<CheckNoticeResponseDto> CheckNotice(string cote, string AdherentId)
+    {
+        var response = await _httpClient.GetAsync($"api/Notice/Pret/Check/{cote}/{AdherentId}");
+        var content = await response.Content.ReadAsStringAsync();
+
+        response.EnsureSuccessStatusCode();
+        return JsonSerializer.Deserialize<CheckNoticeResponseDto>(content, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         })!;
