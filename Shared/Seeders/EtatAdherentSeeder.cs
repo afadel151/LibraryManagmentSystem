@@ -16,13 +16,9 @@ public class EtatAdherentSeeder : ISeeder
 
         if (count > 0) return;
 
-        var etats = new List<EtatAdherent>
-        {
-            new() { IdEtat = 0, DescEtat = "Inactif" },
-            new() { IdEtat = 1, DescEtat = "Actif" }
-        };
-
-        await context.EtatAdherents.AddRangeAsync(etats);
-        await context.SaveChangesAsync();
+        await context.Database.ExecuteSqlRawAsync(
+            "INSERT INTO MATAOUI.ETAT_ADHERENT (ID_ETAT, DESC_ETAT) VALUES (0, 'Inactif')");
+        await context.Database.ExecuteSqlRawAsync(
+            "INSERT INTO MATAOUI.ETAT_ADHERENT (ID_ETAT, DESC_ETAT) VALUES (1, 'Actif')");
     }
 }

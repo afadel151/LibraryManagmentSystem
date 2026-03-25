@@ -464,7 +464,10 @@ public partial class LibraryDbContext : DbContext
 
             entity.Property(e => e.IdEtat)
                 .HasColumnType("NUMBER(1,0)")
-                .HasColumnName("ID_ETAT");
+                .HasColumnName("ID_ETAT")
+                .ValueGeneratedNever()
+                .HasSentinel(-1);
+
             entity.Property(e => e.DescEtat)
                 .HasMaxLength(25)
                 .IsUnicode(false)
