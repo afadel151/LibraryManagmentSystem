@@ -52,8 +52,6 @@ public class PretService : IPretService
         var pret = new Pret
         {
             IdAdherent = pretRequestDTo.AdherentId,
-            IdExemplaire = pretRequestDTo.NoticeId,
-            DatePret = pretRequestDTo.DatePret,
             // EtatDuree = pretRequestDTo.DateRetourPrevu
         };
         await _pretRepository.AddAsync(pret);

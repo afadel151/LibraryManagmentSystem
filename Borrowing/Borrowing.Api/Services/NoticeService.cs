@@ -7,7 +7,7 @@ namespace Borrowing.Api.Services;
 public interface INoticeService
 {
     Task<Notice?> GetNoticeAsync(string cote);
-    Task<NoticeWithResExe> GetNoticeWithDetailsByCoteAsync(string cote);
+    Task<NoticeWithResExe?> GetNoticeWithDetailsByCoteAsync(string cote);
 
 }
 
@@ -48,11 +48,11 @@ public class NoticeService : INoticeService
                 ).ToListAsync();
     }
 
-    public async Task<NoticeWithResExe> GetNoticeWithDetailsByCoteAsync(string cote)
+    public async Task<NoticeWithResExe?> GetNoticeWithDetailsByCoteAsync(string cote)
     {
         var notice = await _noticesRepository.GetQueryable()
             .Where(n => n.Cote == cote)
-            .FirstOrDefaultAsync();
+            .SingleOrDefaultAsync();
 
         var reservations = await _reservationRepository.GetQueryable()
             .Where(r => r.Cote == cote)
@@ -76,12 +76,19 @@ public class NoticeService : INoticeService
             Prets = prets.Where(p => p.IdExemplaire == e.IdExemplaire).ToList()
         }).ToList();
 
-        return new NoticeWithResExe
+        if (notice != null)
         {
-            Notice = notice,
-            Reservations = reservations,
-            Exemplaires = exemplairesWithPrets
-        };
+            return new NoticeWithResExe
+            {
+                Notice = notice,
+                Reservations = reservations,
+                Exemplaires = exemplairesWithPrets
+            };
+        }
+        else
+        {
+            return null;
+        }
     }
 
 }
