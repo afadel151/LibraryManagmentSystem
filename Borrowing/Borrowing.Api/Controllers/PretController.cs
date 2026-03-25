@@ -33,7 +33,7 @@ public class PretController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public async Task<ActionResult<CreatePretResponseDto>> CreatePret([FromBody] CreatePretRequestDTo pretRequestDto)
+    public async Task<ActionResult<CreatePretResponseDto>> CreatePret([FromBody] CreatePretRequestDto pretRequestDto)
     {
         var result = await _pretService.CreatePretAsync(pretRequestDto);
         return Ok(result);

@@ -9,7 +9,7 @@ namespace Borrowing.Api.Services;
 
 public interface IPretService
 {
-    Task<Pret?> CreatePretAsync(CreatePretRequestDTo pretRequestDTo);
+    Task<Pret?> CreatePretAsync(CreatePretRequestDto pretRequestDTo);
     Task<int> CountAsync();
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PretQueryParameters queryParameters);
 
@@ -47,7 +47,7 @@ public class PretService : IPretService
         _noticesRepository = noticesRepository;
     }
 
-    public async Task<Pret?> CreatePretAsync(CreatePretRequestDTo pretRequestDTo)
+    public async Task<Pret?> CreatePretAsync(CreatePretRequestDto pretRequestDTo)
     {
         var pret = new Pret
         {
