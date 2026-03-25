@@ -96,6 +96,7 @@ public class AdherentController : ControllerBase
             return Ok(
                 new CheckAdhResponseDto
                 {
+                    Found = false,
                     Allowed = false,
                     message = "Adherent Non trouve"
                 }
