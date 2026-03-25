@@ -1,5 +1,6 @@
 @page "/borrows/insert"
 @using Borrowing.SharedClasses.Responses.Adherent
+@using Borrowing.SharedClasses.Responses.Notice
 @using Borrowing.Web.Services
 @using Radzen
 @using Radzen.Blazor
@@ -15,14 +16,14 @@
             <RadzenText TextStyle="TextStyle.H5">Information Adhérent</RadzenText>
 
             <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
-                <RadzenTextBox Placeholder="Saisir l'ID Adhérent..." @bind-Value="memberIdInput" Change=@(args =>
-                                                                                                                                                                                                                                                          OnMemberIdChanged(args)) class="w-100" />
+                <RadzenTextBox Placeholder="Saisir l'ID Adhérent..." @bind-Value="AdherentId" @oninput="OnMemberTyping"
+                               Change="OnMemberIdChanged" class="w-100" />
 
                 @if (isLoadingMember)
                 {
                     <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
                 }
-                else if (adherentCheck != null)
+                else if (adherentCheck != null && adherentCheck.Found)
                 {
                     <RadzenRow>
                         <RadzenColumn Size="4">
@@ -74,7 +75,7 @@
                                     </RadzenColumn>
                                 </RadzenRow>
                             }
-                                else if (hasSearchedMember)
+                            else if (hasSearchedMember )
                             {
                                 <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Adhérent introuvable.</RadzenText>
                             }
@@ -87,40 +88,48 @@
                         <RadzenText TextStyle="TextStyle.H5">Information Document & Exemplaire</RadzenText>
 
                         <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
-                            <RadzenTextBox Placeholder="Saisir la Cote et appuyez sur Entrée..." @bind-Value="coteInput"
-                                           Change=@(args => OnCoteChanged(args)) class="w-100" />
+                            <RadzenTextBox Placeholder="Saisir la Cote et appuyez sur Entrée..." @oninput="OnCoteTyping"
+                                           @bind-Value="Cote" Change="OnCoteChanged" class="w-100" />
 
                             @if (isLoadingDocument)
                             {
                                 <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
                             }
-                            else if (currentNotice != null)
+                            else if (noticeCheck != null)
                             {
-                                <RadzenText TextStyle="TextStyle.Subtitle1"><b>@currentNotice.TitrePropre</b></RadzenText>
-
-                                @if (!string.IsNullOrEmpty(reservationMessage))
+                                @if (!noticeCheck.Found)
                                 {
-                                    <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">@reservationMessage
+                                    <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" class="rz-mt-2">
+                                        Cote introuvable
                                     </RadzenAlert>
                                 }
-
-                                @if (availableCopies.Any() || showReserveButton)
+                                else
                                 {
-                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Sélectionner un exemplaire :</RadzenText>
-                                    <RadzenDropDown @bind-Value="selectedCopyId" Data="@availableCopies" TextProperty="IdExemplaire"
-                                                    ValueProperty="IdExemplaire" class="w-100" />
-                                }
+                                    <RadzenText TextStyle="TextStyle.Subtitle1"><b>@noticeCheck.Titre</b></RadzenText>
 
-                                @if (showReserveButton)
-                                {
-                                    <RadzenButton class="rz-mt-2" Text="Réserver ce document" ButtonStyle="ButtonStyle.Secondary"
-                                                  Click="ReserveDocumentAsync" />
+                                    @if (noticeCheck.CanBorrow)
+                                    {
+                                        @if (noticeCheck.Reservateur)
+                                        {
+                                            <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">L'adherent a fait une
+                                                reservation de ce document
+                                            </RadzenAlert>
+                                        }
+                                   
+                                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Sélectionner un exemplaire :</RadzenText>
+                                        <RadzenDropDown @bind-Value="selectedCopyId" Data="@noticeCheck.Exemplaires" class="w-100" />
+                                    }
                                 }
+                                
                             }
-                            else if (hasSearchedDocument)
+                            else
                             {
-                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Document introuvable avec cette cote.
-                                </RadzenText>
+                                @if (hasSearchedDocument)
+                                {
+
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Document introuvable avec cette cote.
+                                    </RadzenText>
+                                }
                             }
                         </RadzenStack>
                     </RadzenCard>
@@ -128,17 +137,28 @@
             </RadzenRow>
 
             <RadzenRow class="rz-mt-4" JustifyContent="JustifyContent.End">
-                @if (IsLoanValidatable)
+                @if (noticeCheck != null)
                 {
-                    <RadzenButton Text="Valider Prêt" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" Click="SubmitLoanAsync"
-                                  class="rz-mr-2" />
+                    @if (noticeCheck.CanReserve)
+                    {
+
+                        <RadzenButton Disabled="!IsLoanValidatable" class="rz-mr-2" Text="Réserver ce document" Size="ButtonSize.Medium"
+                                      ButtonStyle="ButtonStyle.Secondary" />
+                    }
+                    @if (noticeCheck.CanBorrow && selectedCopyId != null)
+                    {
+
+                        <RadzenButton Disabled="!IsLoanValidatable" Text="Valider Prêt" ButtonStyle="ButtonStyle.Success"
+                                      Size="ButtonSize.Medium" class="rz-mr-2" />
+                    }
+
                 }
             </RadzenRow>
 
 @code {
     // UI Bound Variables
-    string memberIdInput = "";
-    string coteInput = "";
+    string AdherentId = "";
+    string Cote = "";
     string? selectedCopyId;
     DateTime loanDate = DateTime.Now.Date;
 
@@ -147,37 +167,39 @@
     bool isLoadingMember = false;
     bool hasSearchedMember = false;
     CheckAdhResponseDto? adherentCheck;
-    
-    // Document State
+    CheckNoticeResponseDto? noticeCheck;
+
     bool isLoadingDocument = false;
     bool hasSearchedDocument = false;
-    NoticeMock? currentNotice;
-    List<ExemplaireMock> availableCopies = new();
-    string reservationMessage = "";
-    bool showReserveButton = false;
-    bool isReservateur = false;
 
-    // Validation State
-    bool dateAutorise = true;
 
-    
 
-    // adherent check
-    private async Task OnMemberIdChanged(string value)
+    void OnMemberTyping(ChangeEventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        adherentCheck = null;
+        noticeCheck = null;
+        selectedCopyId = null;
+    }
+
+    void OnCoteTyping(ChangeEventArgs e)
+    {
+        noticeCheck = null;
+        selectedCopyId = null;
+    }
+    // adherent check
+    private async Task OnMemberIdChanged()
+    {
+        if (string.IsNullOrWhiteSpace(AdherentId))
         {
             ResetMemberState();
             return;
         }
-
         isLoadingMember = true;
+       
+        string searchId = AdherentId.Trim().ToUpper().Replace("/", "");
+        adherentCheck = await BorrowingService.CheckAdherent(searchId);
         hasSearchedMember = true;
         StateHasChanged();
-
-        string searchId = value.Trim().ToUpper().Replace("/", "");
-        adherentCheck = await BorrowingService.CheckAdherent(searchId);
-
         if (adherentCheck == null)
         {
             ShowNotification(new NotificationMessage
@@ -204,281 +226,64 @@
             }
         }
         isLoadingMember = false;
-        await ReevaluateDocumentStateAsync(); // Re-eval document UI if member changes
     }
 
     
     
     private void ResetMemberState()
     {
+        
         adherentCheck = null;
         hasSearchedMember = false;
     }
 
-    // ==========================================
-    // OPERATION 2: Document Lookup & Copy Selection
-    // ==========================================
-    private async Task OnCoteChanged(string value)
+    private async Task OnCoteChanged()
     {
-        if (string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrEmpty(AdherentId))
+        {
+            ShowNotification(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Warning,
+                Summary = "Adhérent requis",
+                Detail = "Veuillez valider l'adhérent avant le document."
+            });
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(Cote))
         {
             ResetDocumentState();
             return;
         }
-
+        selectedCopyId = null;
         isLoadingDocument = true;
         hasSearchedDocument = true;
         StateHasChanged();
-
         // Strip trailing path segments from barcode scan
-        string processedCote = value;
-
-        // Fetch Notice (Account for ';' trailing in DB)
-        string dbCote = processedCote + ";";
-        currentNotice = await MockApi_GetNoticeByCoteAsync(dbCote);
-
-        if (currentNotice != null)
+        noticeCheck = await BorrowingService.CheckNotice(Cote, AdherentId);
+        ShowNotification(new NotificationMessage
         {
-            await ReevaluateDocumentStateAsync();
-        }
-        else
+            Severity = NotificationSeverity.Success,
+            Summary = "Fetched notice",
+        });
+        if (noticeCheck != null && noticeCheck.CanBorrow)
         {
-            ResetDocumentState();
+            IsLoanValidatable = adherentCheck != null && adherentCheck.Allowed;
         }
-
         isLoadingDocument = false;
     }
 
-    private string StripBarcodeSegments(string rawCote)
-    {
-        int lastSlashIndex = rawCote.LastIndexOf('/');
-        if (lastSlashIndex > 0)
-        {
-            return rawCote.Substring(0, lastSlashIndex);
-        }
-        return rawCote;
-    }
+    
 
     private void ResetDocumentState()
     {
-        currentNotice = null;
-        availableCopies.Clear();
         selectedCopyId = null;
-        reservationMessage = "";
-        showReserveButton = false;
-        isReservateur = false;
         hasSearchedDocument = false;
     }
 
-    private async Task ReevaluateDocumentStateAsync()
-    {
-        if (currentNotice == null) return;
-
-        reservationMessage = "";
-        showReserveButton = false;
-        availableCopies.Clear();
-        selectedCopyId = null;
-        isReservateur = false;
-
-        string adherentCheckId = adherentCheck?.Adherent?.IdAdherent ?? "";
-
-        // Check current physical copies (id_etat = 1)
-        var physicalCopies = await MockApi_GetExemplairesAsync(currentNotice.Cote, 1);
-        int totalPhysicalAvailable = physicalCopies.Count;
-
-        // Check if member has reservation
-        bool memberHasReservation = !string.IsNullOrEmpty(adherentCheckId) &&
-            await MockApi_HasReservationAsync(adherentCheckId, currentNotice.Cote);
-
-        // Check locked copies (idAdherent = '99/999')
-        var lockedCopies = await MockApi_GetLockedCopiesAsync(currentNotice.Cote);
-        int lockedCount = lockedCopies.Count;
-
-        if (memberHasReservation)
-        {
-            isReservateur = true;
-
-            // Queue logic
-            var reservations = await MockApi_GetReservationsForCoteAsync(currentNotice.Cote);
-            var activeQueueWindow = reservations.OrderBy(r => r.HeureReservation).Take(lockedCount).ToList();
-
-            bool inWindow = activeQueueWindow.Any(r => string.Equals(r.IdAdherent, adherentCheckId,
-StringComparison.OrdinalIgnoreCase));
-
-            if (inWindow)
-            {
-                // Member is entitled! Find their designated locked copy.
-                int queueIndex = activeQueueWindow.FindIndex(r => string.Equals(r.IdAdherent, adherentCheckId,
-StringComparison.OrdinalIgnoreCase));
-                if (queueIndex >= 0 && queueIndex < lockedCopies.Count)
-                {
-                    var assignedCopyId = lockedCopies.OrderBy(p => p.DatePret).ElementAt(queueIndex).IdExemplaire;
-                    availableCopies.Add(new ExemplaireMock { IdExemplaire = assignedCopyId, Cote = currentNotice.Cote, IdEtat = 1 });
-                    selectedCopyId = assignedCopyId; // Pre-select it
-                }
-            }
-            else
-            {
-                reservationMessage = "Les exemplaires existants sont réservés par d'autres adhérents.";
-            }
-        }
-        else
-        {
-            if (totalPhysicalAvailable > 0)
-            {
-                availableCopies = physicalCopies.OrderBy(c => c.IdExemplaire).ToList();
-            }
-            else if (!string.IsNullOrEmpty(adherentCheckId))
-            {
-                showReserveButton = true;
-            }
-        }
-    }
-
-    private async Task ReserveDocumentAsync()
-    {
-        if (adherentCheck == null || currentNotice == null) return;
-
-        await MockApi_CreateReservationAsync(adherentCheck.Adherent?.IdAdherent!, currentNotice.Cote);
-        NotificationService.Notify(NotificationSeverity.Success, "Réservation", "Document réservé avec succès.");
-        await ReevaluateDocumentStateAsync();
-    }
-
-    // ==========================================
-    // OPERATION 3: Validate Loan
-    // ==========================================
-    private async Task SubmitLoanAsync()
-    {
-        // Pre-validation checks live
-        if (adherentCheck == null || string.IsNullOrWhiteSpace(adherentCheck.Adherent?.IdAdherent))
-        {
-            NotificationService.Notify(NotificationSeverity.Error, "Erreur", "L'identifiant adhérent est requis.");
-            return;
-        }
-
-        // Live Quota re-check
-        @* int liveActiveLoans = await MockApi_CountActiveLoansAsync(adherentCheck.Adherent.IdAdherent); *@
-        if (adherentCheck.Adherent.Categorie != null && adherentCheck.ActiveLoans >=
-adherentCheck.Adherent.Categorie.NombreDocument)
-        {
-            NotificationService.Notify(NotificationSeverity.Error, "Quota dépassé", "Ce membre a atteint sa limite de prêts.");
-            return;
-        }
-
-        // Date check
-        if (loanDate.Date > DateTime.Now.Date)
-        {
-            NotificationService.Notify(NotificationSeverity.Error, "Erreur Date", "La date de prêt ne peut pas être dans le futur.");
-            dateAutorise = false;
-            return;
-        }
-        else
-        {
-            dateAutorise = true;
-        }
-
-        if (adherentCheck.Adherent.EtatAdherent != 1)
-        {
-            NotificationService.Notify(NotificationSeverity.Error, "Adhérent suspendu", "L'adhérent n'est pas actif au moment de la validation.");
-            return;
-        }
-
-        if (string.IsNullOrEmpty(selectedCopyId))
-        {
-            NotificationService.Notify(NotificationSeverity.Error, "Exemplaire manquant", "Veuillez sélectionner un exemplaire à prêter.");
-            return;
-        }
-
-        // Action Validation
-        await MockApi_SubmitPretAsync(adherentCheck.Adherent.IdAdherent, selectedCopyId, loanDate);
-        NotificationService.Notify(NotificationSeverity.Success, "Succès", "Prêt enregistré avec succès.");
-
-        // Clear UI and Refresh
-        ResetDocumentState();
-        coteInput = "";
-
-        // Refresh Member quota automatically to reflect the new loan
-        await OnMemberIdChanged(memberIdInput);
-    }
-
-    // ==========================================
-    // MOCK API PLACEHOLDERS
-    // ==========================================
-
-
-
-
-    private async Task<NoticeMock?> MockApi_GetNoticeByCoteAsync(string cote)
-    {
-        await Task.Delay(200);
-        if (cote.StartsWith("ABC;", StringComparison.OrdinalIgnoreCase))
-            return new NoticeMock { Cote = cote, TitrePropre = "Livre de Mathématiques Avancées" };
-        if (cote.StartsWith("XYZ;", StringComparison.OrdinalIgnoreCase))
-            return new NoticeMock { Cote = cote, TitrePropre = "Livre indisponible (Zéro exemplaires)" };
-        return null;
-    }
-
-    private async Task<List<ExemplaireMock>> MockApi_GetExemplairesAsync(string cote, int etat)
-    {
-        await Task.Delay(50);
-        if (cote.StartsWith("ABC"))
-        {
-            return new List<ExemplaireMock>
-            {
-                new ExemplaireMock { IdExemplaire = "01", Cote = cote, IdEtat = 1 },
-                new ExemplaireMock { IdExemplaire = "02", Cote = cote, IdEtat = 1 }
-            };
-        }
-        return new List<ExemplaireMock>();
-    }
-
-    private async Task<bool> MockApi_HasReservationAsync(string idAdherent, string cote)
-    {
-        await Task.Delay(50);
-        return false;
-    }
-
-    private async Task<List<PretMock>> MockApi_GetLockedCopiesAsync(string cote)
-    {
-        await Task.Delay(50);
-        return new List<PretMock>();
-    }
-
-    private async Task<List<ReservationMock>> MockApi_GetReservationsForCoteAsync(string cote)
-    {
-        await Task.Delay(50);
-        return new List<ReservationMock>();
-    }
-
-    private async Task MockApi_CreateReservationAsync(string idAdherent, string cote)
-    {
-        await Task.Delay(200);
-    }
-
-    private async Task MockApi_SubmitPretAsync(string idAdherent, string idExemplaire, DateTime datePret)
-    {
-        await Task.Delay(300);
-    }
-
-    // Local Mock Models (Used to bypass dependency on Shared.Models and exact DbContext setup)
-
     
-    public class NoticeMock { public string Cote { get; set; } = ""; public string TitrePropre { get; set; } = ""; }
-    public class ExemplaireMock
-    {
-        public string IdExemplaire { get; set; } = ""; public string Cote { get; set; } = "";
-        public decimal IdEtat { get; set; }
-    }
-    public class PretMock
-    {
-        public string IdAdherent { get; set; } = ""; public string IdExemplaire { get; set; } = "";
-        public DateTime DatePret { get; set; }
-    }
-    public class ReservationMock
-    {
-        public string IdAdherent { get; set; } = ""; public string Cote { get; set; } = "";
-        public DateTime HeureReservation { get; set; }
-    }
+
+
+
 
     void ShowNotification(NotificationMessage message)
     {
