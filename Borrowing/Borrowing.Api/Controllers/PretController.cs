@@ -9,7 +9,7 @@ namespace Borrowing.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BorrowingController : ControllerBase
+public class PretController : ControllerBase
 {
     private readonly IPretService _pretService;
     private readonly IReservationService _reservationService;
@@ -17,7 +17,7 @@ public class BorrowingController : ControllerBase
 
     private readonly INoticeService _noticeService;
 
-    public BorrowingController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService)
+    public PretController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService)
     {
         _pretService = pretService;
         _adherentService = adherentService;
@@ -55,20 +55,6 @@ public class BorrowingController : ControllerBase
     }
 
 
-    [HttpGet("LookupNotice/{id}/{cote}")]
-    public async Task<IActionResult> LookupNotice(string id, string cote)
-    {
-        var notice = await _noticeService.GetNoticeAsync(cote);
-        if (notice != null)
-        {
-            //  ?? que signifie 99/999 dans la table pret
-            // pourquoi insert apret delete 
-            // 1 - voir si l'aherent a deja pri ce livre
-            // 2 - avoir les copies disponibles
-            // 3 - combien d'ecemplaires sont bloquee pour ce livre si  
-            // 4 - si l'adherent a  deja reserve ce livre si oui  
-        }
-        return Ok();
-    }
+    
 }
 
