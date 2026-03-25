@@ -15,6 +15,8 @@ public interface IPretService
 
     Task<int> CountAdherentActiveLoans(string AdherentId);
 
+    Task<List<Pret>> GetNoticeReservations(string cote);
+
 }
 
 public class PretService : IPretService
@@ -84,6 +86,7 @@ public class PretService : IPretService
                         AdherentCategorie = c != null ? c.LibelleCategorie ?? string.Empty : string.Empty,
                         NoticeTitrePropre = n != null ? n.TitrePropre ?? string.Empty : string.Empty,
                         NoticeCote = n != null ? n.Cote ?? string.Empty : string.Empty,
+                        ExemplaireId = p.IdExemplaire ?? string.Empty,
                         DatePret = p.DatePret,
                         EtatDuree = p.EtatDuree
                     };
@@ -107,9 +110,9 @@ public class PretService : IPretService
 
                 "adherentcategorie asc" => query.OrderBy(x => x.AdherentCategorie),
                 "adherentcategorie desc" => query.OrderByDescending(x => x.AdherentCategorie),
-                
-                "noticetitrepropre asc" => query.OrderBy(x => x.NoticeTitrePropre),
-                "noticetitrepropre desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
+
+                "exemplaireid asc" => query.OrderBy(x => x.NoticeTitrePropre),
+                "exemplaireid desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
 
                 "titre asc" => query.OrderBy(x => x.NoticeTitrePropre),
                 "titre desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
@@ -149,4 +152,16 @@ public class PretService : IPretService
     {
         return await _pretRepository.GetQueryable().CountAsync();
     }
+
+    public async Task<List<Pret>> GetNoticeReservations(string cote)
+    {
+        return await _pretRepository.GetQueryable()
+            .Where(p => EF.Functions.Like(
+                p.IdExemplaire.ToUpper(),
+                cote.ToUpper() + "/%"))
+            .Where(p => p.IdAdherent == "99/999")
+            .OrderBy(p => p.DatePret)
+            .ToListAsync();
+    }
+
 }

@@ -7,7 +7,7 @@ namespace Borrowing.Api.Services;
 public interface INoticeService
 {
     Task<Notice?> GetNoticeAsync(string cote);
-    Task<CheckNoticeDto> GetNoticeWithDetailsByCoteAsync(string cote);
+    Task<NoticeWithResExe> GetNoticeWithDetailsByCoteAsync(string cote);
 
 }
 
@@ -48,7 +48,7 @@ public class NoticeService : INoticeService
                 ).ToListAsync();
     }
 
-    public async Task<CheckNoticeDto> GetNoticeWithDetailsByCoteAsync(string cote)
+    public async Task<NoticeWithResExe> GetNoticeWithDetailsByCoteAsync(string cote)
     {
         var notice = await _noticesRepository.GetQueryable()
             .Where(n => n.Cote == cote)
@@ -76,7 +76,7 @@ public class NoticeService : INoticeService
             Prets = prets.Where(p => p.IdExemplaire == e.IdExemplaire).ToList()
         }).ToList();
 
-        return new CheckNoticeDto
+        return new NoticeWithResExe
         {
             Notice = notice,
             Reservations = reservations,

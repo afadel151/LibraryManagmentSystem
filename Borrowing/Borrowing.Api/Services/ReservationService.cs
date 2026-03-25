@@ -8,6 +8,8 @@ public interface IReservationService
 {
     Task<Reservation?> CreateReservationAsync(Reservation reservation);
     Task<int> CountAsync();
+    Task<List<Reservation>> GetAllDescByHeur(int n);
+    Task<List<Reservation>> GetAllDescByHeur();
 }
 
 public class ReservationService : IReservationService
@@ -48,5 +50,19 @@ public class ReservationService : IReservationService
     public async Task<int> CountAsync()
     {
         return await _reservationRepository.GetQueryable().CountAsync();
+    }
+
+    public async Task<List<Reservation>> GetAllDescByHeur(int n)
+    {
+        return await _reservationRepository.GetQueryable()
+                        .OrderByDescending(p => p.HeureReservation)
+                        .Take(n)
+                        .ToListAsync();                   
+    }
+     public async Task<List<Reservation>> GetAllDescByHeur()
+    {
+        return await _reservationRepository.GetQueryable()
+                        .OrderByDescending(p => p.HeureReservation)
+                        .ToListAsync();                   
     }
 }
