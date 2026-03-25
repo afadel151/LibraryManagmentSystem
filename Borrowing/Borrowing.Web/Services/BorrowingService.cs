@@ -23,7 +23,7 @@ public class BorrowingService : IBorrowingService
         var orderBy = string.IsNullOrWhiteSpace(query.OrderBy)
                 ? "DatePret desc"
                 : query.OrderBy;
-        var url = $"api/Borrowing?" +
+        var url = $"api/Pret?" +
                 $"PageNumber={query.PageNumber}&" +
                 $"PageSize={query.PageSize}&" +
                 $"OrderBy={orderBy}";
@@ -42,7 +42,7 @@ public class BorrowingService : IBorrowingService
 
     public async Task<PretStatsDto> GetStats()
     {
-        var response = await _httpClient.GetAsync("api/Borrowing/Stats");
+        var response = await _httpClient.GetAsync("api/Pret/Stats");
         var content = await response.Content.ReadAsStringAsync();
 
         response.EnsureSuccessStatusCode();

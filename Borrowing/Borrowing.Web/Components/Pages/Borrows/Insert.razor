@@ -97,7 +97,15 @@
                             }
                             else if (noticeCheck != null)
                             {
-                                @if (!noticeCheck.Found)
+                                <RadzenText TextStyle="TextStyle.Subtitle1">Titre :</RadzenText>
+                                <RadzenText TextStyle="TextStyle.DisplayH5">@noticeCheck.Titre</RadzenText>
+                                @if(noticeCheck.CanReserve && !noticeCheck.CanBorrow)
+                                {
+                                    <RadzenAlert AlertStyle="AlertStyle.Info" AllowClose="false" class="rz-mt-2">
+                                        Pas de copies disponibles pour pret, vous pouver faire une reservation
+                                    </RadzenAlert>
+                                }
+                                @if (noticeCheck.Found == false)
                                 {
                                     <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" class="rz-mt-2">
                                         Cote introuvable
@@ -105,7 +113,6 @@
                                 }
                                 else
                                 {
-                                    <RadzenText TextStyle="TextStyle.Subtitle1"><b>@noticeCheck.Titre</b></RadzenText>
 
                                     @if (noticeCheck.CanBorrow)
                                     {
@@ -142,7 +149,7 @@
                     @if (noticeCheck.CanReserve)
                     {
 
-                        <RadzenButton Disabled="!IsLoanValidatable" class="rz-mr-2" Text="Réserver ce document" Size="ButtonSize.Medium"
+                        <RadzenButton  class="rz-mr-2" Text="Réserver ce document" Size="ButtonSize.Medium"
                                       ButtonStyle="ButtonStyle.Secondary" />
                     }
                     @if (noticeCheck.CanBorrow && selectedCopyId != null)
