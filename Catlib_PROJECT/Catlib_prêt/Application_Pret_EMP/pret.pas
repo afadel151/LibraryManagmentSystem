@@ -91,7 +91,7 @@ function Split1( delim : String ; chaine : string ) : String;
 
 var
   form_pret: Tform_pret;
-  autorise, date_autorise : boolean ; // ---- cette variable sert à autoriser ou pas le pret
+  autorise, date_autorise : boolean ; // ---- cette variable sert ï¿½ autoriser ou pas le pret
   Image1 : TJPEGImage ;
   indice  : Integer ;
   Reservateur : Boolean ;
@@ -122,7 +122,7 @@ begin
                         end
                 else
                         begin
-                                // ---- Pour voir est ce que la date de retour est un jour férier
+                                // ---- Pour voir est ce que la date de retour est un jour fï¿½rier
                                 // ---- Extraire la liste des jours feriers
                                 Requete_date.SQL.Text := 'select * from jours_feries' ;
                                 Requete_date.ExecSQL ;
@@ -151,7 +151,7 @@ begin
                         begin
                         Traiter_date := date_a_traiter ;
                         end;
-                //--- Retour de la valeur finale d'une date valide (pas week end, pas jour férier)
+                //--- Retour de la valeur finale d'une date valide (pas week end, pas jour fï¿½rier)
 end;
 
 Procedure Tform_pret.retourClick(Sender: TObject);
@@ -190,7 +190,7 @@ valider_pret.visible := true ;
 
 Query_nom_adherent.SQL.Text := 'select NOM,PRENOM,ID_CATEGORIE,ETAT_ADHERENT from adherent where upper(id_adherent) = ''' + strupper(Pchar(id_adherent.Text)) + '''' ;
 
-//-------- Pour remplir le nom et prenom de l'adhérent
+//-------- Pour remplir le nom et prenom de l'adhï¿½rent
 Query_nom_adherent.Active := false ;
 
 DBEdit_nom.DataField := 'NOM' ;
@@ -238,7 +238,7 @@ else
 if (DBEdit_id_etat.Text = '1')  then
         begin
                 autorise := true ;
-                //--------- Pour calculer la date de retour prévue
+                //--------- Pour calculer la date de retour prï¿½vue
                 Query_id_categorie.SQL.Text := ' select duree_pret from categorie where upper(id_categorie) = ''' + strupper(pchar(DBEdit_id_categorie.Text)) + ''''  ;
                 DBEdit_duree_pret.DataField  := 'DUREE_PRET' ;
                 Query_id_categorie.ExecSQL ;
@@ -253,7 +253,7 @@ if (DBEdit_id_etat.Text = '1')  then
 
                 date_retour_prevue.Text := Datetostr(Traiter_date(Date1));
 
-                //--------- Pour compter combien de documents à fait sortir cet adhérent
+                //--------- Pour compter combien de documents ï¿½ fait sortir cet adhï¿½rent
 
 if (id_adherent.Text <> '') then
         begin
@@ -266,7 +266,7 @@ if (id_adherent.Text <> '') then
                 Query_nombre_document_pretes.SQL.Text := 'select NOMBRE_DOCUMENT from categorie where upper(id_categorie) = ''' +  strupper(Pchar(DBEdit_id_categorie.Text)) + ''''  ;
                 Query_nombre_document_pretes.ExecSQL;
                 Query_nombre_document_pretes.Active    := true ;
-                nbr_document_autorises := Query_nombre_document_pretes.Fields.FieldByNumber(1).AsInteger ; // representes le nombre de documents autorisés pour l'adherent en cours
+                nbr_document_autorises := Query_nombre_document_pretes.Fields.FieldByNumber(1).AsInteger ; // representes le nombre de documents autorisï¿½s pour l'adherent en cours
 
                 if (nbr_document_autorises > 0 ) then
                         begin
@@ -274,14 +274,14 @@ if (id_adherent.Text <> '') then
                                 begin
                                          autorise := true ;
                                          Message_Etat_adherent.Font.Color  := clGreen ;
-                                         Message_Etat_adherent.Caption := ' Prêt Autorisé' ;
+                                         Message_Etat_adherent.Caption := ' Prï¿½t Autorisï¿½' ;
                                          valider_pret.Visible := true ;
                                 end
 
                              else
                                 begin
                                         Message_Etat_adherent.Font.Color  := clRed ;
-                                        Message_Etat_adherent.Caption := ' a atteint le nombre de prêts autorisés' ;
+                                        Message_Etat_adherent.Caption := ' a atteint le nombre de prï¿½ts autorisï¿½s' ;
                                         autorise := false ;
                                         valider_pret.Visible := false ;
                                 end;
@@ -298,7 +298,7 @@ else
         begin
              if (DBEdit_id_etat.Text <> '') then
                      begin
-                             Message_Etat_adherent.Caption     := 'Pénalisé ou suspendu' ;
+                             Message_Etat_adherent.Caption     := 'Pï¿½nalisï¿½ ou suspendu' ;
                              Message_Etat_adherent.Font.Color  := clRed ;
                              Message_Etat_adherent.Visible     := true ;
                              valider_pret.visible              := false ;
@@ -332,7 +332,7 @@ end;
 procedure Tform_pret.FormActivate(Sender: TObject);
 begin
 
-//---- Remplir le champ date_pret par la date système (date en cours)
+//---- Remplir le champ date_pret par la date systï¿½me (date en cours)
 date_pret.Text := DateToStr(Date) ;
 Message_Etat_adherent.Caption := ' ' ;
 //-------- Initialiser la photo
@@ -373,11 +373,11 @@ if (strlen(Pchar(date_pret.Text)) = 10) then
 
              date_retour_prevue.Text := Datetostr(Traiter_date(Date1));
 
-             //-------- Tester si la date qui a été saisi est supérieure à la date en cours
+             //-------- Tester si la date qui a ï¿½tï¿½ saisi est supï¿½rieure ï¿½ la date en cours
 
              if ( strToDate(date_pret.Text) > date ) then
                     begin
-                         Showmessage('La date de prêt doit être inférieure ou égale à la date en cours') ;
+                         Showmessage('La date de prï¿½t doit ï¿½tre infï¿½rieure ou ï¿½gale ï¿½ la date en cours') ;
                          date_autorise := false ;
                          date_pret.Text := DateToStr(Date) ;
                     end
@@ -404,7 +404,7 @@ begin
 if (id_adherent.Text <> '') then
         begin
 
-                //--------- Pour compter combien de documents à fait sortir cet adhérent
+                //--------- Pour compter combien de documents ï¿½ fait sortir cet adhï¿½rent
                 Query_nombre_document_pretes.Active    := false ;
                 Query_nombre_document_pretes.SQL.Text := 'select count(*) from pret where upper(id_adherent) = ''' + strupper(Pchar(id_adherent.Text)) + ''''  ;
                 Query_nombre_document_pretes.ExecSQL;
@@ -415,7 +415,7 @@ if (id_adherent.Text <> '') then
                 Query_nombre_document_pretes.SQL.Text := 'select NOMBRE_DOCUMENT from categorie where upper(id_categorie) = ''' + strupper(Pchar(DBEdit_id_categorie.Text)) + ''''  ;
                 Query_nombre_document_pretes.ExecSQL;
                 Query_nombre_document_pretes.Active    := true ;
-                nbr_document_autorises := Query_nombre_document_pretes.Fields.FieldByNumber(1).AsInteger ; // representes le nombre de documents autorisés pour l'adherent en cours
+                nbr_document_autorises := Query_nombre_document_pretes.Fields.FieldByNumber(1).AsInteger ; // representes le nombre de documents autorisï¿½s pour l'adherent en cours
 
                 if (nbr_document_autorises > 0 ) then
                         begin
@@ -430,7 +430,7 @@ if (id_adherent.Text <> '') then
                              else
                                 begin
                                         Message_Etat_adherent.Font.Color  := clRed ;
-                                        Message_Etat_adherent.Caption := 'a atteint le nombre de prêts autorisés' ;
+                                        Message_Etat_adherent.Caption := 'a atteint le nombre de prï¿½ts autorisï¿½s' ;
                                         autorise := false ;
                                         valider_pret.Visible := false ;
                                 end;
@@ -439,37 +439,37 @@ if (id_adherent.Text <> '') then
 
 //---------------- Ici on valide le pret si tout va bien
 
-//-------- Cette partie pour traiter le cas dans lequel la date saisie est sup à la date en cours et
+//-------- Cette partie pour traiter le cas dans lequel la date saisie est sup ï¿½ la date en cours et
 //         lorsque on change elle devient week-end
 
 if (strToDate(date_pret.Text) > date ) then
         begin
-                Showmessage('La date de prêt doit être inférieure ou égale à la date en cours') ;
+                Showmessage('La date de prï¿½t doit ï¿½tre infï¿½rieure ou ï¿½gale ï¿½ la date en cours') ;
                 Goto Fin;
         end;
 
 if (not date_autorise) then
         begin
-                Showmessage('La date de prêt doit être inférieure ou égale à la date en cours') ;
+                Showmessage('La date de prï¿½t doit ï¿½tre infï¿½rieure ou ï¿½gale ï¿½ la date en cours') ;
                 Goto Fin;
         end;
 
 //----------- On doit tester avant que les information ne manque pas
-if (DBEdit_id_etat.Text = '1') then //---- ça veut dire que l'adhérent existe et est
+if (DBEdit_id_etat.Text = '1') then //---- ï¿½a veut dire que l'adhï¿½rent existe et est
     begin
-        if (autorise) then   //---- l'adhérent est autorisé à faire un pret et que la date de pret ecrite est conforme
+        if (autorise) then   //---- l'adhï¿½rent est autorisï¿½ ï¿½ faire un pret et que la date de pret ecrite est conforme
            begin
                 if (liste_exemplaire_disponible.Text <> '') then   // ---- il y a  des exemplaires et on a choisi un
                     begin
 
-                        //---------- Dans le cas où la date saisie par l'opérateur est un jour de Week-End
+                        //---------- Dans le cas oï¿½ la date saisie par l'opï¿½rateur est un jour de Week-End
                         date_pret_final := Traiter_Date(strToDate(date_pret.Text) );
 
                         date_pret.Text := DateToStr(date_pret_final);
 
                         //date_pretChange(valider_pret);
 
-                        //--- Il faut tester est ce que l'adhérent en cours n'a pas un exemplaire déjà de l'ouvrage choisi
+                        //--- Il faut tester est ce que l'adhï¿½rent en cours n'a pas un exemplaire dï¿½jï¿½ de l'ouvrage choisi
 
                         Query_valider_pret.SQL.Text := 'Select count(*) from pret where upper(id_adherent) = ''' + strupper(Pchar(id_adherent.Text)) +
                                                         ''' and upper(id_exemplaire) like ''' + strupper(Pchar(cote.Text)) + '/%''' ;
@@ -480,7 +480,7 @@ if (DBEdit_id_etat.Text = '1') then //---- ça veut dire que l'adhérent existe et
 
                         if (Query_valider_pret.Fields.FieldByNumber(1).AsInteger > 0 ) then
                                 begin
-                                        Showmessage('Cette ourvage est déjà attribué à cette adhérent!!!');
+                                        Showmessage('Cette ourvage est dï¿½jï¿½ attribuï¿½ ï¿½ cette adhï¿½rent!!!');
                                 end
                         else begin
 
@@ -496,10 +496,10 @@ if (DBEdit_id_etat.Text = '1') then //---- ça veut dire que l'adhérent existe et
 
                                 Query_valider_pret.ExecSQL;
 
-                                //--------- Tester est ce que cet exemplaire a été reservé par cet utilisateur
+                                //--------- Tester est ce que cet exemplaire a ï¿½tï¿½ reservï¿½ par cet utilisateur
                                 //--------- Si c'est le cas il faut enlever l'enregistrement correspondant dans la table pret
-                                //--------- C'est à dire l'occurence : 99-999 , id_exemplaire correspondant à l'indice de
-                                //--------- l'adhérent dans la table des reservations
+                                //--------- C'est ï¿½ dire l'occurence : 99-999 , id_exemplaire correspondant ï¿½ l'indice de
+                                //--------- l'adhï¿½rent dans la table des reservations
                                 
                                 if ( Reservateur ) then
                                         begin
@@ -517,13 +517,13 @@ if (DBEdit_id_etat.Text = '1') then //---- ça veut dire que l'adhérent existe et
 
                                         end;
 
-                                //--------- Il faut maintnant changer l'état de l'exemplaire
+                                //--------- Il faut maintnant changer l'ï¿½tat de l'exemplaire
                                 //--------- Pour dire que l'exemplaire n'est plus disponible
                                 Query_valider_pret.SQL.Text := 'update exemplaire set id_etat = 2 where id_exemplaire = ''' +
                                                                 liste_exemplaire_disponible.Text + '''';
                                 Query_valider_pret.ExecSQL;
-                                Showmessage('Prêt validé avec succès.');
-                                //-------- Ré-initaliser quelques champs
+                                Showmessage('Prï¿½t validï¿½ avec succï¿½s.');
+                                //-------- Rï¿½-initaliser quelques champs
                                 Cote.Text := '' ;
                                 end;
 
@@ -531,17 +531,17 @@ if (DBEdit_id_etat.Text = '1') then //---- ça veut dire que l'adhérent existe et
                     end
                   else
                     begin
-                         Showmessage('Il faut choisir l''exemplaire avant de valider le Prêt !!! ');
+                         Showmessage('Il faut choisir l''exemplaire avant de valider le Prï¿½t !!! ');
                     end;
            end
            else
                 begin
-                Showmessage('Ce prêt n''est pas autorisé, Vérifier les informations saisies !!! ');
+                Showmessage('Ce prï¿½t n''est pas autorisï¿½, Vï¿½rifier les informations saisies !!! ');
                 end;
     end
 else
     begin
-    Showmessage('Veuillez vérifier les informations saisies !!! ');
+    Showmessage('Veuillez vï¿½rifier les informations saisies !!! ');
     end;
     //---- etiquette Fin
     
@@ -568,14 +568,14 @@ Query_reservation.First;
 
 if (Query_reservation.Fields.FieldByNumber(1).AsInteger > 0 ) then
         begin
-                Showmessage('cet utilisateur a déjà réservé cette cote');
+                Showmessage('cet utilisateur a dï¿½jï¿½ rï¿½servï¿½ cette cote');
         end
 else
         begin
                 Query_reservation.SQL.Text := ' insert into reservation values ('''
                                                 + strupper(Pchar(id_adherent.Text)) + ''','''
                                                 + strupper(Pchar(cote.Text)) + ';'','
-                                                //  la ligne suivante était avant :  datetostr(date_aujourdhui) 
+                                                //  la ligne suivante ï¿½tait avant :  datetostr(date_aujourdhui) 
                                                 + 'TO_DATE(''' + datetostr(date_aujourdhui) + ' ' +  timetostr(heure_aujourdhui) +  ''',' + ' ''dd/mm/yyyy HH24:MI:SS''))'  ;
 
                 //Showmessage(Query_reservation.SQL.Text) ;
@@ -606,7 +606,7 @@ existe : boolean ;
 
 begin
 
-if (Key=VK_RETURN) then //---- Pour faire ce qui suit quand le bouton enter est appuyé
+if (Key=VK_RETURN) then //---- Pour faire ce qui suit quand le bouton enter est appuyï¿½
   begin
 
 
@@ -669,7 +669,7 @@ if ( est_reservateur = 1 ) then
             //showmessage('lutilisateur actuel est reservateur ---')  ;
             Liste_Temporaire_exemplaire.Clear;
 
-            //--------- Extraire les reservations par ordre de priorité (autant que le nombre d'exemplaires libres)
+            //--------- Extraire les reservations par ordre de prioritï¿½ (autant que le nombre d'exemplaires libres)
 
                 Query_Liste_exemplaire_disponible.Active := false ;
                 Query_Liste_exemplaire_disponible.SQL.Text := 'select id_adherent, heure_reservation from reservation where upper(cote) = ''' + strupper(Pchar(cote.Text)) + ';'' order by heure_reservation asc' ;
@@ -680,12 +680,12 @@ if ( est_reservateur = 1 ) then
                 for i := 1 to nbr_pret_reservations do
                         begin
                                 Liste_Temporaire_exemplaire.Items.Add(strupper(Pchar(Query_Liste_exemplaire_disponible.Fields.FieldByNumber(1).AsString)));
-                                //showmessage('nous avons ajouté un exemplaire à la liste temporaire des exemplaires libres ') ;
+                                //showmessage('nous avons ajoutï¿½ un exemplaire ï¿½ la liste temporaire des exemplaires libres ') ;
                                 Query_Liste_exemplaire_disponible.Next;
                         end;
 
-                //------- Ici on va voir est ce que l'adhérent en cours est parmi ceux les plus prioritaires
-                //------- C'est à dire qu'on doit chercher dans : Liste_Temporaire_exemplaire
+                //------- Ici on va voir est ce que l'adhï¿½rent en cours est parmi ceux les plus prioritaires
+                //------- C'est ï¿½ dire qu'on doit chercher dans : Liste_Temporaire_exemplaire
 
                 existe := false ;
                 indice := 0 ;
@@ -726,7 +726,7 @@ if ( est_reservateur = 1 ) then
                                         end
                                 else
                                         begin
-                                                Showmessage('les exemplaires existants sont réservés par d''autres adhérents.') ;
+                                                Showmessage('les exemplaires existants sont rï¿½servï¿½s par d''autres adhï¿½rents.') ;
                                         end;
         end
 else
@@ -743,7 +743,7 @@ else
                 begin
 
                 //-------- Ici le nombre d'exemplaire disponible est superieur au nombre de reservations
-                //-------- Donc on peut affecter directement la cote demandée
+                //-------- Donc on peut affecter directement la cote demandï¿½e
 
                         Query_Liste_exemplaire_disponible.SQL.Text := 'select * from exemplaire where  upper(id_exemplaire) like ''' + strupper(Pchar(cote.Text)) + '/%'' and id_etat = 1' ;
                         Query_Liste_exemplaire_disponible.ExecSQL ;
