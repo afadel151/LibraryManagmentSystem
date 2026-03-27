@@ -26,7 +26,7 @@ public class PretController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<PagedResult<PretResponseDto>>> Get([FromQuery] PretQueryParameters queryParameters)
+    public async Task<ActionResult<PagedResult<PretResponseDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
     {
         var result = await _pretService.GetPretsAsync(queryParameters);
         return Ok(result);

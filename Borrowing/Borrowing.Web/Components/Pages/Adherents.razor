@@ -1,4 +1,137 @@
 @page "/adherents"
 
+@rendermode InteractiveAuto
+@inject IAdherentService adherentService
+@using Borrowing.SharedClasses.Responses.Adherent
+@using Borrowing.SharedClasses.Responses.Notice
+@using Borrowing.Web.Services
+@using Radzen
+@using Radzen.Blazor
+@using Shared.Models
+@using Borrowing.SharedClasses.Common
+
+<RadzenRow class="rz-text-align-center " Gap="1rem">
+    <RadzenColumn>
+        <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
+            <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H6">Adherents actifs</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-color-success rz-m-0">
+                        @(stats?.TotalActif ?? 0)
+                    </RadzenText>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+    <RadzenColumn>
+        <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
+            <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H6">Pretants en cours</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-color-info rz-m-0">
+                        @(stats?.Pretants ?? 0)
+                    </RadzenText>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+    <RadzenColumn>
+        <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
+            <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H6">Penalises</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-color-warning rz-m-0">
+                        @(stats?.Penalises ?? 0)
+                    </RadzenText>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+</RadzenRow>
+
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+             AlignItems="AlignItems.Center">
+    <RadzenText class="rz-mt-4" TextStyle="TextStyle.H3">Total adherents</RadzenText>
+    <RadzenTextBox   Placeholder="Chercher..." @bind-Value="SearchText" @oninput="DoSearch" Change="DoSearch"/>
+</RadzenStack>
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn>
+        <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@adherents" Count="@count"
+                        LoadData="@LoadData" IsLoading="@isLoading" TItem="AdherentDto" ShowPagingSummary="true" AllowPaging="true"
+                        PageSize="10" AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="AdherentDto" Property="IdAdherent" Title="Identifiant" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Nom" Title="Nom Adhérent" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Prenom" Title="Prénom" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Categorie" Title="Catégorie" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Position" Title="Position" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Etat" Title="Etat" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Prets" Title="Pres en cours" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Reservations" Title="Reservations en cours" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Penalise" Title="Penalise/Non penalise" />
+                <RadzenDataGridColumn TItem="AdherentDto" Title="Action">
+                    <Template Context="data">
+                        <RadzenButton Size="ButtonSize.Small" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base" Icon="visibility"
+                                      Text="View" />
+                    </Template>
+                </RadzenDataGridColumn>
+                
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
 
 
+
+@code {
+
+    private string SearchText = "";
+    
+    private IEnumerable<AdherentDto>? adherents;
+    private int count;
+    private bool isLoading;
+
+    private AdherentsStatsDto? stats;
+    protected override async Task OnInitializedAsync()
+    {
+        stats = await adherentService.GetStats();
+    }
+
+    private async Task DoSearch()
+    {
+        LoadDataArgs args = new LoadDataArgs { };
+        await LoadData(args);
+    }
+    private async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+
+        try
+        {
+            int skip = args.Skip ?? 0;
+            int top = args.Top ?? 10;
+
+            int pageNumber = (skip / top) + 1;
+
+            var queryParams = new PaginatedQueryParameters
+            {
+                PageNumber = pageNumber,
+                PageSize = top,
+                OrderBy = args.OrderBy ?? "datepret desc",
+                Search = SearchText
+            };
+
+            var result = await adherentService.GetPretsAsync(queryParams);
+
+            adherents = result.Data;
+            count = result.TotalCount;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

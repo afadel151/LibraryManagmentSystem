@@ -1,16 +1,17 @@
 @page "/prets"
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Responses.Pret
+@using Borrowing.SharedClasses.Common
 @using Borrowing.SharedClasses.Requests.Pret
 
 @rendermode InteractiveAuto
-@inject IBorrowingService BorrowingService
+@inject IPretService pretService
 @using Borrowing.SharedClasses.Responses.Adherent
 @using Borrowing.SharedClasses.Responses.Notice
 @using Radzen
 @using Radzen.Blazor
 @using Shared.Models
-@inject IBorrowingService BorrowingService
+
 @inject NotificationService NotificationService
 
 <RadzenRow class="rz-text-align-center " Gap="1rem">
@@ -216,7 +217,7 @@
     private PretStatsDto? stats;
     protected override async Task OnInitializedAsync()
     {
-        stats = await BorrowingService.GetStats();
+        stats = await pretService.GetStats();
     }
     private async Task LoadData(LoadDataArgs args)
     {
@@ -229,14 +230,14 @@
 
             int pageNumber = (skip / top) + 1;
 
-            var queryParams = new PretQueryParameters
+            var queryParams = new PaginatedQueryParameters
             {
                 PageNumber = pageNumber,
                 PageSize = top,
                 OrderBy = args.OrderBy ?? "datepret desc"
             };
 
-            var result = await BorrowingService.GetPretsAsync(queryParams);
+            var result = await pretService.GetPretsAsync(queryParams);
 
             prets = result.Data;
             count = result.TotalCount;
@@ -288,7 +289,7 @@
         isLoadingMember = true;
 
         string searchId = AdherentId.Trim().ToUpper().Replace("/", "");
-        adherentCheck = await BorrowingService.CheckAdherent(searchId);
+        adherentCheck = await pretService.CheckAdherent(searchId);
         hasSearchedMember = true;
         StateHasChanged();
         if (adherentCheck == null)
@@ -361,7 +362,7 @@
         hasSearchedDocument = true;
         StateHasChanged();
         // Strip trailing path segments from barcode scan
-        noticeCheck = await BorrowingService.CheckNotice(Cote, AdherentId);
+        noticeCheck = await pretService.CheckNotice(Cote, AdherentId);
         ShowNotification(new NotificationMessage
         {
             Severity = NotificationSeverity.Success,
@@ -394,10 +395,10 @@
             });
             return;
         }
-        CreatePretResponseDto result = await BorrowingService.CreatePret(new CreatePretRequestDto
+        CreatePretResponseDto result = await pretService.CreatePret(new CreatePretRequestDto
         {
             AdherentId = AdherentId,
-            ExemplaireId = selectedCopyId,
+            ExemplaireId = selectedCopyId!,
         });
         if (result.Done)
         {

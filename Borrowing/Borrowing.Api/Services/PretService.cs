@@ -11,7 +11,7 @@ public interface IPretService
 {
     Task<Pret?> CreatePretAsync(CreatePretRequestDto pretRequestDTo);
     Task<int> CountAsync();
-    Task<PagedResult<PretResponseDto>> GetPretsAsync(PretQueryParameters queryParameters);
+    Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters);
 
     Task<int> CountAdherentActiveLoans(string AdherentId);
 
@@ -68,7 +68,7 @@ public class PretService : IPretService
         }
     }
 
-    public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PretQueryParameters queryParameters)
+    public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters)
     {
         var prets = _pretRepository.GetQueryable();
         var adherents = _adherentRepository.GetQueryable();

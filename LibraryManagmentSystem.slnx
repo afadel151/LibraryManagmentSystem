@@ -1,6 +1,4 @@
 <Solution>
   <Project Path="Borrowing/Borrowing.csproj" />
-  <Project Path="Search/Search.csproj" />
   <Project Path="Shared/Shared.csproj" />
-  <Project Path="Stock/Stock.csproj" />
 </Solution>

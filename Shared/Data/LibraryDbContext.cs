@@ -174,9 +174,20 @@ public partial class LibraryDbContext : DbContext
             entity.HasOne(a => a.Position)
                 .WithMany()
                 .HasForeignKey(a => a.IdPosition);
+
             entity.HasOne(a => a.Categorie)
                 .WithMany()
                 .HasForeignKey(a => a.IdCategorie);
+
+            entity.HasMany(a => a.PenaliteAdherents)
+                .WithOne()
+                .HasForeignKey(p => p.IdAdherent)
+                .HasPrincipalKey(a => a.IdAdherent);
+            
+            entity.HasMany(a => a.Prets)
+                .WithOne()
+                .HasForeignKey(p => p.IdAdherent)
+                .HasPrincipalKey(a => a.IdAdherent);
         });
 
         modelBuilder.Entity<Admin>(entity =>

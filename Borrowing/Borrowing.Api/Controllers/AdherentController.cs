@@ -26,6 +26,14 @@ public class AdherentController : ControllerBase
         _reservationService = reservationService;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<PagedResult<AdherentDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
+    {
+        var result = await _adherentService.GetAdherentsAsync(queryParameters);
+        return Ok(result);
+    }
+
+
     [HttpGet("Pret/Check/{id}")]
     public async Task<ActionResult<CheckAdhResponseDto>> CheckAdherent(string id)
     {
@@ -36,13 +44,12 @@ public class AdherentController : ControllerBase
             {
                 if (adherent.PenaliteAdherents.Count == 0) // allowed
                 {
-                    Categorie? categorie = await _adherentService.GetAdherentCategorie(id);
-                    if (categorie != null) // categorie exists
+                    if (adherent.Categorie != null) // categorie exists
                     {
                         int activeLoans = await _pretService.CountAdherentActiveLoans(id); // count active loans
-                        if (activeLoans < categorie.NombreDocument)
+                        if (activeLoans < adherent.Categorie.NombreDocument)
                         {
-                            DateTime expectedReturnDate = await _adherentService.CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)categorie.DureePret!);
+                            DateTime expectedReturnDate = await _adherentService.CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)adherent.Categorie.DureePret!);
                             return Ok(
                                 new CheckAdhResponseDto
                                 {
@@ -121,6 +128,11 @@ public class AdherentController : ControllerBase
     }
 
 
-
+    [HttpGet("Stats")]
+    public async Task<ActionResult> GetStats()
+    {
+        var result =  await  _adherentService.GetStats();
+        return Ok(result);
+    }   
 
 }

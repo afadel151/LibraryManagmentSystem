@@ -7,11 +7,15 @@ builder.Services.AddRazorComponents()
                     .AddInteractiveServerComponents();
 builder.Services.AddRadzenComponents();
 
-builder.Services.AddHttpClient<IBorrowingService, BorrowingService>(client =>
+builder.Services.AddHttpClient<IPretService, PretService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5026/");
 });
 
+builder.Services.AddHttpClient<IAdherentService, AdherentService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5026/");
+});
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

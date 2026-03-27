@@ -8,24 +8,32 @@ using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Responses.Notice;
+public interface IPretService
+{
+    Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters);
+    Task<PretStatsDto> GetStats();
+    Task<CheckAdhResponseDto> CheckAdherent(string id);
+    Task<CheckNoticeResponseDto> CheckNotice(string cote, string AdherentId);
 
-public class BorrowingService : IBorrowingService
+    Task<CreatePretResponseDto> CreatePret(CreatePretRequestDto pretRequestDto);
+}
+public class PretService : IPretService
 {
     private readonly HttpClient _httpClient;
 
-    public BorrowingService(HttpClient httpClient)
+    public PretService(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
 
-    public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PretQueryParameters query)
+    public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters)
     {
-        var orderBy = string.IsNullOrWhiteSpace(query.OrderBy)
+        var orderBy = string.IsNullOrWhiteSpace(queryParameters.OrderBy)
                 ? "DatePret desc"
-                : query.OrderBy;
+                : queryParameters.OrderBy;
         var url = $"api/Pret?" +
-                $"PageNumber={query.PageNumber}&" +
-                $"PageSize={query.PageSize}&" +
+                $"PageNumber={queryParameters.PageNumber}&" +
+                $"PageSize={queryParameters.PageSize}&" +
                 $"OrderBy={orderBy}";
 
         var response = await _httpClient.GetAsync(url);
