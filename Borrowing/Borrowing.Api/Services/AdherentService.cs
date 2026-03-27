@@ -24,7 +24,7 @@ public class AdherentService(
 
     public async Task<Adherent?> GetAdherentWithDetailsAsync(string adherentId)
     {
-        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
+        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!,a=> a.PenaliteAdherents!).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
 
         if (adherent != null)
         {

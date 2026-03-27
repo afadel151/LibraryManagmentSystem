@@ -35,12 +35,15 @@ public class NoticeController : ControllerBase
         // combien de copies dispo
         if (notice == null)
         {
-            return Ok(new CheckNoticeResponseDto{Found = false});
+            return Ok(new CheckNoticeResponseDto {
+                Found = false 
+            });
         }
+
         List<string> availableCopies = [.. notice.Exemplaires.Where(e => e.IdEtat == 1).Select(e => e.IdExemplaire)];
         // est ce que l'adherent a reserve ce livre
         // copies bloquees 99/999
-        List<Pret> noticeReservations = await _pretService.GetNoticeReservations(cote);
+        List<Pret> noticeReservations = await _pretService.GetBlockedCopies(cote);
         // si reservateur
         if (notice.Reservations.Any(r => r.IdAdherent == AdherentId))
         {
@@ -53,12 +56,22 @@ public class NoticeController : ControllerBase
                 int queuPosition = orderedReservations.FindIndex(r => r.IdAdherent == AdherentId);
                 // retourner la copie + qu'il est reservateur
                 // return noticeReservations.ElementAt(queuPosition).IdExemplaire;
-                return Ok(new CheckNoticeResponseDto{ CanBorrow = true, Message = "Vous pouvez preter", Exemplaires = new List<string> { noticeReservations.ElementAt(queuPosition).IdExemplaire }, Reservateur = true, Titre = notice.Notice?.TitrePropre! });
+                return Ok(new CheckNoticeResponseDto 
+                { 
+                    CanBorrow = true, 
+                    Message = "Vous pouvez preter", 
+                    Exemplaires = new List<string> { noticeReservations.ElementAt(queuPosition).IdExemplaire }, 
+                    Reservateur = true, 
+                    Titre = notice.Notice?.TitrePropre! 
+                });
             }
             else
             {
                 // block : membre ne put pas preter car les copies sont bloquee pour les reservateurs 
-                return Ok(new CheckNoticeResponseDto{ Message = "Les copies sont bloquee pour les reservateurs ", Titre = notice.Notice?.TitrePropre!,CanReserve = true});
+                return Ok(new CheckNoticeResponseDto { 
+                    CanReserve = true, 
+                    Message = "Les copies sont bloquee pour les reservateurs ", 
+                    Titre = notice.Notice?.TitrePropre! });
             }
         }
         else
@@ -67,12 +80,22 @@ public class NoticeController : ControllerBase
             if (availableCopies.Count > 0)
             {
                 // return available copies
-                return Ok(new CheckNoticeResponseDto{ Message = "Vous pouvez preter", Exemplaires = availableCopies, CanBorrow = true, Titre = notice.Notice?.TitrePropre!});
+                return Ok(new CheckNoticeResponseDto { 
+                    Message = "Vous pouvez preter", 
+                    Exemplaires = availableCopies, 
+                    CanBorrow = true, 
+                    Titre = notice.Notice?.TitrePropre! 
+                });
             }
             else
             {
                 // sinon dire qu'il n'ya pas une copie + Boutton Reserver 
-                return Ok(new CheckNoticeResponseDto{ CanBorrow = false,CanReserve = true, Message = "Pas de copies dispo, vous pouvez reserver" ,Titre = notice.Notice?.TitrePropre!});
+                return Ok(new CheckNoticeResponseDto { 
+                    CanBorrow = false, 
+                    CanReserve = true, 
+                    Message = "Pas de copies dispo, vous pouvez reserver", 
+                    Titre = notice.Notice?.TitrePropre! 
+                });
             }
         }
     }

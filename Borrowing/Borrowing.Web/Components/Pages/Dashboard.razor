@@ -1,3 +1,48 @@
 @page "/"
 
-<p>Dahsboard</p>
+@inject NavigationManager Navigation
+<div class="rz-display-grid" style="grid-template-columns: repeat(3, 1fr);gap: 16px;">
+    @foreach (CardElement element in Elements)
+    {
+
+        <RadzenButton Variant="Variant.Flat"  ButtonStyle="element.Style" Style="
+        height:200px; 
+        display:flex; 
+        align-items:center; 
+        justify-content:center;
+        font-size:30px;
+        "
+        Click="@(args => Navigation.NavigateTo(element.Url))"
+        Icon="@element.Icon"
+        Text="@element.Text"
+         />
+
+    }
+</div>
+
+@code {
+
+
+    class CardElement
+    {
+        public string Text { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+
+        public ButtonStyle Style { get; set;} = ButtonStyle.Base;
+        public string Icon {get;set;} = string.Empty;
+    }   
+
+    List<CardElement> Elements = new List<CardElement>
+        {
+            new() { Text = "Gestion des prets" ,Icon="hand_package", Url = "/prets" , Style=ButtonStyle.Base},
+            new() { Text = "Gestion des adherents" ,Icon="person" , Url = "/adherents" , Style=ButtonStyle.Secondary},
+            new() { Text = "Gestion des restitutions" ,Icon="source_notes", Url = "/restitutions" , Style=ButtonStyle.Info},
+            new() { Text = "Gestion des documents" ,Icon="newsstand", Url = "/documents" , Style=ButtonStyle.Warning},
+            new() { Text = "Avis de disponibilite" ,Icon="timelapse", Url = "/availability" , Style=ButtonStyle.Dark},
+            new() { Text = "Documents en pret" ,Icon="assignment_turned_in", Url = "/borrowed_documents" , Style=ButtonStyle.Primary},
+            new() { Text = "Documents reservee" ,Icon="date_range", Url = "/reserved_documents" , Style=ButtonStyle.Success},
+            new() { Text = "Gestion de relances" ,Icon="notifications_active", Url = "/relances" , Style=ButtonStyle.Success},
+            new() { Text = "Gestion des categories" ,Icon="category", Url = "/categories" , Style=ButtonStyle.Danger},
+
+        };
+}

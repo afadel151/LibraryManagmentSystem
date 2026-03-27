@@ -33,10 +33,27 @@ public class PretController : ControllerBase
     }
 
     [HttpPost("Create")]
-    public async Task<ActionResult<CreatePretResponseDto>> CreatePret([FromBody] CreatePretRequestDto pretRequestDto)
+    public async Task<ActionResult<CreatePretResponseDto?>> CreatePret([FromBody] CreatePretRequestDto pretRequestDto)
     {
+        // refaire traitement de verification
         var result = await _pretService.CreatePretAsync(pretRequestDto);
-        return Ok(result);
+        if (result != null)
+        {
+            return Ok(
+                new CreatePretResponseDto
+                {
+                    Done = true,
+                }
+            );
+        }else
+        {
+            return Ok(
+                new CreatePretResponseDto
+                {
+                    Done = false,
+                }
+            );
+        }
     }
 
     [HttpGet("Stats")]

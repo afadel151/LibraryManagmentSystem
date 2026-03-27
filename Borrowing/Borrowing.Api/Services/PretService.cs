@@ -15,7 +15,8 @@ public interface IPretService
 
     Task<int> CountAdherentActiveLoans(string AdherentId);
 
-    Task<List<Pret>> GetNoticeReservations(string cote);
+    Task<List<Pret>> GetBlockedCopies(string cote);
+    // Task<Pret?> GetPretByExemplaireId(string IdExemplaire);
 
 }
 
@@ -52,10 +53,19 @@ public class PretService : IPretService
         var pret = new Pret
         {
             IdAdherent = pretRequestDTo.AdherentId,
-            // EtatDuree = pretRequestDTo.DateRetourPrevu
+            IdExemplaire = pretRequestDTo.ExemplaireId,
+            DatePret = DateTime.Now.Date
         };
-        await _pretRepository.AddAsync(pret);
-        return pret;
+        try
+        {
+            await _pretRepository.AddAsync(pret);
+            return pret;
+        }
+        catch (System.Exception)
+        {
+            
+            return null;
+        }
     }
 
     public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PretQueryParameters queryParameters)
@@ -151,7 +161,7 @@ public class PretService : IPretService
         return await _pretRepository.GetQueryable().CountAsync();
     }
 
-    public async Task<List<Pret>> GetNoticeReservations(string cote)
+    public async Task<List<Pret>> GetBlockedCopies(string cote)
     {
         return await _pretRepository.GetQueryable()
             .Where(p => EF.Functions.Like(

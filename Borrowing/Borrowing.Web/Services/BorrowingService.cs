@@ -75,4 +75,16 @@ public class BorrowingService : IBorrowingService
             PropertyNameCaseInsensitive = true
         })!;
     }
+
+    public async Task<CreatePretResponseDto> CreatePret(CreatePretRequestDto createPretRequestDto)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"api/Pret/Create", createPretRequestDto);
+        var content = await response.Content.ReadAsStringAsync();
+
+        response.EnsureSuccessStatusCode();
+        return JsonSerializer.Deserialize<CreatePretResponseDto>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+    }
 }

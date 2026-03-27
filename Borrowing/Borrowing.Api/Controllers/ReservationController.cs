@@ -5,6 +5,7 @@ using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Common;
 using Shared.Models;
+using Borrowing.SharedClasses.Reservation.Pret;
 namespace Borrowing.Api.Controllers;
 
 [ApiController]
@@ -23,5 +24,11 @@ public class ReservationController : ControllerBase
         _adherentService = adherentService;
         _noticeService = noticeService;
         _reservationService = reservationService;
+    }
+
+    [HttpPost("Create")]
+    public async Task<IActionResult> CreateReservation([FromBody] CreateReservationRequestDto createReservationDto)
+    {
+        return Ok();
     }
 }

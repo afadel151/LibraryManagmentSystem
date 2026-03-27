@@ -1,20 +1,22 @@
 ﻿@rendermode InteractiveAuto
-<RadzenHeader style="position: static">
-    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-        <RadzenSidebarToggle @rendermode="@RenderMode.InteractiveServer" Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-        <RadzenLabel Text="CATLIB - PRET" />
-        <RadzenAppearanceToggle />
-    </RadzenStack>
-</RadzenHeader>
+ <RadzenHeader>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            <RadzenLabel Text="CATlib-PRET" />
+        </RadzenStack>
+    </RadzenHeader>
 
-<RadzenSidebar FullHeight="true" @bind-Expanded="@sidebarExpanded">
+<RadzenSidebar Position="SidebarPosition.Left" FullHeight="true" Responsive=false style="position: absolute; z-index: 3" @bind-Expanded="@sidebarExpanded">
+    <RadzenStack AlignItems="AlignItems.End" class="rz-p-2">
+            <RadzenButton Icon="west" Variant="Variant.Text" ButtonStyle="ButtonStyle.Secondary" Click="@(() => sidebarExpanded = false)" />
+        </RadzenStack>
     <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)">
-        <RadzenPanelMenuItem Text="Dashboard" Icon="apps" Path="/" />
-        <RadzenPanelMenuItem Text="Gestion des Prets" Icon="hand_package" Path="/borrows" />
+        <RadzenPanelMenuItem Text="Menu" Icon="apps" Path="/" />
+        <RadzenPanelMenuItem Text="Gestion des Prets" Icon="hand_package" Path="/prets" />
         <RadzenPanelMenuItem Text="Gestion des Adherents" Icon="person" Path="/adherents" />
         <RadzenPanelMenuItem Text="Gestion des Restitutions" Icon="source_notes" Path="/restitutions" />
         <RadzenPanelMenuItem Text="Gestion des Documents" Icon="newsstand" Path="/documents" />
-        <RadzenPanelMenuItem Text="Avis de Disponibilite" Icon="timelapse" Path="/reservations" />
+        <RadzenPanelMenuItem Text="Avis de Disponibilite" Icon="timelapse" Path="/availability" />
         <RadzenPanelMenuItem Text="Documents en pret" Icon="assignment_turned_in" Path="/borrowed_documents" />
         <RadzenPanelMenuItem Text="Documents Reservees" Icon="date_range" Path="reserved_documents"/>
         <RadzenPanelMenuItem Text="Gestion des relances" Icon="notifications_active" Path="/relances" />
@@ -23,5 +25,5 @@
     </RadzenPanelMenu>
 </RadzenSidebar>
 @code {
-    bool sidebarExpanded = true;
+    bool sidebarExpanded = false;
 }

@@ -12,5 +12,7 @@ public interface IBorrowingService
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PretQueryParameters queryParameters);
     Task<PretStatsDto> GetStats();
     Task<CheckAdhResponseDto> CheckAdherent(string id);
-     Task<CheckNoticeResponseDto> CheckNotice(string cote, string AdherentId);
+    Task<CheckNoticeResponseDto> CheckNotice(string cote, string AdherentId);
+
+    Task<CreatePretResponseDto> CreatePret(CreatePretRequestDto pretRequestDto);
 }
