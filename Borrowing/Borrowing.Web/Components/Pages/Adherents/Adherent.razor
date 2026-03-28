@@ -1,0 +1,33 @@
+@page "/adherents/{Id}"
+@using Borrowing.SharedClasses.Responses.Adherent
+@using Borrowing.Web.Services
+@inject NavigationManager Navigation
+@inject IAdherentService AdherentService
+
+<p>Adherent @Id</p>
+@if(adherent != null)
+{
+    <RadzenText Text="@adherent.Picture" />
+}else{
+    <p>NULL</p>
+}
+
+
+@code{
+
+    private AdherentProfileDto? adherent;
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("A");
+        adherent = await AdherentService.GetAdherent(Id);
+        Console.WriteLine("B");
+        if(adherent == null)
+        {
+            Navigation.NavigateTo("/not-found");
+        }
+    }
+}

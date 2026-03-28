@@ -1,6 +1,7 @@
 @page "/adherents"
 
 @rendermode InteractiveAuto
+@inject NavigationManager navigationManager
 @inject IAdherentService adherentService
 @using Borrowing.SharedClasses.Responses.Adherent
 @using Borrowing.SharedClasses.Responses.Notice
@@ -55,7 +56,8 @@
 <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
     <RadzenText class="rz-mt-4" TextStyle="TextStyle.H3">Total adherents</RadzenText>
-    <RadzenTextBox   Placeholder="Chercher..." @bind-Value="SearchText" @oninput="DoSearch" Change="DoSearch"/>
+    <RadzenTextBox Placeholder="Rechercher par ID,Nom ou Prenom..." style="width:400px" @bind-Value="SearchText"
+                   @oninput="DoSearch" Change="DoSearch" />
 </RadzenStack>
 <RadzenRow class="rz-mt-4">
     <RadzenColumn>
@@ -68,14 +70,36 @@
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Prenom" Title="Prénom" />
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Categorie" Title="Catégorie" />
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Position" Title="Position" />
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Etat" Title="Etat" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Etat" Title="Etat">
+                    <Template Context="data">
+                        @if (data.Etat == 0)
+                        {
+                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Success" Text="Actif" />
+                        }
+                        else
+                        {
+                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="Inactif" />
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Prets" Title="Pres en cours" />
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Reservations" Title="Reservations en cours" />
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Penalise" Title="Penalise/Non penalise" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Penalise" Title="Penalise/Non penalise">
+                    <Template Context="data">
+                        @if (data.Penalise == 0)
+                        {
+                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Success" Text="Autorise" />
+                        }
+                        else
+                        {
+                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="Penalise" />
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="AdherentDto" Title="Action">
                     <Template Context="data">
-                        <RadzenButton Size="ButtonSize.Small" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base" Icon="visibility"
-                                      Text="View" />
+                        <RadzenButton Click=@(args => navigationManager.NavigateTo("/adherents/"+data.IdAdherent)) Size="ButtonSize.Small" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base"
+                                      Icon="visibility" Text="View" />
                     </Template>
                 </RadzenDataGridColumn>
                 
@@ -124,7 +148,7 @@
                 Search = SearchText
             };
 
-            var result = await adherentService.GetPretsAsync(queryParams);
+            var result = await adherentService.GetAdherentsAsync(queryParams);
 
             adherents = result.Data;
             count = result.TotalCount;
