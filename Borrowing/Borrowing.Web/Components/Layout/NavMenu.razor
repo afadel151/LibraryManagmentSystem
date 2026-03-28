@@ -15,10 +15,13 @@
         <RadzenPanelMenuItem Text="Gestion des Prets" Icon="hand_package" Path="/prets" />
         <RadzenPanelMenuItem Text="Gestion des Adherents" Icon="person" Path="/adherents" />
         <RadzenPanelMenuItem Text="Gestion des Restitutions" Icon="source_notes" Path="/restitutions" />
-        <RadzenPanelMenuItem Text="Gestion des Documents" Icon="newsstand" Path="/documents" />
+        <RadzenPanelMenuItem Text="Gestion des Documents" Icon="article" Path="/documents" >
+            <RadzenPanelMenuItem Text="Tous les documents" Icon="newsstand" Path="/documents" />
+            <RadzenPanelMenuItem Text="Documents en pret" Icon="assignment_turned_in" Path="/borrowed_documents" />
+            <RadzenPanelMenuItem Text="Documents Reservees" Icon="date_range" Path="reserved_documents"/>
+        
+        </RadzenPanelMenuItem>
         <RadzenPanelMenuItem Text="Avis de Disponibilite" Icon="timelapse" Path="/availability" />
-        <RadzenPanelMenuItem Text="Documents en pret" Icon="assignment_turned_in" Path="/borrowed_documents" />
-        <RadzenPanelMenuItem Text="Documents Reservees" Icon="date_range" Path="reserved_documents"/>
         <RadzenPanelMenuItem Text="Gestion des relances" Icon="notifications_active" Path="/relances" />
         <RadzenPanelMenuItem Text="Gestion des categories" Icon="category" Path="/categories" />
         
