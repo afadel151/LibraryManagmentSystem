@@ -10,6 +10,7 @@ public interface IAdherentService
     Task<PagedResult<AdherentDto>> GetAdherentsAsync(PaginatedQueryParameters queryParameters);
     Task<AdherentProfileDto?> GetAdherentWithDetailsAsync(string adherentId);
     Task<DateTime> CalculateExpectedReturnDate(DateTime startDate, decimal duration);
+    Task<Adherent?> GetAdherentWithPretsPenaliteAsync(string AdherentId);
     Task<AdherentsStatsDto> GetStats();
 }
 
@@ -180,5 +181,17 @@ public class AdherentService(
             Pretants = pretants
         };
 
+    }
+    public async Task<Adherent?> GetAdherentWithPretsPenaliteAsync(string AdherentId)
+    {
+        var adherent = await _adherentRepository.GetQueryable(a => a.Prets,a => a.PenaliteAdherents)
+                        .Where(a => a.IdAdherent == AdherentId)
+                        .FirstOrDefaultAsync();
+        if (adherent == null)
+        {
+            return null;
+        }
+        return adherent;
+        
     }
 }
