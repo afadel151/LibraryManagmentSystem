@@ -10,21 +10,13 @@ namespace Borrowing.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AdherentController : ControllerBase
+public class AdherentController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
 {
-    private readonly IPretService _pretService;
-    private readonly IReservationService _reservationService;
-    private readonly IAdherentService _adherentService;
+    private readonly IPretService _pretService = pretService;
+    private readonly IReservationService _reservationService = reservationService;
+    private readonly IAdherentService _adherentService = adherentService;
 
-    private readonly INoticeService _noticeService;
-
-    public AdherentController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService)
-    {
-        _pretService = pretService;
-        _adherentService = adherentService;
-        _noticeService = noticeService;
-        _reservationService = reservationService;
-    }
+    private readonly INoticeService _noticeService = noticeService;
 
     [HttpGet]
     public async Task<ActionResult<PagedResult<AdherentDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
@@ -45,8 +37,8 @@ public class AdherentController : ControllerBase
         return NotFound();
     }
 
-    [HttpGet("Pret/Check/{id}")]
-    public async Task<ActionResult<CheckAdhResponseDto>> CheckAdherent(string id)
+    [HttpGet("Pret/Check")]
+    public async Task<ActionResult<CheckAdhPretResponseDto>> CheckAdherentPourPret([FromQuery] string id)
     {
         var adherent = await _adherentService.GetAdherentWithDetailsAsync(id);
         if (adherent != null)
@@ -62,7 +54,7 @@ public class AdherentController : ControllerBase
                         {
                             DateTime expectedReturnDate = await _adherentService.CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)adherent.Adherent?.Categorie.DureePret!);
                             return Ok(
-                                new CheckAdhResponseDto
+                                new CheckAdhPretResponseDto
                                 {
                                     Etat = EtatAdherentEnum.AUTHORIZED,
                                     Adherent = adherent.Adherent,
@@ -76,7 +68,7 @@ public class AdherentController : ControllerBase
                         else
                         {
                             return Ok(
-                                new CheckAdhResponseDto
+                                new CheckAdhPretResponseDto
                                 {
                                     Etat = EtatAdherentEnum.QUOTA_REACHED,
                                     Adherent = adherent.Adherent,
@@ -89,7 +81,7 @@ public class AdherentController : ControllerBase
                     else
                     {
                         return Ok(
-                            new CheckAdhResponseDto
+                            new CheckAdhPretResponseDto
                             {
                                 Etat = EtatAdherentEnum.NOT_FOUND,
                             }
@@ -99,7 +91,7 @@ public class AdherentController : ControllerBase
                 else
                 {
                     return Ok(
-                            new CheckAdhResponseDto
+                            new CheckAdhPretResponseDto
                             {
                                 Etat = EtatAdherentEnum.PENALISED,
                                 Adherent = adherent.Adherent,
@@ -111,7 +103,7 @@ public class AdherentController : ControllerBase
             else // bloque
             {
                 return Ok(
-                            new CheckAdhResponseDto
+                            new CheckAdhPretResponseDto
                             {
                                 Etat = EtatAdherentEnum.INACTIF,
                                 Adherent = adherent.Adherent,
@@ -123,7 +115,7 @@ public class AdherentController : ControllerBase
         else
         {
             return Ok(
-                new CheckAdhResponseDto
+                new CheckAdhPretResponseDto
                 {
                     Etat = EtatAdherentEnum.NOT_FOUND,
                 }
@@ -132,6 +124,24 @@ public class AdherentController : ControllerBase
 
     }
 
+
+    [HttpGet("Restitution/Check")]
+    public async Task<ActionResult<CheckAdhRestitutionResponseDto>> CheckAdherentPourRestitution([FromQuery] string AdherentId)
+    {
+        var adherent =await _adherentService.GetAdherentWithPretsPenaliteAsync(AdherentId);
+        if (adherent!= null)
+        {
+            return Ok(new CheckAdhRestitutionResponseDto
+            {
+                Adherent = adherent,
+                Picture = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBy606CYdQuQNTxOH0mHl6Lxdker4OH8Nvvg&s"
+            });
+        }
+        return Ok(new CheckAdhRestitutionResponseDto
+        {
+            Found = false
+        });
+    }
 
     [HttpGet("Stats")]
     public async Task<ActionResult> GetStats()

@@ -9,21 +9,13 @@ namespace Borrowing.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PretController : ControllerBase
+public class PretController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
 {
-    private readonly IPretService _pretService;
-    private readonly IReservationService _reservationService;
-    private readonly IAdherentService _adherentService;
+    private readonly IPretService _pretService = pretService;
+    private readonly IReservationService _reservationService = reservationService;
+    private readonly IAdherentService _adherentService = adherentService;
 
-    private readonly INoticeService _noticeService;
-
-    public PretController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService)
-    {
-        _pretService = pretService;
-        _adherentService = adherentService;
-        _noticeService = noticeService;
-        _reservationService = reservationService;
-    }
+    private readonly INoticeService _noticeService = noticeService;
 
     [HttpGet]
     public async Task<ActionResult<PagedResult<PretResponseDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)

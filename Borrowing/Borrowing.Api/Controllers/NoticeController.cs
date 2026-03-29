@@ -11,24 +11,18 @@ namespace Borrowing.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class NoticeController : ControllerBase
+public class NoticeController(
+    INoticeService noticeService,
+    IPretService pretService,
+    IReservationService reservationService
+    ) : ControllerBase
 {
-    private readonly INoticeService _noticeService;
-    private readonly IReservationService _reservationService;
-    private readonly IPretService _pretService;
-    public NoticeController(
-        INoticeService noticeService,
-        IPretService pretService,
-        IReservationService reservationService
-    )
-    {
-        _noticeService = noticeService;
-        _pretService = pretService;
-        _reservationService = reservationService;
-    }
+    private readonly INoticeService _noticeService = noticeService;
+    private readonly IReservationService _reservationService = reservationService;
+    private readonly IPretService _pretService = pretService;
 
-    [HttpGet("Pret/Check/{cote}/{AdherentId}")]
-    public async Task<ActionResult<CheckNoticeResponseDto>> CheckNotice(string cote, string AdherentId)
+    [HttpGet("Pret/Check")]
+    public async Task<ActionResult<CheckNoticeResponseDto>> CheckNotice([FromQuery]  string cote, [FromQuery]  string AdherentId)
     {
         // fetch notice
         var notice = await _noticeService.GetNoticeWithDetailsByCoteAsync(cote);
@@ -67,7 +61,7 @@ public class NoticeController : ControllerBase
             }
             else
             {
-                // block : membre ne put pas preter car les copies sont bloquee pour les reservateurs 
+                // block : membre ne put pas preter car les copies sont bloquee pour les reservateurs qui ont plus de droit
                 return Ok(new CheckNoticeResponseDto { 
                     CanReserve = true, 
                     Message = "Votre copie n'a pas encore etait rendue ", 
