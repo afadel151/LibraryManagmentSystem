@@ -5,13 +5,80 @@
 @using Borrowing.SharedClasses.Requests.Restitution
 @rendermode InteractiveAuto
 @inject IRestitutionService restitutionService
-
-<p>restitutions</p>
-
+@inject NotificationService NotificationService
 
 
 
-@code{
+<RadzenText TextStyle="TextStyle.H3" >Faire une restitution</RadzenText>
+
+<RadzenCard Variant="Variant.Filled" Style="height: 100%;margin-top:2rem;">
+    <RadzenText TextStyle="TextStyle.H5">Information Adhérent</RadzenText>
+
+    <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
+        <RadzenTextBox Placeholder="Saisir l'ID Adhérent..." @bind-Value="AdherentId" @oninput="OnMemberTyping"
+                       Change="OnMemberIdChanged" class="w-100" />
+
+        @if (isLoadingMember)
+        {
+            <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+        }
+        else if (hasSearchedMember && adherentCheck != null)
+        {
+            <RadzenRow>
+                <RadzenColumn Size="4">
+                    <img src="@(adherentCheck.Picture)" style="width: 50%; border-radius: 8px;"
+                         onerror="this.style.display='none'" />
+                </RadzenColumn>
+                <RadzenColumn Size="8">
+                    
+                    <RadzenText TextStyle="TextStyle.Subtitle1"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
+
+                        @adherentCheck.Adherent?.Prenom</b></RadzenText>
+                        <RadzenText TextStyle="TextStyle.Body2">Catégorie:
+                            @adherentCheck.Adherent?.Categorie?.LibelleCategorie
+                        </RadzenText>
+
+                       
+                        <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Actif" class="rz-mb-2" />
+                            
+                        <div class="rz-mt-2">
+                            <RadzenText TextStyle="TextStyle.Body2">Quota: @adherentCheck.Adherent!.Prets.Count /
+                                @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
+                                                
+                            <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Date Retour Prévue:
+                                <b>@DateTime.Now.Date.ToShortDateString()</b>
+                            </RadzenText>
+                        </div>
+                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Sélectionner un exemplaire :</RadzenText>
+                        <RadzenDropDown   @bind-Value="selectedCopyId" Data="@adherentCheck.Adherent!.Prets.Select(p=>p.IdExemplaire)" Style="width: 600px;" />
+                                
+                                   
+                        </RadzenColumn>
+                    </RadzenRow>
+                }
+                else if (hasSearchedMember && adherentCheck == null)
+                {
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Adhérent introuvable.</RadzenText>
+                }
+            </RadzenStack>
+        </RadzenCard>
+    <RadzenRow class="rz-mt-4" JustifyContent="JustifyContent.End">
+                @if (adherentCheck != null)
+                {
+                    
+                    @if (selectedCopyId != null)
+                    {
+
+                        <RadzenButton  Text="Valider Restitution" ButtonStyle="ButtonStyle.Success"
+                                      Size="ButtonSize.Medium" class="rz-mr-2" />
+                         <RadzenButton  Text="Renouvler le pret" ButtonStyle="ButtonStyle.Info"
+                                      Size="ButtonSize.Medium" class="rz-mr-2" />
+                    }
+
+                }
+            </RadzenRow>
+
+@code {
 
     string AdherentId = "";
     string? selectedCopyId;
@@ -27,6 +94,39 @@
     }
     private async Task OnMemberIdChanged()
     {
-        
+        if (string.IsNullOrWhiteSpace(AdherentId))
+        {
+            ResetMemberState();
+            return;
+        }
+        isLoadingMember = true;
+        string searchId = AdherentId.Trim().ToUpper();
+        adherentCheck = await restitutionService.CheckAdherent(searchId);
+        hasSearchedMember = true;
+        StateHasChanged();
+        if (adherentCheck == null)
+        {
+            ShowNotification(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Reponse Nulle",
+                Detail =
+                    "Erruer lors de verification d'adherent",
+                Duration = 4000
+            });
+            ResetMemberState();
+        }
+        isLoadingMember = false;
+    }
+
+    private void ResetMemberState()
+    {
+
+        adherentCheck = null;
+        hasSearchedMember = false;
+    }
+    void ShowNotification(NotificationMessage message)
+    {
+        NotificationService.Notify(message);
     }
 }
