@@ -16,6 +16,10 @@ builder.Services.AddHttpClient<IAdherentService, AdherentService>(client =>
 {
     client.BaseAddress = new Uri("http://localhost:5026/");
 });
+builder.Services.AddHttpClient<IRestitutionService, RestitutionService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5026/");
+});
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
