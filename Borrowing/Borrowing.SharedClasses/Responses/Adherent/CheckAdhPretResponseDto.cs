@@ -4,7 +4,7 @@ using System;
 
 using Shared.Models;
 using Borrowing.SharedClasses.Common;
-public class CheckAdhResponseDto
+public class CheckAdhPretResponseDto
 {
     public EtatAdherentEnum Etat { get; set; } = EtatAdherentEnum.NOT_FOUND;
     public Adherent? Adherent {get; set;}
