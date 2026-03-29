@@ -1,4 +1,32 @@
 @page "/restitutions"
-
+@using Borrowing.SharedClasses.Responses.Adherent
+@using Borrowing.Web.Services
+@using Borrowing.SharedClasses.Common
+@using Borrowing.SharedClasses.Requests.Restitution
+@rendermode InteractiveAuto
+@inject IRestitutionService restitutionService
 
 <p>restitutions</p>
+
+
+
+
+@code{
+
+    string AdherentId = "";
+    string? selectedCopyId;
+
+    CheckAdhRestitutionResponseDto? adherentCheck;
+    bool isLoadingMember = false;
+    bool hasSearchedMember = false;
+
+    void OnMemberTyping(ChangeEventArgs e)
+    {
+        adherentCheck = null;
+        selectedCopyId = null;
+    }
+    private async Task OnMemberIdChanged()
+    {
+        
+    }
+}
