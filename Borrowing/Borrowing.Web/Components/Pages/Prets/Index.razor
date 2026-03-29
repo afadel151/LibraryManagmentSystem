@@ -71,7 +71,7 @@
                 {
                     <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
                 }
-                else if (hasSearchedMember && adherentCheck != null && adherentCheck.Found)
+                else if (hasSearchedMember && adherentCheck != null && adherentCheck.Etat != EtatAdherentEnum.NOT_FOUND)
                 {
                     <RadzenRow>
                         <RadzenColumn Size="4">
@@ -88,7 +88,7 @@
                                 @if (adherentCheck.Adherent?.EtatAdherent == 0)
                                 {
                                     <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Actif" class="rz-mb-2" />
-                                    @if (adherentCheck.Allowed)
+                                    @if (adherentCheck.Etat == EtatAdherentEnum.AUTHORIZED)
                                     {
                                         <div class="rz-mt-2">
                                             <RadzenText TextStyle="TextStyle.Body2">Quota: @adherentCheck.ActiveLoans /
@@ -110,9 +110,18 @@
                                     else {
                                          <RadzenText TextStyle="TextStyle.Body2">Quota: @adherentCheck.ActiveLoans /
                                                 @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
-                                          <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">
-                                            @adherentCheck.message
-                                            </RadzenAlert>
+
+                                         switch (adherentCheck.Etat)
+                                         {
+                                            case EtatAdherentEnum.QUOTA_REACHED:
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-warning"><b>Quota Atteint</b>
+                                                </RadzenText>
+                                                break;
+                                            case EtatAdherentEnum.PENALISED:
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger"><b>Adhérent Pénalisé</b>
+                                                </RadzenText>
+                                                break;
+                                         }
                                     }
                                 }
                                 else
@@ -306,13 +315,12 @@
         }
         else
         {
-            if (adherentCheck.Allowed == false)
+            if (adherentCheck.Etat != EtatAdherentEnum.AUTHORIZED)
             {
                 ShowNotification(new NotificationMessage
                 {
                     Severity = NotificationSeverity.Warning,
                     Summary = "Caution",
-                    Detail = adherentCheck.message,
                     Duration = 4000
                 });
             }
@@ -341,17 +349,16 @@
             });
             return;
         }
-        if(adherentCheck.Adherent?.EtatAdherent == 1)
+        if(adherentCheck.Etat != EtatAdherentEnum.AUTHORIZED)
         {
              ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Warning,
-                Summary = "Adhérent Bloquee",
-                Detail = "Un adherent bloquee ne peut pas ni preter ni reserver "
+                Summary = "cet Adherent ne peut pas preter",
             });
             return;
         }
-
+        
         if (string.IsNullOrWhiteSpace(Cote))
         {
             ResetDocumentState();
@@ -370,7 +377,7 @@
         });
         if (noticeCheck != null && noticeCheck.CanBorrow)
         {
-            IsLoanValidatable = adherentCheck != null && adherentCheck.Allowed && noticeCheck.CanBorrow;
+            IsLoanValidatable = adherentCheck != null && adherentCheck.Etat == EtatAdherentEnum.AUTHORIZED && noticeCheck.CanBorrow;
         }
         isLoadingDocument = false;
     }
@@ -406,6 +413,17 @@
             {
                 Severity = NotificationSeverity.Success,
                 Summary = "Pret inseree avec succes",
+                Detail = result.Message,
+            });
+            ResetDocumentState();
+            ResetMemberState();
+            return;
+        }else{
+            ShowNotification(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Errur lors de creation de pret",
+                Detail = result.Message,
             });
             ResetDocumentState();
             ResetMemberState();

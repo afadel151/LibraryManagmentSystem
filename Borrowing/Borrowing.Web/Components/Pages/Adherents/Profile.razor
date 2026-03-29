@@ -3,17 +3,89 @@
 @using Borrowing.Web.Services
 @inject NavigationManager Navigation
 @inject IAdherentService AdherentService
-
-<p>Adherent @Id</p>
-@if(adherent != null)
+@if (adherent == null)
 {
-    <RadzenText Text="@adherent.Picture" />
-}else{
-    <p>NULL</p>
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Style="margin-top:4rem">
+        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </RadzenStack>
+}
+else
+{
+    <RadzenStack Gap="1.5rem" Style="padding: 2rem">
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1.5rem">
+                <RadzenImage Path="@adherent.Picture" Style="width:150px;height:150px;border-radius:50%;object-fit:cover" />
+                <RadzenStack Gap="0.25rem">
+                    <RadzenText TextStyle="TextStyle.H4"
+                                Text="@($"{adherent.Adherent!.Prenom} {adherent.Adherent!.Nom}")" />
+                    <RadzenText TextStyle="TextStyle.Body1" Text="@($"ID : {adherent.Adherent!.IdAdherent}")" />
+                    <RadzenText TextStyle="TextStyle.Body1"
+                                Text="@($"Catégorie : {adherent.Adherent.Categorie!.LibelleCategorie ?? "—"}")" />
+                    <RadzenText TextStyle="TextStyle.Body1"
+                                Text="@($"Position : {adherent.Adherent.Position!.LibellePosition ?? "—"}")" />
+                </RadzenStack>
+                <RadzenStack Style="margin-left:auto" AlignItems="AlignItems.End" Orientation="Orientation.Horizontal" Gap="0.5rem">
+                    <RadzenBadge
+                    BadgeStyle="@(adherent.Adherent!.EtatAdherent == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                    Text="@(adherent.Adherent!.EtatAdherent == 0 ? "Actif" : "Inactif")" />
+                    <RadzenBadge
+                    BadgeStyle="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                    Text="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? "Non pénalisé" : "Pénalisé")" />
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+         <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Prêts" />
+                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@adherent.Adherent!.Prets" AllowSorting="true" AllowPaging="true" PageSize="5"
+                            EmptyText="Aucun prêt">
+                <Columns>
+                    <RadzenDataGridColumn Property="IdExemplaire" Title="Exemplaire" />
+                    <RadzenDataGridColumn Property="DatePret" Title="Date de prêt" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn Property="EtatDuree" Title="État durée" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+
+
+       
+       
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Pénalités" />
+                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@adherent.Adherent!.PenaliteAdherents" AllowSorting="true" AllowPaging="true" PageSize="5"
+                            EmptyText="Aucune pénalité">
+                <Columns>
+                    <RadzenDataGridColumn Property="DatePenalite" Title="Date" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn Property="NombreJoursPenalite" Title="Nombre de jours" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+         <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Réservations" />
+                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@adherent.Adherent!.Reservations" AllowSorting="true" AllowPaging="true" PageSize="5"
+                            EmptyText="Aucune réservation">
+                <Columns>
+                    <RadzenDataGridColumn Property="Cote" Title="Cote" />
+                    <RadzenDataGridColumn Property="HeureReservation" Title="Date" FormatString="{0:dd/MM/yyyy HH:mm}" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+    </RadzenStack>
 }
 
 
-@code{
+@code {
 
     private AdherentProfileDto? adherent;
     [Parameter]
@@ -25,7 +97,7 @@
         Console.WriteLine("A");
         adherent = await AdherentService.GetAdherent(Id);
         Console.WriteLine("B");
-        if(adherent == null)
+        if (adherent == null)
         {
             Navigation.NavigateTo("/not-found");
         }

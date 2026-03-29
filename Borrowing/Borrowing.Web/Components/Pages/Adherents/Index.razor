@@ -53,9 +53,9 @@
     </RadzenColumn>
 </RadzenRow>
 
-<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+<RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
-    <RadzenText class="rz-mt-4" TextStyle="TextStyle.H3">Total adherents</RadzenText>
+    <RadzenText  TextStyle="TextStyle.H3">Total adherents</RadzenText>
     <RadzenTextBox Placeholder="Rechercher par ID,Nom ou Prenom..." style="width:400px" @bind-Value="SearchText"
                    @oninput="DoSearch" Change="DoSearch" />
 </RadzenStack>
