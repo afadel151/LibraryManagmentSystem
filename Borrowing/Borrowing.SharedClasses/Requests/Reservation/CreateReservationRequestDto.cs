@@ -1,4 +1,4 @@
-namespace Borrowing.SharedClasses.Reservation.Pret;
+namespace Borrowing.SharedClasses.Requests.Reservation;
 public class CreateReservationRequestDto
 {
     public string AdherentId { get; set; } = string.Empty;
