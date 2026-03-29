@@ -70,7 +70,7 @@ public class NoticeController : ControllerBase
                 // block : membre ne put pas preter car les copies sont bloquee pour les reservateurs 
                 return Ok(new CheckNoticeResponseDto { 
                     CanReserve = true, 
-                    Message = "Les copies sont bloquee pour les reservateurs ", 
+                    Message = "Votre copie n'a pas encore etait rendue ", 
                     Titre = notice.Notice?.TitrePropre! });
             }
         }

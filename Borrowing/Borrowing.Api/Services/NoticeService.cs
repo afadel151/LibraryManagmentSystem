@@ -8,6 +8,7 @@ public interface INoticeService
 {
     Task<Notice?> GetNoticeAsync(string cote);
     Task<NoticeWithResExe?> GetNoticeWithDetailsByCoteAsync(string cote);
+    Task<Exemplaire?> GetExemplaireAsync(string idExemplaire);
 
 }
 
@@ -91,4 +92,10 @@ public class NoticeService : INoticeService
         }
     }
 
+    public async Task<Exemplaire?> GetExemplaireAsync(string idExemplaire)
+    {
+        return await _exemplairesRepository.GetQueryable()
+            .Where(e => e.IdExemplaire == idExemplaire)
+            .FirstOrDefaultAsync();
+    }
 }
