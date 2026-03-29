@@ -16,7 +16,7 @@ public interface IPretService
     Task<int> CountAdherentActiveLoans(string AdherentId);
 
     Task<List<Pret>> GetBlockedCopies(string cote);
-    // Task<Pret?> GetPretByExemplaireId(string IdExemplaire);
+    Task<Pret?> GetPretByExemplaireId(string IdExemplaire);
 
 }
 
@@ -170,6 +170,13 @@ public class PretService : IPretService
             .Where(p => p.IdAdherent == "99/999")
             .OrderBy(p => p.DatePret)
             .ToListAsync();
+    }
+
+    public async Task<Pret?> GetPretByExemplaireId(string IdExemplaire)
+    {
+        return await _pretRepository.GetQueryable()
+            .Where(p => p.IdExemplaire == IdExemplaire)
+            .FirstOrDefaultAsync();
     }
 
 }

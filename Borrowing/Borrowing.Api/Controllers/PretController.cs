@@ -35,7 +35,53 @@ public class PretController : ControllerBase
     [HttpPost("Create")]
     public async Task<ActionResult<CreatePretResponseDto?>> CreatePret([FromBody] CreatePretRequestDto pretRequestDto)
     {
-        // refaire traitement de verification
+        var adherent  = await _adherentService.GetAdherentWithDetailsAsync(pretRequestDto.AdherentId);
+        if (adherent == null)
+        {
+            return Ok(
+                new CreatePretResponseDto
+                {
+                    Done = false,
+                    Message = "Adherent not found"
+                }
+            );
+        }
+        var pret = await _pretService.GetPretByExemplaireId(pretRequestDto.ExemplaireId);
+        var exemplaire = await _noticeService.GetExemplaireAsync(pretRequestDto.ExemplaireId);
+        if (exemplaire == null)
+        {
+            return Ok(
+                new CreatePretResponseDto
+                {
+                    Done = false,
+                    Message = "Exemplaire not found"
+                }
+            );
+        }
+        else
+        {
+            if (exemplaire.IdEtat != 1)
+            {
+                return Ok(
+                    new CreatePretResponseDto
+                    {
+                        Done = false,
+                        Message = "Exemplaire is not available for loan"
+                    }
+                );
+            }
+        }
+        if (pret != null)
+        {
+            return Ok(
+                new CreatePretResponseDto
+                {
+                    Done = false,
+                    Message = "Exemplaire is already on loan"
+                }
+            );
+        }
+
         var result = await _pretService.CreatePretAsync(pretRequestDto);
         if (result != null)
         {
@@ -43,14 +89,17 @@ public class PretController : ControllerBase
                 new CreatePretResponseDto
                 {
                     Done = true,
+                    Message = "Pret created successfully"
                 }
             );
-        }else
+        }
+        else
         {
             return Ok(
                 new CreatePretResponseDto
                 {
                     Done = false,
+                    Message = "Failed to create pret"
                 }
             );
         }
@@ -72,6 +121,6 @@ public class PretController : ControllerBase
     }
 
 
-    
+
 }
 
