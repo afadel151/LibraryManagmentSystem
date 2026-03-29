@@ -12,14 +12,14 @@ public interface IPretService
 {
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters);
     Task<PretStatsDto> GetStats();
-    Task<CheckAdhResponseDto> CheckAdherent(string id);
+    Task<CheckAdhPretResponseDto> CheckAdherent(string id);
     Task<CheckNoticeResponseDto> CheckNotice(string cote, string AdherentId);
 
     Task<CreatePretResponseDto> CreatePret(CreatePretRequestDto pretRequestDto);
 }
 public class PretService : IPretService
 {
-    private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
     public PretService(HttpClient httpClient)
     {
@@ -60,13 +60,13 @@ public class PretService : IPretService
         })!;
     }
 
-    public async Task<CheckAdhResponseDto> CheckAdherent(string id)
+    public async Task<CheckAdhPretResponseDto> CheckAdherent(string id)
     {
-        var response = await _httpClient.GetAsync($"api/Adherent/Pret/Check/{id}");
+        var response = await _httpClient.GetAsync($"api/Adherent/Pret/Check?id={id}");
         var content = await response.Content.ReadAsStringAsync();
 
         response.EnsureSuccessStatusCode();
-        return JsonSerializer.Deserialize<CheckAdhResponseDto>(content, new JsonSerializerOptions
+        return JsonSerializer.Deserialize<CheckAdhPretResponseDto>(content, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         })!;
@@ -74,7 +74,7 @@ public class PretService : IPretService
 
     public async Task<CheckNoticeResponseDto> CheckNotice(string cote, string AdherentId)
     {
-        var response = await _httpClient.GetAsync($"api/Notice/Pret/Check/{cote}/{AdherentId}");
+        var response = await _httpClient.GetAsync($"api/Notice/Pret/Check?cote={cote}&AdherentId={AdherentId}");
         var content = await response.Content.ReadAsStringAsync();
 
         response.EnsureSuccessStatusCode();
