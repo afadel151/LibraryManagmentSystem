@@ -184,7 +184,7 @@ public class AdherentService(
     }
     public async Task<Adherent?> GetAdherentWithPretsPenaliteAsync(string AdherentId)
     {
-        var adherent = await _adherentRepository.GetQueryable(a => a.Prets,a => a.PenaliteAdherents)
+        var adherent = await _adherentRepository.GetQueryable(a => a.Prets,a => a.PenaliteAdherents,a=>a.Categorie!)
                         .Where(a => a.IdAdherent == AdherentId)
                         .FirstOrDefaultAsync();
         if (adherent == null)
@@ -192,6 +192,5 @@ public class AdherentService(
             return null;
         }
         return adherent;
-        
     }
 }
