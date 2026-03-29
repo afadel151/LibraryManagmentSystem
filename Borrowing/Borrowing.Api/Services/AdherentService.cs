@@ -8,7 +8,7 @@ namespace Borrowing.Api.Services;
 public interface IAdherentService
 {
     Task<PagedResult<AdherentDto>> GetAdherentsAsync(PaginatedQueryParameters queryParameters);
-    Task<Adherent?> GetAdherentWithDetailsAsync(string adherentId);
+    Task<AdherentProfileDto?> GetAdherentWithDetailsAsync(string adherentId);
     Task<DateTime> CalculateExpectedReturnDate(DateTime startDate, decimal duration);
     Task<AdherentsStatsDto> GetStats();
 }
@@ -38,8 +38,8 @@ public class AdherentService(
             .Where(p =>
                     string.IsNullOrEmpty(queryParameters.Search) ||
                     EF.Functions.Like(p.IdAdherent.ToUpper(), queryParameters.Search.ToUpper() + "%") ||
-                    EF.Functions.Like(p.Nom.ToUpper(), queryParameters.Search.ToUpper() + "%") ||
-                    EF.Functions.Like(p.Prenom.ToUpper(), queryParameters.Search.ToUpper() + "%")
+                    EF.Functions.Like(p.Nom!.ToUpper(), queryParameters.Search.ToUpper() + "%") ||
+                    EF.Functions.Like(p.Prenom!.ToUpper(), queryParameters.Search.ToUpper() + "%")
             );
         var query = from a in adherents
                     select new AdherentDto
@@ -108,13 +108,17 @@ public class AdherentService(
         };
 
     }
-    public async Task<Adherent?> GetAdherentWithDetailsAsync(string adherentId)
+    public async Task<AdherentProfileDto?> GetAdherentWithDetailsAsync(string adherentId)
     {
-        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!, a => a.PenaliteAdherents!).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
+        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!, a => a.Position!, a => a.PenaliteAdherents, a => a.Reservations, a => a.Prets).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
 
         if (adherent != null)
         {
-            return adherent;
+            return new AdherentProfileDto
+            {
+                Adherent = adherent,
+                Picture = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBy606CYdQuQNTxOH0mHl6Lxdker4OH8Nvvg&s"
+            };
         }
         return null;
     }

@@ -33,6 +33,17 @@ public class AdherentController : ControllerBase
         return Ok(result);
     }
 
+    [HttpGet("Profile")]
+    public async Task<ActionResult<AdherentProfileDto>> GetProfileAsync([FromQuery] string Id)
+    {
+        var adherent = await _adherentService.GetAdherentWithDetailsAsync(Id);
+
+        if (adherent != null)
+        {
+            return Ok(adherent);
+        }
+        return NotFound();
+    }
 
     [HttpGet("Pret/Check/{id}")]
     public async Task<ActionResult<CheckAdhResponseDto>> CheckAdherent(string id)
@@ -40,22 +51,22 @@ public class AdherentController : ControllerBase
         var adherent = await _adherentService.GetAdherentWithDetailsAsync(id);
         if (adherent != null)
         {
-            if (adherent.EtatAdherent == 0) // actif
+            if (adherent.Adherent?.EtatAdherent == 0) // actif
             {
-                if (adherent.PenaliteAdherents.Count == 0) // allowed
+                if (adherent.Adherent?.PenaliteAdherents.Count == 0) // allowed
                 {
-                    if (adherent.Categorie != null) // categorie exists
+                    if (adherent.Adherent?.Categorie != null) // categorie exists
                     {
                         int activeLoans = await _pretService.CountAdherentActiveLoans(id); // count active loans
-                        if (activeLoans < adherent.Categorie.NombreDocument)
+                        if (activeLoans < adherent.Adherent?.Categorie.NombreDocument)
                         {
-                            DateTime expectedReturnDate = await _adherentService.CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)adherent.Categorie.DureePret!);
+                            DateTime expectedReturnDate = await _adherentService.CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)adherent.Adherent?.Categorie.DureePret!);
                             return Ok(
                                 new CheckAdhResponseDto
                                 {
-                                    Allowed = true,
-                                    Adherent = adherent,
-                                    picture = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBy606CYdQuQNTxOH0mHl6Lxdker4OH8Nvvg&s",
+                                    Etat = EtatAdherentEnum.AUTHORIZED,
+                                    Adherent = adherent.Adherent,
+                                    picture = adherent.Picture,
                                     ActiveLoans = activeLoans,
                                     ExpectedReturnDate = expectedReturnDate
 
@@ -67,10 +78,9 @@ public class AdherentController : ControllerBase
                             return Ok(
                                 new CheckAdhResponseDto
                                 {
-                                    Allowed = false,
-                                    Adherent = adherent,
-                                    message = "Vous pouvez pas faire encore de prets",
-                                    picture = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBy606CYdQuQNTxOH0mHl6Lxdker4OH8Nvvg&s",
+                                    Etat = EtatAdherentEnum.QUOTA_REACHED,
+                                    Adherent = adherent.Adherent,
+                                    picture = adherent.Picture,
                                     ActiveLoans = activeLoans
                                 }
                             );
@@ -81,8 +91,7 @@ public class AdherentController : ControllerBase
                         return Ok(
                             new CheckAdhResponseDto
                             {
-                                Allowed = false,
-                                message = "Categorie de l'adherent non trouvee"
+                                Etat = EtatAdherentEnum.NOT_FOUND,
                             }
                         );
                     }
@@ -92,10 +101,9 @@ public class AdherentController : ControllerBase
                     return Ok(
                             new CheckAdhResponseDto
                             {
-                                Allowed = false,
-                                message = "Adherent Penalise",
-                                Adherent = adherent,
-                                picture = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBy606CYdQuQNTxOH0mHl6Lxdker4OH8Nvvg&s"
+                                Etat = EtatAdherentEnum.PENALISED,
+                                Adherent = adherent.Adherent,
+                                picture = adherent.Picture
                             }
                         );
                 }
@@ -105,10 +113,9 @@ public class AdherentController : ControllerBase
                 return Ok(
                             new CheckAdhResponseDto
                             {
-                                Allowed = false,
-                                message = "Adherent Bloque",
-                                Adherent = adherent,
-                                picture = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBy606CYdQuQNTxOH0mHl6Lxdker4OH8Nvvg&s"
+                                Etat = EtatAdherentEnum.INACTIF,
+                                Adherent = adherent.Adherent,
+                                picture = adherent.Picture
                             }
                         );
             }
@@ -118,9 +125,7 @@ public class AdherentController : ControllerBase
             return Ok(
                 new CheckAdhResponseDto
                 {
-                    Found = false,
-                    Allowed = false,
-                    message = "Adherent Non trouve"
+                    Etat = EtatAdherentEnum.NOT_FOUND,
                 }
             );
         }
