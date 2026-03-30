@@ -1,4 +1,5 @@
 using Borrowing.Api.Repositories;
+using Borrowing.SharedClasses.Requests.Reservation;
 using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
@@ -6,8 +7,9 @@ namespace Borrowing.Api.Services;
 
 public interface IReservationService
 {
-    Task<Reservation?> CreateReservationAsync(Reservation reservation);
+    Task<Reservation?> CreateReservationAsync(CreateReservationRequestDto reservation);
     Task<int> CountAsync();
+    Task<bool> CheckAdherentReservingCote(string AdherentId,string cote);
     Task<List<Reservation>> GetAllDescByHeur(int n);
     Task<List<Reservation>> GetAllDescByHeur();
 }
@@ -32,14 +34,27 @@ public class ReservationService : IReservationService
     }
 
     // Sample method to demonstrate repository usage
-    public async Task<Reservation?> CreateReservationAsync(Reservation reservation)
+    public async Task<Reservation?> CreateReservationAsync(CreateReservationRequestDto reservation)
     {
         // Example: save a reservation
-        await _reservationRepository.AddAsync(reservation);
-        return reservation;
+        Reservation res = new()
+        {
+            IdAdherent = reservation.AdherentId,
+            Cote = reservation.Cote,
+            HeureReservation = DateTime.Now
+        };
+       try
+       {
+            await _reservationRepository.AddAsync(res);
+            return res;
+       }
+       catch (System.Exception)
+       {
+            return null;
+       }
     }
 
-    public async Task<bool?> CheckAdherentReservingCote(string AdherentId,string cote)
+    public async Task<bool> CheckAdherentReservingCote(string AdherentId,string cote)
     {
         int count = await _reservationRepository.GetQueryable()
                 .Where(

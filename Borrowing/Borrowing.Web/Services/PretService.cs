@@ -8,9 +8,13 @@ using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Responses.Notice;
+using Borrowing.SharedClasses.Requests.Reservation;
+using Borrowing.SharedClasses.Responses.Reservation;
+
 public interface IPretService
 {
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters);
+    Task<CreateReservationResponseDto> CreateReservation(CreateReservationRequestDto createReservationRequestDto);
     Task<PretStatsDto> GetStats();
     Task<CheckAdhPretResponseDto> CheckAdherent(string id);
     Task<CheckNoticeResponseDto> CheckNotice(string cote, string AdherentId);
@@ -91,6 +95,17 @@ public class PretService : IPretService
 
         response.EnsureSuccessStatusCode();
         return JsonSerializer.Deserialize<CreatePretResponseDto>(content, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+    }
+    public async Task<CreateReservationResponseDto> CreateReservation(CreateReservationRequestDto createReservationRequestDto)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"api/Reservation/Create", createReservationRequestDto);
+        var content = await response.Content.ReadAsStringAsync();
+
+        response.EnsureSuccessStatusCode();
+        return JsonSerializer.Deserialize<CreateReservationResponseDto>(content, new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         })!;

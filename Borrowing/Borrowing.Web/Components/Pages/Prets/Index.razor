@@ -1,4 +1,6 @@
 @page "/prets"
+@using Borrowing.SharedClasses.Requests.Reservation
+@using Borrowing.SharedClasses.Responses.Reservation
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Responses.Pret
 @using Borrowing.SharedClasses.Common
@@ -205,7 +207,7 @@
                     @if (noticeCheck.CanReserve)
                     {
                         <RadzenButton class="rz-mr-2" Text="Réserver ce document" Size="ButtonSize.Medium"
-                                      ButtonStyle="ButtonStyle.Secondary" />
+                                      ButtonStyle="ButtonStyle.Secondary" Click=ReserverCote />
                     }
                     @if (noticeCheck.CanBorrow && selectedCopyId != null)
                     {
@@ -431,7 +433,36 @@
         }
     }
 
-    
+    public async Task ReserverCote()
+    {
+        CreateReservationResponseDto response = await pretService.CreateReservation(
+            new CreateReservationRequestDto{
+                AdherentId = AdherentId,
+                Cote = Cote
+            }
+        );
+        if(response.Done)
+        {
+            ShowNotification(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Reservation inseree avec succes",
+            });
+            ResetDocumentState();
+            ResetMemberState();
+            return;
+        }else{
+            ShowNotification(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Errur lors de creation de la reservation",
+            });
+            ResetDocumentState();
+            ResetMemberState();
+            return;
+        }
+
+    }
 
 
 
