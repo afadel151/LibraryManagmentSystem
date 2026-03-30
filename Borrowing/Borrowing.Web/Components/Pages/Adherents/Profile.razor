@@ -26,8 +26,8 @@ else
                 </RadzenStack>
                 <RadzenStack Style="margin-left:auto" AlignItems="AlignItems.End" Orientation="Orientation.Horizontal" Gap="0.5rem">
                     <RadzenBadge
-                    BadgeStyle="@(adherent.Adherent!.EtatAdherent == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
-                    Text="@(adherent.Adherent!.EtatAdherent == 0 ? "Actif" : "Inactif")" />
+                        BadgeStyle="@(adherent.Adherent!.EtatAdherent == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                        Text="@(adherent.Adherent!.EtatAdherent == 0 ? "Actif" : "Inactif")" />
                     <RadzenBadge
                     BadgeStyle="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
                     Text="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? "Non pénalisé" : "Pénalisé")" />

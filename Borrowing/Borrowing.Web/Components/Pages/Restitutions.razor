@@ -9,12 +9,12 @@
 
 
 
-<RadzenText TextStyle="TextStyle.H3" >Faire une restitution</RadzenText>
+<RadzenText TextStyle="TextStyle.H3">Faire une restitution</RadzenText>
 
 <RadzenCard Variant="Variant.Filled" Style="height: 100%;margin-top:2rem;">
     <RadzenText TextStyle="TextStyle.H5">Information Adhérent</RadzenText>
 
-    <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
+    <RadzenStack Orientation="Orientation.Vertical" Gap="2rem" class="rz-mt-3">
         <RadzenTextBox Placeholder="Saisir l'ID Adhérent..." @bind-Value="AdherentId" @oninput="OnMemberTyping"
                        Change="OnMemberIdChanged" class="w-100" />
 
@@ -30,29 +30,35 @@
                          onerror="this.style.display='none'" />
                 </RadzenColumn>
                 <RadzenColumn Size="8">
-                    
+
                     <RadzenText TextStyle="TextStyle.Subtitle1"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
 
                         @adherentCheck.Adherent?.Prenom</b></RadzenText>
-                        <RadzenText TextStyle="TextStyle.Body2">Catégorie:
+                        <RadzenText TextStyle="TextStyle.Body1">Catégorie:
                             @adherentCheck.Adherent?.Categorie?.LibelleCategorie
                         </RadzenText>
 
                        
-                        <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Actif" class="rz-mb-2" />
+                        <RadzenBadge
+                        BadgeStyle="@(adherentCheck.Adherent!.EtatAdherent == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                        Text="@(adherentCheck.Adherent!.EtatAdherent == 0 ? "Actif" : "Inactif")" />
+                        <RadzenBadge
+                        BadgeStyle="@(adherentCheck.Adherent!.PenaliteAdherents.Count == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                        Text="@(adherentCheck.Adherent!.PenaliteAdherents.Count == 0 ? "Non pénalisé" : "Pénalisé")" />
                             
                         <div class="rz-mt-2">
-                            <RadzenText TextStyle="TextStyle.Body2">Quota: @adherentCheck.Adherent!.Prets.Count /
+                            <RadzenText TextStyle="TextStyle.Body1">Quota: @adherentCheck.Adherent!.Prets.Count /
                                 @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
                                                 
-                            <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Date Retour Prévue:
-                                <b>@DateTime.Now.Date.ToShortDateString()</b>
-                            </RadzenText>
-                        </div>
-                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Sélectionner un exemplaire :</RadzenText>
-                        <RadzenDropDown   @bind-Value="selectedCopyId" Data="@adherentCheck.Adherent!.Prets.Select(p=>p.IdExemplaire)" Style="width: 600px;" />
+                                <RadzenText TextStyle="TextStyle.Body1" class="rz-mt-2">Date Retour Prévue:
+                                    <b>@DateTime.Now.Date.ToShortDateString()</b>
+                                </RadzenText>
+                            </div>
+                            <RadzenText TextStyle="TextStyle.Body1" class="rz-mt-2">Sélectionner un exemplaire :</RadzenText>
+                            <RadzenDropDown @bind-Value="selectedCopyId"
+                                            Data="@adherentCheck.Adherent!.Prets.Select(p=>p.IdExemplaire)"
+                                            Style="width: 600px;font-weight:bold;" />
                                 
-                                   
                         </RadzenColumn>
                     </RadzenRow>
                 }
@@ -62,21 +68,23 @@
                 }
             </RadzenStack>
         </RadzenCard>
-    <RadzenRow class="rz-mt-4" JustifyContent="JustifyContent.End">
-                @if (adherentCheck != null)
-                {
+        <RadzenRow class="rz-mt-4" JustifyContent="JustifyContent.End">
+            @if (adherentCheck != null)
+            {
                     
-                    @if (selectedCopyId != null)
+                @if (selectedCopyId != null)
+                {
+
+                    <RadzenButton Text="Valider Restitution" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium"
+                                  class="rz-mr-2" />
+                    @if (adherentCheck.Adherent!.PenaliteAdherents.Count == 0)
                     {
-
-                        <RadzenButton  Text="Valider Restitution" ButtonStyle="ButtonStyle.Success"
-                                      Size="ButtonSize.Medium" class="rz-mr-2" />
-                         <RadzenButton  Text="Renouvler le pret" ButtonStyle="ButtonStyle.Info"
-                                      Size="ButtonSize.Medium" class="rz-mr-2" />
+                        <RadzenButton Text="Renouvler le pret" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Medium" class="rz-mr-2" />
                     }
-
                 }
-            </RadzenRow>
+
+            }
+        </RadzenRow>
 
 @code {
 

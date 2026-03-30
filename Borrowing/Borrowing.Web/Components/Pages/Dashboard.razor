@@ -1,12 +1,14 @@
 @page "/"
 
 @inject NavigationManager Navigation
-<div class="rz-display-grid" style="grid-template-columns: repeat(3, 1fr);gap: 16px;">
+<div style="height: calc(100vh - 100px); overflow-y: auto;">
+
+<div class="rz-display-grid" style="grid-template-columns: repeat(3, 1fr);gap: 16px;height:100%;">
     @foreach (CardElement element in Elements)
     {
 
         <RadzenButton Variant="Variant.Flat"  ButtonStyle="element.Style" Style="
-        height:200px; 
+
         display:flex; 
         align-items:center; 
         justify-content:center;
@@ -18,6 +20,7 @@
          />
 
     }
+</div>
 </div>
 
 @code {
