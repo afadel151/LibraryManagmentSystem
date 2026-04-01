@@ -17,11 +17,11 @@ public partial class NoticeDipDisEtab
 
     public string? AnneSoutenance { get; set; }
 
-    public virtual Diplome IdDiplomeNavigation { get; set; } = null!;
+    public virtual Diplome Diplome { get; set; } = null!;
 
-    public virtual Discipline IdDisciplineNavigation { get; set; } = null!;
+    public virtual Discipline Discipline { get; set; } = null!;
 
-    public virtual Etablissement IdEtablissementNavigation { get; set; } = null!;
+    public virtual Etablissement Etablissement { get; set; } = null!;
 
-    public virtual Notice IdNoticeNavigation { get; set; } = null!;
+    public virtual Notice Notice { get; set; } = null!;
 }

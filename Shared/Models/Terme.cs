@@ -9,5 +9,5 @@ public partial class Terme
 
     public string? Terme1 { get; set; }
 
-    public virtual ICollection<NoticeTerme> NoticeTermes { get; set; } = new List<NoticeTerme>();
+    public virtual ICollection<Notice> Notices { get; set; } = new List<Notice>();
 }

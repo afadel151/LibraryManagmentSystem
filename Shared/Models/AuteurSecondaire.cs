@@ -11,9 +11,9 @@ public partial class AuteurSecondaire
 
     public decimal IdFonction { get; set; }
 
-    public virtual Fonction IdFonctionNavigation { get; set; } = null!;
+    public virtual Fonction Fonction { get; set; } = null!;
 
-    public virtual MentionResponsabilite IdMentionResNavigation { get; set; } = null!;
+    public virtual MentionResponsabilite MentionResponsabilite { get; set; } = null!;
 
-    public virtual Notice IdNoticeNavigation { get; set; } = null!;
+    public virtual Notice Notice { get; set; } = null!;
 }

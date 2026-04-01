@@ -9,7 +9,7 @@ public partial class Auteur
 
     public decimal IdMentionRes { get; set; }
 
-    public virtual Notice IdNoticeNavigation { get; set; } = null!;
-    public virtual MentionResponsabilite IdMentionResNavigation { get; set; } = null!;
+    public virtual Notice Notice { get; set; } = null!;
+    public virtual MentionResponsabilite MentionResponsabilite { get; set; } = null!;
 
 }

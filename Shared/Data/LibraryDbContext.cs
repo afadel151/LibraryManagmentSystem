@@ -86,6 +86,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<NoticeMentionEdition> NoticeMentionEditions { get; set; }
 
     public virtual DbSet<NoticeTerme> NoticeTermes { get; set; }
+    public virtual DbSet<NoticeLangue> NoticeLangues { get; set; }
 
     public virtual DbSet<NoticeTermeExact> NoticeTermeExacts { get; set; }
 
@@ -113,6 +114,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<Reservation> Reservations { get; set; }
 
     public virtual DbSet<Selection> Selections { get; set; }
+    public virtual DbSet<SelectionNotice> SelectionNotices { get; set; }
 
 
     public virtual DbSet<SourceArticle> SourceArticles { get; set; }
@@ -183,7 +185,7 @@ public partial class LibraryDbContext : DbContext
                 .WithOne()
                 .HasForeignKey(p => p.IdAdherent)
                 .HasPrincipalKey(a => a.IdAdherent);
-            
+
             entity.HasMany(a => a.Prets)
                 .WithOne()
                 .HasForeignKey(p => p.IdAdherent)
@@ -242,13 +244,6 @@ public partial class LibraryDbContext : DbContext
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_MENTION_RES");
 
-            entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.Auteurs)
-                .HasForeignKey(d => d.IdNotice)
-                .HasConstraintName("FK_AUTEUR_LIEN_138_NOTICE");
-
-            entity.HasOne(d => d.IdMentionResNavigation).WithMany(p => p.Auteurs)
-                .HasForeignKey(d => d.IdMentionRes)
-                .HasConstraintName("FK_AUTEUR_LIEN_143_MENTION");
         });
         modelBuilder.Entity<AuteurSecondaire>(entity =>
         {
@@ -271,20 +266,6 @@ public partial class LibraryDbContext : DbContext
             entity.Property(e => e.IdFonction)
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_FONCTION");
-
-            entity.HasOne(d => d.IdFonctionNavigation).WithMany(p => p.AuteurSecondaires)
-                .HasForeignKey(d => d.IdFonction)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_AUTEUR_S_LIEN_161_FONCTION");
-
-            entity.HasOne(d => d.IdMentionResNavigation).WithMany(p => p.AuteurSecondaires)
-                .HasForeignKey(d => d.IdMentionRes)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_AUTEUR_S_LIEN_143_MENTION_");
-
-            entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.AuteurSecondaires)
-                .HasForeignKey(d => d.IdNotice)
-                .HasConstraintName("FK_AUTEUR_S_LIEN_138_NOTICE");
         });
 
         modelBuilder.Entity<Categorie>(entity =>
@@ -325,14 +306,6 @@ public partial class LibraryDbContext : DbContext
             entity.Property(e => e.IdMentionRes)
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_MENTION_RES");
-
-            entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.CoAuteurs)
-                .HasForeignKey(d => d.IdNotice)
-                .HasConstraintName("FK_COAUTEUR_LIEN_138_NOTICE");
-
-            entity.HasOne(d => d.IdMentionResNavigation).WithMany(p => p.CoAuteurs)
-                .HasForeignKey(d => d.IdMentionRes)
-                .HasConstraintName("FK_COAUTEUR_LIEN_143_MENTION");
 
         });
         modelBuilder.Entity<Collection>(entity =>
@@ -680,13 +653,6 @@ public partial class LibraryDbContext : DbContext
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_MENTION_RES");
 
-            entity.HasOne(d => d.IdCollectionNavigation).WithMany(p => p.MentionResCollections)
-                .HasForeignKey(d => d.IdCollection)
-                .HasConstraintName("MENTION_RES_COLLECTION_COLLECTION_FK1");
-
-            entity.HasOne(d => d.IdMentionResNavigation).WithMany(p => p.MentionResCollections)
-                .HasForeignKey(d => d.IdMentionRes)
-                .HasConstraintName("MENTION_RES_COLLECTION_MENTION_FK1");
         });
 
         modelBuilder.Entity<MentionEdition>(entity =>
@@ -702,10 +668,6 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("MENTION");
-
-            entity.HasOne(d => d.IdNoticeNavigation).WithOne(p => p.MentionEdition)
-                .HasForeignKey<MentionEdition>(d => d.IdNotice)
-                .HasConstraintName("MENTION_EDITION_NOTICE_FK1");
         });
 
         modelBuilder.Entity<MentionResponsabilite>(entity =>
@@ -733,6 +695,86 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("NOM");
+
+            entity.HasMany(e => e.AuteurSecondaires)
+                    .WithOne(e => e.MentionResponsabilite)
+                    .HasForeignKey(e => e.IdMentionRes);
+
+
+
+            entity.HasMany(e => e.Collections)
+                    .WithMany(e => e.MentionResponsabilites)
+                    .UsingEntity<MentionResCollection>(
+                        j =>
+                        {
+                            j.HasKey(nt => new { nt.IdCollection, nt.IdMentionRes });
+                            j.ToTable("MENTION_RES_COLLECTION");
+
+                            j.HasOne(nt => nt.MentionResponsabilite)
+                            .WithMany()
+                            .HasForeignKey(nt => nt.IdMentionRes);
+
+                            j.HasOne(nt => nt.Collection)
+                            .WithMany()
+                            .HasForeignKey(nt => nt.IdCollection);
+                        }
+                    );
+
+            entity.HasMany(e => e.AuteurNotices)
+                    .WithMany(e => e.Auteurs)
+                    .UsingEntity<Auteur>(
+                        j =>
+                        {
+                            j.HasKey(nt => new { nt.IdNotice, nt.IdMentionRes });
+                            j.ToTable("AUTEUR");
+
+                            j.HasOne(nt => nt.MentionResponsabilite)
+                            .WithMany()
+                            .HasForeignKey(nt => nt.IdMentionRes);
+
+                            j.HasOne(nt => nt.Notice)
+                            .WithMany()
+                            .HasForeignKey(nt => nt.IdNotice);
+                        }
+                    );
+            entity.HasMany(e => e.CoAuteurNotices)
+                .WithMany(e => e.CoAuteurs)
+                .UsingEntity<CoAuteur>(
+                    j =>
+                    {
+                        j.HasKey(nt => new { nt.IdNotice, nt.IdMentionRes });
+                        j.ToTable("CO_AUTEUR");
+
+                        j.HasOne(nt => nt.MentionResponsabilite)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdMentionRes);
+
+                        j.HasOne(nt => nt.Notice)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdNotice);
+                    }
+                );
+            entity.HasMany(e => e.AuteurSecondaireNotices)
+                .WithMany(e => e.AuteurSecondairesMentionRes)
+                .UsingEntity<AuteurSecondaire>(
+                    j =>
+                    {
+                        j.HasKey(nt => new { nt.IdNotice, nt.IdMentionRes, nt.IdFonction });
+                        j.ToTable("AUTEUR_SECONDAIRE");
+
+                        j.HasOne(nt => nt.MentionResponsabilite)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdMentionRes);
+
+                        j.HasOne(nt => nt.Notice)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdNotice);
+
+                        j.HasOne(nt => nt.Fonction)
+                       .WithMany()
+                       .HasForeignKey(nt => nt.IdFonction);
+                    }
+                );
         });
 
         modelBuilder.Entity<MotsCle>(entity =>
@@ -779,56 +821,44 @@ public partial class LibraryDbContext : DbContext
         modelBuilder.Entity<Notice>(entity =>
         {
             entity.HasKey(e => e.IdNotice);
-
             entity.ToTable("NOTICE");
 
             entity.HasIndex(e => e.Date1erPub, "INDEX_DATE_1ER_PUB");
-
             entity.HasIndex(e => e.IdPeriodicite, "NOTICE_PERIODICITE_FK");
-
             entity.HasIndex(e => e.IdSourceArticle, "NOTICE_SOURCE_ARTICLE_FK");
-
             entity.HasIndex(e => e.IdType, "TYPE_NOTICE_FK");
 
             entity.Property(e => e.IdNotice)
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("ID_NOTICE");
             entity.Property(e => e.Accessibilite)
-                .HasMaxLength(1)
-                .IsUnicode(false)
+                .HasMaxLength(1).IsUnicode(false)
                 .HasDefaultValueSql("1")
                 .HasColumnName("ACCESSIBILITE");
             entity.Property(e => e.Cdd)
-                .HasMaxLength(15)
-                .IsUnicode(false)
+                .HasMaxLength(15).IsUnicode(false)
                 .HasColumnName("CDD");
             entity.Property(e => e.CollationAutresCarMat)
-                .HasMaxLength(50)
-                .IsUnicode(false)
+                .HasMaxLength(50).IsUnicode(false)
                 .HasColumnName("COLLATION_AUTRES_CAR_MAT");
             entity.Property(e => e.CollationFormat)
-                .HasMaxLength(50)
-                .IsUnicode(false)
+                .HasMaxLength(50).IsUnicode(false)
                 .HasColumnName("COLLATION_FORMAT");
             entity.Property(e => e.CollationImpMaterielle)
-                .HasMaxLength(50)
-                .IsUnicode(false)
+                .HasMaxLength(50).IsUnicode(false)
                 .HasColumnName("COLLATION_IMP_MATERIELLE");
             entity.Property(e => e.Cote)
-                .HasMaxLength(25)
-                .IsUnicode(false)
+                .HasMaxLength(25).IsUnicode(false)
                 .HasColumnName("COTE");
             entity.Property(e => e.Date1erPub)
-                .HasMaxLength(50)
-                .IsUnicode(false)
+                .HasMaxLength(50).IsUnicode(false)
                 .HasColumnName("DATE_1ER_PUB");
             entity.Property(e => e.ExemplaireExiste)
                 .HasDefaultValueSql("0")
                 .HasColumnType("NUMBER")
                 .HasColumnName("EXEMPLAIRE_EXISTE");
             entity.Property(e => e.IdPeriodicite)
-                .HasMaxLength(2)
-                .IsUnicode(false)
+                .HasMaxLength(2).IsUnicode(false)
                 .HasColumnName("ID_PERIODICITE");
             entity.Property(e => e.IdSourceArticle)
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
@@ -840,167 +870,285 @@ public partial class LibraryDbContext : DbContext
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("IS_INDEXED");
             entity.Property(e => e.Isbn)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasMaxLength(255).IsUnicode(false)
                 .HasColumnName("ISBN");
             entity.Property(e => e.IssnNotice)
-                .HasMaxLength(50)
-                .IsUnicode(false)
+                .HasMaxLength(50).IsUnicode(false)
                 .HasColumnName("ISSN_NOTICE");
             entity.Property(e => e.Localisation)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasMaxLength(255).IsUnicode(false)
                 .HasColumnName("LOCALISATION");
             entity.Property(e => e.NPartie)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasMaxLength(255).IsUnicode(false)
                 .HasColumnName("N_PARTIE");
             entity.Property(e => e.NbrExemple)
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("NBR_EXEMPLE");
             entity.Property(e => e.NoteGenerale)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasMaxLength(255).IsUnicode(false)
                 .HasColumnName("NOTE_GENERALE");
             entity.Property(e => e.NumeroVol)
-                .HasMaxLength(50)
-                .IsUnicode(false)
+                .HasMaxLength(50).IsUnicode(false)
                 .HasColumnName("NUMERO_VOL");
             entity.Property(e => e.Resume)
-                .HasMaxLength(2048)
-                .IsUnicode(false)
+                .HasMaxLength(2048).IsUnicode(false)
                 .HasColumnName("RESUME");
             entity.Property(e => e.SousTitre)
-                .HasMaxLength(512)
-                .IsUnicode(false)
+                .HasMaxLength(512).IsUnicode(false)
                 .HasColumnName("SOUS_TITRE");
             entity.Property(e => e.TitreCle)
-                .HasMaxLength(255)
-                .IsUnicode(false)
+                .HasMaxLength(255).IsUnicode(false)
                 .HasColumnName("TITRE_CLE");
             entity.Property(e => e.TitrePropre)
-                .HasMaxLength(512)
-                .IsUnicode(false)
+                .HasMaxLength(512).IsUnicode(false)
                 .HasColumnName("TITRE_PROPRE");
             entity.Property(e => e.TypeDonneesResourceElec)
-                .HasMaxLength(256)
-                .IsUnicode(false)
+                .HasMaxLength(256).IsUnicode(false)
                 .HasColumnName("TYPE_DONNEES_RESOURCE_ELEC");
 
-            entity.HasOne(d => d.CddNavigation).WithMany(p => p.Notices)
-                .HasForeignKey(d => d.Cdd)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("NOTICE_TABLE_CDD_FK1");
+            // ── FK vers tables de référence ──────────────────────────────────────────
 
-            entity.HasOne(d => d.IdPeriodiciteNavigation).WithMany(p => p.Notices)
+            // One-To-Many , T has Many Notice
+            entity.HasOne(a => a.TableCdd)
+                .WithMany(t => t.Notices)
+                .HasForeignKey(a => a.Cdd)
+                .HasConstraintName("NOTICE_TABLE_CDD_FK1")
+                .IsRequired(false);
+
+            entity.HasOne(d => d.Periodicite)
+                .WithMany(p => p.Notices)
                 .HasForeignKey(d => d.IdPeriodicite)
-                .HasConstraintName("FK_NOTICE_ASSOC_513_PERIODIC");
+                .HasConstraintName("FK_NOTICE_ASSOC_513_PERIODIC")
+                .IsRequired(false); ;
 
-            entity.HasOne(d => d.IdSourceArticleNavigation).WithMany(p => p.Notices)
+            entity.HasOne(d => d.SourceArticle)
+                .WithMany(p => p.Notices)
                 .HasForeignKey(d => d.IdSourceArticle)
                 .HasConstraintName("FK_NOTICE_NOTICE_SO_SOURCE_A");
 
-            entity.HasOne(d => d.IdTypeNavigation).WithMany(p => p.Notices)
+            entity.HasOne(d => d.TypeNotice)
+                .WithMany(p => p.Notices)
                 .HasForeignKey(d => d.IdType)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_NOTICE_ASSOC_379_TYPE_NOT");
 
-            entity.HasMany(d => d.IdLangues).WithMany(p => p.IdNotices)
-                .UsingEntity<Dictionary<string, object>>(
-                    "NoticeLangue",
-                    r => r.HasOne<Langue>().WithMany()
-                        .HasForeignKey("IdLangue")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_NOTICE_L_LIEN_153_LANGUE"),
-                    l => l.HasOne<Notice>().WithMany()
-                        .HasForeignKey("IdNotice")
-                        .HasConstraintName("FK_NOTICE_L_LIEN_152_NOTICE"),
+            // one to one
+            entity.HasOne(d => d.MentionEdition)
+                .WithOne(p => p.Notice)
+                .HasForeignKey<MentionEdition>(e => e.IdNotice)
+                .IsRequired(false);
+
+            entity.HasOne(d => d.NoticeMentionEdition)
+               .WithOne(p => p.Notice)
+               .HasForeignKey<NoticeMentionEdition>(e => e.IdNotice)
+               .IsRequired(false);
+
+
+            // one to many : Notice Has many T
+
+            entity.HasMany(d => d.NoticeEditions)
+                .WithOne(p => p.Notice)
+                .HasForeignKey(d => d.IdNotice)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_NOTICE_E_LIEN_900_NOTICE");
+
+
+
+            entity.HasMany(e => e.Auteurs)
+                .WithMany(e => e.AuteurNotices)
+                .UsingEntity<Auteur>(
                     j =>
                     {
-                        j.HasKey("IdNotice", "IdLangue");
+                        j.HasKey(a => new { a.IdNotice, a.IdMentionRes });
+                        j.ToTable("AUTEUR");
+
+                        j.HasOne(a => a.Notice)
+                        .WithMany()
+                        .HasForeignKey(a => a.IdNotice);
+
+                        j.HasOne(a => a.MentionResponsabilite)
+                        .WithMany()
+                        .HasForeignKey(a => a.IdMentionRes);
+                    }
+                );
+
+            entity.HasMany(e => e.CoAuteurs)
+                .WithMany(e => e.CoAuteurNotices)
+                .UsingEntity<CoAuteur>(
+                    j =>
+                    {
+                        j.HasKey(a => new { a.IdNotice, a.IdMentionRes });
+                        j.ToTable("CO_AUTEUR"); // adapte le nom de table
+
+                        j.HasOne(a => a.Notice)
+                        .WithMany()
+                        .HasForeignKey(a => a.IdNotice);
+
+                        j.HasOne(a => a.MentionResponsabilite)
+                        .WithMany()
+                        .HasForeignKey(a => a.IdMentionRes);
+                    }
+                );
+            entity.HasMany(e => e.AuteurSecondairesMentionRes)
+                .WithMany(e => e.AuteurSecondaireNotices)
+                .UsingEntity<AuteurSecondaire>(
+                    j =>
+                    {
+                        j.HasKey(a => new { a.IdNotice, a.IdMentionRes, a.IdFonction });
+                        j.ToTable("AUTEUR_SECONDAIRE"); // adapte le nom de table
+
+                        j.HasOne(a => a.Notice)
+                        .WithMany()
+                        .HasForeignKey(a => a.IdNotice);
+
+                        j.HasOne(a => a.MentionResponsabilite)
+                        .WithMany()
+                        .HasForeignKey(a => a.IdMentionRes);
+
+                        j.HasOne(a => a.Fonction)
+                        .WithMany()
+                        .HasForeignKey(a => a.IdFonction);
+                    }
+                );
+
+            entity.HasMany(e => e.Termes)
+                .WithMany(e => e.Notices)
+                .UsingEntity<NoticeTerme>(
+                    j =>
+                    {
+                        j.HasKey(nt => new { nt.IdNotice, nt.IdTerme });
+                        j.ToTable("NOTICE_TERME");
+
+                        j.HasOne(nt => nt.Notice)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdNotice);
+
+                        j.HasOne(nt => nt.Terme)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdTerme);
+
+                        j.Property(nt => nt.PoidsTerme)
+                        .HasColumnName("POIDS_TERME")
+                        .HasColumnType("NUMBER(38)")
+                        .HasPrecision(38, 0);
+                    }
+                );
+            entity.HasMany(e => e.TermeExacts)
+                .WithMany(e => e.Notices)
+                .UsingEntity<NoticeTermeExact>(
+                    j =>
+                    {
+                        j.HasKey(nt => new { nt.IdNotice, nt.IdTermeExact });
+                        j.ToTable("NOTICE_TERME_EXACT");
+
+                        j.HasOne(nt => nt.Notice)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdNotice);
+
+                        j.HasOne(nt => nt.TermeExact)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdTermeExact);
+
+                        j.Property(nt => nt.PoidsTerme)
+                        .HasColumnName("POIDS_TERME")
+                        .HasColumnType("NUMBER(38)")
+                        .HasPrecision(38, 0)
+                        .IsRequired(false);
+                    }
+                );
+            entity.HasMany(e => e.Langues)
+                .WithMany(e => e.Notices)
+                .UsingEntity<NoticeLangue>(
+                    j =>
+                    {
+                        j.HasKey(nt => new { nt.IdNotice, nt.IdLangue });
                         j.ToTable("NOTICE_LANGUE");
-                        j.HasIndex(new[] { "IdNotice" }, "LIEN_152_FK");
-                        j.HasIndex(new[] { "IdLangue" }, "LIEN_153_FK");
-                        j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                            .HasColumnName("ID_NOTICE");
-                        j.IndexerProperty<string>("IdLangue")
-                            .HasMaxLength(3)
-                            .IsUnicode(false)
-                            .HasColumnName("ID_LANGUE");
-                    });
-            entity.HasMany(d => d.IdMotCles).WithMany(p => p.IdNotices)
-                .UsingEntity<Dictionary<string, object>>(
-                    "NoticeMotCle",
-                    r => r.HasOne<MotsCle>().WithMany()
-                        .HasForeignKey("IdMotCle")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_NOTICE_M_LIEN_160_MOTS_CLE"),
-                    l => l.HasOne<Notice>().WithMany()
-                        .HasForeignKey("IdNotice")
-                        .HasConstraintName("FK_NOTICE_M_LIEN_159_NOTICE"),
+
+                        j.HasOne(nt => nt.Notice)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdNotice);
+
+                        j.HasOne(nt => nt.Langue)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdLangue);
+
+                    }
+                );
+            entity.HasMany(e => e.MotsCles)
+                .WithMany(e => e.Notices)
+                .UsingEntity<NoticeMotCle>(
                     j =>
                     {
-                        j.HasKey("IdNotice", "IdMotCle");
+                        j.HasKey(nt => new { nt.IdNotice, nt.IdMotCle });
                         j.ToTable("NOTICE_MOT_CLE");
-                        j.HasIndex(new[] { "IdNotice" }, "LIEN_159_FK");
-                        j.HasIndex(new[] { "IdMotCle" }, "LIEN_160_FK");
-                        j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                            .HasColumnName("ID_NOTICE");
-                        j.IndexerProperty<decimal>("IdMotCle")
-                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                            .HasColumnName("ID_MOT_CLE");
-                    });
 
-            entity.HasMany(d => d.IdPays).WithMany(p => p.IdNotices)
-                .UsingEntity<Dictionary<string, object>>(
-                    "PaysPublication",
-                    r => r.HasOne<Pay>().WithMany()
-                        .HasForeignKey("IdPays")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_PAYS_PUB_LIEN_149_PAYS"),
-                    l => l.HasOne<Notice>().WithMany()
-                        .HasForeignKey("IdNotice")
-                        .HasConstraintName("FK_PAYS_PUB_LIEN_148_NOTICE"),
+                        j.HasOne(nt => nt.Notice)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdNotice);
+
+                        j.HasOne(nt => nt.MotsCle)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdMotCle);
+
+                    }
+                );
+            entity.HasMany(e => e.Selections)
+                .WithMany(e => e.Notices)
+                .UsingEntity<SelectionNotice>(
                     j =>
                     {
-                        j.HasKey("IdNotice", "IdPays");
-                        j.ToTable("PAYS_PUBLICATION");
-                        j.HasIndex(new[] { "IdNotice" }, "LIEN_148_FK");
-                        j.HasIndex(new[] { "IdPays" }, "LIEN_149_FK");
-                        j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                            .HasColumnName("ID_NOTICE");
-                        j.IndexerProperty<string>("IdPays")
-                            .HasMaxLength(10)
-                            .IsUnicode(false)
-                            .HasColumnName("ID_PAYS");
-                    });
-
-            entity.HasMany(d => d.IdSelections).WithMany(p => p.IdNotices)
-                .UsingEntity<Dictionary<string, object>>(
-                    "SelectionNotice",
-                    r => r.HasOne<Selection>().WithMany()
-                        .HasForeignKey("IdSelection")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_SELECTION_NOTICE_LIEN_151_SELECTION"),
-                    l => l.HasOne<Notice>().WithMany()
-                        .HasForeignKey("IdNotice")
-                        .HasConstraintName("FK_SELECTION_NOTICE_LIEN_150_NOTICE"),
-                    j =>
-                    {
-                        j.HasKey("IdNotice", "IdSelection");
+                        j.HasKey(nt => new { nt.IdNotice, nt.IdSelection });
                         j.ToTable("SELECTION_NOTICE");
-                        j.HasIndex(new[] { "IdNotice" }, "LIEN_150_FK");
-                        j.HasIndex(new[] { "IdSelection" }, "LIEN_151_FK");
-                        j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                            .HasColumnName("ID_NOTICE");
-                        j.IndexerProperty<decimal>("IdSelection")
-                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                            .HasColumnName("ID_SELECTION");
-                    });
+
+                        j.HasOne(nt => nt.Notice)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdNotice);
+
+                        j.HasOne(nt => nt.Selection)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdSelection);
+
+                    }
+                );
+            entity.HasMany(e => e.Pays)
+                .WithMany(e => e.Notices)
+                .UsingEntity<PaysPublication>(
+                    j =>
+                    {
+                        j.HasKey(nt => new { nt.IdNotice, nt.IdPays });
+                        j.ToTable("PAYS_PUBLICATION");
+
+                        j.HasOne(nt => nt.Notice)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdNotice);
+
+                        j.HasOne(nt => nt.Pay)
+                        .WithMany()
+                        .HasForeignKey(nt => nt.IdPays);
+                    }
+                );
+            entity.HasMany(e => e.Collections)
+               .WithMany(e => e.Notices)
+               .UsingEntity<NoticeCollection>(
+                   j =>
+                   {
+                       j.HasKey(nt => new { nt.IdNotice, nt.IdCollection });
+                       j.ToTable("NOTICE_TERME_EXACT");
+
+                       j.HasOne(nt => nt.Notice)
+                       .WithMany()
+                       .HasForeignKey(nt => nt.IdNotice);
+
+                       j.HasOne(nt => nt.Collection)
+                       .WithMany()
+                       .HasForeignKey(nt => nt.IdCollection);
+
+                       j.Property(nt => nt.NumeroDansCollection)
+                       .HasColumnName("NUMERO_DANS_COLLECTION")
+                       .HasColumnType("VARCHAR2(10)")
+                       .IsRequired(false);
+                   }
+               );
+
 
         });
 
@@ -1024,15 +1172,6 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("NUMERO_DANS_COLLECTION");
-
-            entity.HasOne(d => d.IdCollectionNavigation).WithMany(p => p.NoticeCollections)
-                .HasForeignKey(d => d.IdCollection)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_NOTICE_C_LIEN_145_COLLECTI");
-
-            entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.NoticeCollections)
-                .HasForeignKey(d => d.IdNotice)
-                .HasConstraintName("FK_NOTICE_C_LIEN_144_NOTICE");
         });
 
         modelBuilder.Entity<NoticeDipDisEtab>(entity =>
@@ -1070,24 +1209,25 @@ public partial class LibraryDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("NOTE_TEXTE");
 
-            entity.HasOne(d => d.IdDiplomeNavigation).WithMany(p => p.NoticeDipDisEtabs)
-                .HasForeignKey(d => d.IdDiplome)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_NOTICE_D_LIEN_155_DIPLOME");
+            entity.HasOne(d => d.Notice)
+                .WithOne(p => p.NoticeDipDisEtab)
+                .HasForeignKey<NoticeDipDisEtab>(e => e.IdNotice)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
 
-            entity.HasOne(d => d.IdDisciplineNavigation).WithMany(p => p.NoticeDipDisEtabs)
-                .HasForeignKey(d => d.IdDiscipline)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_NOTICE_D_LIEN_157_DISCIPLI");
+            entity.HasOne(d => d.Diplome)
+                .WithMany(p => p.NoticeDipDisEtabs)
+                .HasForeignKey(e => e.IdDiplome)
+                .IsRequired();
+            entity.HasOne(d => d.Etablissement)
+                .WithMany(p => p.NoticeDipDisEtabs)
+                .HasForeignKey(e => e.IdEtablissement)
+                .IsRequired();
 
-            entity.HasOne(d => d.IdEtablissementNavigation).WithMany(p => p.NoticeDipDisEtabs)
-                .HasForeignKey(d => d.IdEtablissement)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_NOTICE_D_LIEN_156_ETABLISS");
-
-            entity.HasOne(d => d.IdNoticeNavigation).WithOne(p => p.NoticeDipDisEtab)
-                .HasForeignKey<NoticeDipDisEtab>(d => d.IdNotice)
-                .HasConstraintName("FK_NOTICE_D_LIEN_158_NOTICE");
+            entity.HasOne(d => d.Discipline)
+                .WithMany(p => p.NoticeDipDisEtabs)
+                .HasForeignKey(e => e.IdDiscipline)
+                .IsRequired();
         });
 
         modelBuilder.Entity<NoticeEdition>(entity =>
@@ -1118,22 +1258,38 @@ public partial class LibraryDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("DATE_EDITION");
 
-            entity.HasOne(d => d.IdEditeurNavigation).WithMany(p => p.NoticeEditions)
+            entity.HasOne(d => d.Editeur)
+                .WithMany(p => p.NoticeEditions)
                 .HasForeignKey(d => d.IdEditeur)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_NOTICE_E_LIEN_899_EDITEUR");
 
-            entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.NoticeEditions)
+            entity.HasOne(d => d.Notice)
+                .WithMany(p => p.NoticeEditions)
                 .HasForeignKey(d => d.IdNotice)
                 .HasConstraintName("FK_NOTICE_E_LIEN_900_NOTICE");
 
-            entity.HasOne(d => d.IdVilleNavigation).WithMany(p => p.NoticeEditions)
+            entity.HasOne(d => d.Ville)
+                .WithMany(p => p.NoticeEditions)
                 .HasForeignKey(d => d.IdVille)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_NOTICE_E_LIEN_898_VILLE");
         });
 
+        modelBuilder.Entity<NoticeLangue>(entity =>
+        {
+            entity.HasKey(e => e.IdNotice).HasName("PK_NOTICE_LANGUE");
+            entity.ToTable("NOTICE_LANGUE");
 
+            entity.Property(e => e.IdNotice)
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
+                .HasColumnName("ID_NOTICE");
+
+            entity.Property(e => e.IdLangue)
+                .HasMaxLength(3)
+                .HasColumnName("ID_LANGUE");
+
+        });
         modelBuilder.Entity<NoticeMentionEdition>(entity =>
         {
             entity.HasKey(e => e.IdNotice).HasName("NOTICE_MENTION_EDITION_PK");
@@ -1147,6 +1303,8 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(2048)
                 .IsUnicode(false)
                 .HasColumnName("MENTION_EDITION");
+
+
         });
 
         modelBuilder.Entity<NoticeTerme>(entity =>
@@ -1169,14 +1327,6 @@ public partial class LibraryDbContext : DbContext
                 .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
                 .HasColumnName("POIDS_TERME");
 
-            entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.NoticeTermes)
-                .HasForeignKey(d => d.IdNotice)
-                .HasConstraintName("FK_NOTICE_T_LIEN_508_NOTICE");
-
-            entity.HasOne(d => d.IdTermeNavigation).WithMany(p => p.NoticeTermes)
-                .HasForeignKey(d => d.IdTerme)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_NOTICE_T_LIEN_507_TERME");
         });
 
         modelBuilder.Entity<NoticeTermeExact>(entity =>
@@ -1260,10 +1410,9 @@ public partial class LibraryDbContext : DbContext
         {
             entity.HasKey(e => new { e.IdNotice, e.IdPays });
 
-            entity.ToTable("NOTICE_PAYS_PUBLICATION");
+            entity.ToTable("PAYS_PUBLICATION");  // ← nom correct selon le DDL Oracle
 
             entity.HasIndex(e => e.IdNotice, "LIEN_148_FK");
-
             entity.HasIndex(e => e.IdPays, "LIEN_149_FK");
 
             entity.Property(e => e.IdNotice)
@@ -1273,15 +1422,6 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("ID_PAYS");
-
-            entity.HasOne(d => d.IdNoticeNavigation).WithMany(p => p.PaysPublications)
-                .HasForeignKey(d => d.IdNotice)
-                .HasConstraintName("FK_NOTICE_P_LIEN_148_NOTICE");
-
-            entity.HasOne(d => d.IdPaysNavigation).WithMany(p => p.PaysPublications)
-                .HasForeignKey(d => d.IdPays)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_NOTICE_P_LIEN_149_PAYS");
         });
         modelBuilder.Entity<Penalite>(entity =>
         {
@@ -1352,6 +1492,12 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("PERIODICITE");
+
+            entity.HasMany(e => e.Notices)
+                .WithOne(e => e.Periodicite)
+                .HasForeignKey(e => e.IdPeriodicite)
+                .HasConstraintName("FK_NOTICE_ASSOC_513_PERIODIC")
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<Position>(entity =>
@@ -1434,31 +1580,25 @@ public partial class LibraryDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("LIBELLE_SELECTION");
 
-            entity.HasMany(d => d.IdNotices).WithMany(p => p.IdSelections)
-                .UsingEntity<Dictionary<string, object>>(
-                    "SelectionNotice",
-                    r => r.HasOne<Notice>().WithMany()
-                        .HasForeignKey("IdNotice")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("SELECTION_NOTICE_NOTICE_FK1"),
-                    l => l.HasOne<Selection>().WithMany()
-                        .HasForeignKey("IdSelection")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("SELECTION_NOTICE_SELECTIO_FK1"),
-                    j =>
-                    {
-                        j.HasKey("IdSelection", "IdNotice").HasName("SELECTION_NOTICE_PK");
-                        j.ToTable("SELECTION_NOTICE");
-                        j.IndexerProperty<decimal>("IdSelection")
-                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                            .HasColumnName("ID_SELECTION");
-                        j.IndexerProperty<decimal>("IdNotice")
-                            .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                            .HasColumnName("ID_NOTICE");
-                    });
+
         });
 
+        modelBuilder.Entity<SelectionNotice>(entity =>
+       {
+           entity.HasKey(e => new { e.IdNotice, e.IdSelection });
 
+           entity.ToTable("SELECTION_NOTICE");
+
+           entity.HasIndex(e => e.IdNotice, "SELECTION_NOTICE_PK");
+
+           entity.Property(e => e.IdNotice)
+               .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
+               .HasColumnName("ID_NOTICE");
+           entity.Property(e => e.IdSelection)
+               .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
+               .HasColumnName("ID_SELECTION");
+
+       });
         modelBuilder.Entity<SourceArticle>(entity =>
         {
             entity.HasKey(e => e.IdSourceArticle);
@@ -1506,6 +1646,12 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(1024)
                 .IsUnicode(false)
                 .HasColumnName("LIBELLE");
+
+            entity.HasMany(t => t.Notices)
+                .WithOne(n => n.TableCdd)
+                .HasForeignKey(n => n.Cdd)
+                .HasConstraintName("NOTICE_TABLE_CDD_FK1")
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<Terme>(entity =>

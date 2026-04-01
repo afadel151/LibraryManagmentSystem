@@ -9,7 +9,6 @@ public partial class Pay
 
     public string? Pays { get; set; }
 
-    public virtual ICollection<Notice> IdNotices { get; set; } = new List<Notice>();
-
-    public virtual ICollection<PaysPublication> PaysPublications { get; set; } = new List<PaysPublication>();
+    
+    public virtual ICollection<Notice> Notices { get; set; } = new List<Notice>();
 }

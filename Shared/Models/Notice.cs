@@ -55,39 +55,49 @@ public partial class Notice
 
     public string? TypeDonneesResourceElec { get; set; }
 
-    public virtual ICollection<AuteurSecondaire> AuteurSecondaires { get; set; } = new List<AuteurSecondaire>();
-    public virtual ICollection<Auteur> Auteurs { get; set; } = new List<Auteur>();
-    public virtual ICollection<CoAuteur> CoAuteurs { get; set; } = new List<CoAuteur>();
-
-    public virtual TableCdd? CddNavigation { get; set; }
-
-    public virtual Periodicite? IdPeriodiciteNavigation { get; set; }
-
-    public virtual SourceArticle? IdSourceArticleNavigation { get; set; }
-
-    public virtual TypeNotice IdTypeNavigation { get; set; } = null!;
-
-    public virtual MentionEdition? MentionEdition { get; set; }
-
-    public virtual ICollection<NoticeCollection> NoticeCollections { get; set; } = new List<NoticeCollection>();
-
+    // one to one, IdNotice is a PK in other table
     public virtual NoticeDipDisEtab? NoticeDipDisEtab { get; set; }
 
+    // meme besoin ?
+    public virtual NoticeMentionEdition? NoticeMentionEdition { get; set; }
+    public virtual MentionEdition? MentionEdition {get; set;} 
+
+
+
+    // one to many relationships
+    public virtual TableCdd? TableCdd { get; set; } = null!;
+    public virtual Periodicite? Periodicite { get; set; }
+    public virtual SourceArticle? SourceArticle { get; set; }
+    public virtual TypeNotice TypeNotice { get; set; } = null!;
+
+
+
+
+
+    // on to many to join table
     public virtual ICollection<NoticeEdition> NoticeEditions { get; set; } = new List<NoticeEdition>();
-
+    public virtual ICollection<NoticeCollection> NoticeCollections { get; set; } = new List<NoticeCollection>();
+    public virtual ICollection<AuteurSecondaire> AuteurSecondaires {get;set;} = [];
     public virtual ICollection<NoticeTerme> NoticeTermes { get; set; } = new List<NoticeTerme>();
-
-    public virtual ICollection<Langue> IdLangues { get; set; } = new List<Langue>();
-
-
-    public virtual ICollection<MotsCle> IdMotCles { get; set; } = new List<MotsCle>();
-
-    public virtual ICollection<Pay> IdPays { get; set; } = new List<Pay>();
-
-    public virtual ICollection<Selection> IdSelections { get; set; } = new List<Selection>();
+    public virtual ICollection<NoticeTermeExact> NoticeTermeExacts { get; set; } = new List<NoticeTermeExact>();
 
 
+    // many to many 
+    public virtual ICollection<MentionResponsabilite> CoAuteurs { get; set; } = new List<MentionResponsabilite>();
 
-    public virtual ICollection<PaysPublication> PaysPublications { get; set; } = new List<PaysPublication>();
+    public virtual ICollection<MentionResponsabilite> AuteurSecondairesMentionRes { get; set; } = new List<MentionResponsabilite>();
+
+    public virtual ICollection<MentionResponsabilite> Auteurs { get; set; } = new List<MentionResponsabilite>();
+
+
+    public virtual ICollection<Terme> Termes { get; set; } = new List<Terme>();
+    public virtual ICollection<TermeExact> TermeExacts {get;set;} = new List<TermeExact>();
+    public virtual ICollection<Collection> Collections {get;set;} = new List<Collection>();
+
+    public virtual ICollection<Pay> Pays {get;set;} = new List<Pay>();
+
+    public virtual ICollection<MotsCle> MotsCles {get;set;} = new List<MotsCle>();
+    public virtual ICollection<Langue> Langues {get;set;} = new List<Langue>();
+    public virtual ICollection<Selection> Selections {get;set;} = new List<Selection>();
 
 }

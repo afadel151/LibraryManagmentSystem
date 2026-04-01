@@ -13,9 +13,9 @@ public partial class NoticeEdition
 
     public string? DateEdition { get; set; }
 
-    public virtual Editeur IdEditeurNavigation { get; set; } = null!;
+    public virtual Editeur Editeur { get; set; } = null!;
 
-    public virtual Notice IdNoticeNavigation { get; set; } = null!;
+    public virtual Notice Notice { get; set; } = null!;
 
-    public virtual Ville IdVilleNavigation { get; set; } = null!;
+    public virtual Ville Ville { get; set; } = null!;
 }

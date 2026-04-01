@@ -9,5 +9,5 @@ public partial class TableCdd
 
     public string? Libelle { get; set; }
 
-    public virtual ICollection<Notice> Notices { get; set; } = new List<Notice>();
+    public ICollection<Notice> Notices {get;set;} = [];     
 }
