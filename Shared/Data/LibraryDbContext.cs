@@ -183,13 +183,15 @@ public partial class LibraryDbContext : DbContext
 
             entity.HasMany(a => a.PenaliteAdherents)
                 .WithOne()
-                .HasForeignKey(p => p.IdAdherent)
-                .HasPrincipalKey(a => a.IdAdherent);
+                .HasForeignKey(p => p.IdAdherent);
 
             entity.HasMany(a => a.Prets)
-                .WithOne()
-                .HasForeignKey(p => p.IdAdherent)
-                .HasPrincipalKey(a => a.IdAdherent);
+                .WithOne(p => p.Adherent)
+                .HasForeignKey(p => p.IdAdherent);
+
+            entity.HasMany(a => a.HistoriquePrets)
+                .WithOne(a => a.Adherent)
+                .HasForeignKey(a => a.IdAdherent);
         });
 
         modelBuilder.Entity<Admin>(entity =>
@@ -227,6 +229,37 @@ public partial class LibraryDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("PRIX_UNITAIRE");
         });
+
+        modelBuilder.Entity<AuteurSecondaire>(entity =>
+        {
+            entity.HasKey(e => new { e.IdNotice, e.IdMentionRes, e.IdFonction });
+
+            entity.ToTable("AUTEUR_SECONDAIRE");
+
+            entity.Property(e => e.IdNotice)
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
+                .HasColumnName("ID_NOTICE");
+
+            entity.Property(e => e.IdMentionRes)
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
+                .HasColumnName("ID_MENTION_RES");
+
+            entity.Property(e => e.IdFonction)
+                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
+                .HasColumnName("ID_FONCTION");
+
+            entity.HasOne(d => d.Notice)
+                .WithMany(p => p.AuteurSecondaires)
+                .HasForeignKey(d => d.IdNotice);
+
+            entity.HasOne(d => d.MentionResponsabilite)
+                .WithMany(p => p.AuteurSecondaires)
+                .HasForeignKey(d => d.IdMentionRes);
+
+            entity.HasOne(d => d.Fonction)
+                .WithMany(p => p.AuteurSecondaires)
+                .HasForeignKey(d => d.IdFonction);
+        });
         modelBuilder.Entity<Auteur>(entity =>
         {
             entity.HasKey(e => new { e.IdNotice, e.IdMentionRes }).HasName("AUTEUR_PK");
@@ -245,28 +278,7 @@ public partial class LibraryDbContext : DbContext
                 .HasColumnName("ID_MENTION_RES");
 
         });
-        modelBuilder.Entity<AuteurSecondaire>(entity =>
-        {
-            entity.HasKey(e => new { e.IdNotice, e.IdMentionRes, e.IdFonction });
 
-            entity.ToTable("AUTEUR_SECONDAIRE");
-
-            entity.HasIndex(e => e.IdNotice, "LIEN_138_FK");
-
-            entity.HasIndex(e => e.IdMentionRes, "LIEN_143_FK");
-
-            entity.HasIndex(e => e.IdFonction, "LIEN_161_FK");
-
-            entity.Property(e => e.IdNotice)
-                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                .HasColumnName("ID_NOTICE");
-            entity.Property(e => e.IdMentionRes)
-                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                .HasColumnName("ID_MENTION_RES");
-            entity.Property(e => e.IdFonction)
-                .HasColumnType("NUMBER(38)").HasPrecision(38, 0)
-                .HasColumnName("ID_FONCTION");
-        });
 
         modelBuilder.Entity<Categorie>(entity =>
         {
@@ -294,7 +306,7 @@ public partial class LibraryDbContext : DbContext
         {
             entity.HasKey(e => new { e.IdNotice, e.IdMentionRes }).HasName("COAUTEUR_PK");
 
-            entity.ToTable("COAUTEUR");
+            entity.ToTable("CO_AUTEUR");
 
             entity.HasIndex(e => e.IdNotice, "LIEN_138_FK");
 
@@ -491,9 +503,18 @@ public partial class LibraryDbContext : DbContext
                 .HasColumnType("NUMBER")
                 .HasColumnName("ID_ETAT");
 
-            entity.HasOne(d => d.IdEtatNavigation).WithMany(p => p.Exemplaires)
+            entity.HasOne(d => d.EtatExemplaire)
+                .WithMany(p => p.Exemplaires)
                 .HasForeignKey(d => d.IdEtat)
                 .HasConstraintName("EXEMPLAIRE_ETAT_EXEMPLAIR_FK1");
+
+            entity.HasMany(d => d.Prets)
+                .WithOne(d => d.Exemplaire)
+                .HasForeignKey(d => d.IdExemplaire);
+
+            entity.HasMany(d => d.HistoriquePrets)
+                .WithOne(d => d.Exemplaire)
+                .HasForeignKey(d => d.IdExemplaire);
         });
 
         modelBuilder.Entity<Fonction>(entity =>
@@ -509,6 +530,9 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("FONCTION");
+
+            entity.Ignore(e => e.Notices);
+            entity.Ignore(e => e.MentionResponsabilites);
         });
 
         modelBuilder.Entity<Fournisseur>(entity =>
@@ -589,9 +613,9 @@ public partial class LibraryDbContext : DbContext
 
         modelBuilder.Entity<HistoriquePret>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("HISTORIQUE_PRET");
+            entity.HasKey(hp => new { hp.IdAdherent, hp.IdExemplaire, hp.DatePret });
+
+            entity.ToTable("HISTORIQUE_PRET");
 
             entity.Property(e => e.DatePret)
                 .HasColumnType("DATE")
@@ -607,6 +631,15 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(15)
                 .IsUnicode(false)
                 .HasColumnName("ID_EXEMPLAIRE");
+
+            // entity.HasOne<Exemplaire>()
+            //     .WithMany(e => e.HistoriquePrets)
+            //     .HasForeignKey(hp => hp.IdExemplaire);
+
+            // entity.HasOne<Adherent>()
+            //    .WithMany(e => e.HistoriquePrets)
+            //    .HasForeignKey(hp => hp.IdAdherent);
+
         });
 
         modelBuilder.Entity<JoursFery>(entity =>
@@ -696,85 +729,23 @@ public partial class LibraryDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("NOM");
 
-            entity.HasMany(e => e.AuteurSecondaires)
-                    .WithOne(e => e.MentionResponsabilite)
-                    .HasForeignKey(e => e.IdMentionRes);
-
-
 
             entity.HasMany(e => e.Collections)
                     .WithMany(e => e.MentionResponsabilites)
-                    .UsingEntity<MentionResCollection>(
-                        j =>
-                        {
-                            j.HasKey(nt => new { nt.IdCollection, nt.IdMentionRes });
-                            j.ToTable("MENTION_RES_COLLECTION");
-
-                            j.HasOne(nt => nt.MentionResponsabilite)
-                            .WithMany()
-                            .HasForeignKey(nt => nt.IdMentionRes);
-
-                            j.HasOne(nt => nt.Collection)
-                            .WithMany()
-                            .HasForeignKey(nt => nt.IdCollection);
-                        }
-                    );
+                    .UsingEntity<MentionResCollection>();
 
             entity.HasMany(e => e.AuteurNotices)
                     .WithMany(e => e.Auteurs)
-                    .UsingEntity<Auteur>(
-                        j =>
-                        {
-                            j.HasKey(nt => new { nt.IdNotice, nt.IdMentionRes });
-                            j.ToTable("AUTEUR");
-
-                            j.HasOne(nt => nt.MentionResponsabilite)
-                            .WithMany()
-                            .HasForeignKey(nt => nt.IdMentionRes);
-
-                            j.HasOne(nt => nt.Notice)
-                            .WithMany()
-                            .HasForeignKey(nt => nt.IdNotice);
-                        }
-                    );
+                    .UsingEntity<Auteur>();
+                
+            
             entity.HasMany(e => e.CoAuteurNotices)
                 .WithMany(e => e.CoAuteurs)
-                .UsingEntity<CoAuteur>(
-                    j =>
-                    {
-                        j.HasKey(nt => new { nt.IdNotice, nt.IdMentionRes });
-                        j.ToTable("CO_AUTEUR");
+                .UsingEntity<CoAuteur>();
 
-                        j.HasOne(nt => nt.MentionResponsabilite)
-                        .WithMany()
-                        .HasForeignKey(nt => nt.IdMentionRes);
-
-                        j.HasOne(nt => nt.Notice)
-                        .WithMany()
-                        .HasForeignKey(nt => nt.IdNotice);
-                    }
-                );
             entity.HasMany(e => e.AuteurSecondaireNotices)
                 .WithMany(e => e.AuteurSecondairesMentionRes)
-                .UsingEntity<AuteurSecondaire>(
-                    j =>
-                    {
-                        j.HasKey(nt => new { nt.IdNotice, nt.IdMentionRes, nt.IdFonction });
-                        j.ToTable("AUTEUR_SECONDAIRE");
-
-                        j.HasOne(nt => nt.MentionResponsabilite)
-                        .WithMany()
-                        .HasForeignKey(nt => nt.IdMentionRes);
-
-                        j.HasOne(nt => nt.Notice)
-                        .WithMany()
-                        .HasForeignKey(nt => nt.IdNotice);
-
-                        j.HasOne(nt => nt.Fonction)
-                       .WithMany()
-                       .HasForeignKey(nt => nt.IdFonction);
-                    }
-                );
+                .UsingEntity<AuteurSecondaire>();
         });
 
         modelBuilder.Entity<MotsCle>(entity =>
@@ -945,70 +916,12 @@ public partial class LibraryDbContext : DbContext
 
             // one to many : Notice Has many T
 
+            
             entity.HasMany(d => d.NoticeEditions)
                 .WithOne(p => p.Notice)
                 .HasForeignKey(d => d.IdNotice)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_NOTICE_E_LIEN_900_NOTICE");
-
-
-
-            entity.HasMany(e => e.Auteurs)
-                .WithMany(e => e.AuteurNotices)
-                .UsingEntity<Auteur>(
-                    j =>
-                    {
-                        j.HasKey(a => new { a.IdNotice, a.IdMentionRes });
-                        j.ToTable("AUTEUR");
-
-                        j.HasOne(a => a.Notice)
-                        .WithMany()
-                        .HasForeignKey(a => a.IdNotice);
-
-                        j.HasOne(a => a.MentionResponsabilite)
-                        .WithMany()
-                        .HasForeignKey(a => a.IdMentionRes);
-                    }
-                );
-
-            entity.HasMany(e => e.CoAuteurs)
-                .WithMany(e => e.CoAuteurNotices)
-                .UsingEntity<CoAuteur>(
-                    j =>
-                    {
-                        j.HasKey(a => new { a.IdNotice, a.IdMentionRes });
-                        j.ToTable("CO_AUTEUR"); // adapte le nom de table
-
-                        j.HasOne(a => a.Notice)
-                        .WithMany()
-                        .HasForeignKey(a => a.IdNotice);
-
-                        j.HasOne(a => a.MentionResponsabilite)
-                        .WithMany()
-                        .HasForeignKey(a => a.IdMentionRes);
-                    }
-                );
-            entity.HasMany(e => e.AuteurSecondairesMentionRes)
-                .WithMany(e => e.AuteurSecondaireNotices)
-                .UsingEntity<AuteurSecondaire>(
-                    j =>
-                    {
-                        j.HasKey(a => new { a.IdNotice, a.IdMentionRes, a.IdFonction });
-                        j.ToTable("AUTEUR_SECONDAIRE"); // adapte le nom de table
-
-                        j.HasOne(a => a.Notice)
-                        .WithMany()
-                        .HasForeignKey(a => a.IdNotice);
-
-                        j.HasOne(a => a.MentionResponsabilite)
-                        .WithMany()
-                        .HasForeignKey(a => a.IdMentionRes);
-
-                        j.HasOne(a => a.Fonction)
-                        .WithMany()
-                        .HasForeignKey(a => a.IdFonction);
-                    }
-                );
 
             entity.HasMany(e => e.Termes)
                 .WithMany(e => e.Notices)
@@ -1532,15 +1445,12 @@ public partial class LibraryDbContext : DbContext
             entity.Property(e => e.DatePret)
                 .HasColumnType("DATE")
                 .HasColumnName("DATE_PRET");
+
             entity.Property(e => e.EtatDuree)
                 .HasMaxLength(1)
                 .IsUnicode(false)
                 .HasDefaultValueSql("'F'\n   ")
                 .HasColumnName("ETAT_DUREE");
-            entity.HasOne(e => e.ExemplaireNavigation)
-        .WithMany(e => e.Prets)
-        .HasForeignKey(e => e.IdExemplaire)
-        .HasConstraintName("PRET_EXEMPLAIRE_FK");
         });
 
         modelBuilder.Entity<Reservation>(entity =>
