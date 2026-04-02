@@ -11,7 +11,8 @@ public partial class Exemplaire
 
     public string? Cote { get; set; }
 
-    public virtual EtatExemplaire? IdEtatNavigation { get; set; }
+    public virtual EtatExemplaire? EtatExemplaire { get; set; }
 
-    public virtual ICollection<Pret> Prets { get; set; } = new List<Pret>(); // ✅ add this
+    public virtual ICollection<Pret> Prets { get; set; } = new List<Pret>(); 
+    public virtual ICollection<HistoriquePret> HistoriquePrets { get; set; } = new List<HistoriquePret>(); 
 }

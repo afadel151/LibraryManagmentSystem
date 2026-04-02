@@ -13,12 +13,10 @@ public partial class MentionResponsabilite
 
     public decimal? Collectivite { get; set; }
 
-    // one to many
-    public virtual ICollection<AuteurSecondaire> AuteurSecondaires { get; set; } = [];
     // many to many 
+    public virtual ICollection<AuteurSecondaire> AuteurSecondaires {get;set;} = [];
     public virtual ICollection<Collection> Collections { get; set; } = [];
     public virtual ICollection<Notice> AuteurNotices { get; set; } = [];    
-
     public virtual ICollection<Notice> CoAuteurNotices { get; set; } = [];
     public virtual ICollection<Notice> AuteurSecondaireNotices { get; set; } = [];
 

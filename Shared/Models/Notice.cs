@@ -85,9 +85,9 @@ public partial class Notice
     // many to many 
     public virtual ICollection<MentionResponsabilite> CoAuteurs { get; set; } = new List<MentionResponsabilite>();
 
+    public virtual ICollection<MentionResponsabilite> Auteurs { get; set; } = new List<MentionResponsabilite>();
     public virtual ICollection<MentionResponsabilite> AuteurSecondairesMentionRes { get; set; } = new List<MentionResponsabilite>();
 
-    public virtual ICollection<MentionResponsabilite> Auteurs { get; set; } = new List<MentionResponsabilite>();
 
 
     public virtual ICollection<Terme> Termes { get; set; } = new List<Terme>();

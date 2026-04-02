@@ -11,5 +11,4 @@ public partial class Auteur
 
     public virtual Notice Notice { get; set; } = null!;
     public virtual MentionResponsabilite MentionResponsabilite { get; set; } = null!;
-
 }
