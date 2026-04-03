@@ -1,25 +1,17 @@
 using Borrowing.Web.Components;
 using Radzen;
-using Borrowing.Web.Services;
+using Borrowing.Web.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
                     .AddInteractiveServerComponents();
 builder.Services.AddRadzenComponents();
 
-builder.Services.AddHttpClient<IPretService, PretService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5026/");
-});
+var apiBase = builder.Configuration["ApiSettings:BaseAddress"]
+              ?? throw new InvalidOperationException("ApiSettings:BaseAddress is not configured.");
 
-builder.Services.AddHttpClient<IAdherentService, AdherentService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5026/");
-});
-builder.Services.AddHttpClient<IRestitutionService, RestitutionService>(client =>
-{
-    client.BaseAddress = new Uri("http://localhost:5026/");
-});
+builder.Services.AddBorrowingApiServices(apiBase);
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

@@ -14,6 +14,7 @@ using Borrowing.SharedClasses.Responses.Reservation;
 public interface IPretService
 {
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters);
+    Task<IEnumerable<PretResponseDto>> GetAllPretsAsync(string search = "");
     Task<CreateReservationResponseDto> CreateReservation(CreateReservationRequestDto createReservationRequestDto);
     Task<PretStatsDto> GetStats();
     Task<CheckAdhPretResponseDto> CheckAdherent(string id);
@@ -23,7 +24,7 @@ public interface IPretService
 }
 public class PretService : IPretService
 {
-        private readonly HttpClient _httpClient;
+    private readonly HttpClient _httpClient;
 
     public PretService(HttpClient httpClient)
     {
@@ -38,7 +39,8 @@ public class PretService : IPretService
         var url = $"api/Pret?" +
                 $"PageNumber={queryParameters.PageNumber}&" +
                 $"PageSize={queryParameters.PageSize}&" +
-                $"OrderBy={orderBy}";
+                $"OrderBy={orderBy}&" +
+                $"Search={queryParameters.Search}";
 
         var response = await _httpClient.GetAsync(url);
 
@@ -51,7 +53,20 @@ public class PretService : IPretService
             PropertyNameCaseInsensitive = true
         })!;
     }
+    // In IPretService / PretService
+    public async Task<IEnumerable<PretResponseDto>> GetAllPretsAsync(string search = "")
+    {
+        var queryParams = new PaginatedQueryParameters
+        {
+            PageNumber = 1,
+            PageSize = int.MaxValue, 
+            OrderBy = "datepret desc",
+            Search = search
+        };
 
+        var result = await GetPretsAsync(queryParams);
+        return result.Data;
+    }
     public async Task<PretStatsDto> GetStats()
     {
         var response = await _httpClient.GetAsync("api/Pret/Stats");
