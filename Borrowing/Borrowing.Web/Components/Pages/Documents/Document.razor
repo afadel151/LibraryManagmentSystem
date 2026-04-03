@@ -1,0 +1,140 @@
+@page "/documents/{Id:int}"
+@using Borrowing.SharedClasses.Common
+@using Borrowing.Web.Services
+@using Shared.Models
+@inject INoticeService noticeService
+@inject NavigationManager NavigationManager
+
+@if (notice == null)
+{
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Style="margin-top:4rem">
+        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </RadzenStack>
+}
+else
+{
+    <RadzenStack Gap="1.5rem" Style="padding: 2rem">
+
+        @* Header Card *@
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Gap="1.5rem">
+                <RadzenStack Gap="0.4rem" Style="flex:1">
+                    <RadzenText TextStyle="TextStyle.H4" Text="@(notice.Notice.TitrePropre ?? "—")" />
+                    @if (!string.IsNullOrWhiteSpace(notice.Notice.SousTitre))
+                    {
+                        <RadzenText TextStyle="TextStyle.Subtitle1" Text="@notice.Notice.SousTitre" />
+                    }
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap"
+                                 Style="margin-top:0.25rem">
+                        <RadzenText TextStyle="TextStyle.Body2"
+                                    Text="@($"Type : {notice.Notice.TypeNotice?.TypeNotice1 ?? "—"}")" />
+                        <RadzenText TextStyle="TextStyle.Body2" Text="@($"Cote : {notice.Notice.Cote ?? "—"}")" />
+                        @if (!string.IsNullOrWhiteSpace(notice.Notice.Isbn))
+                        {
+                            <RadzenText TextStyle="TextStyle.Body2" Text="@($"ISBN : {notice.Notice.Isbn}")" />
+                        }
+                        @if (!string.IsNullOrWhiteSpace(notice.Notice.Date1erPub))
+                        {
+                            <RadzenText TextStyle="TextStyle.Body2" Text="@($"Publication : {notice.Notice.Date1erPub}")" />
+                        }
+                    </RadzenStack>
+                </RadzenStack>
+                <RadzenStack AlignItems="AlignItems.End" Gap="0.5rem">
+                    <RadzenBadge BadgeStyle="@(notice.Exemplaires.Count > 0 ? BadgeStyle.Success : BadgeStyle.Warning)"
+                                 Text="@(notice.Exemplaires.Count > 0 ? $"{notice.Exemplaires.Count} exemplaire(s)" : "Aucun exemplaire")" />
+                </RadzenStack>
+            </RadzenStack>
+
+            @if (!string.IsNullOrWhiteSpace(notice.Notice.Resume))
+            {
+                <RadzenStack Style="margin-top:1rem">
+                    <RadzenText TextStyle="TextStyle.Subtitle2" Text="Résumé" />
+                    <RadzenText TextStyle="TextStyle.Body2" Text="@notice.Notice.Resume" />
+                </RadzenStack>
+            }
+        </RadzenCard>
+
+        @* Auteurs Card *@
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Auteurs" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@notice.Notice.Auteurs" AllowSorting="true" AllowPaging="true" PageSize="5"
+                            EmptyText="Aucun auteur">
+                <Columns>
+                    <RadzenDataGridColumn Property="Nom" Title="Nom" />
+                    <RadzenDataGridColumn Property="AutrePartie" Title="Autre partie" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+
+        
+
+       
+        @* Exemplaires Card *@
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Exemplaires" />
+                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@notice.Exemplaires" AllowSorting="true" AllowPaging="true" PageSize="5"
+                            EmptyText="Aucun exemplaire">
+                <Columns>
+                    <RadzenDataGridColumn Property="IdExemplaire" Title="Identifiant" />
+                    @* <RadzenDataGridColumn Property="Cote" Title="Cote" /> *@
+                    <RadzenDataGridColumn TItem="Exemplaire" Title="État">
+                        <Template Context="data">
+                            <RadzenBadge BadgeStyle="data.IdEtat == 1m ? BadgeStyle.Success : BadgeStyle.Warning"
+                                         Text="@(data.EtatExemplaire?.LibelleEtat)" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="Exemplaire" Title="Action">
+                        <Template Context="data">
+                            <RadzenButton Click=@(args => NavigationManager.NavigateTo("/exemplaire/" + data.IdExemplaire))
+                                          Size="ButtonSize.Small" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base"
+                                          Icon="visibility" Text="View" />
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+
+        @* Réservations Card *@
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Réservations" />
+                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@notice.Reservations" AllowSorting="true" AllowPaging="true" PageSize="5"
+                            EmptyText="Aucune réservation">
+                <Columns>
+                    <RadzenDataGridColumn Property="IdAdherent" Title="Adhérent" />
+                    @* <RadzenDataGridColumn Property="Cote" Title="Cote" /> *@
+                    <RadzenDataGridColumn Property="HeureReservation" Title="Date et heure"
+                                          FormatString="{0:dd/MM/yyyy HH:mm}" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+
+    </RadzenStack>
+}
+
+@code {
+
+    private NoticeProfileDto? notice;
+
+    [Parameter]
+    public int Id { get; set; } = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        notice = await noticeService.GetNoticeProfileAsync(Id);
+        if (notice == null)
+        {
+            NavigationManager.NavigateTo("/not-found");
+        }
+    }
+}

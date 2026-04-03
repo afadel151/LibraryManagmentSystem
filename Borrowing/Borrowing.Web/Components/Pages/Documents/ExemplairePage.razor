@@ -1,0 +1,92 @@
+@page "/exemplaire/{*Id}"
+@using Borrowing.Web.Services
+@using Shared.Models
+
+@inject IExemplaireService exemplaireService
+@inject NavigationManager NavigationManager
+
+@if (exemplaire == null)
+{
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Style="margin-top:4rem">
+        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    </RadzenStack>
+}
+else
+{
+    <RadzenStack Gap="1.5rem" Style="padding: 2rem">
+
+        @* Header Card *@
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1.5rem">
+                <RadzenStack Gap="0.4rem" Style="flex:1">
+                    <RadzenText TextStyle="TextStyle.H4" Text="@exemplaire.IdExemplaire" />
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top:0.25rem">
+                        <RadzenText TextStyle="TextStyle.Body1" Text="@($"Cote : {exemplaire.Cote ?? "—"}")" />
+                    </RadzenStack>
+                </RadzenStack>
+                <RadzenStack AlignItems="AlignItems.End" Gap="0.5rem">
+                    <RadzenBadge
+                        BadgeStyle="exemplaire.IdEtat == 1 ? BadgeStyle.Success : BadgeStyle.Warning"
+                        Text="@(exemplaire.EtatExemplaire?.LibelleEtat ?? "État inconnu")" />
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+
+        @* Prêt en cours Card *@
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Prêt en cours" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@exemplaire.Prets" AllowSorting="true" AllowPaging="true" PageSize="5"
+                            EmptyText="Aucun prêt en cours">
+                <Columns>
+                    <RadzenDataGridColumn Property="IdAdherent" Title="Id d'Adhérent" />
+                    <RadzenDataGridColumn Property="Adherent.Nom" Title="Nom d'Adhérent" />
+                    <RadzenDataGridColumn Property="Adherent.Prenom" Title="Prenom d'Adhérent" />
+                    <RadzenDataGridColumn Property="Adherent.Categorie.LibelleCategorie" Title="Categorie d'Adhérent" />
+                    <RadzenDataGridColumn Property="DatePret" Title="Date de prêt" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn Property="EtatDuree" Title="État durée" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+
+        @* Historique des prêts Card *@
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Historique des prêts" />
+                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@exemplaire.HistoriquePrets" AllowSorting="true" AllowPaging="true" PageSize="5"
+                            EmptyText="Aucun historique">
+                <Columns>
+                    <RadzenDataGridColumn Property="IdAdherent" Title="Id d'Adhérent" />
+                    <RadzenDataGridColumn Property="Adherent.Nom" Title="Nom d'Adhérent" />
+                    <RadzenDataGridColumn Property="Adherent.Prenom" Title="Prenom d'Adhérent" />
+                    <RadzenDataGridColumn Property="Adherent.Categorie.LibelleCategorie" Title="Categorie d'Adhérent" />
+                    <RadzenDataGridColumn Property="DatePret" Title="Date de prêt" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn Property="DateRetour" Title="Date de retour" FormatString="{0:dd/MM/yyyy}" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+
+    </RadzenStack>
+}
+
+@code {
+
+    private Exemplaire? exemplaire;
+
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        exemplaire = await exemplaireService.GetExemplaireAsync(Id);
+        if (exemplaire == null)
+        {
+            NavigationManager.NavigateTo("/not-found");
+        }
+    }
+}

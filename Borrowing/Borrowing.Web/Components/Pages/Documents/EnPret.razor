@@ -1,0 +1,104 @@
+@page "/documents/en_pret"
+@using Borrowing.Web.Extensions
+@using Borrowing.Web.Services
+@using Borrowing.SharedClasses.Common
+@using Borrowing.SharedClasses.Responses.Pret
+@rendermode InteractiveAuto
+@inject IPretService _pretService
+@inject NavigationManager navigationManager
+
+@inject IExportService exportService
+
+<RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+             AlignItems="AlignItems.Center">
+    <RadzenText TextStyle="TextStyle.H3">Documents en prêt</RadzenText>
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+        <RadzenTextBox Placeholder="Rechercher par ID,Nom ou Prenom..." style="width:400px" @bind-Value="SearchText"
+                       @oninput="DoSearch" Change="DoSearch" />
+        <RadzenButton Text="Exporter" Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
+                      Variant="Variant.Flat" />
+    </RadzenStack>
+</RadzenStack>
+
+
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn>
+        <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@prets" Count="@count" LoadData="@LoadData"
+                        IsLoading="@isLoading" TItem="PretResponseDto" ShowPagingSummary="true" AllowPaging="true" PageSize="10"
+                        AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="AdherentId" Title="ID Adhérent" Width="120px" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Title="Adhérent" Property="AdherentNom">
+                    <Template Context="data">
+                        @($"{data.AdherentNom} {data.AdherentPrenom}")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="NoticeTitrePropre" Title="Titre" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="ExemplaireId" Title="Exemplaire"
+                                      Width="150px" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="DatePret" Title="Date Prêt" Width="150px">
+                    <Template Context="data">
+                        @data.DatePret.ToString("dd/MM/yyyy")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="EtatDuree" Title="État" Width="120px" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Title="Actions" Sortable="false" Filterable="false"
+                                      Width="250px">
+                    <Template Context="data">
+                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                            <RadzenButton Click=@(args =>
+                                                                                                      navigationManager.NavigateTo($"/exemplaire/{data.ExemplaireId}"))
+                                          Size="ButtonSize.Small" Icon="info" Text="Exemplaire" ButtonStyle="ButtonStyle.Info"
+                                          Variant="Variant.Flat" />
+                            <RadzenButton Click=@(args => navigationManager.NavigateTo($"/adherents/{data.AdherentId}"))
+                                          Size="ButtonSize.Small" Icon="person" Text="Adhérent"
+                                          ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
+                        </RadzenStack>
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    private IEnumerable<PretResponseDto>? prets;
+    private int count;
+    private bool isLoading;
+    private string SearchText = "";
+
+    private async Task DoSearch()
+    {
+        LoadDataArgs args = new LoadDataArgs { };
+        await LoadData(args);
+    }
+
+    private async Task Export()
+    {
+        var allData = await _pretService.GetAllPretsAsync(SearchText);
+        await exportService.ExportToExcelAsync(allData, "Documents_en_pret");
+    }
+    async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+
+        try
+        {
+            var queryParams = new PaginatedQueryParameters
+            {
+                PageNumber = (args.Skip ?? 0) / (args.Top ?? 10) + 1,
+                PageSize = args.Top ?? 10,
+                OrderBy = args.OrderBy ?? "datepret desc",
+                Search = SearchText
+            };
+
+            var result = await _pretService.GetPretsAsync(queryParams);
+            prets = result.Data;
+            count = result.TotalCount;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

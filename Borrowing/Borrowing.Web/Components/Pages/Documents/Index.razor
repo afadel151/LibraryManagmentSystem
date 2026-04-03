@@ -1,0 +1,133 @@
+@page "/documents"
+@using Borrowing.Web.Services
+@using Borrowing.SharedClasses.Common
+@rendermode InteractiveAuto
+@inject NavigationManager navigationManager
+@inject INoticeService noticeService
+
+
+
+
+<RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+             AlignItems="AlignItems.Center">
+    <RadzenText TextStyle="TextStyle.H3">Total documents</RadzenText>
+    <RadzenTextBox Placeholder="Rechercher par Cote ou Titre propre..." style="width:400px" @bind-Value="SearchText"
+                   @oninput="DoSearch" Change="DoSearch" />
+</RadzenStack>
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn>
+        <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@notices" Count="@count"
+                        LoadData="@LoadData" IsLoading="@isLoading" TItem="NoticeDto" ShowPagingSummary="true" AllowPaging="true"
+                        PageSize="10" AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="NoticeDto" Property="Cote" Title="Cote" />
+                <RadzenDataGridColumn TItem="NoticeDto" Property="TitrePropre" Title="Titre propre" />
+                <RadzenDataGridColumn TItem="NoticeDto" Property="TypeNotice1" Title="Type" />
+                <RadzenDataGridColumn TItem="NoticeDto" Property="ExemplaireDispo" Title="Exemplaires disponibles" />
+                <RadzenDataGridColumn TItem="NoticeDto" Property="ExemplaireEnPret" Title="Exemplaires en pret" />
+                <RadzenDataGridColumn TItem="NoticeDto" Property="Reservations" Title="Reservations en cours" />
+               
+                <RadzenDataGridColumn TItem="NoticeDto" Title="Action">
+                    <Template Context="data">
+                        <RadzenButton Click=@(args => navigationManager.NavigateTo("/documents/" + data.IdNotice))
+                                      Size="ButtonSize.Small" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base"
+                                      Icon="visibility" Text="View" />
+                    </Template>
+                </RadzenDataGridColumn>
+                
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
+<RadzenCard class="rz-mt-4">
+    <RadzenText TextStyle="TextStyle.H6" class="rz-mb-3">
+        Les Documents les Plus Empruntés
+    </RadzenText>
+
+    @if (topLoaned == null)
+    {
+        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+    }
+    else
+    {
+        <RadzenChart Style="height: 400px;">
+
+            <RadzenLegend Visible="false" />
+            <RadzenColumnSeries Data="@topLoaned" CategoryProperty="TitrePropre" ValueProperty="TotalPrets"
+                                Title="Nombre d'emprunts" Fill="var(--rz-primary)">
+                <TooltipTemplate Context="data">
+                    <div>
+                        Document <span>@data.Cote</span> <br>
+                        @data.TitrePropre <br>
+                        <strong>@data.TotalPrets</strong> prets
+                    </div>
+                </TooltipTemplate>
+            </RadzenColumnSeries>
+
+            <RadzenCategoryAxis LabelAutoRotation="-10">
+                <RadzenAxisTitle Text="Document (Titre)" />
+                <RadzenTicks>
+                </RadzenTicks>
+                <RadzenGridLines Visible="true" />
+            </RadzenCategoryAxis>
+
+            <RadzenValueAxis>
+                <RadzenAxisTitle Text="Nombre total de prets" />
+                <RadzenGridLines Visible="true" />
+            </RadzenValueAxis>
+
+
+        </RadzenChart>
+    }
+</RadzenCard>
+@code {
+    private List<TopLoanedNoticeDto>? topLoaned;
+    private string SearchText = "";
+    
+    private IEnumerable<NoticeDto>? notices;
+    private int count;
+    private bool isLoading;
+
+    @* protected override async Task OnInitializedAsync()
+    {
+        stats = await adherentService.GetStats();
+    } *@
+    protected override async Task OnInitializedAsync()
+    {
+        topLoaned = await noticeService.GetChartData();
+    }
+    private async Task DoSearch()
+    {
+        LoadDataArgs args = new LoadDataArgs { };
+        await LoadData(args);
+    }
+    private async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+
+        try
+        {
+            int skip = args.Skip ?? 0;
+            int top = args.Top ?? 10;
+
+            int pageNumber = (skip / top) + 1;
+
+            var queryParams = new PaginatedQueryParameters
+            {
+                PageNumber = pageNumber,
+                PageSize = top,
+                OrderBy = args.OrderBy ?? "datepret desc",
+                Search = SearchText
+            };
+
+            var result = await noticeService.GetNoticesAsync(queryParams);
+
+            notices = result.Data;
+            count = result.TotalCount;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
