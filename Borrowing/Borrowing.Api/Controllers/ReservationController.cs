@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Borrowing.Api.Services;
 using Borrowing.SharedClasses.Requests.Reservation;
 using Borrowing.SharedClasses.Responses.Reservation;
+using Borrowing.SharedClasses.Common;
+using Shared.Models;
 namespace Borrowing.Api.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ReservationController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
@@ -32,5 +35,12 @@ public class ReservationController(IPretService pretService, IAdherentService ad
                 });
         }
         return Ok(new CreateReservationResponseDto{Done = false});
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<PagedResult<Reservation>>> GetAllReservations([FromQuery] PaginatedQueryParameters queryParameters)
+    {
+        var reservations = await _reservationService.GetPaginated(queryParameters);
+        return Ok(reservations);
     }
 }

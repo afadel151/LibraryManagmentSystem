@@ -7,6 +7,7 @@ using Borrowing.SharedClasses.Common;
 using Shared.Models;
 namespace Borrowing.Api.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class PretController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase

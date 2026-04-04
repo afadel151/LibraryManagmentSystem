@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Borrowing.Api.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("[controller]")]
 public class WeatherForecastController : ControllerBase
