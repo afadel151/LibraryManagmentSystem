@@ -1,0 +1,127 @@
+@page "/Login"
+@attribute [AllowAnonymous]
+@layout Layout.EmptyLayout
+@using Borrowing.Web.Services
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject IHttpClientFactory HttpClientFactory
+@inject NavigationManager Nav
+@inject CookieAuthStateProvider AuthStateProvider
+@inject ProtectedLocalStorage LocalStorage
+
+<PageTitle>Connexion</PageTitle>
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <h2>CATlib-PRET</h2>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <div class="alert alert-danger">@_error</div>
+        }
+
+        @if (_checkingSession)
+        {
+            <div class="text-center my-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden"></span>
+                </div>
+                <p class="mt-2">Restauration de la session...</p>
+            </div>
+        }
+        else
+        {
+            <div class="mb-3">
+                <label class="form-label">Compte</label>
+                <input class="form-control" @bind="_compte" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mot de passe</label>
+                <input class="form-control" type="password" @bind="_motdepasse" />
+            </div>
+            <button class="btn btn-primary w-100" @onclick="HandleLogin" disabled="@_loading">
+                @(_loading ? "Connexion..." : "Se connecter")
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromQuery] private string? redirectUrl { get; set; }
+    [SupplyParameterFromQuery(Name = "ReturnUrl")] private string? ReturnUrl { get; set; }
+
+    private string _compte    = "";
+    private string _motdepasse = "";
+    private string _error     = "";
+    private bool   _loading   = false;
+    private bool   _checkingSession = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var creds = await LocalStorage.GetAsync<Borrowing.SharedClasses.Common.LoginRequest>("auth_creds");
+                if (creds.Success && creds.Value != null)
+                {
+                    _compte = creds.Value.compte;
+                    _motdepasse = creds.Value.motdepasse;
+                    _loading = true;
+                    StateHasChanged();
+                    await HandleLogin();
+                    return;
+                }
+            }
+            catch
+            {
+                // LocalStorage might not be available or Corrupted
+            }
+            
+            _checkingSession = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task HandleLogin()
+    {
+        _error   = "";
+        _loading = true;
+
+        try
+        {
+            var client = HttpClientFactory.CreateClient("BorrowingApi");
+            var req = new Borrowing.SharedClasses.Common.LoginRequest
+            {
+                compte     = _compte,
+                motdepasse = _motdepasse
+            };
+            var response = await client.PostAsJsonAsync("Account/Login", req);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await LocalStorage.SetAsync("auth_creds", req);
+                // Tell Blazor auth state has changed
+                AuthStateProvider.NotifyStateChanged();
+                Nav.NavigateTo(ReturnUrl ?? redirectUrl ?? "/");
+            }
+            else
+            {
+                await LocalStorage.DeleteAsync("auth_creds");
+                var msg = await response.Content.ReadAsStringAsync();
+                _error = string.IsNullOrEmpty(msg) ? "Identifiants invalides" : msg;
+                _checkingSession = false;
+            }
+        }
+        catch (Exception)
+        {
+            await LocalStorage.DeleteAsync("auth_creds");
+            _error = "Erreur de connexion au serveur.";
+            _checkingSession = false;
+        }
+        finally
+        {
+            _loading = false;
+            StateHasChanged();
+        }
+    }
+}
