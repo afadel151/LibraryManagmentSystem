@@ -7,12 +7,17 @@
 
 
 
+@inject IExportService exportService
 
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
     <RadzenText TextStyle="TextStyle.H3">Total documents</RadzenText>
-    <RadzenTextBox Placeholder="Rechercher par Cote ou Titre propre..." style="width:400px" @bind-Value="SearchText"
-                   @oninput="DoSearch" Change="DoSearch" />
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+        <RadzenTextBox Placeholder="Rechercher par Cote ou Titre propre..." style="width:400px" @bind-Value="SearchText"
+                       @oninput="DoSearch" Change="DoSearch" />
+        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")" Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
+                      Variant="Variant.Flat" />
+    </RadzenStack>
 </RadzenStack>
 <RadzenRow class="rz-mt-4">
     <RadzenColumn>
@@ -87,6 +92,21 @@
     private IEnumerable<NoticeDto>? notices;
     private int count;
     private bool isLoading;
+    private bool isExporting = false;
+
+    private async Task Export()
+    {
+        isExporting = true;
+        try
+        {
+            var allData = await noticeService.GetAllNoticesAsync(SearchText);
+            await exportService.ExportToExcelAsync(allData, "Documents_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+        }
+        finally
+        {
+            isExporting = false;
+        }
+    }
 
     @* protected override async Task OnInitializedAsync()
     {

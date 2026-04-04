@@ -4,6 +4,7 @@
 
 @inject IExemplaireService exemplaireService
 @inject NavigationManager NavigationManager
+@inject IExportService exportService
 
 @if (exemplaire == null)
 {
@@ -56,7 +57,7 @@ else
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
                 <RadzenText TextStyle="TextStyle.H6" Text="Historique des prêts" />
-                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                <RadzenButton Text="Exporter" Icon="download" Click="@ExportHistory" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
             </RadzenStack>
             <RadzenDataGrid Data="@exemplaire.HistoriquePrets" AllowSorting="true" AllowPaging="true" PageSize="5"
                             EmptyText="Aucun historique">
@@ -88,5 +89,22 @@ else
         {
             NavigationManager.NavigateTo("/not-found");
         }
+    }
+
+    private async Task ExportHistory()
+    {
+        if (exemplaire?.HistoriquePrets == null) return;
+
+        var exportData = exemplaire.HistoriquePrets.Select(h => new
+        {
+            IdAdherent = h.IdAdherent,
+            Nom = h.Adherent?.Nom,
+            Prenom = h.Adherent?.Prenom,
+            Categorie = h.Adherent?.Categorie?.LibelleCategorie,
+            DatePret = h.DatePret.ToString("dd/MM/yyyy"),
+            DateRetour = h.DateRetour?.ToString("dd/MM/yyyy")
+        });
+
+        await exportService.ExportToExcelAsync(exportData, $"Historique_{exemplaire.IdExemplaire}_{DateTime.Now:yyyyMMdd_HHmmss}");
     }
 }

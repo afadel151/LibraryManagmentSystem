@@ -4,6 +4,7 @@
 @using Shared.Models
 @inject INoticeService noticeService
 @inject NavigationManager NavigationManager
+@inject IExportService exportService
 
 @if (notice == null)
 {
@@ -70,54 +71,52 @@ else
         </RadzenCard>
 
         
+@* Exemplaires Card *@
+<RadzenCard>
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                 JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+        <RadzenText TextStyle="TextStyle.H6" Text="Exemplaires" />
+        <RadzenButton Text="Exporter" Icon="download" Click="@ExportExemplaires" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+    </RadzenStack>
+    <RadzenDataGrid Data="@notice.Exemplaires" AllowSorting="true" AllowPaging="true" PageSize="5"
+                    EmptyText="Aucun exemplaire">
+        <Columns>
+            <RadzenDataGridColumn Property="IdExemplaire" Title="Identifiant" />
+            @* <RadzenDataGridColumn Property="Cote" Title="Cote" /> *@
+            <RadzenDataGridColumn TItem="Exemplaire" Title="État">
+                <Template Context="data">
+                    <RadzenBadge BadgeStyle="data.IdEtat == 1m ? BadgeStyle.Success : BadgeStyle.Warning"
+                                 Text="@(data.EtatExemplaire?.LibelleEtat)" />
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Exemplaire" Title="Action">
+                <Template Context="data">
+                    <RadzenButton Click=@(args => NavigationManager.NavigateTo("/exemplaire/" + data.IdExemplaire))
+                                  Size="ButtonSize.Small" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base"
+                                  Icon="visibility" Text="View" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>
 
-       
-        @* Exemplaires Card *@
-        <RadzenCard>
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
-                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
-                <RadzenText TextStyle="TextStyle.H6" Text="Exemplaires" />
-                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
-            </RadzenStack>
-            <RadzenDataGrid Data="@notice.Exemplaires" AllowSorting="true" AllowPaging="true" PageSize="5"
-                            EmptyText="Aucun exemplaire">
-                <Columns>
-                    <RadzenDataGridColumn Property="IdExemplaire" Title="Identifiant" />
-                    @* <RadzenDataGridColumn Property="Cote" Title="Cote" /> *@
-                    <RadzenDataGridColumn TItem="Exemplaire" Title="État">
-                        <Template Context="data">
-                            <RadzenBadge BadgeStyle="data.IdEtat == 1m ? BadgeStyle.Success : BadgeStyle.Warning"
-                                         Text="@(data.EtatExemplaire?.LibelleEtat)" />
-                        </Template>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="Exemplaire" Title="Action">
-                        <Template Context="data">
-                            <RadzenButton Click=@(args => NavigationManager.NavigateTo("/exemplaire/" + data.IdExemplaire))
-                                          Size="ButtonSize.Small" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base"
-                                          Icon="visibility" Text="View" />
-                        </Template>
-                    </RadzenDataGridColumn>
-                </Columns>
-            </RadzenDataGrid>
-        </RadzenCard>
-
-        @* Réservations Card *@
-        <RadzenCard>
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
-                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
-                <RadzenText TextStyle="TextStyle.H6" Text="Réservations" />
-                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
-            </RadzenStack>
-            <RadzenDataGrid Data="@notice.Reservations" AllowSorting="true" AllowPaging="true" PageSize="5"
-                            EmptyText="Aucune réservation">
-                <Columns>
-                    <RadzenDataGridColumn Property="IdAdherent" Title="Adhérent" />
-                    @* <RadzenDataGridColumn Property="Cote" Title="Cote" /> *@
-                    <RadzenDataGridColumn Property="HeureReservation" Title="Date et heure"
-                                          FormatString="{0:dd/MM/yyyy HH:mm}" />
-                </Columns>
-            </RadzenDataGrid>
-        </RadzenCard>
+@* Réservations Card *@
+<RadzenCard>
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                 JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+        <RadzenText TextStyle="TextStyle.H6" Text="Réservations" />
+        <RadzenButton Text="Exporter" Icon="download" Click="@ExportReservations" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+    </RadzenStack>
+    <RadzenDataGrid Data="@notice.Reservations" AllowSorting="true" AllowPaging="true" PageSize="5"
+                    EmptyText="Aucune réservation">
+        <Columns>
+            <RadzenDataGridColumn Property="IdAdherent" Title="Adhérent" />
+            @* <RadzenDataGridColumn Property="Cote" Title="Cote" /> *@
+            <RadzenDataGridColumn Property="HeureReservation" Title="Date et heure"
+                                  FormatString="{0:dd/MM/yyyy HH:mm}" />
+        </Columns>
+    </RadzenDataGrid>
+</RadzenCard>
 
     </RadzenStack>
 }
@@ -136,5 +135,31 @@ else
         {
             NavigationManager.NavigateTo("/not-found");
         }
+    }
+
+    private async Task ExportExemplaires()
+    {
+        if (notice?.Exemplaires == null) return;
+
+        var exportData = notice.Exemplaires.Select(e => new
+        {
+            Identifiant = e.IdExemplaire,
+            Etat = e.EtatExemplaire?.LibelleEtat
+        });
+
+        await exportService.ExportToExcelAsync(exportData, $"Exemplaires_{notice.Notice.Cote}_{DateTime.Now:yyyyMMdd_HHmmss}");
+    }
+
+    private async Task ExportReservations()
+    {
+        if (notice?.Reservations == null) return;
+
+        var exportData = notice.Reservations.Select(r => new
+        {
+            Adherent = r.IdAdherent,
+            DateHeure = r.HeureReservation.ToString("dd/MM/yyyy HH:mm")
+        });
+
+        await exportService.ExportToExcelAsync(exportData, $"Reservations_{notice.Notice.Cote}_{DateTime.Now:yyyyMMdd_HHmmss}");
     }
 }

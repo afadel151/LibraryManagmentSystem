@@ -15,7 +15,7 @@
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
         <RadzenTextBox Placeholder="Rechercher par ID,Nom ou Prenom..." style="width:400px" @bind-Value="SearchText"
                        @oninput="DoSearch" Change="DoSearch" />
-        <RadzenButton Text="Exporter" Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
+        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")"  Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
                       Variant="Variant.Flat" />
     </RadzenStack>
 </RadzenStack>
@@ -47,7 +47,7 @@
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                             <RadzenButton Click=@(args =>
-                                                                                                      navigationManager.NavigateTo($"/exemplaire/{data.ExemplaireId}"))
+                                                                                                                                                                            navigationManager.NavigateTo($"/exemplaire/{data.ExemplaireId}"))
                                           Size="ButtonSize.Small" Icon="info" Text="Exemplaire" ButtonStyle="ButtonStyle.Info"
                                           Variant="Variant.Flat" />
                             <RadzenButton Click=@(args => navigationManager.NavigateTo($"/adherents/{data.AdherentId}"))
@@ -67,6 +67,7 @@
     private bool isLoading;
     private string SearchText = "";
 
+    private bool isExporting = false;
     private async Task DoSearch()
     {
         LoadDataArgs args = new LoadDataArgs { };
@@ -75,8 +76,16 @@
 
     private async Task Export()
     {
-        var allData = await _pretService.GetAllPretsAsync(SearchText);
-        await exportService.ExportToExcelAsync(allData, "Documents_en_pret");
+        isExporting = true;
+        try
+        {
+            var allData = await _pretService.GetAllPretsAsync(SearchText);
+            await exportService.ExportToExcelAsync(allData, "Documents_en_pret"+ DateTime.Now);
+        }
+        finally
+        {
+            isExporting = false;
+        }
     }
     async Task LoadData(LoadDataArgs args)
     {
