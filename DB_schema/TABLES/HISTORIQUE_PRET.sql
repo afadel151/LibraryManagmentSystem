@@ -3,7 +3,8 @@
 --------------------------------------------------------
 
   CREATE TABLE "MATAOUI"."HISTORIQUE_PRET" 
-   (	"ID_ADHERENT" VARCHAR2(10 BYTE), 
+   (	
+   "ID_ADHERENT" VARCHAR2(10 BYTE), 
 	"ID_EXEMPLAIRE" VARCHAR2(15 BYTE), 
 	"DATE_PRET" DATE, 
 	"DATE_RETOUR" DATE
