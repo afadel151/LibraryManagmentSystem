@@ -10,7 +10,11 @@
 @using Radzen.Blazor
 @using Shared.Models
 @using Borrowing.SharedClasses.Common
-
+@inject IExportService exportService
+@inject DialogService dialogService
+@inject NotificationService notificationService
+@inject ICategorieService categorieService
+@inject IPositionService positionService
 <RadzenRow class="rz-text-align-center " Gap="1rem">
     <RadzenColumn>
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
@@ -56,8 +60,13 @@
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
     <RadzenText  TextStyle="TextStyle.H3">Total adherents</RadzenText>
-    <RadzenTextBox Placeholder="Rechercher par ID,Nom ou Prenom..." style="width:400px" @bind-Value="SearchText"
-                   @oninput="DoSearch" Change="DoSearch" />
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+            <RadzenTextBox Placeholder="Rechercher par ID,Nom ou Prenom..." style="width:400px" @bind-Value="SearchText" @oninput="DoSearch" Change="DoSearch" />
+            <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")" Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" />
+            <Microsoft.AspNetCore.Components.Authorization.AuthorizeView Roles="Admin">
+                <RadzenButton Text="Ajouter un adhérent" Icon="add" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Flat" Click="OpenCreateModal" />
+            </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+        </RadzenStack>
 </RadzenStack>
 <RadzenRow class="rz-mt-4">
     <RadzenColumn>
@@ -117,11 +126,26 @@
     private IEnumerable<AdherentDto>? adherents;
     private int count;
     private bool isLoading;
+    private bool isExporting = false;
 
     private AdherentsStatsDto? stats;
     protected override async Task OnInitializedAsync()
     {
         stats = await adherentService.GetStats();
+    }
+
+    private async Task Export()
+    {
+        isExporting = true;
+        try
+        {
+            var allData = await adherentService.GetAllAdherentsAsync(SearchText);
+            await exportService.ExportToExcelAsync(allData, "Adherents_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+        }
+        finally
+        {
+            isExporting = false;
+        }
     }
 
     private async Task DoSearch()
@@ -157,5 +181,58 @@
         {
             isLoading = false;
         }
+    }
+
+    private async Task OpenCreateModal()
+    {
+        var positions = await positionService.GetAllPositionsAsync();
+        var categories = await categorieService.GetAllCategoriesAsync();
+        var model = new Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto();
+
+        await dialogService.OpenAsync("Ajouter un adhérent", ds => 
+            @<RadzenTemplateForm Data="@model" Submit="@(async (Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto args) => { await SubmitAdherent(args, ds); })">
+                <RadzenStack Gap="1rem" Style="width: 100%; min-width: 400px;">
+                     <RadzenFormField Text="Identifiant">
+                         <RadzenTextBox @bind-Value="model.IdAdherent" Name="IdAdherent" />
+                         <RadzenRequiredValidator Component="IdAdherent" Text="L'identifiant est obligatoire" />
+                     </RadzenFormField>
+                     <RadzenFormField Text="Nom">
+                         <RadzenTextBox @bind-Value="model.Nom" Name="Nom" />
+                         <RadzenRequiredValidator Component="Nom" Text="Le nom est obligatoire" />
+                     </RadzenFormField>
+                     <RadzenFormField Text="Prénom">
+                         <RadzenTextBox @bind-Value="model.Prenom" Name="Prenom" />
+                         <RadzenRequiredValidator Component="Prenom" Text="Le prénom est obligatoire" />
+                     </RadzenFormField>
+                     <RadzenFormField Text="Catégorie">
+                         <RadzenDropDown @bind-Value="model.IdCategorie" Data="@categories" TextProperty="LibelleCategorie" ValueProperty="IdCategorie" Name="Categorie" />
+                         <RadzenRequiredValidator Component="Categorie" Text="Sélectionnez une catégorie" />
+                     </RadzenFormField>
+                     <RadzenFormField Text="Position">
+                         <RadzenDropDown @bind-Value="model.IdPosition" Data="@positions" TextProperty="LibellePosition" ValueProperty="IdPosition" Name="Position" />
+                         <RadzenRequiredValidator Component="Position" Text="Sélectionnez une position" />
+                     </RadzenFormField>
+                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem" class="rz-mt-4">
+                         <RadzenButton ButtonType="ButtonType.Submit" Text="Enregistrer" Variant="Variant.Flat" />
+                         <RadzenButton Text="Annuler" Variant="Variant.Outlined" Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+                     </RadzenStack>
+                </RadzenStack>
+            </RadzenTemplateForm>
+        );
+    }
+
+    private async Task SubmitAdherent(Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto model, DialogService ds)
+    {
+         bool success = await adherentService.CreateAdherentAsync(model);
+         if (success)
+         {
+             notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Succès", Detail = "Adhérent créé avec succès", Duration = 4000 });
+             ds.Close(true);
+             await DoSearch();
+         }
+         else
+         {
+             notificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Erreur", Detail = "Impossible de créer l'adhérent", Duration = 4000 });
+         }
     }
 }

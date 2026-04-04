@@ -8,6 +8,7 @@ using Shared.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace Borrowing.Api.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AdherentController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
@@ -141,6 +142,20 @@ public class AdherentController(IPretService pretService, IAdherentService adher
         {
             Found = false
         });
+    }
+
+    [HttpPost]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+    public async Task<IActionResult> CreateAdherent([FromBody] Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        bool success = await _adherentService.CreateAdherentAsync(dto);
+        if (success)
+            return Ok();
+        
+        return BadRequest("Impossible de créer l'adhérent. Identifiant déjà existant ?");
     }
 
     [HttpGet("Stats")]

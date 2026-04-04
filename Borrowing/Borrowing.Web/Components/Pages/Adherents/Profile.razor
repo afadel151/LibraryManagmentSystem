@@ -3,6 +3,8 @@
 @using Borrowing.Web.Services
 @inject NavigationManager Navigation
 @inject IAdherentService AdherentService
+@inject IExportService exportService
+
 @if (adherent == null)
 {
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Style="margin-top:4rem">
@@ -38,7 +40,7 @@ else
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
                 <RadzenText TextStyle="TextStyle.H6" Text="Prêts" />
-                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                <RadzenButton Text="Exporter" Icon="download" Click="@ExportPrets" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
             </RadzenStack>
             <RadzenDataGrid Data="@adherent.Adherent!.Prets" AllowSorting="true" AllowPaging="true" PageSize="5"
                             EmptyText="Aucun prêt">
@@ -57,7 +59,7 @@ else
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
                 <RadzenText TextStyle="TextStyle.H6" Text="Pénalités" />
-                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                <RadzenButton Text="Exporter" Icon="download" Click="@ExportPenalites" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
             </RadzenStack>
             <RadzenDataGrid Data="@adherent.Adherent!.PenaliteAdherents" AllowSorting="true" AllowPaging="true" PageSize="5"
                             EmptyText="Aucune pénalité">
@@ -71,7 +73,7 @@ else
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
                 <RadzenText TextStyle="TextStyle.H6" Text="Réservations" />
-                <RadzenButton Text="Exporter" Icon="download" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                <RadzenButton Text="Exporter" Icon="download" Click="@ExportReservations" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
             </RadzenStack>
             <RadzenDataGrid Data="@adherent.Adherent!.Reservations" AllowSorting="true" AllowPaging="true" PageSize="5"
                             EmptyText="Aucune réservation">
@@ -101,5 +103,45 @@ else
         {
             Navigation.NavigateTo("/not-found");
         }
+    }
+
+    private async Task ExportPrets()
+    {
+        if (adherent?.Adherent?.Prets == null) return;
+
+        var exportData = adherent.Adherent.Prets.Select(p => new
+        {
+            Exemplaire = p.IdExemplaire,
+            DatePret = p.DatePret.ToString("dd/MM/yyyy"),
+            EtatDuree = p.EtatDuree
+        });
+
+        await exportService.ExportToExcelAsync(exportData, $"Prets_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
+    }
+
+    private async Task ExportPenalites()
+    {
+        if (adherent?.Adherent?.PenaliteAdherents == null) return;
+
+        var exportData = adherent.Adherent.PenaliteAdherents.Select(p => new
+        {
+            Date = p.DatePenalite.ToString("dd/MM/yyyy"),
+            Jours = p.NombreJoursPenalite
+        });
+
+        await exportService.ExportToExcelAsync(exportData, $"Penalites_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
+    }
+
+    private async Task ExportReservations()
+    {
+        if (adherent?.Adherent?.Reservations == null) return;
+
+        var exportData = adherent.Adherent.Reservations.Select(r => new
+        {
+            Cote = r.Cote,
+            Date = r.HeureReservation.ToString("dd/MM/yyyy HH:mm")
+        });
+
+        await exportService.ExportToExcelAsync(exportData, $"Reservations_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
     }
 }
