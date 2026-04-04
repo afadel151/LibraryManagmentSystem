@@ -22,14 +22,9 @@ public interface IPretService
 
     Task<CreatePretResponseDto> CreatePret(CreatePretRequestDto pretRequestDto);
 }
-public class PretService : IPretService
+public class PretService(IHttpClientFactory factory) : IPretService
 {
-    private readonly HttpClient _httpClient;
-
-    public PretService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
+    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
 
     public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters)
     {

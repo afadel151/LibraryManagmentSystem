@@ -13,9 +13,9 @@ public interface IRestitutionService
 }
 
 
-public class RestitutionService(HttpClient httpClient) : IRestitutionService
+public class RestitutionService(IHttpClientFactory factory) : IRestitutionService
 {
-    private readonly HttpClient _httpClient = httpClient;
+    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
    public async Task<CheckAdhRestitutionResponseDto> CheckAdherent(string AdherentId)
     {
         var response = await _httpClient.GetAsync($"api/Adherent/Restitution/Check?AdherentId={AdherentId}");

@@ -19,9 +19,9 @@ public interface IExemplaireService
 }
 
 
-public class ExemplaireService(HttpClient httpClient) : IExemplaireService
+public class ExemplaireService(IHttpClientFactory factory) : IExemplaireService
 {
-    private readonly HttpClient _httpClient = httpClient;
+    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
     public async Task<Exemplaire?> GetExemplaireAsync(string id)
     {
         var response = await _httpClient.GetAsync("api/Notice/Exemplaire?Id=" + id);
