@@ -1,66 +1,75 @@
 @using Microsoft.AspNetCore.Components.Authorization
-@rendermode InteractiveAuto
-@inject IHttpClientFactory HttpClientFactory
-@inject AuthenticationStateProvider AuthStateProvider
+@using System.Security.Claims
+@inject AuthService AuthService
 @inject NavigationManager Nav
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ProtectedLocalStorage LocalStorage
 
-    <RadzenHeader>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Style="width: 100%">
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-                <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-                <RadzenLabel Text="CATlib-PRET" />
-            </RadzenStack>
-            
-            <AuthorizeView>
-                <Authorized>
-                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem" Style="padding-right: 1rem">
-                        <RadzenLabel Text="@($"Bonjour, {context.User.FindFirst("Nom")?.Value ?? context.User.Identity?.Name} {context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? "No Role"}")" />
-                        <RadzenButton Text="Déconnexion" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" Size="ButtonSize.Small" Click="@Logout" />
-                    </RadzenStack>
-                </Authorized>
-            </AuthorizeView>
+<RadzenHeader>
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                 JustifyContent="JustifyContent.SpaceBetween" Style="width: 100%">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            <RadzenLabel Text="CATlib-PRET" />
         </RadzenStack>
-    </RadzenHeader>
-    <RadzenSidebar Position="SidebarPosition.Left" FullHeight="true" Responsive=false @bind-Expanded="@sidebarExpanded">
-    
-        <RadzenPanelMenu
-            DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)">
-            <RadzenPanelMenuItem Text="Menu" Icon="apps" Path="/" />
-            <RadzenPanelMenuItem Text="Gestion des Prets" Icon="hand_package" Path="/prets" />
-            <RadzenPanelMenuItem Text="Gestion des Adherents" Icon="person" Path="/adherents" />
-            <RadzenPanelMenuItem Text="Gestion des Restitutions" Icon="source_notes" Path="/restitutions" />
-            <RadzenPanelMenuItem Text="Gestion des Documents" Icon="article" Path="/documents">
-                <RadzenPanelMenuItem Text="Tous les documents" Icon="newsstand" Path="/documents" />
-                <RadzenPanelMenuItem Text="Documents en pret" Icon="assignment_turned_in" Path="/documents/en_pret" />
-                <RadzenPanelMenuItem Text="Documents Reservees" Icon="date_range" Path="/documents/reservees" />
-            </RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Avis de Disponibilite" Icon="timelapse" Path="/availability" />
-            <RadzenPanelMenuItem Text="Gestion des relances" Icon="notifications_active" Path="/relances" />
-            <RadzenPanelMenuItem Text="Gestion des categories" Icon="category" Path="/categories" />
-            <RadzenPanelMenuItem Text="Parametres" Icon="settings">
-                <RadzenPanelMenuItem Text="Jours feries" Icon="celebration" Path="/jours_feries" />
-                <RadzenPanelMenuItem Text="Penalites" Icon="block" Path="/penalites" />
-            </RadzenPanelMenuItem>
-            @* <AuthorizeView Roles="Admin">
-                <RadzenPanelMenuItem Text="Gestion des utilisateurs" Icon="person" Path="/admin/adherents" />
-            </AuthorizeView> *@
-        </RadzenPanelMenu>
-    </RadzenSidebar>
+
+        <AuthorizeView>
+            <Authorized>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                             Gap="1rem" Style="padding-right: 1rem">
+                    <RadzenLabel Text="@GetGreeting(context.User)" />
+                    <RadzenButton Text="Déconnexion"
+                                  ButtonStyle="ButtonStyle.Danger"
+                                  Variant="Variant.Flat"
+                                  Size="ButtonSize.Small"
+                                  Click="@(() => Logout(context.User))" />
+                </RadzenStack>
+            </Authorized>
+        </AuthorizeView>
+    </RadzenStack>
+</RadzenHeader>
+
+<RadzenSidebar Position="SidebarPosition.Left" FullHeight="true" Responsive="false"
+               @bind-Expanded="@sidebarExpanded">
+    <RadzenPanelMenu DisplayStyle="@(sidebarExpanded ? MenuItemDisplayStyle.IconAndText : MenuItemDisplayStyle.Icon)">
+        <RadzenPanelMenuItem Text="Menu"                     Icon="apps"                 Path="/" />
+        <RadzenPanelMenuItem Text="Gestion des Prets"        Icon="hand_package"         Path="/prets" />
+        <RadzenPanelMenuItem Text="Gestion des Adherents"    Icon="person"               Path="/adherents" />
+        <RadzenPanelMenuItem Text="Gestion des Restitutions" Icon="source_notes"         Path="/restitutions" />
+        <RadzenPanelMenuItem Text="Gestion des Documents"    Icon="article"              Path="/documents">
+            <RadzenPanelMenuItem Text="Tous les documents"   Icon="newsstand"            Path="/documents" />
+            <RadzenPanelMenuItem Text="Documents en pret"    Icon="assignment_turned_in" Path="/documents/en_pret" />
+            <RadzenPanelMenuItem Text="Documents Reservees"  Icon="date_range"           Path="/documents/reservees" />
+        </RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Text="Avis de Disponibilite"    Icon="timelapse"            Path="/availability" />
+        <RadzenPanelMenuItem Text="Gestion des relances"     Icon="notifications_active" Path="/relances" />
+        <RadzenPanelMenuItem Text="Gestion des categories"   Icon="category"             Path="/categories" />
+        <RadzenPanelMenuItem Text="Parametres"               Icon="settings">
+            <RadzenPanelMenuItem Text="Jours feries"         Icon="celebration"          Path="/jours_feries" />
+            <RadzenPanelMenuItem Text="Penalites"            Icon="block"                Path="/penalites" />
+        </RadzenPanelMenuItem>
+
+        <AuthorizeView Roles="ADMIN">
+            <Authorized>
+                <RadzenPanelMenuItem Text="Administration" Icon="admin_panel_settings" Path="/admin" />
+            </Authorized>
+        </AuthorizeView>
+    </RadzenPanelMenu>
+</RadzenSidebar>
 
 @code {
     bool sidebarExpanded = true;
-    
-    private async Task Logout()
+
+    private string GetGreeting(ClaimsPrincipal user)
     {
-        var client = HttpClientFactory.CreateClient("BorrowingApi");
-        await client.GetAsync("Account/Logout");
-        try { await LocalStorage.DeleteAsync("auth_creds"); } catch { }
-        if (AuthStateProvider is Borrowing.Web.Services.CookieAuthStateProvider provider)
-        {
-            provider.NotifyStateChanged();
-        }
-        Nav.NavigateTo("/Login", forceLoad: true);
+        var nom  = user.FindFirst("nom")?.Value
+                ?? user.Identity?.Name
+                ?? "Utilisateur";
+        var role = user.FindFirst(ClaimTypes.Role)?.Value ?? "";
+        return $"Bonjour, {nom} ({role})";
+    }
+
+    private async Task Logout(ClaimsPrincipal user)
+    {
+        var compte = user.Identity?.Name ?? "";
+        await AuthService.LogoutAsync(compte);
     }
 }

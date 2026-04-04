@@ -1,127 +1,54 @@
 @page "/Login"
 @attribute [AllowAnonymous]
-@layout Layout.EmptyLayout
-@using Borrowing.Web.Services
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject IHttpClientFactory HttpClientFactory
+@layout EmptyLayout
+@inject AuthService AuthService
 @inject NavigationManager Nav
-@inject CookieAuthStateProvider AuthStateProvider
-@inject ProtectedLocalStorage LocalStorage
 
-<PageTitle>Connexion</PageTitle>
+<div style="display:flex; justify-content:center; align-items:center; height:100vh; background:#f0f2f5;">
+    <div style="background:white; padding:2rem; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); width:320px;">
+        <h3 style="text-align:center; margin-top:0;">CATlib-PRET</h3>
+        <p style="text-align:center; color:#666;">Entrez votre identifiant pour continuer</p>
 
-<div class="login-wrapper">
-    <div class="login-card">
-        <h2>CATlib-PRET</h2>
-
-        @if (!string.IsNullOrEmpty(_error))
+        @if (!string.IsNullOrEmpty(error))
         {
-            <div class="alert alert-danger">@_error</div>
+            <div class="alert alert-danger">@error</div>
         }
 
-        @if (_checkingSession)
-        {
-            <div class="text-center my-4">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden"></span>
-                </div>
-                <p class="mt-2">Restauration de la session...</p>
-            </div>
-        }
-        else
-        {
-            <div class="mb-3">
-                <label class="form-label">Compte</label>
-                <input class="form-control" @bind="_compte" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Mot de passe</label>
-                <input class="form-control" type="password" @bind="_motdepasse" />
-            </div>
-            <button class="btn btn-primary w-100" @onclick="HandleLogin" disabled="@_loading">
-                @(_loading ? "Connexion..." : "Se connecter")
-            </button>
-        }
+        <div style="margin-bottom:1rem;">
+            <label>Compte utilisateur</label>
+            <input class="form-control" @bind="compte" placeholder="ex: alice" />
+        </div>
+
+        <button class="btn btn-primary w-100" @onclick="HandleLogin" disabled="@isLoading">
+            @(isLoading ? "Redirection..." : "Continuer")
+        </button>
     </div>
 </div>
 
 @code {
-    [SupplyParameterFromQuery] private string? redirectUrl { get; set; }
-    [SupplyParameterFromQuery(Name = "ReturnUrl")] private string? ReturnUrl { get; set; }
+    string compte;
+    string error;
+    bool isLoading;
 
-    private string _compte    = "";
-    private string _motdepasse = "";
-    private string _error     = "";
-    private bool   _loading   = false;
-    private bool   _checkingSession = true;
+    [Parameter, SupplyParameterFromQuery] public string Error { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnInitialized() => error = Error;
+
+    async Task HandleLogin()
     {
-        if (firstRender)
+        if (string.IsNullOrWhiteSpace(compte))
         {
-            try
-            {
-                var creds = await LocalStorage.GetAsync<Borrowing.SharedClasses.Common.LoginRequest>("auth_creds");
-                if (creds.Success && creds.Value != null)
-                {
-                    _compte = creds.Value.compte;
-                    _motdepasse = creds.Value.motdepasse;
-                    _loading = true;
-                    StateHasChanged();
-                    await HandleLogin();
-                    return;
-                }
-            }
-            catch
-            {
-                // LocalStorage might not be available or Corrupted
-            }
-            
-            _checkingSession = false;
-            StateHasChanged();
+            error = "Veuillez entrer votre identifiant.";
+            return;
         }
-    }
 
-    private async Task HandleLogin()
-    {
-        _error   = "";
-        _loading = true;
+        isLoading = true;
+        error     = null;
 
-        try
-        {
-            var client = HttpClientFactory.CreateClient("BorrowingApi");
-            var req = new Borrowing.SharedClasses.Common.LoginRequest
-            {
-                compte     = _compte,
-                motdepasse = _motdepasse
-            };
-            var response = await client.PostAsJsonAsync("Account/Login", req);
+        await AuthService.StartLoginAsync(compte);
 
-            if (response.IsSuccessStatusCode)
-            {
-                await LocalStorage.SetAsync("auth_creds", req);
-                // Tell Blazor auth state has changed
-                AuthStateProvider.NotifyStateChanged();
-                Nav.NavigateTo(ReturnUrl ?? redirectUrl ?? "/");
-            }
-            else
-            {
-                await LocalStorage.DeleteAsync("auth_creds");
-                var msg = await response.Content.ReadAsStringAsync();
-                _error = string.IsNullOrEmpty(msg) ? "Identifiants invalides" : msg;
-                _checkingSession = false;
-            }
-        }
-        catch (Exception)
-        {
-            await LocalStorage.DeleteAsync("auth_creds");
-            _error = "Erreur de connexion au serveur.";
-            _checkingSession = false;
-        }
-        finally
-        {
-            _loading = false;
-            StateHasChanged();
-        }
+        // If we reach here, StartLoginAsync failed to redirect
+        error     = "Impossible de contacter le serveur d'authentification.";
+        isLoading = false;
     }
 }

@@ -1,13 +1,24 @@
 @page "/adherents/{Id}"
+@using Borrowing.SharedClasses.Common
+@using Borrowing.SharedClasses.Requests.Adherent
 @using Borrowing.SharedClasses.Responses.Adherent
+@using Borrowing.SharedClasses.Responses.Categorie
+@using Borrowing.SharedClasses.Responses.Position
+@using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @inject NavigationManager Navigation
 @inject IAdherentService AdherentService
 @inject IExportService exportService
-@using Microsoft.AspNetCore.Components.Authorization
+@inject IPositionService PositionService
+@inject ICategorieService CategorieService
+@inject IEtatAdherentService EtatAdherentService
 @inject AuthenticationStateProvider AuthStateProvider
 @inject Radzen.DialogService DialogService
 @inject Radzen.NotificationService NotificationService
+
+
+@inherits AuthorizedComponentBase
 
 @if (adherent == null)
 {
@@ -21,22 +32,50 @@ else
         <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1.5rem">
                 <RadzenImage Path="@adherent.Picture" Style="width:150px;height:150px;border-radius:50%;object-fit:cover" />
-                <RadzenStack Gap="0.25rem">
-                    <RadzenText TextStyle="TextStyle.H4"
-                                Text="@($"{adherent.Adherent!.Prenom} {adherent.Adherent!.Nom}")" />
-                    <RadzenText TextStyle="TextStyle.Body1" Text="@($"ID : {adherent.Adherent!.IdAdherent}")" />
-                    <RadzenText TextStyle="TextStyle.Body1"
-                                Text="@($"Catégorie : {adherent.Adherent.Categorie!.LibelleCategorie ?? "—"}")" />
-                    <RadzenText TextStyle="TextStyle.Body1"
-                                Text="@($"Position : {adherent.Adherent.Position!.LibellePosition ?? "—"}")" />
-                </RadzenStack>
-                <RadzenStack Style="margin-left:auto" AlignItems="AlignItems.End" Orientation="Orientation.Horizontal" Gap="0.5rem">
-                    <RadzenBadge
-                        BadgeStyle="@(adherent.Adherent!.EtatAdherent == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
-                        Text="@(adherent.Adherent!.EtatAdherent == 0 ? "Actif" : "Inactif")" />
-                    <RadzenBadge
-                    BadgeStyle="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
-                    Text="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? "Non pénalisé" : "Pénalisé")" />
+                @if (isEditing)
+                {
+                    <RadzenTemplateForm Data="@adherentDto" Submit="@SaveProfile" TItem="Borrowing.SharedClasses.Requests.Adherent.UpdateAdherentDto">
+                        <RadzenStack Gap="0.5rem">
+                            <RadzenTextBox @bind-Value="adherentDto.IdAdherent" Placeholder="ID" Disabled="true" />
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                <RadzenTextBox @bind-Value="adherentDto.Prenom" Placeholder="Prénom" />
+                                <RadzenTextBox @bind-Value="adherentDto.Nom" Placeholder="Nom" />
+                            </RadzenStack>
+                            <RadzenDropDown @bind-Value="adherentDto.IdCategorie" Data="@categories" TextProperty="LibelleCategorie" ValueProperty="IdCategorie" Placeholder="Sélectionner Catégorie" />
+                            <RadzenDropDown @bind-Value="adherentDto.IdPosition" Data="@positions" TextProperty="LibellePosition" ValueProperty="IdPosition" Placeholder="Sélectionner Position" />
+                            <RadzenDropDown @bind-Value="adherentDto.EtatAdherent" Data="@etats" TextProperty="DescEtat" ValueProperty="IdEtat" Placeholder="Sélectionner État" />
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                <RadzenButton ButtonType="ButtonType.Submit" Text="Sauvegarder" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small" />
+                                <RadzenButton Text="Annuler" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="CancelEdit" />
+                            </RadzenStack>
+                        </RadzenStack>
+                    </RadzenTemplateForm>
+                }
+                else
+                {
+                    <RadzenStack Gap="0.25rem">
+                        <RadzenText TextStyle="TextStyle.H4"
+                                    Text="@($"{adherent.Adherent!.Prenom} {adherent.Adherent!.Nom}")" />
+                        <RadzenText TextStyle="TextStyle.Body1" Text="@($"ID : {adherent.Adherent!.IdAdherent}")" />
+                        <RadzenText TextStyle="TextStyle.Body1"
+                                    Text="@($"Catégorie : {adherent.Adherent.Categorie!.LibelleCategorie ?? "—"}")" />
+                        <RadzenText TextStyle="TextStyle.Body1"
+                                    Text="@($"Position : {adherent.Adherent.Position!.LibellePosition ?? "—"}")" />
+                    </RadzenStack>
+                }
+                <RadzenStack Style="margin-left:auto" AlignItems="AlignItems.End" Orientation="Orientation.Vertical" Gap="0.5rem">
+                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                        <RadzenBadge
+                            BadgeStyle="@(adherent.Adherent!.EtatAdherent == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                            Text="@(adherent.Adherent!.EtatAdherent == 0 ? "Actif" : "Inactif")" />
+                        <RadzenBadge
+                        BadgeStyle="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                        Text="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? "Non pénalisé" : "Pénalisé")" />
+                    </RadzenStack>
+                    @if (isAdmin && !isEditing)
+                    {
+                        <RadzenButton Text="Éditer le profil" Icon="edit" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Click="EditProfile" />
+                    }
                 </RadzenStack>
             </RadzenStack>
         </RadzenCard>
@@ -101,15 +140,20 @@ else
 
     private AdherentProfileDto? adherent;
     private bool isAdmin = false;
+    private bool isEditing = false;
+    private Borrowing.SharedClasses.Requests.Adherent.UpdateAdherentDto adherentDto = new();
+    private IEnumerable<CategorieDto> categories = Array.Empty<CategorieDto>();
+    private IEnumerable<PositionDto> positions = Array.Empty<PositionDto>();
+    private IEnumerable<EtatAdherentDto> etats = Array.Empty<EtatAdherentDto>();
 
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnPageInitializedAsync()
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-        isAdmin = authState.User.IsInRole("Admin");
+        isAdmin = authState.User.IsInRole("ADMIN");
 
         Console.WriteLine("A");
         adherent = await AdherentService.GetAdherent(Id);
@@ -117,6 +161,46 @@ else
         if (adherent == null)
         {
             Navigation.NavigateTo("/not-found");
+        }
+        else if (isAdmin)
+        {
+            categories = await CategorieService.GetAllCategoriesAsync();
+            positions = await PositionService.GetAllPositionsAsync();
+            etats = await EtatAdherentService.GetAllEtatsAsync();
+        }
+    }
+
+    private void EditProfile()
+    {
+        adherentDto = new UpdateAdherentDto
+        {
+            IdAdherent = adherent!.Adherent!.IdAdherent,
+            Nom = adherent.Adherent.Nom ?? "",
+            Prenom = adherent.Adherent.Prenom ?? "",
+            IdPosition = adherent.Adherent.IdPosition ?? 0,
+            IdCategorie = adherent.Adherent.IdCategorie ?? "",
+            EtatAdherent = (int)(adherent.Adherent.EtatAdherent ?? 0)
+        };
+        isEditing = true;
+    }
+
+    private void CancelEdit()
+    {
+        isEditing = false;
+    }
+
+    private async Task SaveProfile()
+    {
+        var success = await AdherentService.UpdateAdherentAsync(adherentDto);
+        if (success)
+        {
+            adherent = await AdherentService.GetAdherent(Id);
+            isEditing = false;
+            NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Succès", Detail = "Profil mis à jour." });
+        }
+        else
+        {
+            NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Erreur", Detail = "Impossible de mettre à jour le profil." });
         }
     }
 

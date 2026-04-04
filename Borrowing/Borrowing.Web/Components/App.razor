@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Web
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,24 +13,20 @@
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" href="_content/Radzen.Blazor/css/standard.css">
-    <HeadOutlet @rendermode="RenderMode.InteractiveServer" />
+    <HeadOutlet  @rendermode="InteractiveServer"  />
 </head>
-
 <body>
-    <Routes @rendermode="RenderMode.InteractiveServer" />
+    <Routes  @rendermode="InteractiveServer"  />
     <ReconnectModal />
-    <CascadingAuthenticationState />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
-
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
     <script>
         window.downloadFileFromBytes = (fileName, base64) => {
-        const link = document.createElement('a');
-        link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + base64;
-        link.download = fileName;
-        link.click();
+            const link = document.createElement('a');
+            link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + base64;
+            link.download = fileName;
+            link.click();
         };
     </script>
 </body>
-
 </html>

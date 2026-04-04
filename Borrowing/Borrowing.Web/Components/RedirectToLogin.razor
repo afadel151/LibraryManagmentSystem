@@ -1,0 +1,40 @@
+@inject NavigationManager Nav
+
+@code {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+            Nav.NavigateTo("/Login", forceLoad: true);
+    }
+}
+
+@* 
+@inject IJSRuntime JS
+
+@code {
+    private bool _isPrerendering = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isPrerendering = false;
+            await LoadData();
+        }
+    }
+
+    private async Task LoadData()
+    {
+        try
+        {
+            stats = await PretService.GetStats();
+            StateHasChanged();
+        }
+        catch (HttpRequestException ex) when ((int?)ex.StatusCode == 401)
+        {
+            Nav.NavigateTo("/Login", forceLoad: true);
+        }
+    }
+}
+
+ *@

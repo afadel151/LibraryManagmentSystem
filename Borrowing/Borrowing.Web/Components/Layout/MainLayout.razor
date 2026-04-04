@@ -1,11 +1,11 @@
 ﻿@inherits LayoutComponentBase
+@attribute [Authorize]
 
-<RadzenComponents @rendermode="InteractiveServer" />
-
-<RadzenNotification  @rendermode="RenderMode.InteractiveServer" />
-<RadzenDialog  @rendermode="RenderMode.InteractiveServer" />
-<RadzenContextMenu  @rendermode="RenderMode.InteractiveServer" />
-<RadzenTooltip  @rendermode="RenderMode.InteractiveServer" />
+<RadzenComponents  />
+<RadzenNotification />
+<RadzenDialog />
+<RadzenContextMenu />
+<RadzenTooltip />
 
 <RadzenLayout style="position: relative">
     <NavMenu />
@@ -15,4 +15,3 @@
         </div>
     </RadzenBody>
 </RadzenLayout>
-
