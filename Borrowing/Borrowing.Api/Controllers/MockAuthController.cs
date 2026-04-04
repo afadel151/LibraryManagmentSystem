@@ -24,7 +24,7 @@ public class MockAuthController : Controller
     {
         // Retrieve prefilled username from mapping if available
         var prefilledUser = _requestUserMapping.TryGetValue(IdRequest ?? "", out var user) ? user : null;
-        return Content(GetLoginHtml(IdRequest!, null!, prefilledUser!), "text/html");
+        return Content(GetLoginHtml(IdRequest, null, prefilledUser), "text/html");
     }
 
     [HttpPost]
@@ -33,7 +33,7 @@ public class MockAuthController : Controller
         // Optionally, fall back to mapping if posted username is empty (but allow override)
         if (string.IsNullOrEmpty(compteUtilisateur) && !string.IsNullOrEmpty(IdRequest))
         {
-            _requestUserMapping.TryGetValue(IdRequest, out compteUtilisateur!);
+            _requestUserMapping.TryGetValue(IdRequest, out compteUtilisateur);
         }
 
         // Read hardcoded users from configuration (e.g., appsettings.json under "MockAuth:Users")
