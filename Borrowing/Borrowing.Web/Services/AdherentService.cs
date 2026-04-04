@@ -13,12 +13,20 @@ public interface IAdherentService
     Task<AdherentsStatsDto> GetStats();
     Task<AdherentProfileDto?> GetAdherent(string id);
     Task<PagedResult<AdherentDto>> GetAdherentsAsync(PaginatedQueryParameters queryParameters);
+    Task<IEnumerable<AdherentDto>> GetAllAdherentsAsync(string search = "");
+    Task<bool> CreateAdherentAsync(Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto dto);
 }
 
 
-public class AdherentService(HttpClient httpClient) : IAdherentService
+public class AdherentService(IHttpClientFactory factory) : IAdherentService
 {
-    private readonly HttpClient _httpClient = httpClient;
+    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
+
+    public async Task<bool> CreateAdherentAsync(Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto dto)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/Adherent", dto);
+        return response.IsSuccessStatusCode;
+    }
 
     public async Task<PagedResult<AdherentDto>> GetAdherentsAsync(PaginatedQueryParameters queryParameters)
     {
@@ -70,5 +78,19 @@ public class AdherentService(HttpClient httpClient) : IAdherentService
             return null;
         }
 
+    }
+
+    public async Task<IEnumerable<AdherentDto>> GetAllAdherentsAsync(string search = "")
+    {
+        var queryParams = new PaginatedQueryParameters
+        {
+            PageNumber = 1,
+            PageSize = int.MaxValue,
+            OrderBy = "datepret desc",
+            Search = search
+        };
+
+        var result = await GetAdherentsAsync(queryParams);
+        return result.Data;
     }
 }
