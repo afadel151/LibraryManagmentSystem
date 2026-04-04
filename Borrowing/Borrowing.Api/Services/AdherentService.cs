@@ -14,6 +14,7 @@ public interface IAdherentService
     Task<Adherent?> GetAdherentWithPretsPenaliteAsync(string AdherentId);
     Task<AdherentsStatsDto> GetStats();
     Task<bool> CreateAdherentAsync(CreateAdherentDto dto);
+    Task<bool> UpdateAdherentAsync(UpdateAdherentDto dto);
 }
 
 public class AdherentService(
@@ -196,7 +197,7 @@ public class AdherentService(
         return adherent;
     }
 
-    public async Task<bool> CreateAdherentAsync(global::Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto dto)
+    public async Task<bool> CreateAdherentAsync(CreateAdherentDto dto)
     {
         var adherent = new Adherent
         {
@@ -216,6 +217,30 @@ public class AdherentService(
         catch
         {
             return false; // Typically duplicate key exception or generic DB error
+        }
+    }
+
+    public async Task<bool> UpdateAdherentAsync(UpdateAdherentDto dto)
+    {
+        var adherent = await _adherentRepository.GetQueryable()
+                        .FirstOrDefaultAsync(a => a.IdAdherent == dto.IdAdherent);
+        
+        if (adherent == null) return false;
+
+        adherent.Nom = dto.Nom;
+        adherent.Prenom = dto.Prenom;
+        adherent.IdPosition = dto.IdPosition;
+        adherent.IdCategorie = dto.IdCategorie;
+        adherent.EtatAdherent = dto.EtatAdherent;
+
+        try
+        {
+            await _adherentRepository.UpdateAsync(adherent);
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 }
