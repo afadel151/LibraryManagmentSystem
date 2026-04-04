@@ -1,4 +1,104 @@
 @page "/documents/reservees"
+@using Borrowing.Web.Extensions
+@using Borrowing.Web.Services
+@using Borrowing.SharedClasses.Common
+@rendermode InteractiveAuto
+@inject IReservationService _reservationService
+@inject NavigationManager navigationManager
+@inject IExportService exportService
 
+<RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+             AlignItems="AlignItems.Center">
+    <RadzenText TextStyle="TextStyle.H3">Réservations</RadzenText>
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+        <RadzenTextBox Placeholder="Rechercher par ID, Nom, Prenom, Cote ou Titre..." style="width:400px" @bind-Value="SearchText"
+                       @oninput="DoSearch" Change="DoSearch" />
+        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")" Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
+                      Variant="Variant.Flat" />
+    </RadzenStack>
+</RadzenStack>
 
-<p>reserved_documents</p>
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn>
+        <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@reservations" Count="@count" LoadData="@LoadData"
+                        IsLoading="@isLoading" TItem="ReservationDto" ShowPagingSummary="true" AllowPaging="true" PageSize="10"
+                        AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="ReservationDto" Property="IdAdherent" Title="ID Adhérent" Width="120px" />
+                <RadzenDataGridColumn TItem="ReservationDto" Title="Adhérent" Property="Nom">
+                    <Template Context="data">
+                        @($"{data.Nom} {data.Prenom}")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ReservationDto" Property="TitrePropre" Title="Titre" />
+                <RadzenDataGridColumn TItem="ReservationDto" Property="Cote" Title="Cote" Width="150px" />
+                <RadzenDataGridColumn TItem="ReservationDto" Property="HeureReservation" Title="Date Réservation" Width="180px">
+                    <Template Context="data">
+                        @data.HeureReservation.ToString("dd/MM/yyyy HH:mm")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ReservationDto" Title="Actions" Sortable="false" Filterable="false" Width="200px">
+                    <Template Context="data">
+                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                            <RadzenButton Click=@(args => navigationManager.NavigateTo($"/adherents/{data.IdAdherent}"))
+                                          Size="ButtonSize.Small" Icon="person" Text="Adhérent"
+                                          ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
+                        </RadzenStack>
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    private IEnumerable<ReservationDto>? reservations;
+    private int count;
+    private bool isLoading;
+    private string SearchText = "";
+    private bool isExporting = false;
+
+    private async Task DoSearch()
+    {
+        LoadDataArgs args = new LoadDataArgs { };
+        await LoadData(args);
+    }
+
+    private async Task Export()
+    {
+        isExporting = true;
+        try
+        {
+            var allData = await _reservationService.GetAllReservationsAsync(SearchText);
+            await exportService.ExportToExcelAsync(allData, "Reservations_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+        }
+        finally
+        {
+            isExporting = false;
+        }
+    }
+
+    async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+
+        try
+        {
+            var queryParams = new PaginatedQueryParameters
+            {
+                PageNumber = (args.Skip ?? 0) / (args.Top ?? 10) + 1,
+                PageSize = args.Top ?? 10,
+                OrderBy = args.OrderBy ?? "HeureReservation desc",
+                Search = SearchText
+            };
+
+            var result = await _reservationService.GetReservationsAsync(queryParams);
+            reservations = result.Data;
+            count = result.TotalCount;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
