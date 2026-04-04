@@ -1,0 +1,16 @@
+@inherits LayoutComponentBase
+
+<RadzenComponents @rendermode="InteractiveServer" />
+
+<RadzenNotification  @rendermode="Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer" />
+<RadzenDialog  @rendermode="Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer" />
+<RadzenContextMenu  @rendermode="Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer" />
+<RadzenTooltip  @rendermode="Microsoft.AspNetCore.Components.Web.RenderMode.InteractiveServer" />
+
+<RadzenLayout style="position: relative; min-height: 100vh;">
+    <RadzenBody>
+        <div class="rz-p-2" style="height: 100%; display: flex; align-items: center; justify-content: center;">
+            @Body
+        </div>
+    </RadzenBody>
+</RadzenLayout>
