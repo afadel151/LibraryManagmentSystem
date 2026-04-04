@@ -63,13 +63,14 @@ public class PretService : IPretService
         }
         catch (System.Exception)
         {
-            
+
             return null;
         }
     }
 
     public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters)
     {
+
         var prets = _pretRepository.GetQueryable();
         var adherents = _adherentRepository.GetQueryable();
         var positions = _positionRepository.GetQueryable();
@@ -99,6 +100,17 @@ public class PretService : IPretService
                         EtatDuree = p.EtatDuree
                     };
 
+        // Apply search
+        if (!string.IsNullOrWhiteSpace(queryParameters.Search))
+        {
+            var search = queryParameters.Search.ToLower(); // only once, on the in-memory value
+            query = query.Where(x =>
+                x.AdherentId.ToLower().Contains(search) ||
+                x.AdherentNom.ToLower().Contains(search) ||
+                x.AdherentPrenom.ToLower().Contains(search) ||
+                x.NoticeTitrePropre.ToLower().Contains(search) ||
+                x.ExemplaireId.ToLower().Contains(search));
+        }
         // Apply ordering
         if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))
         {
@@ -122,8 +134,14 @@ public class PretService : IPretService
                 "exemplaireid asc" => query.OrderBy(x => x.NoticeTitrePropre),
                 "exemplaireid desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
 
+                "noticetitrepropre asc" => query.OrderBy(x => x.NoticeTitrePropre),
+                "noticetitrepropre desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
+
                 "titre asc" => query.OrderBy(x => x.NoticeTitrePropre),
                 "titre desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
+
+                "etatduree asc" => query.OrderBy(x => x.EtatDuree),
+                "etatduree desc" => query.OrderByDescending(x => x.EtatDuree),
                 _ => query.OrderByDescending(x => x.DatePret) // defalt 
             };
         }

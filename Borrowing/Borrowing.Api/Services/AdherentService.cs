@@ -3,6 +3,7 @@ using Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Responses.Adherent;
+using Borrowing.SharedClasses.Requests.Adherent;
 namespace Borrowing.Api.Services;
 
 public interface IAdherentService
@@ -12,6 +13,7 @@ public interface IAdherentService
     Task<DateTime> CalculateExpectedReturnDate(DateTime startDate, decimal duration);
     Task<Adherent?> GetAdherentWithPretsPenaliteAsync(string AdherentId);
     Task<AdherentsStatsDto> GetStats();
+    Task<bool> CreateAdherentAsync(CreateAdherentDto dto);
 }
 
 public class AdherentService(
@@ -192,5 +194,28 @@ public class AdherentService(
             return null;
         }
         return adherent;
+    }
+
+    public async Task<bool> CreateAdherentAsync(global::Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto dto)
+    {
+        var adherent = new Adherent
+        {
+            IdAdherent = dto.IdAdherent,
+            Nom = dto.Nom,
+            Prenom = dto.Prenom,
+            IdPosition = dto.IdPosition,
+            IdCategorie = dto.IdCategorie,
+            EtatAdherent = 0 // Active
+        };
+
+        try
+        {
+            await _adherentRepository.AddAsync(adherent);
+            return true;
+        }
+        catch
+        {
+            return false; // Typically duplicate key exception or generic DB error
+        }
     }
 }

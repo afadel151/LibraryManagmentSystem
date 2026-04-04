@@ -1,26 +1,26 @@
 using Borrowing.Api.Repositories;
-using Shared.Models;
+using Borrowing.SharedClasses.Responses.Categorie;
+using Microsoft.EntityFrameworkCore;
 
 namespace Borrowing.Api.Services;
 
 public interface ICategorieService
 {
-    Task<IEnumerable<Categorie>> GetAllCategoriesAsync();
+    Task<IEnumerable<CategorieDto>> GetAllCategoriesAsync();
 }
 
-public class CategorieService : ICategorieService
+public class CategorieService(ICategorieRepository categorieRepository) : ICategorieService
 {
-    private readonly ICategorieRepository _categorieRepository;
+    private readonly ICategorieRepository _categorieRepository = categorieRepository;
 
-    public CategorieService(ICategorieRepository categorieRepository)
+    public async Task<IEnumerable<CategorieDto>> GetAllCategoriesAsync()
     {
-        _categorieRepository = categorieRepository;
-    }
-
-    // Sample method to demonstrate repository usage
-    public async Task<IEnumerable<Categorie>> GetAllCategoriesAsync()
-    {
-        // Example: retrieve all categories
-        return await _categorieRepository.GetAllAsync();
+        return await _categorieRepository.GetQueryable()
+            .Select(c => new CategorieDto
+            {
+                IdCategorie = c.IdCategorie,
+                LibelleCategorie = c.LibelleCategorie ?? string.Empty
+            })
+            .ToListAsync();
     }
 }
