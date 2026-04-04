@@ -6,6 +6,7 @@ namespace Borrowing.Api.Services;
 public interface IPenaltieService
 {
     Task<IEnumerable<PenaliteAdherent>> GetPenaltiesForAdherentAsync(string adherentId);
+    Task<bool> DeletePenaliteAsync(string adherentId, DateTime datePenalite);
 }
 
 public class PenaltieService : IPenaltieService
@@ -33,5 +34,28 @@ public class PenaltieService : IPenaltieService
         // Example: retrieve penalties (Needs actual predicate if FindAsync is implemented)
         var penalties = await _penaliteAdherentRepository.FindAsync(p => p.IdAdherent == adherentId);
         return penalties;
+    }
+
+    public async Task<bool> DeletePenaliteAsync(string adherentId, DateTime datePenalite)
+    {
+        var penalites = await _penaliteAdherentRepository.FindAsync(p => p.IdAdherent == adherentId && p.DatePenalite.Date == datePenalite.Date);
+        var penalite = penalites.FirstOrDefault();
+        
+        if (penalite != null)
+        {
+            await _penaliteAdherentRepository.DeleteAsync(penalite);
+            
+            var historique = new HistoriquePenaliteAdherent
+            {
+                IdAdherent = penalite.IdAdherent,
+                DatePenalite = penalite.DatePenalite,
+                NombreJoursPenalite = penalite.NombreJoursPenalite
+            };
+            await _historiquePenaliteAdherentRepository.AddAsync(historique);
+            
+            return true;
+        }
+        
+        return false;
     }
 }
