@@ -35,6 +35,7 @@ public static class ServiceExtensions
         services.AddScoped<IRelanceService, RelanceService>();
         services.AddScoped<IReservationService, ReservationService>();
         services.AddScoped<IRestitutionService, RestitutionService>();
+        services.AddScoped<IPositionService, PositionService>();
 
         return services;
     }
