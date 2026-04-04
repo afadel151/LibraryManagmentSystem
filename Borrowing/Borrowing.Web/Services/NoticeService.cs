@@ -12,14 +12,14 @@ public interface INoticeService
 
     Task<List<TopLoanedNoticeDto>> GetChartData();
     Task<PagedResult<NoticeDto>> GetNoticesAsync(PaginatedQueryParameters queryParameters);
-
+    Task<IEnumerable<NoticeDto>> GetAllNoticesAsync(string search = "");
     Task<NoticeProfileDto?> GetNoticeProfileAsync(int Id);
 }
 
 
-public class NoticeService(HttpClient httpClient) : INoticeService
+public class NoticeService(IHttpClientFactory factory) : INoticeService
 {
-    private readonly HttpClient _httpClient = httpClient;
+    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
 
     public async Task<PagedResult<NoticeDto>> GetNoticesAsync(PaginatedQueryParameters queryParameters)
     {
@@ -73,5 +73,19 @@ public class NoticeService(HttpClient httpClient) : INoticeService
         }
 
         
+    }
+
+    public async Task<IEnumerable<NoticeDto>> GetAllNoticesAsync(string search = "")
+    {
+        var queryParams = new PaginatedQueryParameters
+        {
+            PageNumber = 1,
+            PageSize = int.MaxValue,
+            OrderBy = "Cote asc",
+            Search = search
+        };
+
+        var result = await GetNoticesAsync(queryParams);
+        return result.Data;
     }
 }
