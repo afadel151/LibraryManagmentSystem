@@ -40,9 +40,10 @@ public class PenaltieService : IPenaltieService
     {
         var penalites = await _penaliteAdherentRepository.FindAsync(p => p.IdAdherent == adherentId && p.DatePenalite.Date == datePenalite.Date);
         var penalite = penalites.FirstOrDefault();
-        
         if (penalite != null)
         {
+            Console.WriteLine("#### penalite"+penalite.DatePenalite);
+            
             await _penaliteAdherentRepository.DeleteAsync(penalite);
             
             var historique = new HistoriquePenaliteAdherent

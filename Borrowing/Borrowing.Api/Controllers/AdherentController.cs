@@ -145,7 +145,7 @@ public class AdherentController(IPretService pretService, IAdherentService adher
     }
 
     [HttpPost]
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> CreateAdherent([FromBody] Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto dto)
     {
         if (!ModelState.IsValid)
@@ -155,7 +155,21 @@ public class AdherentController(IPretService pretService, IAdherentService adher
         if (success)
             return Ok();
         
-        return BadRequest("Impossible de créer l'adhérent. Identifiant déjà existant ?");
+        return BadRequest("Impossible de creer l'adherent. Identifiant dejà existant ?");
+    }
+
+    [HttpPut]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
+    public async Task<IActionResult> UpdateAdherent([FromBody] Borrowing.SharedClasses.Requests.Adherent.UpdateAdherentDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        bool success = await _adherentService.UpdateAdherentAsync(dto);
+        if (success)
+            return Ok();
+        
+        return NotFound("Adhérent introuvable ou erreur lors de la modification.");
     }
 
     [HttpGet("Stats")]

@@ -16,7 +16,7 @@ public class PenaliteController : ControllerBase
     }
 
     [HttpDelete("{adherentId}/{datePenalite}")]
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "Admin")]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> DeletePenalite(string adherentId, DateTime datePenalite)
     {
         var success = await _penaltieService.DeletePenaliteAsync(adherentId, datePenalite);
