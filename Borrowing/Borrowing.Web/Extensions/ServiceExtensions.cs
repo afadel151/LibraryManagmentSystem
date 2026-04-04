@@ -1,5 +1,6 @@
-// Services/ServiceExtensions.cs
 using Borrowing.Web.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Borrowing.Web.Extensions;
 
@@ -9,15 +10,40 @@ public static class ServiceExtensions
         this IServiceCollection services,
         string baseAddress)
     {
-        services.ConfigureHttpClientDefaults(http =>
-            http.ConfigureHttpClient(c => c.BaseAddress = new Uri(baseAddress)));
+        // Auth
+        services.AddScoped<CookieAuthStateProvider>();
+        services.AddScoped<AuthenticationStateProvider>(
+            sp => sp.GetRequiredService<CookieAuthStateProvider>());
 
-        services.AddHttpClient<IPretService, PretService>();
-        services.AddHttpClient<IAdherentService, AdherentService>();
-        services.AddHttpClient<IRestitutionService, RestitutionService>();
-        services.AddHttpClient<INoticeService, NoticeService>();
-        services.AddHttpClient<IExemplaireService, ExemplaireService>();
-        services.AddScoped<IExportService,ExportService>();
+        services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Login";
+            });
+        services.AddAuthorizationCore();
+        services.AddAuthorization();
+        services.AddCascadingAuthenticationState();
+
+        // One single HttpClient
+        services.AddHttpClient("BorrowingApi", client =>
+            client.BaseAddress = new Uri(baseAddress))
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                UseCookies = true,
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            });
+
+        // Services — plain scoped, they get IHttpClientFactory injected
+        services.AddScoped<IAdherentService,    AdherentService>();
+        services.AddScoped<IPretService,        PretService>();
+        services.AddScoped<INoticeService,      NoticeService>();
+        services.AddScoped<IExemplaireService,  ExemplaireService>();
+        services.AddScoped<IReservationService, ReservationService>();
+        services.AddScoped<IRestitutionService, RestitutionService>();
+        services.AddScoped<IExportService,      ExportService>();
+        services.AddScoped<ICategorieService,   CategorieService>();
+        services.AddScoped<IPositionService,    PositionService>();
 
         return services;
     }
