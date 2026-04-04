@@ -14,7 +14,7 @@ public interface IPretService
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters);
 
     Task<int> CountAdherentActiveLoans(string AdherentId);
-
+    Task<bool> DeletePret(string IdAdherent, string IdExemplaire);
     Task<List<Pret>> GetBlockedCopies(string cote);
     Task<Pret?> GetPretByExemplaireId(string IdExemplaire);
 
@@ -195,6 +195,35 @@ public class PretService : IPretService
         return await _pretRepository.GetQueryable()
             .Where(p => p.IdExemplaire == IdExemplaire)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> DeletePret(string IdAdherent, string IdExemplaire)
+    {
+        var prets = await _pretRepository.FindAsync(p => p.IdAdherent == IdAdherent && p.IdExemplaire == IdExemplaire);
+        var pret = prets.FirstOrDefault();
+        if (pret != null)
+        {
+            try
+            {
+                await _pretRepository.DeleteAsync(pret);
+
+                var historique = new HistoriquePret
+                {
+                    IdAdherent = IdAdherent,
+                    IdExemplaire = IdExemplaire,
+                    DatePret = pret.DatePret,
+                    DateRetour = DateTime.Now.Date
+                };
+                await _historiquePretRepository.AddAsync(historique);
+                return true;
+            }
+            catch
+            {
+
+                return false;
+            }
+        }
+        return false;
     }
 
 }
