@@ -4,6 +4,10 @@
 @inject NavigationManager Navigation
 @inject IAdherentService AdherentService
 @inject IExportService exportService
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthStateProvider
+@inject Radzen.DialogService DialogService
+@inject Radzen.NotificationService NotificationService
 
 @if (adherent == null)
 {
@@ -66,6 +70,12 @@ else
                 <Columns>
                     <RadzenDataGridColumn Property="DatePenalite" Title="Date" FormatString="{0:dd/MM/yyyy}" />
                     <RadzenDataGridColumn Property="NombreJoursPenalite" Title="Nombre de jours" />
+                    <RadzenDataGridColumn Title="Actions" Visible="@isAdmin" Width="100px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                        <Template Context="penalite">
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" 
+                                          Click="@(args => DeletePenalite((Shared.Models.PenaliteAdherent)penalite))" @onclick:stopPropagation="true" />
+                        </Template>
+                    </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
         </RadzenCard>
@@ -90,12 +100,17 @@ else
 @code {
 
     private AdherentProfileDto? adherent;
+    private bool isAdmin = false;
+
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
 
     protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        isAdmin = authState.User.IsInRole("Admin");
+
         Console.WriteLine("A");
         adherent = await AdherentService.GetAdherent(Id);
         Console.WriteLine("B");
@@ -143,5 +158,23 @@ else
         });
 
         await exportService.ExportToExcelAsync(exportData, $"Reservations_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
+    }
+
+    private async Task DeletePenalite(Shared.Models.PenaliteAdherent penalite)
+    {
+        var confirm = await DialogService.Confirm("Êtes-vous sûr de vouloir supprimer cette pénalité ?", "Confirmation", new ConfirmOptions() { OkButtonText = "Oui", CancelButtonText = "Non" });
+        if (confirm == true)
+        {
+            var success = await AdherentService.DeletePenaliteAsync(penalite.IdAdherent, penalite.DatePenalite);
+            if (success)
+            {
+                adherent!.Adherent!.PenaliteAdherents.Remove(penalite);
+                NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Succès", Detail = "Pénalité supprimée." });
+            }
+            else
+            {
+                NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Erreur", Detail = "Impossible de supprimer la pénalité." });
+            }
+        }
     }
 }
