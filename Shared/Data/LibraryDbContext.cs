@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shared.Models;
 
 namespace Shared.Data;
@@ -192,6 +193,10 @@ public partial class LibraryDbContext : DbContext
             entity.HasMany(a => a.HistoriquePrets)
                 .WithOne(a => a.Adherent)
                 .HasForeignKey(a => a.IdAdherent);
+
+            entity.HasMany(a => a.Reservations)
+                .WithOne(r => r.Adherent)
+                .HasForeignKey(r => r.IdAdherent);
         });
 
         modelBuilder.Entity<Admin>(entity =>
@@ -459,10 +464,12 @@ public partial class LibraryDbContext : DbContext
             entity.ToTable("ETAT_ADHERENT");
 
             entity.Property(e => e.IdEtat)
-                .HasColumnType("NUMBER(1,0)")
                 .HasColumnName("ID_ETAT")
-                .ValueGeneratedNever()
-                .HasSentinel(-1);
+                .HasConversion(new ValueConverter<int, int>(
+                    v => v,
+                    v => v
+                ))
+                .ValueGeneratedNever();
 
             entity.Property(e => e.DescEtat)
                 .HasMaxLength(25)
@@ -737,8 +744,8 @@ public partial class LibraryDbContext : DbContext
             entity.HasMany(e => e.AuteurNotices)
                     .WithMany(e => e.Auteurs)
                     .UsingEntity<Auteur>();
-                
-            
+
+
             entity.HasMany(e => e.CoAuteurNotices)
                 .WithMany(e => e.CoAuteurs)
                 .UsingEntity<CoAuteur>();
@@ -916,7 +923,7 @@ public partial class LibraryDbContext : DbContext
 
             // one to many : Notice Has many T
 
-            
+
             entity.HasMany(d => d.NoticeEditions)
                 .WithOne(p => p.Notice)
                 .HasForeignKey(d => d.IdNotice)
@@ -1471,9 +1478,7 @@ public partial class LibraryDbContext : DbContext
                 .HasPrecision(6)
                 .HasColumnName("HEURE_RESERVATION");
 
-            entity.HasOne(d => d.IdAdherentNavigation).WithMany(p => p.Reservations)
-                .HasForeignKey(d => d.IdAdherent)
-                .HasConstraintName("FK_RES");
+
         });
 
         modelBuilder.Entity<Selection>(entity =>

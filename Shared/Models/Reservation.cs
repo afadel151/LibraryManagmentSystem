@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 
 namespace Shared.Models;
@@ -11,5 +12,8 @@ public partial class Reservation
 
     public DateTime HeureReservation { get; set; }
 
-    public virtual Adherent IdAdherentNavigation { get; set; } = null!;
+    public Adherent Adherent {get;set;} = null!;
+    
+    [NotMapped]
+    public Notice Notice {get;set;} = null!;
 }
