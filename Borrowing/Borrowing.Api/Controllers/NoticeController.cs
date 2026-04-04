@@ -9,6 +9,7 @@ using Shared.Models;
 using System;
 namespace Borrowing.Api.Controllers;
 
+[Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class NoticeController(
@@ -61,6 +62,7 @@ public class NoticeController(
             }
             else
             {
+                
                 // block : membre ne put pas preter car les copies sont bloquee pour les reservateurs qui ont plus de droit
                 return Ok(new CheckNoticeResponseDto { 
                     CanReserve = true, 
@@ -93,4 +95,42 @@ public class NoticeController(
             }
         }
     }
+
+    [HttpGet]
+     public async Task<ActionResult<PagedResult<NoticeDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
+    {
+        var result = await _noticeService.GetNoticesAsync(queryParameters);
+        return Ok(result);
+    }
+
+
+    [HttpGet("Chart")]
+    public async Task<IActionResult> GetChart()
+    {
+        var result = await _noticeService.GetTopLoanedNoticesAsync(10);
+        return Ok(result);
+    }
+    [HttpGet("Profile")]
+    public async Task<ActionResult<NoticeProfileDto>> GetNoticeProile([FromQuery] int Id)
+    {
+        var result = await _noticeService.GetNoticeProfile(Id);
+        if (result == null)
+        {
+            return NotFound();
+        }
+        return Ok(result);
+    }
+
+
+    [HttpGet("Exemplaire")]
+    public async Task<ActionResult<Exemplaire>> GetExemplaireById([FromQuery] string Id)
+    {
+        var exemplaire = await _noticeService.GetExemplaireDetailedAsync(Id);
+        if (exemplaire == null)
+        {
+            return NotFound();
+        }
+        return Ok(exemplaire);
+    }
+    
 }
