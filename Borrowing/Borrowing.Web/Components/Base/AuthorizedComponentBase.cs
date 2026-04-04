@@ -4,6 +4,8 @@ using System.Net.Http;
 
 namespace Borrowing.Web.Components.Base;
 
+
+
 public abstract class AuthorizedComponentBase : ComponentBase
 {
     [Inject] protected NavigationManager Nav { get; set; } = default!;

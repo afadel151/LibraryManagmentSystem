@@ -3,6 +3,8 @@ using System.Security.Claims;
 
 namespace Borrowing.Web.Components.Base;
 
+
+
 public abstract class AuthorizedAdminComponentBase : AuthorizedComponentBase
 {
     protected override async Task OnAfterRenderAsync(bool firstRender)
