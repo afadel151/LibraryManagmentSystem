@@ -11,5 +11,4 @@ public class AdherentDto
     public int Etat {get;set;} = 0;
     public int Prets {get;set;} = 0;
     public int Reservations {get;set;} = 0;
-    public int Penalise {get;set;} = 0;
 }
