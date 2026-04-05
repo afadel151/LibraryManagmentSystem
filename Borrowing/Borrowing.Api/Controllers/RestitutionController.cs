@@ -12,9 +12,9 @@ namespace Borrowing.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class RestitutionController(
-    IPretService pretService, 
-    IAdherentService adherentService, 
-    INoticeService noticeService, 
+    IPretService pretService,
+    IAdherentService adherentService,
+    INoticeService noticeService,
     IReservationService reservationService,
     IRestitutionService restitutionService,
     IPenaltieService penaltieService
@@ -35,18 +35,26 @@ public class RestitutionController(
         var pret = await _pretService.GetPretByExemplaireId(form.ExemplaireId);
         if (pret != null && pret.IdAdherent == form.AdherentId)
         {
-            var success = await _pretService.DeletePret(form.AdherentId,form.ExemplaireId);
-            if (success)
+            try
             {
-                return Ok();
+                var success = await _pretService.RestitutionPret(form.AdherentId, form.ExemplaireId);
+                if (success)
+                {
+                    return Ok("Notice restitue avec succe");
+                }
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.ToString());
             }
         }
-        return NotFound("Erreur lors de restitution");
+        return NotFound("Erreur ");
+
     }
     [HttpPost("Renouvler")]
     public async Task<IActionResult> RenouvlerPret([FromBody] CreateRestitutionDto form)
     {
         return Ok();
     }
-    
+
 }

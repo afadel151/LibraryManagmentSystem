@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Requests.Adherent;
+using Borrowing.Api.Extensions;
 namespace Borrowing.Api.Services;
 
 public interface IAdherentService
@@ -114,7 +115,7 @@ public class AdherentService(
     }
     public async Task<AdherentProfileDto?> GetAdherentWithDetailsAsync(string adherentId)
     {
-        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!, a => a.Position!, a => a.PenaliteAdherents, a => a.Reservations, a => a.Prets).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
+        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!, a => a.Position!, a => a.PenaliteAdherents,a => a.HistoriquePenaliteAdherents, a => a.Reservations, a => a.Prets,a => a.HistoriquePrets).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
 
         if (adherent != null)
         {
@@ -131,37 +132,10 @@ public class AdherentService(
     public async Task<DateTime> CalculateExpectedReturnDate(DateTime startDate, decimal duration)
     {
         DateTime rawReturnDate = startDate.AddDays((double)duration);
-        return await Traiter_date(rawReturnDate);
+        List<JoursFery> joursFeries = await _joursFeriesRepository.GetQueryable().ToListAsync();
+        return  BaseExtensions.Traiter_date(rawReturnDate,joursFeries);
     }
 
-    private async Task<DateTime> Traiter_date(DateTime date)
-    {
-        bool changement = false;
-        // si vendredi ou samedi
-        DayOfWeek day = date.DayOfWeek;
-        if (day == DayOfWeek.Friday || day == DayOfWeek.Saturday)
-        {
-            date = date.AddDays(1);
-            changement = true;
-        }
-        else // sinon verif si c'est un jours feriees
-        {
-            IEnumerable<JoursFery> joursFeries = await _joursFeriesRepository.GetAllAsync();
-            bool isHoliday = joursFeries.Any(j => j.DateJourFerie.Date == date.Date);
-            if (isHoliday)
-            {
-                date = date.AddDays(1);
-                changement = true;
-            }
-        }
-        // recursivite sur nouvelle date s'il ya un changement
-        if (changement)
-        {
-            return await Traiter_date(date);
-        }
-        // pas de changement
-        return date;
-    }
 
     public async Task<AdherentsStatsDto> GetStats()
     {

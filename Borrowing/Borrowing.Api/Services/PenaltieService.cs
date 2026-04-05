@@ -1,4 +1,5 @@
 using Borrowing.Api.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Shared.Models;
 
 namespace Borrowing.Api.Services;
@@ -38,15 +39,16 @@ public class PenaltieService : IPenaltieService
 
     public async Task<bool> DeletePenaliteAsync(string adherentId, DateTime datePenalite)
     {
-        var penalites = await _penaliteAdherentRepository.FindAsync(p => p.IdAdherent == adherentId && p.DatePenalite.Date == datePenalite.Date);
-        var penalite = penalites.FirstOrDefault();
+        var penalite = await _penaliteAdherentRepository.GetQueryable()
+                        .Where(p => p.IdAdherent == adherentId && p.DatePenalite.Date == datePenalite.Date)
+                        .FirstOrDefaultAsync();
         if (penalite != null)
         {
             Console.WriteLine("#### penalite"+penalite.DatePenalite);
             
             await _penaliteAdherentRepository.DeleteAsync(penalite);
             
-            var historique = new HistoriquePenaliteAdherent
+            HistoriquePenaliteAdherent historique = new()
             {
                 IdAdherent = penalite.IdAdherent,
                 DatePenalite = penalite.DatePenalite,
