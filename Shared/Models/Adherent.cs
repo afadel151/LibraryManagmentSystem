@@ -19,6 +19,7 @@ public partial class Adherent
 
     public virtual ICollection<HistoriqueAuth> HistoriqueAuths { get; set; } = new List<HistoriqueAuth>();
     public virtual ICollection<HistoriquePret> HistoriquePrets { get; set; } = new List<HistoriquePret>();    
+    public virtual ICollection<HistoriquePenaliteAdherent> HistoriquePenaliteAdherents { get; set; } = new List<HistoriquePenaliteAdherent>();    
     public virtual ICollection<PenaliteAdherent> PenaliteAdherents { get; set; } = new List<PenaliteAdherent>();
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();    
     public virtual ICollection<Pret> Prets { get; set; } = new List<Pret>();    

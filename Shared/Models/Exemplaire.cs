@@ -15,4 +15,6 @@ public partial class Exemplaire
 
     public virtual ICollection<Pret> Prets { get; set; } = new List<Pret>(); 
     public virtual ICollection<HistoriquePret> HistoriquePrets { get; set; } = new List<HistoriquePret>(); 
+
+    public virtual Notice Notice {get;set;} = null!;
 }

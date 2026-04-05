@@ -64,7 +64,7 @@ public partial class Notice
 
 
 
-    // one to many relationships
+    // one to many relationships forward
     public virtual TableCdd? TableCdd { get; set; } = null!;
     public virtual Periodicite? Periodicite { get; set; }
     public virtual SourceArticle? SourceArticle { get; set; }
@@ -74,13 +74,13 @@ public partial class Notice
 
 
 
-    // on to many to join table
+    // on to many  backward
     public virtual ICollection<NoticeEdition> NoticeEditions { get; set; } = new List<NoticeEdition>();
     public virtual ICollection<NoticeCollection> NoticeCollections { get; set; } = new List<NoticeCollection>();
     public virtual ICollection<AuteurSecondaire> AuteurSecondaires {get;set;} = [];
     public virtual ICollection<NoticeTerme> NoticeTermes { get; set; } = new List<NoticeTerme>();
     public virtual ICollection<NoticeTermeExact> NoticeTermeExacts { get; set; } = new List<NoticeTermeExact>();
-
+    public virtual ICollection<Exemplaire> Exemplaires {get;set;} = [];
 
     // many to many 
     public virtual ICollection<MentionResponsabilite> CoAuteurs { get; set; } = new List<MentionResponsabilite>();
