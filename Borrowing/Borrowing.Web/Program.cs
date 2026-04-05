@@ -1,22 +1,35 @@
 using Borrowing.Web.Components;
 using Radzen;
 using Borrowing.Web.Extensions;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
-                
+
 builder.Services.AddRadzenComponents();
 
 var apiBase = builder.Configuration["ApiSettings:BaseAddress"]
               ?? throw new InvalidOperationException("ApiSettings:BaseAddress is not configured.");
 
 builder.Services.AddBorrowingApiServices(apiBase);
-builder.Services.Configure<Microsoft.AspNetCore.Components.Server.CircuitOptions>(options =>
+
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+var supportedCultures = new[] { "fr", "ar", "en" };
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    // no prerender config here — it's controlled per-component
+    options.SetDefaultCulture("en")
+           .AddSupportedCultures(supportedCultures)
+           .AddSupportedUICultures(supportedCultures)
+           .AddInitialRequestCultureProvider(new Microsoft.AspNetCore.Localization.CookieRequestCultureProvider()
+           {
+               CookieName = "culture"
+           });
 });
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -25,9 +38,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseRequestLocalization();
+
 app.UseAntiforgery();
-
-
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
