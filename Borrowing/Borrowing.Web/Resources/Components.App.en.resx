@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="AdherentMangment" xml:space="preserve">
+    <value>Membership Management</value>
+  </data>
+  <data name="AllDocuments" xml:space="preserve">
+    <value>All Documents</value>
+  </data>
+  <data name="Availability" xml:space="preserve">
+    <value>Availability notices</value>
+  </data>
+  <data name="BlockedCopies" xml:space="preserve">
+    <value>Blocked Copies</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CategoriesManagment" xml:space="preserve">
+    <value>Categories Management</value>
+  </data>
+  <data name="DocsOnLoan" xml:space="preserve">
+    <value>Docs on Loan</value>
+  </data>
+  <data name="DocumentManagment" xml:space="preserve">
+    <value>Document Management</value>
+  </data>
+  <data name="DocumentsOnLoan" xml:space="preserve">
+    <value>Documents on Loan</value>
+  </data>
+  <data name="Holidays" xml:space="preserve">
+    <value>Holidays</value>
+  </data>
+  <data name="LoanManagement" xml:space="preserve">
+    <value>Loan Management</value>
+  </data>
+  <data name="MemberManagement" xml:space="preserve">
+    <value>Member Management</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="PenaltyDays" xml:space="preserve">
+    <value>Penalty Days</value>
+  </data>
+  <data name="RemindersManagment" xml:space="preserve">
+    <value>Reminders Management</value>
+  </data>
+  <data name="ReservedDocs" xml:space="preserve">
+    <value>Reserved Docs</value>
+  </data>
+  <data name="ReservedDocuments" xml:space="preserve">
+    <value>Reserved Documents</value>
+  </data>
+  <data name="RestitutionManagment" xml:space="preserve">
+    <value>Restitution Management</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+</root>

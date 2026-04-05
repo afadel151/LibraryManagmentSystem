@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="AdherentMangment" xml:space="preserve">
+    <value>إدارة الأعضاء</value>
+  </data>
+  <data name="AllDocuments" xml:space="preserve">
+    <value>جميع الوثائق</value>
+  </data>
+  <data name="Availability" xml:space="preserve">
+    <value>إشعار التوفر</value>
+  </data>
+  <data name="BlockedCopies" xml:space="preserve">
+    <value>النسخ المحجوبة</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="CategoriesManagment" xml:space="preserve">
+    <value>إدارة الفئات</value>
+  </data>
+  <data name="DocsOnLoan" xml:space="preserve">
+    <value>الوثائق المعارة</value>
+  </data>
+  <data name="DocumentManagment" xml:space="preserve">
+    <value>إدارة الوثائق</value>
+  </data>
+  <data name="DocumentsOnLoan" xml:space="preserve">
+    <value>الوثائق المعارة</value>
+  </data>
+  <data name="Holidays" xml:space="preserve">
+    <value>أيام العطل</value>
+  </data>
+  <data name="LoanManagement" xml:space="preserve">
+    <value>إدارة الإعارات</value>
+  </data>
+  <data name="MemberManagement" xml:space="preserve">
+    <value>إدارة المنخرطين</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>القائمة</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>الإعدادات</value>
+  </data>
+  <data name="PenaltyDays" xml:space="preserve">
+    <value>عدد أيام الغرامة</value>
+  </data>
+  <data name="RemindersManagment" xml:space="preserve">
+    <value>إدارة التذكيرات</value>
+  </data>
+  <data name="ReservedDocs" xml:space="preserve">
+    <value>الوثائق المحجوزة</value>
+  </data>
+  <data name="ReservedDocuments" xml:space="preserve">
+    <value>الوثائق المحجوزة</value>
+  </data>
+  <data name="RestitutionManagment" xml:space="preserve">
+    <value>إدارة الإرجاعات</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>بحث</value>
+  </data>
+</root>
