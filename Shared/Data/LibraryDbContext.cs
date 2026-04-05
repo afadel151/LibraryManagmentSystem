@@ -186,10 +186,17 @@ public partial class LibraryDbContext : DbContext
                 .WithOne()
                 .HasForeignKey(p => p.IdAdherent);
 
+
             entity.HasMany(a => a.Prets)
                 .WithOne(p => p.Adherent)
                 .HasForeignKey(p => p.IdAdherent);
 
+            entity.HasMany(a => a.HistoriquePenaliteAdherents)
+                .WithOne(h => h.Adherent)
+                .HasForeignKey(h => h.IdAdherent)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired(false);
+                
             entity.HasMany(a => a.HistoriquePrets)
                 .WithOne(a => a.Adherent)
                 .HasForeignKey(a => a.IdAdherent);
@@ -522,6 +529,12 @@ public partial class LibraryDbContext : DbContext
             entity.HasMany(d => d.HistoriquePrets)
                 .WithOne(d => d.Exemplaire)
                 .HasForeignKey(d => d.IdExemplaire);
+            
+            entity.HasOne(e => e.Notice)
+                .WithMany(n => n.Exemplaires)
+                .HasForeignKey(e => e.Cote)
+                .HasPrincipalKey(n => n.Cote)
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<Fonction>(entity =>
@@ -610,9 +623,11 @@ public partial class LibraryDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("ID_ADHERENT");
+
             entity.Property(e => e.DatePenalite)
                 .HasColumnType("DATE")
                 .HasColumnName("DATE_PENALITE");
+
             entity.Property(e => e.NombreJoursPenalite)
                 .HasColumnType("NUMBER")
                 .HasColumnName("NOMBRE_JOURS_PENALITE");
@@ -800,7 +815,7 @@ public partial class LibraryDbContext : DbContext
         {
             entity.HasKey(e => e.IdNotice);
             entity.ToTable("NOTICE");
-
+            
             entity.HasIndex(e => e.Date1erPub, "INDEX_DATE_1ER_PUB");
             entity.HasIndex(e => e.IdPeriodicite, "NOTICE_PERIODICITE_FK");
             entity.HasIndex(e => e.IdSourceArticle, "NOTICE_SOURCE_ARTICLE_FK");
@@ -883,6 +898,8 @@ public partial class LibraryDbContext : DbContext
             entity.Property(e => e.TypeDonneesResourceElec)
                 .HasMaxLength(256).IsUnicode(false)
                 .HasColumnName("TYPE_DONNEES_RESOURCE_ELEC");
+
+            entity.HasAlternateKey(n => n.Cote);
 
             // ── FK vers tables de référence ──────────────────────────────────────────
 
@@ -1068,6 +1085,8 @@ public partial class LibraryDbContext : DbContext
                        .IsRequired(false);
                    }
                );
+
+               
 
 
         });
