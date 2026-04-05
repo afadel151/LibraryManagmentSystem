@@ -6,25 +6,26 @@ using System.Threading.Tasks;
 using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Responses.Adherent;
 using System.Net;
+using Borrowing.Web.Providers;
+using Borrowing.SharedClasses.Requests.Restitution;
 
 public interface IRestitutionService
 {
-    Task<CheckAdhRestitutionResponseDto> CheckAdherent(string AdherentId);
+    Task<CheckAdhRestitutionResponseDto?> CheckAdherent(string AdherentId);
+    Task<bool> ValiderRestitution(CreateRestitutionDto dto);
+    Task<bool> ValiderRenouvlement(CreateRestitutionDto dto);
+
 }
 
 
-public class RestitutionService(IHttpClientFactory factory) : IRestitutionService
+public class RestitutionService(ApiHttpClient api) : IRestitutionService
 {
-    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
-   public async Task<CheckAdhRestitutionResponseDto> CheckAdherent(string AdherentId)
-    {
-        var response = await _httpClient.GetAsync($"api/Adherent/Restitution/Check?AdherentId={AdherentId}");
-        var content = await response.Content.ReadAsStringAsync();
+    private readonly ApiHttpClient _api = api;
+   public async Task<CheckAdhRestitutionResponseDto?> CheckAdherent(string AdherentId)
+    => await _api.GetAsync<CheckAdhRestitutionResponseDto>($"api/Adherent/Restitution/Check?AdherentId={Uri.EscapeDataString(AdherentId)}");
 
-        response.EnsureSuccessStatusCode();
-        return JsonSerializer.Deserialize<CheckAdhRestitutionResponseDto>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
-    }
+    public async Task<bool> ValiderRestitution(CreateRestitutionDto dto) => 
+        await _api.PostForSuccessAsync("api/Restitution/Restituer",dto);
+    public async Task<bool> ValiderRenouvlement(CreateRestitutionDto dto) => 
+        await _api.PostForSuccessAsync("api/Restitution/Restituer",dto);
 }

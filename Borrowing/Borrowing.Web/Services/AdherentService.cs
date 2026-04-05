@@ -21,22 +21,17 @@ public interface IAdherentService
     Task<bool> UpdateAdherentAsync(UpdateAdherentDto dto);
 }
 
-public class AdherentService : IAdherentService
+public class AdherentService(ApiHttpClient api) : IAdherentService
 {
-    private readonly ApiHttpClient _api;
+    private readonly ApiHttpClient _api = api;
 
-    public AdherentService(ApiHttpClient api)
-    {
-        _api = api;
-    }
+    public async Task<AdherentsStatsDto?> GetStats() =>
+        await _api.GetAsync<AdherentsStatsDto>("api/Adherent/Stats");
 
-    public Task<AdherentsStatsDto?> GetStats() =>
-        _api.GetAsync<AdherentsStatsDto>("api/Adherent/Stats");
+    public async Task<AdherentProfileDto?> GetAdherent(string id) =>
+        await _api.GetAsync<AdherentProfileDto>($"api/Adherent/Profile?Id={Uri.EscapeDataString(id)}");
 
-    public Task<AdherentProfileDto?> GetAdherent(string id) =>
-        _api.GetAsync<AdherentProfileDto>($"api/Adherent/Profile?Id={Uri.EscapeDataString(id)}");
-
-    public Task<PagedResult<AdherentDto>?> GetAdherentsAsync(PaginatedQueryParameters queryParameters)
+    public async Task<PagedResult<AdherentDto>?> GetAdherentsAsync(PaginatedQueryParameters queryParameters)
     {
         var orderBy = string.IsNullOrWhiteSpace(queryParameters.OrderBy)
                    ? "datepret desc"
@@ -48,7 +43,7 @@ public class AdherentService : IAdherentService
                   $"Search={Uri.EscapeDataString(queryParameters.Search ?? "")}&" +
                   $"OrderBy={Uri.EscapeDataString(orderBy)}";
 
-        return _api.GetAsync<PagedResult<AdherentDto>>(url);
+        return await _api.GetAsync<PagedResult<AdherentDto>>(url);
     }
 
     public async Task<IEnumerable<AdherentDto>> GetAllAdherentsAsync(string search = "")
@@ -63,13 +58,13 @@ public class AdherentService : IAdherentService
         return result?.Data ?? Enumerable.Empty<AdherentDto>();
     }
 
-    public Task<bool> CreateAdherentAsync(CreateAdherentDto dto) =>
-        _api.PostForSuccessAsync("api/Adherent", dto);
+    public async Task<bool> CreateAdherentAsync(CreateAdherentDto dto) =>
+        await _api.PostForSuccessAsync("api/Adherent", dto);
 
-    public Task<bool> UpdateAdherentAsync(UpdateAdherentDto dto) =>
-        _api.PutForSuccessAsync("api/Adherent", dto);
+    public async Task<bool> UpdateAdherentAsync(UpdateAdherentDto dto) =>
+        await _api.PutForSuccessAsync("api/Adherent", dto);
 
-    public Task<bool> DeletePenaliteAsync(string adherentId, DateTime datePenalite) =>
-        _api.DeleteForSuccessAsync(
+    public async Task<bool> DeletePenaliteAsync(string adherentId, DateTime datePenalite) =>
+        await _api.DeleteForSuccessAsync(
             $"api/Penalite/{Uri.EscapeDataString(adherentId)}/{datePenalite:yyyy-MM-ddTHH:mm:ss}");
 }
