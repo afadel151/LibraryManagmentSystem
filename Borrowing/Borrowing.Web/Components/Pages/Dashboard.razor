@@ -1,53 +1,60 @@
 @page "/"
 @using Borrowing.Web.Components.Base
+@using Microsoft.Extensions.Localization
 
 @inject NavigationManager Navigation
 @inherits AuthorizedComponentBase
+
+@inject CultureService CultureService
+@inject IStringLocalizer<App> L
+
 <div style="height: calc(100vh - 100px); overflow-y: auto;">
 
-<div class="rz-display-grid" style="grid-template-columns: repeat(3, 1fr);gap: 16px;height:100%;">
-    @foreach (CardElement element in Elements)
-    {
+    <div class="rz-display-grid" style="grid-template-columns: repeat(3, 1fr);gap: 16px;height:100%;">
+        @foreach (CardElement element in Elements)
+        {
 
-        <RadzenButton Variant="Variant.Flat"  ButtonStyle="element.Style" Style="
+            <RadzenButton Variant="Variant.Flat" ButtonStyle="element.Style" Style="
 
-        display:flex; 
-        align-items:center; 
-        justify-content:center;
-        font-size:30px;
-        "
-        Click="@(args => Navigation.NavigateTo(element.Url))"
-        Icon="@element.Icon"
-        Text="@element.Text"
-         />
+            display:flex; 
+            align-items:center; 
+            justify-content:center;
+            font-size:30px;
+            " Click="@(args => Navigation.NavigateTo(element.Url))" Icon="@element.Icon" Text="@element.Text" />
 
-    }
-</div>
+        }
+    </div>
 </div>
 
 @code {
 
 
-    class CardElement
-    {
-        public string Text { get; set; } = string.Empty;
-        public string Url { get; set; } = string.Empty;
-
-        public ButtonStyle Style { get; set;} = ButtonStyle.Base;
-        public string Icon {get;set;} = string.Empty;
-    }   
-
-    List<CardElement> Elements = new List<CardElement>
+    @code {
+        class CardElement
         {
-            new() { Text = "Gestion des prets" ,Icon="hand_package", Url = "/prets" , Style=ButtonStyle.Base},
-            new() { Text = "Gestion des adherents" ,Icon="person" , Url = "/adherents" , Style=ButtonStyle.Secondary},
-            new() { Text = "Gestion des restitutions" ,Icon="source_notes", Url = "/restitutions" , Style=ButtonStyle.Info},
-            new() { Text = "Gestion des documents" ,Icon="newsstand", Url = "/documents" , Style=ButtonStyle.Warning},
-            new() { Text = "Avis de disponibilite" ,Icon="timelapse", Url = "/availability" , Style=ButtonStyle.Dark},
-            new() { Text = "Documents en pret" ,Icon="assignment_turned_in", Url = "/documents/en_pret" , Style=ButtonStyle.Primary},
-            new() { Text = "Documents reservee" ,Icon="date_range", Url = "/documents/reservees" , Style=ButtonStyle.Success},
-            new() { Text = "Gestion de relances" ,Icon="notifications_active", Url = "/relances" , Style=ButtonStyle.Success},
-            new() { Text = "Gestion des categories" ,Icon="category", Url = "/categories" , Style=ButtonStyle.Danger},
+            public string Text { get; set; } = string.Empty;
+            public string Url { get; set; } = string.Empty;
+            public ButtonStyle Style { get; set; } = ButtonStyle.Base;
+            public string Icon { get; set; } = string.Empty;
+        }
 
+        List<CardElement> Elements = new();
+
+        protected override void OnInitialized()
+        {
+            Elements = new List<CardElement>
+        {
+            new() { Text = L["LoanManagement"], Icon = "hand_package", Url = "/prets", Style = ButtonStyle.Base },
+            new() { Text = L["MemberManagment"], Icon = "person", Url = "/adherents", Style = ButtonStyle.Secondary },
+            new() { Text = L["RestitutionManagment"], Icon = "source_notes", Url = "/restitutions", Style = ButtonStyle.Info },
+            new() { Text = L["DocumentManagment"], Icon = "newsstand", Url = "/documents", Style = ButtonStyle.Warning },
+            new() { Text = L["Availability"], Icon = "timelapse", Url = "/availability", Style = ButtonStyle.Dark },
+            new() { Text = L["DocsOnLoan"], Icon = "assignment_turned_in", Url = "/documents/en_pret", Style = ButtonStyle.Primary
+},
+            new() { Text = L["ReservedDocs"], Icon = "date_range", Url = "/documents/reservees", Style = ButtonStyle.Success },
+            new() { Text = L["RemindersManagment"], Icon = "notifications_active", Url = "/relances", Style = ButtonStyle.Success },
+            new() { Text = L["CategoriesManagment"], Icon = "category", Url = "/categories", Style = ButtonStyle.Danger },
         };
+        }
+    }
 }

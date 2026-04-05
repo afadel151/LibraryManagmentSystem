@@ -51,7 +51,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">Penalises</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6">Penalises/Suspendu</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-warning rz-m-0">
                         @(stats?.Penalises ?? 0)
                     </RadzenText>
@@ -88,30 +88,18 @@
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Position" Title="Position" />
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Etat" Title="Etat">
                     <Template Context="data">
-                        @if (data.Etat == 0)
+                        @if (data.Etat == 1)
                         {
                             <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Success" Text="Actif" />
                         }
-                        else
+                        else if(data.Etat == 2)
                         {
-                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="Inactif" />
+                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="Penalise/suspendu" />
                         }
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Prets" Title="Pres en cours" />
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Reservations" Title="Reservations en cours" />
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Penalise" Title="Penalise/Non penalise">
-                    <Template Context="data">
-                        @if (data.Penalise == 0)
-                        {
-                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Success" Text="Autorise" />
-                        }
-                        else
-                        {
-                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="Penalise" />
-                        }
-                    </Template>
-                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="AdherentDto" Title="Action">
                     <Template Context="data">
                         <RadzenButton Click=@(args => navigationManager.NavigateTo("/adherents/" + data.IdAdherent))

@@ -34,19 +34,26 @@ else
                 <RadzenImage Path="@adherent.Picture" Style="width:150px;height:150px;border-radius:50%;object-fit:cover" />
                 @if (isEditing)
                 {
-                    <RadzenTemplateForm Data="@adherentDto" Submit="@SaveProfile" TItem="Borrowing.SharedClasses.Requests.Adherent.UpdateAdherentDto">
+                    <RadzenTemplateForm Data="@adherentDto" Submit="@SaveProfile"
+                                        TItem="Borrowing.SharedClasses.Requests.Adherent.UpdateAdherentDto">
                         <RadzenStack Gap="0.5rem">
                             <RadzenTextBox @bind-Value="adherentDto.IdAdherent" Placeholder="ID" Disabled="true" />
                             <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                                 <RadzenTextBox @bind-Value="adherentDto.Prenom" Placeholder="Prénom" />
                                 <RadzenTextBox @bind-Value="adherentDto.Nom" Placeholder="Nom" />
                             </RadzenStack>
-                            <RadzenDropDown @bind-Value="adherentDto.IdCategorie" Data="@categories" TextProperty="LibelleCategorie" ValueProperty="IdCategorie" Placeholder="Sélectionner Catégorie" />
-                            <RadzenDropDown @bind-Value="adherentDto.IdPosition" Data="@positions" TextProperty="LibellePosition" ValueProperty="IdPosition" Placeholder="Sélectionner Position" />
-                            <RadzenDropDown @bind-Value="adherentDto.EtatAdherent" Data="@etats" TextProperty="DescEtat" ValueProperty="IdEtat" Placeholder="Sélectionner État" />
+                            <RadzenDropDown @bind-Value="adherentDto.IdCategorie" Data="@categories"
+                                            TextProperty="LibelleCategorie" ValueProperty="IdCategorie"
+                                            Placeholder="Sélectionner Catégorie" />
+                            <RadzenDropDown @bind-Value="adherentDto.IdPosition" Data="@positions"
+                                            TextProperty="LibellePosition" ValueProperty="IdPosition" Placeholder="Sélectionner Position" />
+                            <RadzenDropDown @bind-Value="adherentDto.EtatAdherent" Data="@etats" TextProperty="DescEtat"
+                                            ValueProperty="IdEtat" Placeholder="Sélectionner État" />
                             <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                                <RadzenButton ButtonType="ButtonType.Submit" Text="Sauvegarder" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small" />
-                                <RadzenButton Text="Annuler" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" Click="CancelEdit" />
+                                <RadzenButton ButtonType="ButtonType.Submit" Text="Sauvegarder"
+                                              ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small" />
+                                <RadzenButton Text="Annuler" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
+                                              Click="CancelEdit" />
                             </RadzenStack>
                         </RadzenStack>
                     </RadzenTemplateForm>
@@ -63,27 +70,27 @@ else
                                     Text="@($"Position : {adherent.Adherent.Position!.LibellePosition ?? "—"}")" />
                     </RadzenStack>
                 }
-                <RadzenStack Style="margin-left:auto" AlignItems="AlignItems.End" Orientation="Orientation.Vertical" Gap="0.5rem">
+                <RadzenStack Style="margin-left:auto" AlignItems="AlignItems.End" Orientation="Orientation.Vertical"
+                             Gap="0.5rem">
                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                         <RadzenBadge
-                            BadgeStyle="@(adherent.Adherent!.EtatAdherent == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
-                            Text="@(adherent.Adherent!.EtatAdherent == 0 ? "Actif" : "Inactif")" />
-                        <RadzenBadge
-                        BadgeStyle="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
-                        Text="@(adherent.Adherent!.PenaliteAdherents.Count == 0 ? "Non pénalisé" : "Pénalisé")" />
+                        BadgeStyle="@(adherent.Adherent!.EtatAdherent == 1 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                        Text="@(adherent.Adherent!.EtatAdherent == 1 ? "Actif" : "Penalise ou suspendu")" />
                     </RadzenStack>
                     @if (isAdmin && !isEditing)
                     {
-                        <RadzenButton Text="Éditer le profil" Icon="edit" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" Click="EditProfile" />
+                        <RadzenButton Text="Éditer le profil" Icon="edit" ButtonStyle="ButtonStyle.Secondary"
+                                      Size="ButtonSize.Small" Click="EditProfile" />
                     }
                 </RadzenStack>
             </RadzenStack>
         </RadzenCard>
-         <RadzenCard>
+        <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
                 <RadzenText TextStyle="TextStyle.H6" Text="Prêts" />
-                <RadzenButton Text="Exporter" Icon="download" Click="@ExportPrets" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                <RadzenButton Text="Exporter" Icon="download" Click="@ExportPrets" ButtonStyle="ButtonStyle.Light"
+                              Size="ButtonSize.Small" />
             </RadzenStack>
             <RadzenDataGrid Data="@adherent.Adherent!.Prets" AllowSorting="true" AllowPaging="true" PageSize="5"
                             EmptyText="Aucun prêt">
@@ -102,27 +109,35 @@ else
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
                 <RadzenText TextStyle="TextStyle.H6" Text="Pénalités" />
-                <RadzenButton Text="Exporter" Icon="download" Click="@ExportPenalites" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                <RadzenButton Text="Exporter" Icon="download" Click="@ExportPenalites" ButtonStyle="ButtonStyle.Light"
+                              Size="ButtonSize.Small" />
             </RadzenStack>
             <RadzenDataGrid Data="@adherent.Adherent!.PenaliteAdherents" AllowSorting="true" AllowPaging="true" PageSize="5"
                             EmptyText="Aucune pénalité">
                 <Columns>
                     <RadzenDataGridColumn Property="DatePenalite" Title="Date" FormatString="{0:dd/MM/yyyy}" />
-                    <RadzenDataGridColumn Property="NombreJoursPenalite" Title="Nombre de jours" />
-                    <RadzenDataGridColumn Title="Actions" Visible="@isAdmin" Width="100px" Filterable="false" Sortable="false" TextAlign="TextAlign.Center">
+                    <RadzenDataGridColumn Property="NombreJoursPenalite" Title="Nombre de jours">
+                        <Template Context="item">
+                            @Math.Abs(item.NombreJoursPenalite ?? 0)
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Title="Actions" Visible="@isAdmin" Width="100px" Filterable="false"
+                                          Sortable="false" TextAlign="TextAlign.Center">
                         <Template Context="penalite">
-                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small" 
-                                          Click="@(args => DeletePenalite((Shared.Models.PenaliteAdherent)penalite))" @onclick:stopPropagation="true" />
+                            <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small"
+                                          Click="@(args => DeletePenalite((Shared.Models.PenaliteAdherent)penalite))"
+                                          @onclick:stopPropagation="true" />
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
         </RadzenCard>
-         <RadzenCard>
+        <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
                 <RadzenText TextStyle="TextStyle.H6" Text="Réservations" />
-                <RadzenButton Text="Exporter" Icon="download" Click="@ExportReservations" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                <RadzenButton Text="Exporter" Icon="download" Click="@ExportReservations" ButtonStyle="ButtonStyle.Light"
+                              Size="ButtonSize.Small" />
             </RadzenStack>
             <RadzenDataGrid Data="@adherent.Adherent!.Reservations" AllowSorting="true" AllowPaging="true" PageSize="5"
                             EmptyText="Aucune réservation">
@@ -132,6 +147,38 @@ else
                 </Columns>
             </RadzenDataGrid>
         </RadzenCard>
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Historique des Prêts" />
+                <RadzenButton Text="Exporter" Icon="download" Click="@ExportPrets" ButtonStyle="ButtonStyle.Light"
+                              Size="ButtonSize.Small" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@adherent.Adherent!.HistoriquePrets" AllowSorting="true" AllowPaging="true" PageSize="5"
+                            EmptyText="Aucun prêt en historique">
+                <Columns>
+                    <RadzenDataGridColumn Property="IdExemplaire" Title="Exemplaire" />
+                    <RadzenDataGridColumn Property="DatePret" Title="Date de prêt" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn Property="DateRetour" Title="Date de retour" FormatString="{0:dd/MM/yyyy}" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                         JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
+                <RadzenText TextStyle="TextStyle.H6" Text="Historique de penalites" />
+                <RadzenButton Text="Exporter" Icon="download" Click="@ExportPenalites" ButtonStyle="ButtonStyle.Light"
+                              Size="ButtonSize.Small" />
+            </RadzenStack>
+            <RadzenDataGrid Data="@adherent.Adherent!.HistoriquePenaliteAdherents" AllowSorting="true" AllowPaging="true"
+                            PageSize="5" EmptyText="Aucune pénalité">
+                <Columns>
+                    <RadzenDataGridColumn Property="DatePenalite" Title="Date" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn Property="NombreJoursPenalite" Title="Nombre de jours" />
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenCard>
+
     </RadzenStack>
 }
 
@@ -158,6 +205,7 @@ else
         Console.WriteLine("A");
         adherent = await AdherentService.GetAdherent(Id);
         Console.WriteLine("B");
+
         if (adherent == null)
         {
             Navigation.NavigateTo("/not-found");
@@ -179,7 +227,7 @@ else
             Prenom = adherent.Adherent.Prenom ?? "",
             IdPosition = adherent.Adherent.IdPosition ?? 0,
             IdCategorie = adherent.Adherent.IdCategorie ?? "",
-            EtatAdherent = (int)(adherent.Adherent.EtatAdherent ?? 0)
+            EtatAdherent = (int)(adherent.Adherent.EtatAdherent!)
         };
         isEditing = true;
     }
@@ -196,11 +244,23 @@ else
         {
             adherent = await AdherentService.GetAdherent(Id);
             isEditing = false;
-            NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Succès", Detail = "Profil mis à jour." });
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Succès",
+                Detail
+= "Profil mis à jour."
+            });
         }
         else
         {
-            NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Erreur", Detail = "Impossible de mettre à jour le profil." });
+            NotificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Erreur",
+                Detail =
+"Impossible de mettre à jour le profil."
+            });
         }
     }
 
@@ -215,7 +275,8 @@ else
             EtatDuree = p.EtatDuree
         });
 
-        await exportService.ExportToExcelAsync(exportData, $"Prets_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
+        await exportService.ExportToExcelAsync(exportData,
+$"Prets_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
     }
 
     private async Task ExportPenalites()
@@ -228,7 +289,8 @@ else
             Jours = p.NombreJoursPenalite
         });
 
-        await exportService.ExportToExcelAsync(exportData, $"Penalites_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
+        await exportService.ExportToExcelAsync(exportData,
+$"Penalites_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
     }
 
     private async Task ExportReservations()
@@ -241,23 +303,38 @@ else
             Date = r.HeureReservation.ToString("dd/MM/yyyy HH:mm")
         });
 
-        await exportService.ExportToExcelAsync(exportData, $"Reservations_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
+        await exportService.ExportToExcelAsync(exportData,
+$"Reservations_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
     }
 
     private async Task DeletePenalite(Shared.Models.PenaliteAdherent penalite)
     {
-        var confirm = await DialogService.Confirm("Êtes-vous sûr de vouloir supprimer cette pénalité ?", "Confirmation", new ConfirmOptions() { OkButtonText = "Oui", CancelButtonText = "Non" });
+        var confirm = await DialogService.Confirm("Êtes-vous sûr de vouloir supprimer cette pénalité ?", "Confirmation", new
+ConfirmOptions()
+        { OkButtonText = "Oui", CancelButtonText = "Non" });
         if (confirm == true)
         {
             var success = await AdherentService.DeletePenaliteAsync(penalite.IdAdherent, penalite.DatePenalite);
             if (success)
             {
                 adherent!.Adherent!.PenaliteAdherents.Remove(penalite);
-                NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Success, Summary = "Succès", Detail = "Pénalité supprimée." });
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Succès",
+                    Detail
+= "Pénalité supprimée."
+                });
             }
             else
             {
-                NotificationService.Notify(new NotificationMessage { Severity = NotificationSeverity.Error, Summary = "Erreur", Detail = "Impossible de supprimer la pénalité." });
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Erreur",
+                    Detail =
+"Impossible de supprimer la pénalité."
+                });
             }
         }
     }

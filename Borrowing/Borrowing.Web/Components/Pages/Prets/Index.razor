@@ -89,7 +89,7 @@
                                     @adherentCheck.Adherent?.Categorie?.LibelleCategorie
                                 </RadzenText>
 
-                                @if (adherentCheck.Adherent?.EtatAdherent == 0)
+                                @if (adherentCheck.Adherent?.EtatAdherent == 1)
                                 {
                                     <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Actif" class="rz-mb-2" />
                                     @if (adherentCheck.Etat == EtatAdherentEnum.AUTHORIZED)
@@ -122,7 +122,7 @@
                                                 </RadzenText>
                                                 break;
                                             case EtatAdherentEnum.PENALISED:
-                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger"><b>Adhérent Pénalisé</b>
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger"><b>Adhérent Pénalisé ou suspendu</b>
                                                 </RadzenText>
                                                 break;
                                          }

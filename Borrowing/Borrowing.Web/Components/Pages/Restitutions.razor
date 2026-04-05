@@ -43,8 +43,8 @@
 
                        
                         <RadzenBadge
-                        BadgeStyle="@(adherentCheck.Adherent!.EtatAdherent == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
-                        Text="@(adherentCheck.Adherent!.EtatAdherent == 0 ? "Actif" : "Inactif")" />
+                        BadgeStyle="@(adherentCheck.Adherent!.EtatAdherent == 1 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                        Text="@(adherentCheck.Adherent!.EtatAdherent == 1 ? "Actif" : "Penalise ou suspendu")" />
                         <RadzenBadge
                         BadgeStyle="@(adherentCheck.Adherent!.PenaliteAdherents.Count == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
                         Text="@(adherentCheck.Adherent!.PenaliteAdherents.Count == 0 ? "Non pénalisé" : "Pénalisé")" />
@@ -78,9 +78,9 @@
                 @if (selectedCopyId != null)
                 {
 
-                    <RadzenButton Text="Valider Restitution" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium"
+                    <RadzenButton Text="Valider Restitution" Click="ValiderRestitution" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium"
                                   class="rz-mr-2" />
-                    @if (adherentCheck.Adherent!.PenaliteAdherents.Count == 0)
+                    @if (adherentCheck.Adherent!.PenaliteAdherents.Count == 0 && adherentCheck.Adherent.EtatAdherent == 1)
                     {
                         <RadzenButton Text="Renouvler le pret" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Medium" class="rz-mr-2" />
                     }
@@ -100,8 +100,7 @@
 
     void OnMemberTyping(ChangeEventArgs e)
     {
-        adherentCheck = null;
-        selectedCopyId = null;
+        ResetMemberState();
     }
     private async Task OnMemberIdChanged()
     {
@@ -128,6 +127,41 @@
             ResetMemberState();
         }
         isLoadingMember = false;
+    }
+
+    private async Task ValiderRestitution()
+    {
+        if(string.IsNullOrEmpty(selectedCopyId))
+            return;
+        if(adherentCheck == null)
+            return;
+
+
+        CreateRestitutionDto dto = new () {
+            AdherentId = adherentCheck!.Adherent!.IdAdherent,
+            ExemplaireId = selectedCopyId!
+        };
+
+        var success = await restitutionService.ValiderRestitution(dto);
+        if(success)
+        {
+            ShowNotification(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Restitution Valide",
+                Duration = 4000
+            });
+            ResetMemberState();
+        }else{
+            ShowNotification(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Erruer lors de restitution",
+                Duration = 4000
+            });
+        }
+
+
     }
 
     private void ResetMemberState()
