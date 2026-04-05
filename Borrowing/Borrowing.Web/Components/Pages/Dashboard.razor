@@ -1,6 +1,8 @@
 @page "/"
+@using Borrowing.Web.Components.Base
 
 @inject NavigationManager Navigation
+@inherits AuthorizedComponentBase
 <div style="height: calc(100vh - 100px); overflow-y: auto;">
 
 <div class="rz-display-grid" style="grid-template-columns: repeat(3, 1fr);gap: 16px;height:100%;">

@@ -1,11 +1,12 @@
 @page "/documents/{Id:int}"
 @using Borrowing.SharedClasses.Common
+@using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
 @using Shared.Models
 @inject INoticeService noticeService
 @inject NavigationManager NavigationManager
 @inject IExportService exportService
-
+@inherits AuthorizedComponentBase
 @if (notice == null)
 {
     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" Style="margin-top:4rem">
@@ -128,7 +129,7 @@ else
     [Parameter]
     public int Id { get; set; } = 0;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnPageInitializedAsync()
     {
         notice = await noticeService.GetNoticeProfileAsync(Id);
         if (notice == null)

@@ -1,11 +1,14 @@
 @page "/restitutions"
 @using Borrowing.SharedClasses.Responses.Adherent
+@using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Common
 @using Borrowing.SharedClasses.Requests.Restitution
 
 @inject IRestitutionService restitutionService
 @inject NotificationService NotificationService
+
+@inherits AuthorizedComponentBase
 
 
 

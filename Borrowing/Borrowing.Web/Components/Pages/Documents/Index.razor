@@ -1,4 +1,5 @@
 @page "/documents"
+@using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Common
 
@@ -8,6 +9,8 @@
 
 
 @inject IExportService exportService
+
+@inherits AuthorizedComponentBase
 
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
@@ -108,11 +111,8 @@
         }
     }
 
-    @* protected override async Task OnInitializedAsync()
-    {
-        stats = await adherentService.GetStats();
-    } *@
-    protected override async Task OnInitializedAsync()
+
+    protected override async Task OnPageInitializedAsync()
     {
         topLoaned = await noticeService.GetChartData();
     }

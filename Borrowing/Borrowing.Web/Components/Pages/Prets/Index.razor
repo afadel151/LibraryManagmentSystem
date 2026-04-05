@@ -1,6 +1,7 @@
 @page "/prets"
 @using Borrowing.SharedClasses.Requests.Reservation
 @using Borrowing.SharedClasses.Responses.Reservation
+@using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Responses.Pret
 @using Borrowing.SharedClasses.Common
@@ -14,6 +15,8 @@
 @using Shared.Models
 
 @inject NotificationService NotificationService
+
+@inherits AuthorizedComponentBase
 
 <RadzenRow class="rz-text-align-center " Gap="1rem">
     <RadzenColumn>
@@ -225,7 +228,7 @@
     private bool isLoading;
 
     private PretStatsDto? stats;
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnPageInitializedAsync()
     {
         stats = await pretService.GetStats();
     }

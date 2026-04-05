@@ -1,10 +1,13 @@
 @page "/exemplaire/{*Id}"
+@using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
 @using Shared.Models
 
 @inject IExemplaireService exemplaireService
 @inject NavigationManager NavigationManager
 @inject IExportService exportService
+
+@inherits AuthorizedComponentBase
 
 @if (exemplaire == null)
 {
@@ -82,7 +85,7 @@ else
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnPageInitializedAsync()
     {
         exemplaire = await exemplaireService.GetExemplaireAsync(Id);
         if (exemplaire == null)
