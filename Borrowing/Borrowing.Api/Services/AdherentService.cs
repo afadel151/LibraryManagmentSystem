@@ -57,7 +57,6 @@ public class AdherentService(
                         Etat = (int)a.EtatAdherent!,
                         Prets = a.Prets.Count,
                         Reservations = a.Reservations.Count,
-                        Penalise = a.PenaliteAdherents.Count > 0 ? 1 : 0
                     };
         var totalCount = await query.CountAsync();
         if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))
@@ -88,9 +87,6 @@ public class AdherentService(
 
                 "reservations asc" => query.OrderBy(x => x.Reservations),
                 "reservations desc" => query.OrderByDescending(x => x.Reservations),
-
-                "penalise asc" => query.OrderBy(x => x.Penalise),
-                "penalise desc" => query.OrderByDescending(x => x.Penalise),
                 _ => query.OrderBy(x => x.IdAdherent)
             };
         }
@@ -139,12 +135,12 @@ public class AdherentService(
 
     public async Task<AdherentsStatsDto> GetStats()
     {
-        int penalises = await _penaliteRepository.GetQueryable()
-                        .GroupBy(p => p.IdAdherent)
-                        .CountAsync();
+        int penalises = await _adherentRepository.GetQueryable()
+                        .Where(a => a.EtatAdherent == 2)
+                            .CountAsync();
 
         int totalActifs = await _adherentRepository.GetQueryable()
-                        .Where(a => a.EtatAdherent == 0)
+                        .Where(a => a.EtatAdherent == 1)
                             .CountAsync();
 
         int pretants = await _pretRepository.GetQueryable()
@@ -180,7 +176,7 @@ public class AdherentService(
             Prenom = dto.Prenom,
             IdPosition = dto.IdPosition,
             IdCategorie = dto.IdCategorie,
-            EtatAdherent = 0 // Active
+            EtatAdherent = 1 // Active
         };
 
         try

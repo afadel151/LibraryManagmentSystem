@@ -262,6 +262,7 @@ public class PretService(
                             {
                                 retard = true; // il est en retard
                                 nbrJoursRetardDocEnCours = (DateTime.Now.Date - dateRestitutionPrevue).Days;
+                                Console.WriteLine("##### 1");
 
                                 // Extraire le nombre de jours de pénalité depuis la table penalite
                                 var penaliteRecord = await _penaliteRepository.GetQueryable()
@@ -271,6 +272,7 @@ public class PretService(
 
                                 if (penaliteRecord != null)
                                 {
+                                    Console.WriteLine("##### 2");
                                     nbrJoursRetardDocEnCours = (int)penaliteRecord.NombreJoursRetard!;
                                 }
                             }
@@ -279,10 +281,12 @@ public class PretService(
                 }
 
                 // 3. Vérification existence dans penalite_adherent
+                Console.WriteLine("##### 3");
+
                 bool existeDansPenaliteAdherent = false;
                 int nbrJoursRetardDansTablePenaliteAdherent = 0;
-
-                var penaliteAdherentExistante = adherent!.PenaliteAdherents.First();
+                var penaliteAdherentExistante = adherent!.PenaliteAdherents.FirstOrDefault();
+                Console.WriteLine("##### 4");
 
                 if (penaliteAdherentExistante != null)
                 {
@@ -292,10 +296,13 @@ public class PretService(
 
                 // prets en cours
                 int nbrPretUtilisateurEnCours = adherent.Prets.Count;
+                Console.WriteLine("##### 5");
 
                 // gestion des pénalités
                 if (retard)
                 {
+                    Console.WriteLine("##### 6");
+
                     int joursRetardFinal = 0;
 
                     if (nbrPretUtilisateurEnCours == 1) // Dernier document

@@ -44,7 +44,7 @@ public class AdherentController(IPretService pretService, IAdherentService adher
         var adherent = await _adherentService.GetAdherentWithDetailsAsync(id);
         if (adherent != null)
         {
-            if (adherent.Adherent?.EtatAdherent == 0) // actif
+            if (adherent.Adherent?.EtatAdherent == 1) // actif
             {
                 if (adherent.Adherent?.PenaliteAdherents.Count == 0) // allowed
                 {
@@ -106,7 +106,7 @@ public class AdherentController(IPretService pretService, IAdherentService adher
                 return Ok(
                             new CheckAdhPretResponseDto
                             {
-                                Etat = EtatAdherentEnum.INACTIF,
+                                Etat = EtatAdherentEnum.PENALISED,
                                 Adherent = adherent.Adherent,
                                 picture = adherent.Picture
                             }

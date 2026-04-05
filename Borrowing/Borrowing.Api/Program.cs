@@ -8,22 +8,18 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── Database ──────────────────────────────────────────────────────────────────
 builder.Services.AddDbContext<LibraryDbContext>();
 builder.Services.AddBorrowingServices();
 
-// ── Swagger ───────────────────────────────────────────────────────────────────
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ── Controllers ───────────────────────────────────────────────────────────────
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
-// ── JWT Authentication ────────────────────────────────────────────────────────
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -40,7 +36,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// ── Authorization ─────────────────────────────────────────────────────────────
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", p => p.RequireRole("ADMIN"));
@@ -48,7 +43,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AnyUser",   p => p.RequireAuthenticatedUser());
 });
 
-// ── CORS ──────────────────────────────────────────────────────────────────────
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("BlazorFrontend", policy =>
@@ -57,13 +51,11 @@ builder.Services.AddCors(options =>
             .WithOrigins(builder.Configuration["AllowedOrigins"] ?? "https://localhost:5158")
             .AllowAnyHeader()
             .AllowAnyMethod();
-            // No AllowCredentials() — JWT uses Authorization header, not cookies
     });
 });
 
 builder.Services.AddHttpContextAccessor();
 
-// ── No Session needed with JWT ────────────────────────────────────────────────
 
 var app = builder.Build();
 
@@ -74,7 +66,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("BlazorFrontend");   // Must be before UseAuthentication
+app.UseCors("BlazorFrontend");   
 app.UseAuthentication();
 app.UseAuthorization();
 

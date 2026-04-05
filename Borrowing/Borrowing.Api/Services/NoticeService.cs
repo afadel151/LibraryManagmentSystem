@@ -103,7 +103,7 @@ public class NoticeService(
 
     public async Task<PagedResult<NoticeDto>> GetNoticesAsync(PaginatedQueryParameters queryParameters)
     {
-        var notices = _noticesRepository.GetQueryable(n => n.TypeNotice)
+        var notices = _noticesRepository.GetQueryable(n => n.TypeNotice).Include(n=> n.Exemplaires).ThenInclude(e => e.Prets)
                     .Where(p =>
                             string.IsNullOrEmpty(queryParameters.Search) ||
                             EF.Functions.Like(p.Cote!.ToUpper(), queryParameters.Search.ToUpper() + "%") ||
@@ -111,6 +111,7 @@ public class NoticeService(
                     );
 
         var exemplaires = _exemplairesRepository.GetQueryable();
+
         var reservations = _reservationRepository.GetQueryable();
         var query = from n in notices
                     select new NoticeDto
@@ -119,9 +120,10 @@ public class NoticeService(
                         TitrePropre = n.TitrePropre ?? string.Empty,
                         Cote = n.Cote,
                         TypeNotice1 = n.TypeNotice.TypeNotice1 ?? string.Empty,
-                        ExemplaireDispo = exemplaires.Where(e => e.IdEtat == 1 && e.Cote == n.Cote).Count(),
-                        ExemplaireEnPret = exemplaires.Where(e => e.IdEtat == 2 && e.Cote == n.Cote).Count(),
-                        Reservations = reservations.Where(e => e.Cote == n.Cote).Count()
+                        ExemplaireDispo = n.Exemplaires.Count(e => e.IdEtat == 1 ),
+                        ExemplaireEnPret = n.Exemplaires.Count(e => e.IdEtat == 2 ),
+                        Reservations = reservations.Where(e => e.Cote == n.Cote).Count(),
+                        CopiesBloques = n.Exemplaires.Count(e => e.Prets.Any(p=> p.IdAdherent == "99/999"))
                     };
 
         if (!string.IsNullOrEmpty(queryParameters.OrderBy))
