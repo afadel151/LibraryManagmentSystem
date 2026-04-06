@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Actif" xml:space="preserve">
+    <value>نشط</value>
+  </data>
+  <data name="Adherent" xml:space="preserve">
+    <value>منخرط</value>
+  </data>
+  <data name="AdherentId" xml:space="preserve">
+    <value>رقم التسجيل</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="EditProfile" xml:space="preserve">
+    <value>تعديل الملف الشخصي</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>تحميل</value>
+  </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>جارٍ التحميل...</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>اللقب</value>
+  </data>
+  <data name="Loans" xml:space="preserve">
+    <value>الإعارات</value>
+  </data>
+  <data name="NoLoan" xml:space="preserve">
+    <value>لا توجد إعارة</value>
+  </data>
+  <data name="NoPenalty" xml:space="preserve">
+    <value>لا توجد غرامة</value>
+  </data>
+  <data name="NoReservation" xml:space="preserve">
+    <value>لا يوجد حجز</value>
+  </data>
+  <data name="NoResult" xml:space="preserve">
+    <value>لا يوجد نتيجة</value>
+  </data>
+  <data name="PenalisedOrSuspended" xml:space="preserve">
+    <value>موقوف أو مُعاقَب</value>
+  </data>
+  <data name="Penalites" xml:space="preserve">
+    <value>الغرامات</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>المنصب</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>الملف الشخصي</value>
+  </data>
+  <data name="Quota" xml:space="preserve">
+    <value>الحصة</value>
+  </data>
+  <data name="Reservations" xml:space="preserve">
+    <value>الحجوزات</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>اختر فئة</value>
+  </data>
+  <data name="SelectPosition" xml:space="preserve">
+    <value>اختر منصباً</value>
+  </data>
+  <data name="SelectState" xml:space="preserve">
+    <value>اختر حالة</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>نجاح</value>
+  </data>
+  <data name="UpdateProfile" xml:space="preserve">
+    <value>تحديث الملف الشخصي</value>
+  </data>
+  <data name="UpdateProfileError" xml:space="preserve">
+    <value>تعذّر تحديث الملف الشخصي</value>
+  </data>
+  <data name="UpdateProfileSuccess" xml:space="preserve">
+    <value>تم تحديث الملف الشخصي بنجاح</value>
+  </data>
+  <data name="LoanHistory" xml:space="preserve">
+    <value>سجل الإعارات</value>
+  </data>
+  <data name="PenaltyHistory" xml:space="preserve">
+    <value>سجل الغرامات</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>التاريخ</value>
+  </data>
+  <data name="ReturnDate" xml:space="preserve">
+    <value>تاريخ الإرجاع</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>الأيام</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>الإجراءات</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>النسخة</value>
+  </data>
+  <data name="LoanDate" xml:space="preserve">
+    <value>تاريخ الإعارة</value>
+  </data>
+  <data name="DurationState" xml:space="preserve">
+    <value>حالة المدة</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="DeletePenalty" xml:space="preserve">
+    <value>حذف الغرامة</value>
+  </data>
+  <data name="ConfirmDeletePenalty" xml:space="preserve">
+    <value>هل أنت متأكد من حذف هذه الغرامة؟</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>تأكيد</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>نعم</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>لا</value>
+  </data>
+  <data name="DeletePenaltySuccess" xml:space="preserve">
+    <value>تم حذف الغرامة</value>
+  </data>
+  <data name="DeletePenaltyError" xml:space="preserve">
+    <value>تعذّر حذف الغرامة</value>
+  </data>
+  <data name="ReservationDate" xml:space="preserve">
+    <value>تاريخ الحجز</value>
+  </data>
+  <data name="Cote" xml:space="preserve">
+    <value>الرمز</value>
+  </data>
+</root>

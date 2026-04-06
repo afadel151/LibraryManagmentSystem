@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Actif" xml:space="preserve">
+    <value>Actif</value>
+  </data>
+  <data name="Adherent" xml:space="preserve">
+    <value>Adhérent</value>
+  </data>
+  <data name="AdherentId" xml:space="preserve">
+    <value>ID Adhérent</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Catégorie</value>
+  </data>
+  <data name="EditProfile" xml:space="preserve">
+    <value>Éditer le profil</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>Export...</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Prénom</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Loans" xml:space="preserve">
+    <value>Prêts</value>
+  </data>
+  <data name="NoLoan" xml:space="preserve">
+    <value>Aucun prêt</value>
+  </data>
+  <data name="NoPenalty" xml:space="preserve">
+    <value>Aucune pénalité</value>
+  </data>
+  <data name="NoReservation" xml:space="preserve">
+    <value>Aucune réservation</value>
+  </data>
+  <data name="NoResult" xml:space="preserve">
+    <value>Aucun résultat</value>
+  </data>
+  <data name="PenalisedOrSuspended" xml:space="preserve">
+    <value>Pénalisé ou suspendu</value>
+  </data>
+  <data name="Penalites" xml:space="preserve">
+    <value>Pénalités</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="Quota" xml:space="preserve">
+    <value>Quota</value>
+  </data>
+  <data name="Reservations" xml:space="preserve">
+    <value>Réservations</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Sauvegarder</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>Sélectionner une catégorie</value>
+  </data>
+  <data name="SelectPosition" xml:space="preserve">
+    <value>Sélectionner une position</value>
+  </data>
+  <data name="SelectState" xml:space="preserve">
+    <value>Sélectionner un état</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>État</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Succès</value>
+  </data>
+  <data name="UpdateProfile" xml:space="preserve">
+    <value>Mettre à jour le profil</value>
+  </data>
+  <data name="UpdateProfileError" xml:space="preserve">
+    <value>Impossible de mettre à jour le profil</value>
+  </data>
+  <data name="UpdateProfileSuccess" xml:space="preserve">
+    <value>Profil mis à jour avec succès</value>
+  </data>
+  <data name="LoanHistory" xml:space="preserve">
+    <value>Historique des prêts</value>
+  </data>
+  <data name="PenaltyHistory" xml:space="preserve">
+    <value>Historique des pénalités</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="ReturnDate" xml:space="preserve">
+    <value>Date de retour</value>
+  </data>
+  <data name="Days" xml:space="preserve">
+    <value>Jours</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Exemplaire</value>
+  </data>
+  <data name="LoanDate" xml:space="preserve">
+    <value>Date de prêt</value>
+  </data>
+  <data name="DurationState" xml:space="preserve">
+    <value>État durée</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="DeletePenalty" xml:space="preserve">
+    <value>Supprimer la pénalité</value>
+  </data>
+  <data name="ConfirmDeletePenalty" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir supprimer cette pénalité ?</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Oui</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Non</value>
+  </data>
+  <data name="DeletePenaltySuccess" xml:space="preserve">
+    <value>Pénalité supprimée</value>
+  </data>
+  <data name="DeletePenaltyError" xml:space="preserve">
+    <value>Impossible de supprimer la pénalité</value>
+  </data>
+  <data name="ReservationDate" xml:space="preserve">
+    <value>Date de réservation</value>
+  </data>
+  <data name="Cote" xml:space="preserve">
+    <value>Cote</value>
+  </data>
+</root>
