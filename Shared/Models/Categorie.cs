@@ -12,4 +12,6 @@ public partial class Categorie
     public decimal? NombreDocument { get; set; }
 
     public decimal? DureePret { get; set; }
+
+    public virtual ICollection<Penalite> Penalites {get;set;}= [];
 }

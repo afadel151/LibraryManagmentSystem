@@ -1378,6 +1378,11 @@ public partial class LibraryDbContext : DbContext
             entity.Property(e => e.NombreJoursRetard)
                 .HasColumnType("NUMBER")
                 .HasColumnName("NOMBRE_JOURS_RETARD");
+
+            entity.HasOne(p => p.Categorie)
+                .WithMany(c => c.Penalites)
+                .HasForeignKey(p => p.IdCategorie)
+                .IsRequired(false);
         });
 
         modelBuilder.Entity<PenaliteAdherent>(entity =>

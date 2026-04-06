@@ -10,4 +10,6 @@ public partial class Penalite
     public decimal JoursRetard { get; set; }
 
     public decimal? NombreJoursRetard { get; set; }
+
+    public virtual Categorie Categorie { get; set; } = null!;
 }
