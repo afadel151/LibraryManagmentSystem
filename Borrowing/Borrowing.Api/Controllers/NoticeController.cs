@@ -132,5 +132,13 @@ public class NoticeController(
         }
         return Ok(exemplaire);
     }
+
+    [HttpGet("Exemplaire/Bloques")]
+    public async Task<ActionResult<PagedResult<ExemplaireBloqueDto>>> GetBlockedCopies([FromQuery] PaginatedQueryParameters parameters)
+    {
+        Console.WriteLine("#### API triggered");
+        var result = await _noticeService.GetExemplaireBloquesAsync(parameters);
+        return Ok(result);
+    }
     
 }
