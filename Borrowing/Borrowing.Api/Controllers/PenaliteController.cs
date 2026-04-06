@@ -1,30 +1,65 @@
 using Microsoft.AspNetCore.Mvc;
 using Borrowing.Api.Services;
+using Borrowing.SharedClasses.Requests.Penalite;
+using Borrowing.SharedClasses.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Borrowing.Api.Controllers;
 
-[Microsoft.AspNetCore.Authorization.Authorize]
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class PenaliteController : ControllerBase
+public class PenaliteController(IPenaliteService penaliteService) : ControllerBase
 {
-    private readonly IPenaltieService _penaltieService;
+    private readonly IPenaliteService _penaliteService = penaliteService;
 
-    public PenaliteController(IPenaltieService penaltieService)
+    [HttpGet]
+    public async Task<ActionResult<PagedResult<PenaliteDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
     {
-        _penaltieService = penaltieService;
+        var result = await _penaliteService.GetPenalitesAsync(queryParameters);
+        return Ok(result);
     }
 
-    [HttpDelete("{adherentId}/{datePenalite}")]
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
-    public async Task<IActionResult> DeletePenalite(string adherentId, DateTime datePenalite)
+    [HttpGet("All")]
+    public async Task<ActionResult<IEnumerable<PenaliteDto>>> GetAll()
     {
-        var success = await _penaltieService.DeletePenaliteAsync(adherentId, datePenalite);
-        if (success)
+        var result = await _penaliteService.GetAllPenalitesAsync();
+        return Ok(result);
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<ActionResult<bool>> Create([FromBody] CreatePenaliteDto dto)
+    {
+        var result = await _penaliteService.CreatePenaliteAsync(dto);
+        if (result)
         {
-            return Ok();
+            return Ok(result);
         }
-        
-        return NotFound("Pénalité introuvable ou impossible à supprimer.");
+        return BadRequest("Pénalité already exists or creation failed.");
+    }
+
+    [HttpPut]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<ActionResult<bool>> Update([FromBody] UpdatePenaliteDto dto)
+    {
+        var result = await _penaliteService.UpdatePenaliteAsync(dto);
+        if (result)
+        {
+            return Ok(result);
+        }
+        return NotFound("Pénalité not found.");
+    }
+
+    [HttpDelete("{idCategorie}")]
+    [Authorize(Roles = "ADMIN")]
+    public async Task<ActionResult<bool>> Delete(string idCategorie)
+    {
+        var result = await _penaliteService.DeletePenaliteAsync(idCategorie);
+        if (result)
+        {
+            return Ok(result);
+        }
+        return NotFound("Pénalité not found.");
     }
 }
