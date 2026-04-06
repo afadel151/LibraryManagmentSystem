@@ -66,5 +66,5 @@ public class AdherentService(ApiHttpClient api) : IAdherentService
 
     public async Task<bool> DeletePenaliteAsync(string adherentId, DateTime datePenalite) =>
         await _api.DeleteForSuccessAsync(
-            $"api/Penalite/{Uri.EscapeDataString(adherentId)}/{datePenalite:yyyy-MM-ddTHH:mm:ss}");
+            $"api/PenaliteAdherent/{Uri.EscapeDataString(adherentId)}/{datePenalite:yyyy-MM-ddTHH:mm:ss}");
 }

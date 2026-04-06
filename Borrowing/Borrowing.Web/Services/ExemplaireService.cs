@@ -7,11 +7,12 @@ using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Responses.Adherent;
 using System.Net;
 using Shared.Models;
+using Borrowing.Web.Providers;
 
 public interface IExemplaireService
 {
     Task<Exemplaire?> GetExemplaireAsync(string id);
-
+    Task<PagedResult<ExemplaireBloqueDto>?> GetExemplaireBloquesAsync(PaginatedQueryParameters parameters);
     // Task<List<TopLoanedNoticeDto>> GetChartData();
     // Task<PagedResult<NoticeDto>> GetNoticesAsync(PaginatedQueryParameters queryParameters);
 
@@ -19,24 +20,25 @@ public interface IExemplaireService
 }
 
 
-public class ExemplaireService(IHttpClientFactory factory) : IExemplaireService
+public class ExemplaireService(ApiHttpClient api) : IExemplaireService
 {
-    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
-    public async Task<Exemplaire?> GetExemplaireAsync(string id)
-    {
-        var response = await _httpClient.GetAsync("api/Notice/Exemplaire?Id=" + id);
-        var content = await response.Content.ReadAsStringAsync();
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            return JsonSerializer.Deserialize<Exemplaire>(content, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            })!;
-        }
-        else
-        {
-            return null;
-        }
+    private readonly ApiHttpClient _api = api;
+    public async Task<Exemplaire?> GetExemplaireAsync(string id) =>
+         await _api.GetAsync<Exemplaire?>("api/Notice/Exemplaire?Id=" + id);
 
+    public async Task<PagedResult<ExemplaireBloqueDto>?> GetExemplaireBloquesAsync(PaginatedQueryParameters queryParameters)
+    {
+        Console.WriteLine("### requesting...");
+        var orderBy = string.IsNullOrWhiteSpace(queryParameters.OrderBy)
+                  ? "datepret desc"
+                  : queryParameters.OrderBy;
+        var url = $"api/Notice/Exemplaire/Bloques?" +
+                  $"PageNumber={queryParameters.PageNumber}&" +
+                  $"PageSize={queryParameters.PageSize}&" +
+                  $"Search={Uri.EscapeDataString(queryParameters.Search ?? "")}&" +
+                  $"OrderBy={Uri.EscapeDataString(orderBy)}";
+
+        return await _api.GetAsync<PagedResult<ExemplaireBloqueDto>>(url);
     }
+
 }
