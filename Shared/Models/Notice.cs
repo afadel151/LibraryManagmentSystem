@@ -81,6 +81,7 @@ public partial class Notice
     public virtual ICollection<NoticeTerme> NoticeTermes { get; set; } = new List<NoticeTerme>();
     public virtual ICollection<NoticeTermeExact> NoticeTermeExacts { get; set; } = new List<NoticeTermeExact>();
     public virtual ICollection<Exemplaire> Exemplaires {get;set;} = [];
+    public virtual ICollection<Reservation> Reservations {get;set;} = [];
 
     // many to many 
     public virtual ICollection<MentionResponsabilite> CoAuteurs { get; set; } = new List<MentionResponsabilite>();

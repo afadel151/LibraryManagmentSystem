@@ -1497,6 +1497,11 @@ public partial class LibraryDbContext : DbContext
                 .HasPrecision(6)
                 .HasColumnName("HEURE_RESERVATION");
 
+            entity.HasOne(r => r.Notice)
+                .WithMany(n => n.Reservations)
+                .HasForeignKey(e => e.Cote)
+                .HasPrincipalKey(n => n.Cote)
+                .IsRequired(false);
 
         });
 
