@@ -32,7 +32,6 @@
                             HttpClientHandler.DangerousAcceptAnyServerCertificateValidator,
                     }).AddHttpMessageHandler<JwtAttachingHandler>();
             services.AddScoped<ApiHttpClient>();
-            services.AddScoped<AuthService>();
             services.AddScoped<IAdherentService, AdherentService>();
             services.AddScoped<IPretService, PretService>();
             services.AddScoped<INoticeService, NoticeService>();
@@ -43,6 +42,9 @@
             services.AddScoped<ICategorieService, CategorieService>();
             services.AddScoped<IPositionService, PositionService>();
             services.AddScoped<IEtatAdherentService, EtatAdherentService>();
+            services.AddScoped<IJoursFeriesService, JoursFeriesService>();
+            services.AddScoped<IPenaliteService, PenaliteService>();
+
             services.AddScoped<CultureService>();
             
             return services;
