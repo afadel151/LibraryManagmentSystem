@@ -16,6 +16,8 @@ public interface IAdherentService
     Task<AdherentsStatsDto> GetStats();
     Task<bool> CreateAdherentAsync(CreateAdherentDto dto);
     Task<bool> UpdateAdherentAsync(UpdateAdherentDto dto);
+
+    Task<CheckAdhPretResponseDto> CheckAdherentPourPret(string id);
 }
 
 public class AdherentService(
@@ -111,7 +113,7 @@ public class AdherentService(
     }
     public async Task<AdherentProfileDto?> GetAdherentWithDetailsAsync(string adherentId)
     {
-        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!, a => a.Position!, a => a.PenaliteAdherents,a => a.HistoriquePenaliteAdherents, a => a.Reservations, a => a.Prets,a => a.HistoriquePrets).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
+        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!, a => a.Position!, a => a.PenaliteAdherents, a => a.HistoriquePenaliteAdherents, a => a.Reservations, a => a.Prets, a => a.HistoriquePrets).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
 
         if (adherent != null)
         {
@@ -129,7 +131,7 @@ public class AdherentService(
     {
         DateTime rawReturnDate = startDate.AddDays((double)duration);
         List<JoursFery> joursFeries = await _joursFeriesRepository.GetQueryable().ToListAsync();
-        return  BaseExtensions.Traiter_date(rawReturnDate,joursFeries);
+        return BaseExtensions.Traiter_date(rawReturnDate, joursFeries);
     }
 
 
@@ -157,7 +159,7 @@ public class AdherentService(
     }
     public async Task<Adherent?> GetAdherentWithPretsPenaliteAsync(string AdherentId)
     {
-        var adherent = await _adherentRepository.GetQueryable(a => a.Prets,a => a.PenaliteAdherents,a=>a.Categorie!)
+        var adherent = await _adherentRepository.GetQueryable(a => a.Prets, a => a.PenaliteAdherents, a => a.Categorie!)
                         .Where(a => a.IdAdherent == AdherentId)
                         .FirstOrDefaultAsync();
         if (adherent == null)
@@ -194,7 +196,7 @@ public class AdherentService(
     {
         var adherent = await _adherentRepository.GetQueryable()
                         .FirstOrDefaultAsync(a => a.IdAdherent == dto.IdAdherent);
-        
+
         if (adherent == null) return false;
 
         adherent.Nom = dto.Nom;
@@ -211,6 +213,81 @@ public class AdherentService(
         catch
         {
             return false;
+        }
+    }
+
+    public async Task<CheckAdhPretResponseDto> CheckAdherentPourPret(string id)
+    {
+        var adherent = await GetAdherentWithDetailsAsync(id);
+        if (adherent != null)
+        {
+            if (adherent.Adherent?.EtatAdherent == 1) // actif
+            {
+                if (adherent.Adherent?.PenaliteAdherents.Count == 0) // allowed
+                {
+                    if (adherent.Adherent?.Categorie != null) // categorie exists
+                    {
+                        int activeLoans = adherent.Adherent.Prets.Count; // count active loans
+                        if (activeLoans < adherent.Adherent?.Categorie.NombreDocument)
+                        {
+                            DateTime expectedReturnDate = await CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)adherent.Adherent?.Categorie.DureePret!);
+                                return new CheckAdhPretResponseDto
+                                {
+                                    Etat = EtatAdherentEnum.AUTHORIZED,
+                                    Adherent = adherent.Adherent,
+                                    picture = adherent.Picture,
+                                    ActiveLoans = activeLoans,
+                                    ExpectedReturnDate = expectedReturnDate
+
+                                };
+                        }
+                        else
+                        {
+                                return new CheckAdhPretResponseDto
+                                {
+                                    Etat = EtatAdherentEnum.QUOTA_REACHED,
+                                    Adherent = adherent.Adherent,
+                                    picture = adherent.Picture,
+                                    ActiveLoans = activeLoans
+                                };
+                        }
+                    }
+                    else
+                    {
+                            return new CheckAdhPretResponseDto
+                            {
+                                Etat = EtatAdherentEnum.NOT_FOUND,
+                            };
+
+                    }
+                }
+                else
+                {
+                            return new CheckAdhPretResponseDto
+                            {
+                                Etat = EtatAdherentEnum.PENALISED,
+                                Adherent = adherent.Adherent,
+                                picture = adherent.Picture
+                            };
+                }
+            }
+            else // bloque
+            {
+                            return new CheckAdhPretResponseDto
+                            {
+                                Etat = EtatAdherentEnum.PENALISED,
+                                Adherent = adherent.Adherent,
+                                picture = adherent.Picture
+                            };
+
+            }
+        }
+        else
+        {
+                return new CheckAdhPretResponseDto
+                {
+                    Etat = EtatAdherentEnum.NOT_FOUND,
+                };
         }
     }
 }
