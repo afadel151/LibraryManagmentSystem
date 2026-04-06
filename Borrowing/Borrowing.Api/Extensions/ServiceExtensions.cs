@@ -25,17 +25,21 @@ public static class ServiceExtensions
         services.AddScoped<IPositionRepository, PositionRepository>();
         services.AddScoped<IPretRepository, PretRepository>();
         services.AddScoped<IReservationRepository, ReservationRepository>();
+        services.AddScoped<IJoursFeriesRepository, JoursFeriesRepository>();
 
         // Services
         services.AddScoped<IAdherentService, AdherentService>();
         services.AddScoped<ICategorieService, CategorieService>();
         services.AddScoped<INoticeService, NoticeService>();
-        services.AddScoped<IPenaltieService, PenaltieService>();
+        services.AddScoped<IPenaliteAdherentService, PenaltieAdherentService>();
+        services.AddScoped<IPenaliteService, PenaltieService>();
         services.AddScoped<IPretService, PretService>();
         services.AddScoped<IRelanceService, RelanceService>();
         services.AddScoped<IReservationService, ReservationService>();
         services.AddScoped<IRestitutionService, RestitutionService>();
         services.AddScoped<IPositionService, PositionService>();
+        services.AddScoped<IJoursFeriesService, JoursFeriesService>();
+
 
         return services;
     }
