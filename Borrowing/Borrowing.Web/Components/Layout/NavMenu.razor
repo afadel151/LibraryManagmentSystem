@@ -5,7 +5,7 @@
     @inject NavigationManager Nav
     @inject CultureService CultureService
     @implements IDisposable
-    @inject IStringLocalizer<App> L
+    @inject IStringLocalizer<NavMenu> L
 
     <RadzenHeader>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
@@ -37,21 +37,21 @@
                 Responsive="false" @bind-Expanded="@sidebarExpanded">
         <RadzenPanelMenu DisplayStyle="@(sidebarExpanded? MenuItemDisplayStyle.IconAndText: MenuItemDisplayStyle.Icon)">
             <RadzenPanelMenuItem Text="Menu" Icon="apps" Path="/" />
-            <RadzenPanelMenuItem Text="Gestion des Prets" Icon="hand_package" Path="/prets" />
+            <RadzenPanelMenuItem Text="@L["LoanManagement"]" Icon="hand_package" Path="/prets" />
             <RadzenPanelMenuItem Text="@L["MemberManagement"]" Icon="person" Path="/adherents" />
             <RadzenPanelMenuItem Text="@L["RestitutionManagment"]" Icon="source_notes" Path="/restitutions" />
-            <RadzenPanelMenuItem Text="Gestion des Documents" Icon="article">
+            <RadzenPanelMenuItem Text="@L["DocumentManagment"]" Icon="article">
                 <RadzenPanelMenuItem Text="@L["AllDocuments"]" Icon="newsstand" Match="NavLinkMatch.All"
                                     Path="/documents" />
                 <RadzenPanelMenuItem Text="@L["DocsOnLoan"]" Icon="assignment_turned_in" Path="/documents/en_pret" />
                 <RadzenPanelMenuItem Text="@L["ReservedDocuments"]" Icon="date_range" Path="/documents/reservees" />
                 <RadzenPanelMenuItem Text="@L["BlockedCopies"]" Icon="date_range" Path="/exemplaire/bloques" />
             </RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="Avis de Disponibilite" Icon="timelapse" Path="/availability" />
-            <RadzenPanelMenuItem Text="Gestion des relances" Icon="notifications_active" Path="/relances" />
-            <RadzenPanelMenuItem Text="Gestion des categories" Icon="category" Path="/categories" />
-            <RadzenPanelMenuItem Text="Parametres" Icon="settings">
-                <RadzenPanelMenuItem Text="Jours feries" Icon="celebration" Path="/jours_feries" />
+            <RadzenPanelMenuItem Text="@L["Availability"]" Icon="timelapse" Path="/availability" />
+            <RadzenPanelMenuItem Text="@L["RemindersManagment"]" Icon="notifications_active" Path="/relances" />
+            <RadzenPanelMenuItem Text="@L["CategoriesManagment"]" Icon="category" Path="/categories" />
+            <RadzenPanelMenuItem Text="@L["Parameters"]" Icon="settings">
+                <RadzenPanelMenuItem Text="@L["Holidays"]" Icon="celebration" Path="/jours_feries" />
                 <RadzenPanelMenuItem Text="Penalites" Icon="block" Path="/penalites" />
             </RadzenPanelMenuItem>
 

@@ -10,6 +10,7 @@
 @inject IPretService pretService
 @using Borrowing.SharedClasses.Responses.Adherent
 @using Borrowing.SharedClasses.Responses.Notice
+@using Microsoft.Extensions.Localization
 @using Radzen
 @using Radzen.Blazor
 @using Shared.Models
@@ -17,14 +18,14 @@
 @inject NotificationService NotificationService
 
 @inherits AuthorizedComponentBase
-
+@inject IStringLocalizer<Prets> L
 <RadzenRow class="rz-text-align-center " Gap="1rem">
     <RadzenColumn>
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
-                             JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">Prets en cours</RadzenText>
+                             JustifyContent="JustifyContent.SpaceBetween"> 
+                    <RadzenText TextStyle="TextStyle.H6">@L["CurrentLoans"]</RadzenText> @*CurrentLoans*@
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-success rz-m-0">
                         @(stats?.Prets ?? 0)
                     </RadzenText>
@@ -37,7 +38,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">En retard</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6">@L["LateLoans"]</RadzenText> @*LateLoans*@
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-info rz-m-0">
                         @(stats?.Retard ?? 0)
                     </RadzenText>
@@ -50,7 +51,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">Reservations</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6">@L["Reservations"]</RadzenText> 
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-warning rz-m-0">
                         @(stats?.Reservations ?? 0)
                     </RadzenText>
@@ -60,15 +61,15 @@
     </RadzenColumn>
 </RadzenRow>
 
-<RadzenText TextStyle="TextStyle.H3" class="rz-mt-4">Inserer un Pret</RadzenText>
+<RadzenText TextStyle="TextStyle.H3" class="rz-mt-4">@L["InsertLoan"]</RadzenText> @**@
 
 <RadzenRow class="rz-mt-4">
     <RadzenColumn Size="12" SizeMD="6">
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
-            <RadzenText TextStyle="TextStyle.H5">Information Adhérent</RadzenText>
+            <RadzenText TextStyle="TextStyle.H5">@L["MemberInformations"]</RadzenText> @**@
 
-            <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
-                <RadzenTextBox Placeholder="Saisir l'ID Adhérent..." @bind-Value="AdherentId" @oninput="OnMemberTyping"
+            <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3"> @**@
+                <RadzenTextBox Placeholder="@L["InsertMemberId"]" @bind-Value="AdherentId" @oninput="OnMemberTyping"
                                Change="OnMemberIdChanged" class="w-100" />
 
                 @if (isLoadingMember)
@@ -85,44 +86,43 @@
                         <RadzenColumn Size="8">
                             <RadzenText TextStyle="TextStyle.Subtitle1"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
                                 @adherentCheck.Adherent?.Prenom</b></RadzenText>
-                                <RadzenText TextStyle="TextStyle.Body2">Catégorie:
+                                <RadzenText TextStyle="TextStyle.Body2">@L["Category"]: @**@
                                     @adherentCheck.Adherent?.Categorie?.LibelleCategorie
                                 </RadzenText>
 
                                 @if (adherentCheck.Adherent?.EtatAdherent == 1)
                                 {
-                                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="Actif" class="rz-mb-2" />
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@L["ActifMember"]" class="rz-mb-2" /> @**@
                                     @if (adherentCheck.Etat == EtatAdherentEnum.AUTHORIZED)
                                     {
                                         <div class="rz-mt-2">
-                                            <RadzenText TextStyle="TextStyle.Body2">Quota: @adherentCheck.ActiveLoans /
+                                            <RadzenText TextStyle="TextStyle.Body2">@L["Quota"]: @adherentCheck.ActiveLoans / @**@
                                                 @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
                                                 
-                                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-success"><b>Prêt Autorisé</b>
+                                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-success"><b>@L["AuthorizedLoan"]</b> @**@
                                                     </RadzenText>
 
                                                     <div class="rz-mt-3">
-                                                        <RadzenText TextStyle="TextStyle.Body2">Date du Prêt:</RadzenText>
+                                                        <RadzenText TextStyle="TextStyle.Body2">@L["LoanDate"]</RadzenText> @**@
                                                         <RadzenDatePicker @bind-Value="loanDate" Disabled="true" class="w-100" />
                                                     </div>
 
-                                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Date Retour Prévue:
-                                                        <b>@adherentCheck.ExpectedReturnDate.ToShortDateString()</b>
+                                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">@L["ExpectedReturnDate"] :
+                                                        <b>@adherentCheck.ExpectedReturnDate.ToShortDateString()</b> @**@
                                                     </RadzenText>
                                                 </div>
                                     }
                                     else {
-                                         <RadzenText TextStyle="TextStyle.Body2">Quota: @adherentCheck.ActiveLoans /
+                                         <RadzenText TextStyle="TextStyle.Body2">@L["Quota"]: @adherentCheck.ActiveLoans /
                                                 @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
-
                                          switch (adherentCheck.Etat)
                                          {
                                             case EtatAdherentEnum.QUOTA_REACHED:
-                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-warning"><b>Quota Atteint</b>
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-warning"><b>@L["QuotaReached"]</b> @**@
                                                 </RadzenText>
                                                 break;
                                             case EtatAdherentEnum.PENALISED:
-                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger"><b>Adhérent Pénalisé ou suspendu</b>
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger"><b>@L["PenalisedOrSuspended"]</b> @**@
                                                 </RadzenText>
                                                 break;
                                          }
@@ -130,14 +130,14 @@
                                 }
                                 else
                                 {
-                                    <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="Bloquee" class="rz-mb-2" />
+                                    <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@L["PenalisedOrSuspended"]" class="rz-mb-2" /> @**@
                                 }
                                 </RadzenColumn>
                             </RadzenRow>
                             }
                             else if (hasSearchedMember && adherentCheck == null)
                             {
-                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Adhérent introuvable.</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">@L["MembreNotFound"] .</RadzenText> @**@
                             }
                         </RadzenStack>
                     </RadzenCard>
@@ -145,11 +145,11 @@
 
                 <RadzenColumn Size="12" SizeMD="6">
                     <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
-                        <RadzenText TextStyle="TextStyle.H5">Information Document & Exemplaire</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H5">@L["DocumentInformations"]</RadzenText> @**@
 
                         <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
-                            <RadzenTextBox Placeholder="Saisir la Cote et appuyez sur Entrée..." @oninput="OnCoteTyping"
-                                           @bind-Value="Cote" Change="OnCoteChanged" class="w-100" />
+                            <RadzenTextBox Placeholder="@L["InsertCote"]" @oninput="OnCoteTyping"
+                                           @bind-Value="Cote" Change="OnCoteChanged" class="w-100" /> @**@
 
                             @if (isLoadingDocument)
                             {
@@ -157,18 +157,19 @@
                             }
                             else if (noticeCheck != null)
                             {
-                                <RadzenText TextStyle="TextStyle.Subtitle1">Titre :</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Subtitle1">@L["Title"] :</RadzenText> @**@
                                 <RadzenText TextStyle="TextStyle.DisplayH5">@noticeCheck.Titre</RadzenText>
                                 @if (noticeCheck.CanReserve && !noticeCheck.CanBorrow)
                                 {
                                     <RadzenAlert AlertStyle="AlertStyle.Info" AllowClose="false" class="rz-mt-2">
-                                        Pas de copies disponibles pour pret, vous pouver faire une reservation
+                                        @L["NoAvailableCopiesCanReserve"]
+                                        @**@
                                     </RadzenAlert>
                                 }
                                 @if (noticeCheck.Found == false)
                                 {
                                     <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" class="rz-mt-2">
-                                        Cote introuvable
+                                        @L["CoteNotFound"]  
                                     </RadzenAlert>
                                 }
                                 else
@@ -178,12 +179,11 @@
                                     {
                                         @if (noticeCheck.Reservateur)
                                         {
-                                            <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">L'adherent a fait une
-                                                reservation de ce document
+                                            <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">@L["MemberHasReservedThisDocument"]  @**@
                                             </RadzenAlert>
                                         }
                                    
-                                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">Sélectionner un exemplaire :</RadzenText>
+                                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">@L["SelectACopy"]  :</RadzenText> @**@
                                         <RadzenDropDown @bind-Value="selectedCopyId" Data="@noticeCheck.Exemplaires" class="w-100" />
                                     }
                                 }
@@ -194,7 +194,7 @@
                                 @if (hasSearchedDocument)
                                 {
 
-                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Document introuvable avec cette cote.
+                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">@L["ErrorWhileSearchingCote"] @* *@
                                     </RadzenText>
                                 }
                             }
@@ -208,13 +208,13 @@
                 {
                     @if (noticeCheck.CanReserve)
                     {
-                        <RadzenButton class="rz-mr-2" Text="Réserver ce document" Size="ButtonSize.Medium"
+                        <RadzenButton class="rz-mr-2" Text="@L["ReserveDocument"]" Size="ButtonSize.Medium"  
                                       ButtonStyle="ButtonStyle.Secondary" Click=ReserverCote />
                     }
                     @if (noticeCheck.CanBorrow && selectedCopyId != null)
                     {
 
-                        <RadzenButton Disabled="!IsLoanValidatable" Click=ValiderPret Text="Valider Prêt" ButtonStyle="ButtonStyle.Success"
+                        <RadzenButton Disabled="!IsLoanValidatable" Click=ValiderPret Text="@L["ValidateLoan"]" ButtonStyle="ButtonStyle.Success"
                                       Size="ButtonSize.Medium" class="rz-mr-2" />
                     }
 
@@ -310,9 +310,7 @@
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = "Reponse Nulle",
-                Detail =
-                    "Erruer lors de verification d'adherent",
+                Detail = L["ErrorWhileVerifyingMember"], // ErrorWhileVerifyingMember
                 Duration = 4000
             });
             ResetMemberState();
@@ -324,14 +322,13 @@
                 ShowNotification(new NotificationMessage
                 {
                     Severity = NotificationSeverity.Warning,
-                    Summary = "Caution",
+                    Summary = L["Alert"], // Alert
                     Duration = 4000
                 });
             }
         }
         isLoadingMember = false;
     }
-
 
 
     private void ResetMemberState()
@@ -348,8 +345,9 @@
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Warning,
-                Summary = "Adhérent requis",
-                Detail = "Veuillez valider l'adhérent avant le document."
+                Summary = L["MemberRequired"], //
+                Detail = L["ValidateMemberBeforeDocument"]
+ // 
             });
             return;
         }
@@ -358,7 +356,7 @@
              ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Warning,
-                Summary = "cet Adherent ne peut pas preter",
+                Summary = L["ThisMemberCantLoan"], //
             });
             return;
         }
@@ -377,7 +375,7 @@
         ShowNotification(new NotificationMessage
         {
             Severity = NotificationSeverity.Success,
-            Summary = "Fetched notice",
+            Summary = L["FetchedDocument"], //
         });
         if (noticeCheck != null && noticeCheck.CanBorrow)
         {
@@ -402,7 +400,7 @@
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Warning,
-                Summary = "Selectionner un exemplaire",
+                Summary =L["SelectACopy"], //
             });
             return;
         }
@@ -416,7 +414,7 @@
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Success,
-                Summary = "Pret inseree avec succes",
+                Summary = L["LoanInsertedWithSuccess"], //
                 Detail = result.Message,
             });
             ResetDocumentState();
@@ -426,7 +424,7 @@
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = "Errur lors de creation de pret",
+                Summary = L["ErrorWhileInsertingLoan"], // 
                 Detail = result.Message,
             });
             ResetDocumentState();

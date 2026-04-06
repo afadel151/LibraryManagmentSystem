@@ -6,7 +6,7 @@
 @inherits AuthorizedComponentBase
 
 @inject CultureService CultureService
-@inject IStringLocalizer<App> L
+@inject IStringLocalizer<NavMenu> L
 
 <div style="height: calc(100vh - 100px); overflow-y: auto;">
 
@@ -45,7 +45,7 @@
             Elements = new List<CardElement>
         {
             new() { Text = L["LoanManagement"], Icon = "hand_package", Url = "/prets", Style = ButtonStyle.Base },
-            new() { Text = L["MemberManagment"], Icon = "person", Url = "/adherents", Style = ButtonStyle.Secondary },
+            new() { Text = L["MemberManagement"], Icon = "person", Url = "/adherents", Style = ButtonStyle.Secondary },
             new() { Text = L["RestitutionManagment"], Icon = "source_notes", Url = "/restitutions", Style = ButtonStyle.Info },
             new() { Text = L["DocumentManagment"], Icon = "newsstand", Url = "/documents", Style = ButtonStyle.Warning },
             new() { Text = L["Availability"], Icon = "timelapse", Url = "/availability", Style = ButtonStyle.Dark },

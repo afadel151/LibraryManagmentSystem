@@ -1,23 +1,97 @@
 @page "/exemplaire/bloques"
 
 
+@using Borrowing.SharedClasses.Common
 @using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
 @using Shared.Models
 
 @inject IExemplaireService exemplaireService
-@inject NavigationManager NavigationManager
+@inject NavigationManager navigationManager
 @inject IExportService exportService
 
 @inherits AuthorizedComponentBase
 
 
 
-<p>Exemplaire</p>
+<RadzenText TextStyle="TextStyle.H3">Exemplaires Bloques</RadzenText>
+
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn>
+        <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@exemplaireBloques" Count="@count"
+                        LoadData="@LoadData" IsLoading="@isLoading" TItem="ExemplaireBloqueDto" ShowPagingSummary="true"
+                        AllowPaging="true" PageSize="10" AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="IdExemplaire" Title="ID Exemplaire" />
+                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="TitrePropre" Title="Titre" />
+                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="DatePret" Title="Date Retour d'exemplaire">
+                    <Template Context="data">
+                        @data.DatePret.ToString("dd/MM/yyyy HH:mm")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Title="Actions" Sortable="false" Filterable="false"
+                                      Width="300px">
+                    <Template Context="data">
+                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                            <RadzenButton Click=@(args =>navigationManager.NavigateTo($"/exemplaire/{data.IdExemplaire}"))
+                                          Size="ButtonSize.Small" Icon="book" Text="Exemplaire"
+                                          ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
+
+                            <RadzenButton Click=@(args => navigationManager.NavigateTo($"/documents/{data.IdNotice}"))
+                                          Size="ButtonSize.Small" Icon="book_4" Text="Document"
+                                          ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
+
+                        </RadzenStack>
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
 
 
-@code{
 
+
+@code {
+
+    IEnumerable<ExemplaireBloqueDto> exemplaireBloques = [];
     
+    private int count;
+    private bool isLoading;
+    private bool isExporting = false;
+
+    protected override async Task OnPageInitializedAsync()
+    {
+        
+        LoadDataArgs args = new LoadDataArgs { };
+        await LoadData(args);
+    }
+    private async Task LoadData(LoadDataArgs args)
+    {
+        isLoading = true;
+        try
+        {
+            int skip = args.Skip ?? 0;
+            int top = args.Top ?? 10;
+
+            int pageNumber = (skip / top) + 1;
+
+            var queryParams = new PaginatedQueryParameters
+            {
+                PageNumber = pageNumber,
+                PageSize = top,
+                OrderBy = args.OrderBy ?? "datepret desc",
+            };
+
+            var result = await exemplaireService.GetExemplaireBloquesAsync(queryParams);
+
+            exemplaireBloques = result?.Data ?? Enumerable.Empty<ExemplaireBloqueDto>();
+            count = result?.TotalCount ?? 0;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
 
 }

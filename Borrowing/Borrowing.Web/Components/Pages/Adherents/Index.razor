@@ -1,6 +1,5 @@
 @page "/adherents"
 
-
 @inject NavigationManager navigationManager
 @inject IAdherentService adherentService
 @using Borrowing.SharedClasses.Responses.Adherent
@@ -11,21 +10,23 @@
 @using Radzen.Blazor
 @using Shared.Models
 @using Borrowing.SharedClasses.Common
+@using Microsoft.Extensions.Localization
 @inject IExportService exportService
 @inject DialogService dialogService
 @inject NotificationService notificationService
 @inject ICategorieService categorieService
 @inject IPositionService positionService
+@inject IStringLocalizer<Index> L
 
 @inherits AuthorizedComponentBase
 
-<RadzenRow class="rz-text-align-center " Gap="1rem">
+<RadzenRow class="rz-text-align-center" Gap="1rem">
     <RadzenColumn>
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">Adherents actifs</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6">@L["ActifAdherents"]</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-success rz-m-0">
                         @(stats?.TotalActif ?? 0)
                     </RadzenText>
@@ -38,7 +39,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">Pretants en cours</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6">@L["CurrentLoaning"]</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-info rz-m-0">
                         @(stats?.Pretants ?? 0)
                     </RadzenText>
@@ -51,7 +52,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">Penalises/Suspendu</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H6">@L["PenalisedOrBlocked"]</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-warning rz-m-0">
                         @(stats?.Penalises ?? 0)
                     </RadzenText>
@@ -63,62 +64,60 @@
 
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
-    <RadzenText TextStyle="TextStyle.H3">Total adherents</RadzenText>
+    <RadzenText TextStyle="TextStyle.H3">@L["TotalAdherents"]</RadzenText>
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-        <RadzenTextBox Placeholder="Rechercher par ID,Nom ou Prenom..." style="width:400px" @bind-Value="SearchText"
+        <RadzenTextBox Placeholder="@L["SearchByIdOrName"]" style="width:400px" @bind-Value="SearchText"
                        @oninput="DoSearch" Change="DoSearch" />
-        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")" Icon="get_app" Click="Export"
+        <RadzenButton Text="@(isExporting ? L["Exporting"] : L["Export"])" Icon="get_app" Click="Export"
                       ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" />
         <Microsoft.AspNetCore.Components.Authorization.AuthorizeView Roles="ADMIN">
-            <RadzenButton Text="Ajouter un adhérent" Icon="add" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Flat"
+            <RadzenButton Text="@L["AddMember"]" Icon="add" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Flat"
                           Click="OpenCreateModal" />
         </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
     </RadzenStack>
 </RadzenStack>
+
 <RadzenRow class="rz-mt-4">
     <RadzenColumn>
         <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@adherents" Count="@count"
-                        LoadData="@LoadData" IsLoading="@isLoading" TItem="AdherentDto" ShowPagingSummary="true" AllowPaging="true"
-                        PageSize="10" AllowSorting="true">
+                        LoadData="@LoadData" IsLoading="@isLoading" TItem="AdherentDto" ShowPagingSummary="true"
+                        AllowPaging="true" PageSize="10" AllowSorting="true">
             <Columns>
-                <RadzenDataGridColumn TItem="AdherentDto" Property="IdAdherent" Title="Identifiant" />
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Nom" Title="Nom Adhérent" />
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Prenom" Title="Prénom" />
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Categorie" Title="Catégorie" />
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Position" Title="Position" />
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Etat" Title="Etat">
+                <RadzenDataGridColumn TItem="AdherentDto" Property="IdAdherent" Title="@L["Id"]" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Nom" Title="@L["FirstName"]" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Prenom" Title="@L["LastName"]" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Categorie" Title="@L["Category"]" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Position" Title="@L["Position"]" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Etat" Title="@L["State"]">
                     <Template Context="data">
                         @if (data.Etat == 1)
                         {
-                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Success" Text="Actif" />
+                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Success" Text="@L["Active"]" />
                         }
-                        else if(data.Etat == 2)
+                        else if (data.Etat == 2)
                         {
-                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="Penalise/suspendu" />
+                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="@L["PenalisedOrBlocked"]" />
                         }
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Prets" Title="Pres en cours" />
-                <RadzenDataGridColumn TItem="AdherentDto" Property="Reservations" Title="Reservations en cours" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Prets" Title="@L["Loans"]" />
+                <RadzenDataGridColumn TItem="AdherentDto" Property="Reservations" Title="@L["Reservations"]" />
                 <RadzenDataGridColumn TItem="AdherentDto" Title="Action">
                     <Template Context="data">
                         <RadzenButton Click=@(args => navigationManager.NavigateTo("/adherents/" + data.IdAdherent))
                                       Size="ButtonSize.Small" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base"
-                                      Icon="visibility" Text="View" />
+                                      Icon="visibility" Text="@L["View"]" />
                     </Template>
                 </RadzenDataGridColumn>
-                
             </Columns>
         </RadzenDataGrid>
     </RadzenColumn>
 </RadzenRow>
 
-
-
 @code {
 
     private string SearchText = "";
-    
+
     private IEnumerable<AdherentDto>? adherents;
     private int count;
     private bool isLoading;
@@ -129,7 +128,6 @@
     private bool _ready = false;
     protected override async Task OnPageInitializedAsync()
     {
-
         stats = await adherentService.GetStats();
         _ready = true;
         await DoSearch();
@@ -154,6 +152,7 @@
         LoadDataArgs args = new LoadDataArgs { };
         await LoadData(args);
     }
+
     private async Task LoadData(LoadDataArgs args)
     {
         if (!_ready) return;
@@ -175,7 +174,7 @@
 
             var result = await adherentService.GetAdherentsAsync(queryParams);
 
-            adherents = result?.Data ?? Enumerable.Empty<AdherentDto>(); // ← null guard
+            adherents = result?.Data ?? Enumerable.Empty<AdherentDto>();
             count = result?.TotalCount ?? 0;
         }
         finally
@@ -190,36 +189,36 @@
         var categories = await categorieService.GetAllCategoriesAsync();
         var model = new Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto();
 
-        await dialogService.OpenAsync("Ajouter un adhérent", ds =>
+        await dialogService.OpenAsync(L["AddMember"], ds =>
             @<RadzenTemplateForm Data="@model"
                                  Submit="@(async (Borrowing.SharedClasses.Requests.Adherent.CreateAdherentDto args) => { await SubmitAdherent(args, ds); })">
                 <RadzenStack Gap="1rem" Style="width: 100%; min-width: 400px;">
-                    <RadzenFormField Text="Identifiant">
+                    <RadzenFormField Text="@L["Id"]">
                         <RadzenTextBox @bind-Value="model.IdAdherent" Name="IdAdherent" />
-                        <RadzenRequiredValidator Component="IdAdherent" Text="L'identifiant est obligatoire" />
+                        <RadzenRequiredValidator Component="IdAdherent" Text="@L["IdRequired"]" />
                     </RadzenFormField>
-                    <RadzenFormField Text="Nom">
+                    <RadzenFormField Text="@L["FirstName"]">
                         <RadzenTextBox @bind-Value="model.Nom" Name="Nom" />
-                        <RadzenRequiredValidator Component="Nom" Text="Le nom est obligatoire" />
+                        <RadzenRequiredValidator Component="Nom" Text="@L["FirstNameRequired"]" />
                     </RadzenFormField>
-                    <RadzenFormField Text="Prénom">
+                    <RadzenFormField Text="@L["LastNameName"]">
                         <RadzenTextBox @bind-Value="model.Prenom" Name="Prenom" />
-                        <RadzenRequiredValidator Component="Prenom" Text="Le prénom est obligatoire" />
+                        <RadzenRequiredValidator Component="Prenom" Text="@L["LastNameNameRequired"]" />
                     </RadzenFormField>
-                    <RadzenFormField Text="Catégorie">
+                    <RadzenFormField Text="@L["Category"]">
                         <RadzenDropDown @bind-Value="model.IdCategorie" Data="@categories" TextProperty="LibelleCategorie"
                                         ValueProperty="IdCategorie" Name="Categorie" />
-                        <RadzenRequiredValidator Component="Categorie" Text="Sélectionnez une catégorie" />
+                        <RadzenRequiredValidator Component="Categorie" Text="@L["SelectACategory"]" />
                     </RadzenFormField>
-                    <RadzenFormField Text="Position">
+                    <RadzenFormField Text="@L["Position"]">
                         <RadzenDropDown @bind-Value="model.IdPosition" Data="@positions" TextProperty="LibellePosition"
                                         ValueProperty="IdPosition" Name="Position" />
-                        <RadzenRequiredValidator Component="Position" Text="Sélectionnez une position" />
+                        <RadzenRequiredValidator Component="Position" Text="@L["SelectAPosition"]" />
                     </RadzenFormField>
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
                                  class="rz-mt-4">
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Enregistrer" Variant="Variant.Flat" />
-                        <RadzenButton Text="Annuler" Variant="Variant.Outlined" Click="() => ds.Close(false)"
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="@L["Save"]" Variant="Variant.Flat" />
+                        <RadzenButton Text="@L["Cancel"]" Variant="Variant.Outlined" Click="() => ds.Close(false)"
                                       ButtonStyle="ButtonStyle.Light" />
                     </RadzenStack>
                 </RadzenStack>
@@ -235,9 +234,8 @@
             notificationService.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Success,
-                Summary = "Succès",
-                Detail
-= "Adhérent créé avec succès",
+                Summary = L["Success"],
+                Detail = L["MemberCreatedSuccess"],
                 Duration = 4000
             });
             ds.Close(true);
@@ -248,9 +246,8 @@
             notificationService.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = "Erreur",
-                Detail =
-"Impossible de créer l'adhérent",
+                Summary = L["Error"],
+                Detail = L["ErrorCreatingMember"],
                 Duration = 4000
             });
         }
