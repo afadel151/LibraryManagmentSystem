@@ -10,13 +10,14 @@ namespace Borrowing.Api.Controllers;
 [Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class PretController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
+public class PretController(IPretService pretService,IPenaliteAdherentService penaltieService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
 {
     private readonly IPretService _pretService = pretService;
     private readonly IReservationService _reservationService = reservationService;
     private readonly IAdherentService _adherentService = adherentService;
 
     private readonly INoticeService _noticeService = noticeService;
+    private readonly IPenaliteAdherentService _penaliteService = penaltieService;
 
     [HttpGet]
     public async Task<ActionResult<PagedResult<PretResponseDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
@@ -28,53 +29,19 @@ public class PretController(IPretService pretService, IAdherentService adherentS
     [HttpPost("Create")]
     public async Task<ActionResult<CreatePretResponseDto?>> CreatePret([FromBody] CreatePretRequestDto pretRequestDto)
     {
-        var adherent  = await _adherentService.GetAdherentWithDetailsAsync(pretRequestDto.AdherentId);
-        if (adherent == null)
-        {
-            return Ok(
-                new CreatePretResponseDto
-                {
-                    Done = false,
-                    Message = "Adherent not found"
-                }
-            );
-        }
+        var adherentCheck  = await _adherentService.CheckAdherentPourPret(pretRequestDto.AdherentId);
         var pret = await _pretService.GetPretByExemplaireId(pretRequestDto.ExemplaireId);
         var exemplaire = await _noticeService.GetExemplaireAsync(pretRequestDto.ExemplaireId);
-        if (exemplaire == null)
-        {
-            return Ok(
-                new CreatePretResponseDto
-                {
-                    Done = false,
-                    Message = "Exemplaire not found"
-                }
-            );
-        }
-        else
-        {
-            if (exemplaire.IdEtat != 1)
-            {
-                return Ok(
-                    new CreatePretResponseDto
-                    {
-                        Done = false,
-                        Message = "Exemplaire is not available for loan"
-                    }
-                );
-            }
-        }
-        if (pret != null)
-        {
-            return Ok(
-                new CreatePretResponseDto
-                {
-                    Done = false,
-                    Message = "Exemplaire is already on loan"
-                }
-            );
-        }
 
+        if (adherentCheck.Etat != EtatAdherentEnum.AUTHORIZED || exemplaire == null || exemplaire.IdEtat != 1 || pret != null)
+        {
+            return Ok(
+                new CreatePretResponseDto
+                {
+                    Done = false,
+                }
+            );
+        }
         var result = await _pretService.CreatePretAsync(pretRequestDto);
         if (result != null)
         {
@@ -103,7 +70,7 @@ public class PretController(IPretService pretService, IAdherentService adherentS
     {
         int prets = await _pretService.CountAsync();
         int reservations = await _reservationService.CountAsync();
-        int retard = 5;
+        int retard = await _penaliteService.CountNegativePenalties();
         var result = new PretStatsDto
         {
             Prets = prets,

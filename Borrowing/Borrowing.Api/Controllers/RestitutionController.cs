@@ -17,7 +17,7 @@ public class RestitutionController(
     INoticeService noticeService,
     IReservationService reservationService,
     IRestitutionService restitutionService,
-    IPenaltieService penaltieService
+    IPenaliteAdherentService penaltieService
     ) : ControllerBase
 {
     private readonly IPretService _pretService = pretService;
@@ -25,7 +25,7 @@ public class RestitutionController(
     private readonly IAdherentService _adherentService = adherentService;
     private readonly INoticeService _noticeService = noticeService;
     private readonly IRestitutionService _restitutionService = restitutionService;
-    private readonly IPenaltieService _penaliteService = penaltieService;
+    private readonly IPenaliteAdherentService _penaliteService = penaltieService;
 
 
 
@@ -54,6 +54,7 @@ public class RestitutionController(
     [HttpPost("Renouvler")]
     public async Task<IActionResult> RenouvlerPret([FromBody] CreateRestitutionDto form)
     {
+        // a faire
         return Ok();
     }
 
