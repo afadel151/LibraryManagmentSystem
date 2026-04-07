@@ -4,7 +4,7 @@ namespace Borrowing.Worker.Extensions;
 
 public static class ServiceExtensions
 {
-    public static IServiceCollection AddBorrowingServices(this IServiceCollection services)
+    public static IServiceCollection AddWorkerServices(this IServiceCollection services)
     {
         // Repositories
         services.AddScoped(typeof(BaseRepository<>));
