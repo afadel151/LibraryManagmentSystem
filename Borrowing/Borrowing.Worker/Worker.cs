@@ -1,14 +1,21 @@
-namespace Borrowing.Worker.Services;
+using Borrowing.Worker.Services;
 
-public class Worker(ILogger<Worker> logger) : BackgroundService
+namespace Borrowing.Worker;
+
+public class Worker(ILogger<Worker> logger,IServiceScopeFactory scopeFactory) : BackgroundService
 {
+    private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
+    private readonly ILogger<Worker> _logger = logger;
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        using var scope = _scopeFactory.CreateScope();
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (logger.IsEnabled(LogLevel.Information))
+            if (_logger.IsEnabled(LogLevel.Information))
             {
-                logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                var pretService = scope.ServiceProvider.GetRequiredService<PretService>();
+                await pretService.Run();
             }
             await Task.Delay(1000, stoppingToken);
         }
