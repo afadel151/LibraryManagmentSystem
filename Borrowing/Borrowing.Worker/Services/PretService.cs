@@ -1,8 +1,6 @@
 
 using Borrowing.Worker.Repositories;
-using Shared.Models;
 using Microsoft.EntityFrameworkCore;
-using Borrowing.Worker.Extensions;
 
 namespace Borrowing.Worker.Services;
 
@@ -28,7 +26,14 @@ public class PretService(
     private readonly ReservationRepository _reservationRepository = reservationRepository;
     private readonly CategorieRepository _categorieRepository = categorieRepository;
 
-   
+
+
+    public async Task Run()
+    {
+        var result = await _pretRepository.GetQueryable()
+                        .ToListAsync();
+        Console.WriteLine("##############"+result.Count);
+    } 
 
     
 }
