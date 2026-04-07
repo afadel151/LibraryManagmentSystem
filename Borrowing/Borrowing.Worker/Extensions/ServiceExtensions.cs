@@ -1,4 +1,5 @@
 using Borrowing.Worker.Repositories;
+using Borrowing.Worker.Services;
 
 namespace Borrowing.Worker.Extensions;
 
@@ -8,22 +9,23 @@ public static class ServiceExtensions
     {
         // Repositories
         services.AddScoped(typeof(BaseRepository<>));
-        services.AddScoped< AdherentRepository>();
-        services.AddScoped< CategorieRepository>();
+        services.AddScoped<AdherentRepository>();
+        services.AddScoped<CategorieRepository>();
 
-        services.AddScoped< ExemplairesRepository>();
-        services.AddScoped< HistoriquePenaliteAdherentRepository>();
+        services.AddScoped<ExemplairesRepository>();
+        services.AddScoped<HistoriquePenaliteAdherentRepository>();
 
-        services.AddScoped< JoursFeriesRepository>();
+        services.AddScoped<JoursFeriesRepository>();
 
-        services.AddScoped< PenaliteAdherentRepository>();
-        services.AddScoped< PenaliteRepository>();
-        services.AddScoped< PretRepository>();
-        services.AddScoped< ReservationRepository>();
-        services.AddScoped< JoursFeriesRepository>();
+        services.AddScoped<PenaliteAdherentRepository>();
+        services.AddScoped<PenaliteRepository>();
+        services.AddScoped<PretRepository>();
+        services.AddScoped<ReservationRepository>();
 
         // Services
 
+        services.AddScoped<PretService>();
+        services.AddScoped<PenaltieService>();
 
         return services;
     }
