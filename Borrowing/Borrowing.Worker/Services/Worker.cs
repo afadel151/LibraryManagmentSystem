@@ -1,4 +1,4 @@
-namespace Borrowing.Worker;
+namespace Borrowing.Worker.Services;
 
 public class Worker(ILogger<Worker> logger) : BackgroundService
 {
