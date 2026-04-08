@@ -3,7 +3,9 @@ using Shared.Models;
 
 namespace Borrowing.Worker.Repositories;
 
-
-public class JoursFeriesRepository(LibraryDbContext context) : BaseRepository<JoursFery>(context)
+public interface IJoursFeriesRepository : IBaseRepository<JoursFery>
+{
+}
+public class JoursFeriesRepository(LibraryDbContext context) : BaseRepository<JoursFery>(context), IJoursFeriesRepository
 {
 }

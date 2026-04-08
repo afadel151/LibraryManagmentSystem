@@ -3,7 +3,9 @@ using Shared.Models;
 
 namespace Borrowing.Worker.Repositories;
 
-
-public class PenaliteAdherentRepository(LibraryDbContext context) : BaseRepository<PenaliteAdherent>(context)
+public interface IPenaliteAdherentRepository : IBaseRepository<PenaliteAdherent>
+{
+}
+public class PenaliteAdherentRepository(LibraryDbContext context) : BaseRepository<PenaliteAdherent>(context), IPenaliteAdherentRepository
 {
 }
