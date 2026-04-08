@@ -6,9 +6,6 @@ public interface IReservationRepository : IBaseRepository<Reservation>
 {
 }
 
-public class ReservationRepository : BaseRepository<Reservation>, IReservationRepository
+public class ReservationRepository(LibraryDbContext context) : BaseRepository<Reservation>(context), IReservationRepository
 {
-    public ReservationRepository(LibraryDbContext context) : base(context)
-    {
-    }
 }

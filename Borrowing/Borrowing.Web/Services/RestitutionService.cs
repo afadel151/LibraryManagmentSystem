@@ -27,5 +27,5 @@ public class RestitutionService(ApiHttpClient api) : IRestitutionService
     public async Task<bool> ValiderRestitution(CreateRestitutionDto dto) => 
         await _api.PostForSuccessAsync("api/Restitution/Restituer",dto);
     public async Task<bool> ValiderRenouvlement(CreateRestitutionDto dto) => 
-        await _api.PostForSuccessAsync("api/Restitution/Restituer",dto);
+        await _api.PostForSuccessAsync("api/Restitution/Renouvler",dto);
 }

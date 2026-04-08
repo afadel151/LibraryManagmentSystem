@@ -6,9 +6,6 @@ namespace Borrowing.Api.Repositories;
 public interface IJoursFeriesRepository : IBaseRepository<JoursFery>
 {
 }
-public class JoursFeriesRepository : BaseRepository<JoursFery>, IJoursFeriesRepository
+public class JoursFeriesRepository(LibraryDbContext context) : BaseRepository<JoursFery>(context), IJoursFeriesRepository
 {
-    public JoursFeriesRepository(LibraryDbContext context) : base(context)
-    {
-    }
 }
