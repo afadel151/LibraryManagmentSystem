@@ -97,7 +97,7 @@ liste_exemplaire_disponible.Clear;
 
 Query_nom_adherent.SQL.Text := 'select NOM,PRENOM,ID_CATEGORIE,ETAT_ADHERENT from adherent where upper(id_adherent) = ''' + strupper(Pchar(id_adherent.Text)) + '''' ;
 
-//-----------------Pour remplir le nom et prenom de l'adhérent
+//-----------------Pour remplir le nom et prenom de l'adhï¿½rent
 DBEdit_nom.DataField            := 'NOM' ;
 DBEdit_prenom.DataField         := 'PRENOM' ;
 DBEdit_id_categorie.DataField := 'ID_CATEGORIE' ;
@@ -132,7 +132,7 @@ else
 if (DBEdit_id_etat.Text = '1')  then
         begin
         Message_Etat_adherent.Font.Color  := clGreen ;
-        Message_Etat_adherent.Caption     := 'Adhérent en règle' ;
+        Message_Etat_adherent.Caption     := 'Adhï¿½rent en rï¿½gle' ;
         renouvelement.Visible := true ;
         Message_Etat_adherent.Visible     := true ;
         end
@@ -140,7 +140,7 @@ else begin
         if (DBEdit_id_etat.Text <> '') then
                 begin
                         Message_Etat_adherent.Font.Color  := clRed ;
-                        Message_Etat_adherent.Caption := 'Adhérent Pénalisé ou suspendu' ;
+                        Message_Etat_adherent.Caption := 'Adhï¿½rent Pï¿½nalisï¿½ ou suspendu' ;
                         renouvelement.Visible := false ;
                         Message_Etat_adherent.Visible     := true ;
                 end;
@@ -234,7 +234,7 @@ begin
 
 if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
    begin
-        //------------ Sauvegarder le pret en cours dans la table historique_pret après restitution
+        //------------ Sauvegarder le pret en cours dans la table historique_pret aprï¿½s restitution
 
         Requete := 'insert into historique_pret values(''' +
                                                         strupper(Pchar(id_adherent.Text)) + ''',''' +
@@ -267,12 +267,12 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
        Duree_pret := Query_valider_restitution.Fields.FieldByNumber(1).AsInteger ;
        id_categorie := Query_valider_restitution.Fields.FieldByNumber(2).AsString ;
 
-       //-------------- Calculer la date prévue pour la restitution
+       //-------------- Calculer la date prï¿½vue pour la restitution
 
        date_restitution_prevue := strtodate(DBEdit_date_pret.Text) + Duree_pret ;
        date_restitution_prevue := Traiter_date(date_restitution_prevue) ;
 
-       //-------- Pour tester est ce que l'exemplaire en cours permet de l'emprunter pour une durée ouverte ou pas
+       //-------- Pour tester est ce que l'exemplaire en cours permet de l'emprunter pour une durï¿½e ouverte ou pas
        Query_valider_restitution.SQL.Text := ' select ETAT_DUREE from PRET' +
                                              ' where upper(ID_adherent) = ''' + strupper(Pchar(id_adherent.Text))
                                              + ''' and upper(ID_EXEMPLAIRE) = ''' + strupper(Pchar(liste_exemplaire_disponible.Text)) + '''';
@@ -287,7 +287,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
                         if (strupper(Pchar(etat_duree)) = 'O' ) then retard := false
                         else
                         begin
-                                retard := true ;    //----  ça veut dire qu'il est en retard
+                                retard := true ;    //----  ï¿½a veut dire qu'il est en retard
                                 nbr_jours_retard_doc_en_cours := DaysBetween(Date_aujourdhui, date_restitution_prevue) ;
 
                                 //------ A partir de cette nbr_jours_retard_doc_en_cours on extrait le nombre de jours corespondant de la table penalite
@@ -299,14 +299,14 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
                         end
                 end;
 
-//---- On vérifier est ce que l'adhérent en cours existe ou pas dans la table pénalité_adhérent
+//---- On vï¿½rifier est ce que l'adhï¿½rent en cours existe ou pas dans la table pï¿½nalitï¿½_adhï¿½rent
 
         existe_dans_la_table_penalite_adherent := false ;
         Query_valider_restitution.SQL.Text := 'select count(*) from penalite_adherent where upper(id_adherent) = ''' +  strupper(Pchar(id_adherent.Text)) + '''';
         Query_valider_restitution.ExecSQL ; Query_valider_restitution.Active    := true ; Query_valider_restitution.First;
         if ( Query_valider_restitution.Fields.FieldByNumber(1).AsInteger > 0 ) then
                 begin
-                        existe_dans_la_table_penalite_adherent := true ;  //-- c'est à dire qu'il existe dans la table pénalité_adhérent
+                        existe_dans_la_table_penalite_adherent := true ;  //-- c'est ï¿½ dire qu'il existe dans la table pï¿½nalitï¿½_adhï¿½rent
                         //---- Calculer le nombre de jours en retard qui existe dans la table penalite_adherent
                         Query_valider_restitution.SQL.Text := ' select nombre_jours_penalite from penalite_adherent where upper(id_adherent) = ''' +  strupper(Pchar(id_adherent.Text)) + '''';
                         Query_valider_restitution.ExecSQL ; Query_valider_restitution.Active    := true ; Query_valider_restitution.First ;
@@ -326,7 +326,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
                 begin
                         if (nbr_pret_utilisateur_en_cours = 1 ) then   //---- c'est le dernier document de l'adherent en cours
                                 begin
-                                        if (existe_dans_la_table_penalite_adherent) then  //--- Il existe dans la table penalité_adherent
+                                        if (existe_dans_la_table_penalite_adherent) then  //--- Il existe dans la table penalitï¿½_adherent
                                                 begin
                                                         jours_retard := Max(nbr_jours_retard_doc_en_cours, nbr_jours_retard_dans_la_table_penalite_adherent);
                                                         Query_valider_restitution.SQL.Text := 'update penalite_adherent set date_penalite = ' + 'TO_DATE(''' + datetostr(Date_aujourdhui) + ''', ''dd/mm/yyyy'')'
@@ -334,7 +334,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
                                                                                       + ''' where upper(id_adherent) = ''' +  strupper(Pchar(id_adherent.Text)) + '''';
                                                         Query_valider_restitution.ExecSQL ;
                                                 end
-                                        else    //--- Il n'existe pas dans la table penalité_adherent
+                                        else    //--- Il n'existe pas dans la table penalitï¿½_adherent
                                                 begin
                                                         jours_retard := nbr_jours_retard_doc_en_cours ;
                                                         Query_valider_restitution.SQL.Text := 'insert into penalite_adherent values('''
@@ -348,7 +348,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
                                 end
                         else    //---- ce n'est pas le dernier document de l'adherent en cours (il a d'autres documents en possesion)
                                 begin
-                                        if (existe_dans_la_table_penalite_adherent) then   //--- Il existe dans la table penalité_adherent
+                                        if (existe_dans_la_table_penalite_adherent) then   //--- Il existe dans la table penalitï¿½_adherent
                                                 begin
                                                         jours_retard := Max(nbr_jours_retard_doc_en_cours, nbr_jours_retard_dans_la_table_penalite_adherent);
                                                         jours_retard := jours_retard * (-1) ;
@@ -357,7 +357,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
                                                                                       + ''' where upper(id_adherent) = ''' +  strupper(Pchar(id_adherent.Text)) + '''';
                                                         Query_valider_restitution.ExecSQL ;
                                                 end
-                                        else    //--- Il n'existe pas dans la table penalité_adherent
+                                        else    //--- Il n'existe pas dans la table penalitï¿½_adherent
                                                 begin
                                                         jours_retard := nbr_jours_retard_doc_en_cours ;
                                                         jours_retard := jours_retard * (-1) ;
@@ -370,7 +370,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
                                                         Query_valider_restitution.ExecSQL ;
                                                 end;
                                 end;
-                        //------- Mettre à jour l'etat de l'adherent (en d'autres termes le pénaliser)
+                        //------- Mettre ï¿½ jour l'etat de l'adherent (en d'autres termes le pï¿½naliser)
                         Query_valider_restitution.SQL.Text := 'update adherent set etat_adherent = ''2'' where upper(id_adherent) = ''' +  strupper(Pchar(id_adherent.Text)) + '''' ;
                         Query_valider_restitution.ExecSQL ;
 
@@ -379,7 +379,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
                 begin
                         if (nbr_pret_utilisateur_en_cours = 1 ) then //---- c'est le dernier document de l'adherent en cours
                                 begin
-                                        if (existe_dans_la_table_penalite_adherent) then  //--- Il existe dans la table penalité_adherent
+                                        if (existe_dans_la_table_penalite_adherent) then  //--- Il existe dans la table penalitï¿½_adherent
                                                 begin
                                                         jours_retard := nbr_jours_retard_dans_la_table_penalite_adherent ;
                                                         Query_valider_restitution.SQL.Text := 'update penalite_adherent set date_penalite = ' + 'TO_DATE(''' + datetostr(Date_aujourdhui) + ''', ''dd/mm/yyyy'')'
@@ -391,7 +391,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
                                 end
                         else    //---- ce n'est pas le dernier document de l'adherent en cours (il a d'autres documents en possesion)
                                 begin
-                                     //-------- ici rien à faire car la retitution est faite normalement sans problème
+                                     //-------- ici rien ï¿½ faire car la retitution est faite normalement sans problï¿½me
                                      //-------- Les instructions se trouvent en bas apres le traitement des reservations
                                 end;
 
@@ -402,7 +402,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
 //----------- Fin nouveau algorithme
 //--------------------------------------------------------------------------------------------------
 
-//---------------- Traiter le cas des réservations
+//---------------- Traiter le cas des rï¿½servations
 
         //------- Extraire le nombre de reservation de la cote en cours pour l'utilisateur 99-999 (reservation)
         Query_valider_restitution.SQL.Text := 'select count(*) from reservation where  upper(cote) = ''' + strupper(cote) + ';''' ;
@@ -416,11 +416,11 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
         nbr_pret_reservations := Query_valider_restitution.Fields.FieldByNumber(1).AsInteger ;
 
 
-        if ( nbr_reservations > 0 ) then  //------- Si la cote actuelle est réservée
+        if ( nbr_reservations > 0 ) then  //------- Si la cote actuelle est rï¿½servï¿½e
             begin
                 if ( nbr_pret_reservations < nbr_reservations ) then
                         begin
-                                //----- Date de retour représente le jour dans lequel le document est retourné
+                                //----- Date de retour reprï¿½sente le jour dans lequel le document est retournï¿½
 
                                 Query_valider_restitution.SQL.Text := 'insert into pret values(''99/999'','''
                                                                         + liste_exemplaire_disponible.Text
@@ -455,7 +455,7 @@ if((DBEdit_nom.Text <> '') and (liste_exemplaire_disponible.Text <> '')) then
    end
 else
    begin
-        Showmessage('Toutes les informations doivent être saisies (adhérent et exemplaire) !!!')
+        Showmessage('Toutes les informations doivent ï¿½tre saisies (adhï¿½rent et exemplaire) !!!')
    end;
 
 id_adherentChange(valider_restitution);
@@ -490,18 +490,18 @@ begin
 
 if ((( date_retour.Text <> '') and (strlen(Pchar(date_retour.Text)) = 10)) and (strlen(Pchar(DBEdit_date_pret.Text)) = 10))   then
         Begin
-        //-------------- Il faut que la date de retour ne soit pas superieure à la date en cours
+        //-------------- Il faut que la date de retour ne soit pas superieure ï¿½ la date en cours
 
         if (strToDate(date_retour.Text) > Date ) then
                 begin
-                        Showmessage('La date de retour doit être inférieure ou égale à la date en cours') ;
+                        Showmessage('La date de retour doit ï¿½tre infï¿½rieure ou ï¿½gale ï¿½ la date en cours') ;
                         date_retour.Text := datetostr(Date);
                 end;
-        //------------- Il faut aussi que la date de retour ne soit pas inferieure à la date de pret
+        //------------- Il faut aussi que la date de retour ne soit pas inferieure ï¿½ la date de pret
 
         if ( strToDate(date_retour.Text) <  strToDate(DBEdit_date_pret.Text) ) then
                 begin
-                        Showmessage('La date de retour doit être supérieure ou égale à la date de Prêt') ;
+                        Showmessage('La date de retour doit ï¿½tre supï¿½rieure ou ï¿½gale ï¿½ la date de Prï¿½t') ;
                         date_retour.Text := datetostr(Date);
                 end;
 
@@ -537,7 +537,7 @@ begin
                         end
                 else
                         begin
-                                // ---- Pour voir est ce que la date de retour est un jour férier
+                                // ---- Pour voir est ce que la date de retour est un jour fï¿½rier
                                 // ---- Extraire la liste des jours feriers
                                 Requete_date.SQL.Text := 'select * from jours_feries' ;
                                 Requete_date.ExecSQL ;
@@ -560,7 +560,7 @@ begin
                         end ;
                 if (changement) then  Traiter_date := Traiter_date(date_a_traiter)
                 else Traiter_date := date_a_traiter ;
-                //--- Retour de la valeur finale d'une date valide (pas week end, pas jour férier)
+                //--- Retour de la valeur finale d'une date valide (pas week end, pas jour fï¿½rier)
 end;
 
 procedure TForm_Restitution.renouvelementClick(Sender: TObject);
@@ -578,18 +578,18 @@ renouvellement_id_exemplaire := liste_exemplaire_disponible.Text ;
 
 valider_restitutionClick(nil);
 
-//------- verifier la disponibilité du document restitué
+//------- verifier la disponibilitï¿½ du document restituï¿½
 
 Query_renouvellement.SQL.Text := 'select id_etat from exemplaire where upper(id_exemplaire) = ''' + strupper(Pchar(renouvellement_id_exemplaire)) + '''' ;
 Query_renouvellement.ExecSQL ; Query_renouvellement.Active:= true ; Query_renouvellement.First;
 
-if (Query_renouvellement.Fields.FieldByNumber(1).AsInteger = 1) then  //---- c'est à dire que l'exemplaire est dispo
+if (Query_renouvellement.Fields.FieldByNumber(1).AsInteger = 1) then  //---- c'est ï¿½ dire que l'exemplaire est dispo
         begin
-                //------ Si est disponible (faire le pret) et si l'utilisateur est autorisé à faire des pret (pas pénalisé, pas suspendu)
+                //------ Si est disponible (faire le pret) et si l'utilisateur est autorisï¿½ ï¿½ faire des pret (pas pï¿½nalisï¿½, pas suspendu)
                 Query_renouvellement.SQL.Text := 'select ETAT_ADHERENT from adherent where upper(id_adherent) = ''' + strupper(Pchar(renouvellement_id_adherent)) + '''' ;
                 Query_renouvellement.ExecSQL ; Query_renouvellement.Active:= true ; Query_renouvellement.First ;
 
-                if ( Query_renouvellement.Fields.FieldByNumber(1).AsInteger = 1 ) then  //---- c'est à dire que l'utilisateur est en règle
+                if ( Query_renouvellement.Fields.FieldByNumber(1).AsInteger = 1 ) then  //---- c'est ï¿½ dire que l'utilisateur est en rï¿½gle
                         begin
                              //------- Effectuer le Pret
                              Form_pret.date_pret.Text := datetostr(date);
@@ -604,21 +604,21 @@ if (Query_renouvellement.Fields.FieldByNumber(1).AsInteger = 1) then  //---- c'e
                              Form_pret.date_pret.Text := datetostr(date);
                              Form_pret.id_adherent.Text := '' ;
                              Form_pret.liste_exemplaire_disponible.Clear;
-                             //------- Re actualiser le contenud e la liste déroulante
+                             //------- Re actualiser le contenud e la liste dï¿½roulante
                              liste_exemplaire_disponible.Clear;
                              id_adherentChange(valider_restitution);
                              liste_exemplaire_disponibleChange(valider_restitution);                             
                         end
                 else
                         begin
-                                Showmessage('Cette utilisateur est suspendu ou pénalisé, renouvellement non effectué !!!') ;
+                                Showmessage('Cette utilisateur est suspendu ou pï¿½nalisï¿½, renouvellement non effectuï¿½ !!!') ;
                         end;
 
         end
 else
         begin
-                //------ Sinon afficher un message disant qu'il est réservé
-                Showmessage('Ce Document est réservé, renouvellement non effectué   !!!') ;
+                //------ Sinon afficher un message disant qu'il est rï¿½servï¿½
+                Showmessage('Ce Document est rï¿½servï¿½, renouvellement non effectuï¿½   !!!') ;
         end;
 
 
