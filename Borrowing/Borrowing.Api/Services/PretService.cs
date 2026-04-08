@@ -13,7 +13,8 @@ public interface IPretService
     Task<Pret?> CreatePretAsync(CreatePretRequestDto pretRequestDTo);
     Task<int> CountAsync();
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters);
-    Task<bool> RestitutionPret(string IdAdherent, string IdExemplaire, DateTime? dateRetourSaisie = null);
+    Task<bool> RestitutionPret(string IdAdherent, string IdExemplaire);
+    Task<bool> RenouvlementPret(string IdAdherent, string IdExemplaire);
     Task<int> CountAdherentActiveLoans(string AdherentId);
     // Task<bool> DeletePret(string IdAdherent, string IdExemplaire);
     Task<List<Pret>> GetBlockedCopies(string cote);
@@ -61,7 +62,6 @@ public class PretService(
         }
         catch (System.Exception)
         {
-
             return null;
         }
     }
@@ -197,12 +197,12 @@ public class PretService(
 
 
 
-   public async Task<bool> RestitutionPret(string IdAdherent, string IdExemplaire, DateTime? dateRetourSaisie = null)
+   public async Task<bool> RestitutionPret(string IdAdherent, string IdExemplaire)
         {
             ArgumentNullException.ThrowIfNull(IdAdherent);
             ArgumentNullException.ThrowIfNull(IdExemplaire);
 
-            DateTime dateRetour = dateRetourSaisie ?? DateTime.Now.Date;
+            DateTime dateRetour =  DateTime.Now.Date;
 
             var prets = await _pretRepository.FindAsync(p => p.IdAdherent == IdAdherent && p.IdExemplaire == IdExemplaire);
             //cherchcer pret
@@ -406,5 +406,38 @@ public class PretService(
             }
         }
 
+    public async Task<bool>  RenouvlementPret(string IdAdherent, string IdExemplaire)
+    {
+        var result = await RestitutionPret(IdAdherent,IdExemplaire);
+        if (result)
+        {
+            var exemplaire = await _exemplairesRepository.GetQueryable().Where(e => e.IdExemplaire == IdExemplaire).FirstOrDefaultAsync();
+            var adherent = await _adherentRepository.GetQueryable().Where(a => a.IdAdherent == IdAdherent).FirstOrDefaultAsync();
+            if (exemplaire == null || adherent == null) return false;
+
+            if (exemplaire.IdEtat == 1)
+            {
+                if (adherent.EtatAdherent == 1)
+                {
+                    var pret = await CreatePretAsync(new CreatePretRequestDto{AdherentId = IdAdherent,ExemplaireId = IdExemplaire});
+                    if (pret == null)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    } // pret non cree
+                }
+                Console.WriteLine("adherent penalise");
+                return false; // adherent penalise
+            }
+            Console.WriteLine("exemplaire no longer available");
+            return false; // exemplaire no longer available
+        }
+        Console.WriteLine("Erreur de restitution");
+
+        return false;// erreur de restitution
+    }
     
 }
