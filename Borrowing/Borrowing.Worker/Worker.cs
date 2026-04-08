@@ -1,4 +1,4 @@
-using Borrowing.Worker.Services;
+using Borrowing.Worker.Services.Interfaces;
 
 namespace Borrowing.Worker;
 
@@ -10,11 +10,11 @@ public class Worker(ILogger<Worker> logger,IServiceScopeFactory scopeFactory) : 
     {
         using var scope = _scopeFactory.CreateScope();
         while (!stoppingToken.IsCancellationRequested)
-        {
+        {   
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                var pretService = scope.ServiceProvider.GetRequiredService<PretService>();
+                var pretService = scope.ServiceProvider.GetRequiredService<IScopedPretService>();
                 await pretService.Run();
             }
             await Task.Delay(1000, stoppingToken);
