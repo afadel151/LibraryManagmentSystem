@@ -7,14 +7,9 @@ namespace Borrowing.Api.Controllers;
 [Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class EtatAdherentController : ControllerBase
+public class EtatAdherentController(IEtatAdherentRepository etatAdherentRepository) : ControllerBase
 {
-    private readonly IEtatAdherentRepository _etatAdherentRepository;
-
-    public EtatAdherentController(IEtatAdherentRepository etatAdherentRepository)
-    {
-        _etatAdherentRepository = etatAdherentRepository;
-    }
+    private readonly IEtatAdherentRepository _etatAdherentRepository = etatAdherentRepository;
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EtatAdherentDto>>> Get()

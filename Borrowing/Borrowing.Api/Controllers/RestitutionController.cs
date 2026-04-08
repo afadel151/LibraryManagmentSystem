@@ -12,21 +12,10 @@ namespace Borrowing.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class RestitutionController(
-    IPretService pretService,
-    IAdherentService adherentService,
-    INoticeService noticeService,
-    IReservationService reservationService,
-    IRestitutionService restitutionService,
-    IPenaliteAdherentService penaltieService
+    IPretService pretService
     ) : ControllerBase
 {
     private readonly IPretService _pretService = pretService;
-    private readonly IReservationService _reservationService = reservationService;
-    private readonly IAdherentService _adherentService = adherentService;
-    private readonly INoticeService _noticeService = noticeService;
-    private readonly IRestitutionService _restitutionService = restitutionService;
-    private readonly IPenaliteAdherentService _penaliteService = penaltieService;
-
 
 
     [HttpPost("Restituer")]
@@ -54,8 +43,12 @@ public class RestitutionController(
     [HttpPost("Renouvler")]
     public async Task<IActionResult> RenouvlerPret([FromBody] CreateRestitutionDto form)
     {
-        // a faire
-        return Ok();
+       var success = await _pretService.RenouvlementPret(form.AdherentId,form.ExemplaireId);
+       if (success)
+       {
+            return Ok("Renouvlement avec succes");
+       }
+        return NotFound("Erreur de renouvlement");
     }
 
 }

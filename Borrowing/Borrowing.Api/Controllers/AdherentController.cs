@@ -11,13 +11,10 @@ namespace Borrowing.Api.Controllers;
 [Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class AdherentController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
+public class AdherentController( IAdherentService adherentService) : ControllerBase
 {
-    private readonly IPretService _pretService = pretService;
-    private readonly IReservationService _reservationService = reservationService;
     private readonly IAdherentService _adherentService = adherentService;
 
-    private readonly INoticeService _noticeService = noticeService;
 
     [HttpGet]
     public async Task<ActionResult<PagedResult<AdherentDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)

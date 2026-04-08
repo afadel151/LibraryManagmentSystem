@@ -9,13 +9,9 @@ namespace Borrowing.Api.Controllers;
 [Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ReservationController(IPretService pretService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
+public class ReservationController(IReservationService reservationService) : ControllerBase
 {
-    private readonly IPretService _pretService = pretService;
     private readonly IReservationService _reservationService = reservationService;
-    private readonly IAdherentService _adherentService = adherentService;
-
-    private readonly INoticeService _noticeService = noticeService;
 
     [HttpPost("Create")]
     public async Task<ActionResult<CreateReservationResponseDto>> CreateReservation([FromBody] CreateReservationRequestDto createReservationDto)
