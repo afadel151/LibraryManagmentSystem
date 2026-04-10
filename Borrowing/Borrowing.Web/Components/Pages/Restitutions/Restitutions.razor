@@ -4,21 +4,24 @@
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Common
 @using Borrowing.SharedClasses.Requests.Restitution
+@using Microsoft.Extensions.Localization
 
 @inject IRestitutionService restitutionService
 @inject NotificationService NotificationService
+
+@inject IStringLocalizer<Restitutions> L
 
 @inherits AuthorizedComponentBase
 
 
 
-<RadzenText TextStyle="TextStyle.H3">Faire une restitution</RadzenText>
+<RadzenText TextStyle="TextStyle.H2">@L["MakeRestitution"]</RadzenText>
 
 <RadzenCard Variant="Variant.Filled" Style="height: 100%;margin-top:2rem;">
-    <RadzenText TextStyle="TextStyle.H5">Information Adhérent</RadzenText>
+    <RadzenText TextStyle="TextStyle.H3">@L["AdherentInformation"]</RadzenText>
 
     <RadzenStack Orientation="Orientation.Vertical" Gap="2rem" class="rz-mt-3">
-        <RadzenTextBox Placeholder="Saisir l'ID Adhérent..." @bind-Value="AdherentId" @oninput="OnMemberTyping"
+        <RadzenTextBox Placeholder="@L["EnterAdherentId"]" @bind-Value="AdherentId" @oninput="OnMemberTyping"
                        Change="OnMemberIdChanged" class="w-100" />
 
         @if (isLoadingMember)
@@ -34,30 +37,28 @@
                 </RadzenColumn>
                 <RadzenColumn Size="8">
 
-                    <RadzenText TextStyle="TextStyle.Subtitle1"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
+                    <RadzenText TextStyle="TextStyle.DisplayH5"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
 
                         @adherentCheck.Adherent?.Prenom</b></RadzenText>
-                        <RadzenText TextStyle="TextStyle.Body1">Catégorie:
+                        <RadzenText TextStyle="TextStyle.DisplayH6">@L["Category"]:
                             @adherentCheck.Adherent?.Categorie?.LibelleCategorie
                         </RadzenText>
 
                        
-                        <RadzenBadge
-                        BadgeStyle="@(adherentCheck.Adherent!.EtatAdherent == 1 ? BadgeStyle.Success : BadgeStyle.Danger)"
-                        Text="@(adherentCheck.Adherent!.EtatAdherent == 1 ? "Actif" : "Penalise ou suspendu")" />
-                        <RadzenBadge
-                        BadgeStyle="@(adherentCheck.Adherent!.PenaliteAdherents.Count == 0 ? BadgeStyle.Success : BadgeStyle.Danger)"
-                        Text="@(adherentCheck.Adherent!.PenaliteAdherents.Count == 0 ? "Non pénalisé" : "Pénalisé")" />
+                        <RadzenBadge  Style="scale: 150% 150%;margin-left:10px;margin-top:10px;"
+                                     BadgeStyle="@(adherentCheck.Adherent!.EtatAdherent == 1 ? BadgeStyle.Success : BadgeStyle.Danger)"
+                                     Text="@(adherentCheck.Adherent!.EtatAdherent == 1 ? @L["Active"] : adherentCheck.Adherent!.EtatAdherent == 2 ?  @L["Penalised"] : @L["Suspended"])" />
+
                             
-                        <div class="rz-mt-2">
-                            <RadzenText TextStyle="TextStyle.Body1">Quota: @adherentCheck.Adherent!.Prets.Count /
+                        <div class="rz-mt-5">
+                            <RadzenText  TextStyle="TextStyle.DisplayH6">@L["Quota"]: @adherentCheck.Adherent!.Prets.Count /
                                 @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
                                                 
-                                <RadzenText TextStyle="TextStyle.Body1" class="rz-mt-2">Date Retour Prévue:
+                                <RadzenText TextStyle="TextStyle.DisplayH6" class="rz-mt-3">@L["ExpectedReturnDate"]:
                                     <b>@DateTime.Now.Date.ToShortDateString()</b>
                                 </RadzenText>
                             </div>
-                            <RadzenText TextStyle="TextStyle.Body1" class="rz-mt-2">Sélectionner un exemplaire :</RadzenText>
+                            <RadzenText TextStyle="TextStyle.H6" class="rz-mt-3">@L["SelectExemplaire"] :</RadzenText>
                             <RadzenDropDown @bind-Value="selectedCopyId"
                                             Data="@adherentCheck.Adherent!.Prets.Select(p=>p.IdExemplaire)"
                                             Style="width: 600px;font-weight:bold;" />
@@ -67,7 +68,7 @@
                 }
                 else if (hasSearchedMember && adherentCheck == null)
                 {
-                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">Adhérent introuvable.</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">@L["AdherentNotFound"].</RadzenText>
                 }
             </RadzenStack>
         </RadzenCard>
@@ -78,11 +79,12 @@
                 @if (selectedCopyId != null)
                 {
 
-                    <RadzenButton Text="Valider Restitution" Click="ValiderRestitution" ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium"
-                                  class="rz-mr-2" />
+                    <RadzenButton Text="@L["ValidateRestitution"]" Click="ValiderRestitution" ButtonStyle="ButtonStyle.Success"
+                                  Size="ButtonSize.Medium" class="rz-mr-2" />
                     @if (adherentCheck.Adherent!.PenaliteAdherents.Count == 0 && adherentCheck.Adherent.EtatAdherent == 1)
                     {
-                        <RadzenButton Text="Renouvler le pret" Click="ValiderRenouvlement" ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Medium" class="rz-mr-2" />
+                        <RadzenButton Text="@L["RenewLoan"]" Click="ValiderRenouvlement" ButtonStyle="ButtonStyle.Info"
+                                      Size="ButtonSize.Medium" class="rz-mr-2" />
                     }
                 }
 
@@ -119,9 +121,8 @@
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = "Reponse Nulle",
                 Detail =
-                    "Erruer lors de verification d'adherent",
+                    @L["ErrorVerifyingAdherent"],
                 Duration = 4000
             });
             ResetMemberState();
@@ -131,32 +132,35 @@
 
     private async Task ValiderRestitution()
     {
-        if(string.IsNullOrEmpty(selectedCopyId))
+        if (string.IsNullOrEmpty(selectedCopyId))
             return;
-        if(adherentCheck == null)
+        if (adherentCheck == null)
             return;
 
 
-        CreateRestitutionDto dto = new () {
+        CreateRestitutionDto dto = new()
+        {
             AdherentId = adherentCheck!.Adherent!.IdAdherent,
             ExemplaireId = selectedCopyId!
         };
 
         var success = await restitutionService.ValiderRestitution(dto);
-        if(success)
+        if (success)
         {
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Success,
-                Summary = "Restitution Valide",
+                Summary = @L["RestitutionValid"],
                 Duration = 4000
             });
             ResetMemberState();
-        }else{
+        }
+        else
+        {
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = "Erruer lors de restitution",
+                Summary = @L["ErrorDuringRestitution"],
                 Duration = 4000
             });
         }
@@ -164,21 +168,22 @@
 
     }
 
-     private async Task ValiderRenouvlement()
+    private async Task ValiderRenouvlement()
     {
-        if(string.IsNullOrEmpty(selectedCopyId))
+        if (string.IsNullOrEmpty(selectedCopyId))
             return;
-        if(adherentCheck == null)
+        if (adherentCheck == null)
             return;
 
 
-        CreateRestitutionDto dto = new () {
+        CreateRestitutionDto dto = new()
+        {
             AdherentId = adherentCheck!.Adherent!.IdAdherent,
             ExemplaireId = selectedCopyId!
         };
 
         var success = await restitutionService.ValiderRenouvlement(dto);
-        if(success)
+        if (success)
         {
             ShowNotification(new NotificationMessage
             {
@@ -187,11 +192,13 @@
                 Duration = 4000
             });
             ResetMemberState();
-        }else{
+        }
+        else
+        {
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = "Erruer lors de restitution",
+                Summary = @L["ErrorDuringRenewal"],
                 Duration = 4000
             });
         }
