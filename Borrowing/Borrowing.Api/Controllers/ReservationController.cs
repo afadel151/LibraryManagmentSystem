@@ -34,8 +34,9 @@ public class ReservationController(IReservationService reservationService) : Con
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteReservation(string idAdherent, string cote,DateTime heureReservation)
+    public async Task<IActionResult> DeleteReservation([FromQuery] string idAdherent, [FromQuery] string cote,[FromQuery] DateTime heureReservation)
     {
+        Console.WriteLine("########## date "+heureReservation);
         bool success = await _reservationService.DeleteReservationAsync(idAdherent, cote,heureReservation);
         if (success)
         {

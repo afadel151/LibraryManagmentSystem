@@ -196,7 +196,7 @@ public class ReservationService(
     }
     public async Task<bool> DeleteReservationAsync(string idAdherent, string cote, DateTime heureReservation)
     {
-
+        Console.WriteLine("##### Data :"+heureReservation);
         var reservation = await _reservationRepository.GetQueryable()
             .FirstOrDefaultAsync(
                 r => r.IdAdherent == idAdherent &&
@@ -210,6 +210,7 @@ public class ReservationService(
             );
         if (reservation == null)
         {
+            Console.WriteLine("####### not fount");
             return false;
         }
 

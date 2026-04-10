@@ -165,7 +165,7 @@ public class PretService(
         }
 
         var totalCount = await query.CountAsync();
-
+        Console.WriteLine("######## count"+totalCount);
         var data = await query
             .Skip((queryParameters.PageNumber - 1) * queryParameters.PageSize)
             .Take(queryParameters.PageSize)

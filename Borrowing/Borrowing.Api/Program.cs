@@ -5,7 +5,6 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Borrowing.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,11 +74,11 @@ app.UseAuthorization();
 app.MapControllers();
 
 // ── Seed ──────────────────────────────────────────────────────────────────────
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
-    var seeder  = new DatabaseSeeder(context);
-    await seeder.SeedAllAsync();
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var context = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+//     var seeder  = new DatabaseSeeder(context);
+//     await seeder.SeedAllAsync();
+// }
 
 app.Run();
