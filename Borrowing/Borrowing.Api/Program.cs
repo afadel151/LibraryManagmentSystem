@@ -5,16 +5,18 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Borrowing.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// builder.Services.AddMemoryCache();
 builder.Services.AddDbContext<LibraryDbContext>();
 builder.Services.AddBorrowingServices();
-
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// builder.Services.AddHttpClient<ICalendarificService, CalendarificService>();
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
