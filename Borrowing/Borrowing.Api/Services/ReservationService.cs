@@ -13,27 +13,23 @@ public interface IReservationService
     Task<int> CountAsync();
     Task<bool> CheckAdherentReservingCote(string AdherentId, string cote);
     Task<List<Reservation>> GetAllDescByHeur(int n);
+    Task<List<RelanceDto>> GetRelances();
     Task<List<Reservation>> GetAllDescByHeur();
 }
 
-public class ReservationService : IReservationService
+public class ReservationService(
+    IReservationRepository reservationRepository,
+    IAdherentRepository adherentRepository,
+    IPretRepository pretRepository,
+    INoticesRepository noticesRepository,
+    IExemplairesRepository exemplairesRepository) : IReservationService
 {
-    private readonly IReservationRepository _reservationRepository;
-    private readonly IAdherentRepository _adherentRepository;
-    private readonly INoticesRepository _noticesRepository;
-    private readonly IExemplairesRepository _exemplairesRepository;
+    private readonly IReservationRepository _reservationRepository = reservationRepository;
+    private readonly IAdherentRepository _adherentRepository = adherentRepository;
+    private readonly INoticesRepository _noticesRepository = noticesRepository;
+    private readonly IExemplairesRepository _exemplairesRepository = exemplairesRepository;
 
-    public ReservationService(
-        IReservationRepository reservationRepository,
-        IAdherentRepository adherentRepository,
-        INoticesRepository noticesRepository,
-        IExemplairesRepository exemplairesRepository)
-    {
-        _reservationRepository = reservationRepository;
-        _adherentRepository = adherentRepository;
-        _noticesRepository = noticesRepository;
-        _exemplairesRepository = exemplairesRepository;
-    }
+    private readonly IPretRepository _pretRepository = pretRepository;
 
     // Sample method to demonstrate repository usage
     public async Task<Reservation?> CreateReservationAsync(CreateReservationRequestDto reservation)
@@ -160,4 +156,41 @@ public class ReservationService : IReservationService
         };
 
     }
+
+    public async Task<List<RelanceDto>> GetRelances()
+    {
+        var allReservations = await _reservationRepository.GetQueryable()
+                        .Include(r=> r.Adherent)
+                            .ThenInclude(a => a.Categorie)
+                        .Include(r => r.Adherent)
+                            .ThenInclude(a => a.Position)
+                        .Include(r => r.Notice)
+                        .ToListAsync();
+
+        List<RelanceDto> relancesList = [];
+        foreach (string cote in allReservations.Select(r => r.Cote).Distinct())
+        {
+            int bloquedCount = await _pretRepository.GetQueryable()
+                                .CountAsync(p => p.IdAdherent == "99/999" && p.IdExemplaire.StartsWith(cote + "/"));
+            
+            var firstInQueue = allReservations.OrderBy(r => r.HeureReservation).Take(bloquedCount).ToList();
+            foreach (var res in firstInQueue)
+            {
+                relancesList.Add(new RelanceDto
+                {
+                    IdAdherent = res.IdAdherent,
+                    Nom = res.Adherent.Nom!,
+                    Prenom = res.Adherent.Prenom!,
+                    Position = res.Adherent.Position!.LibellePosition!,
+                    Categorie = res.Adherent.Categorie!.LibelleCategorie!,
+                    Cote = res.Cote,
+                    TitrePropre = res.Notice.TitrePropre!,
+                    IdNotice = res.Notice.IdNotice
+                });
+            }
+        }
+
+        return relancesList;
+        
+    } 
 }
