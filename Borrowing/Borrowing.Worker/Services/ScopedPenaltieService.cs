@@ -1,6 +1,5 @@
 using Borrowing.Worker.Repositories;
-using Borrowing.Worker.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Borrowing.Worker.Services;
 
