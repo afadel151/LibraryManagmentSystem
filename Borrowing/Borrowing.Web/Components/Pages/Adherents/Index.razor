@@ -24,9 +24,9 @@
     <RadzenColumn>
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">@L["ActifAdherents"]</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H5">@L["ActifAdherents"]</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-success rz-m-0">
                         @(stats?.TotalActif ?? 0)
                     </RadzenText>
@@ -37,9 +37,9 @@
     <RadzenColumn>
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">@L["CurrentLoaning"]</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H5">@L["CurrentLoaning"]</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-info rz-m-0">
                         @(stats?.Pretants ?? 0)
                     </RadzenText>
@@ -50,11 +50,24 @@
     <RadzenColumn>
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">@L["PenalisedOrBlocked"]</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H5">@L["Penalised"]</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-warning rz-m-0">
                         @(stats?.Penalises ?? 0)
+                    </RadzenText>
+                </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+    <RadzenColumn>
+        <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
+            <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                             JustifyContent="JustifyContent.SpaceBetween">
+                    <RadzenText TextStyle="TextStyle.H5">@L["Suspended"]</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H2" class="rz-color-success rz-m-0">
+                        @(stats?.Suspended ?? 0) @*suspendu*@
                     </RadzenText>
                 </RadzenStack>
             </RadzenStack>
@@ -68,7 +81,7 @@
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
         <RadzenTextBox Placeholder="@L["SearchByIdOrName"]" style="width:400px" @bind-Value="SearchText"
                        @oninput="DoSearch" Change="DoSearch" />
-        <RadzenButton Text="@(isExporting ? L["Exporting"] : L["Export"])" Icon="get_app" Click="Export"
+        <RadzenButton Text="@(isExporting? L["Exporting"] : L["Export"])" Icon="get_app" Click="Export"
                       ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" />
         <Microsoft.AspNetCore.Components.Authorization.AuthorizeView Roles="ADMIN">
             <RadzenButton Text="@L["AddMember"]" Icon="add" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Flat"
@@ -79,9 +92,9 @@
 
 <RadzenRow class="rz-mt-4">
     <RadzenColumn>
-        <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@adherents" Count="@count"
-                        LoadData="@LoadData" IsLoading="@isLoading" TItem="AdherentDto" ShowPagingSummary="true"
-                        AllowPaging="true" PageSize="10" AllowSorting="true">
+        <RadzenDataGrid   PagerHorizontalAlign="HorizontalAlign.Justify" Data="@adherents" Count="@count"
+                        LoadData="@LoadData" IsLoading="@isLoading" TItem="AdherentDto" ShowPagingSummary="true" AllowPaging="true"
+                        PageSize="10" AllowSorting="true">
             <Columns>
                 <RadzenDataGridColumn TItem="AdherentDto" Property="IdAdherent" Title="@L["Id"]" />
                 <RadzenDataGridColumn TItem="AdherentDto" Property="Nom" Title="@L["FirstName"]" />
@@ -96,7 +109,12 @@
                         }
                         else if (data.Etat == 2)
                         {
-                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="@L["PenalisedOrBlocked"]" />
+                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="@L["Penalised"]" />
+                        }
+                        else if (data.Etat == 3)
+                        {
+                            <RadzenBadge Shade="Shade.Light" BadgeStyle="BadgeStyle.Danger" Text="@L["Suspended"]" />
+
                         }
                     </Template>
                 </RadzenDataGridColumn>
