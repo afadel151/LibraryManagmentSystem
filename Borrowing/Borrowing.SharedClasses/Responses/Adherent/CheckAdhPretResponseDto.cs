@@ -6,7 +6,7 @@ using Shared.Models;
 using Borrowing.SharedClasses.Common;
 public class CheckAdhPretResponseDto
 {
-    public EtatAdherentEnum Etat { get; set; } = EtatAdherentEnum.NOT_FOUND;
+    public CheckAdherentEnum Etat { get; set; } = CheckAdherentEnum.NOT_FOUND;
     public Adherent? Adherent {get; set;}
     public string picture {get;set;} = string.Empty;
     public int ActiveLoans {get;set;} = 0;

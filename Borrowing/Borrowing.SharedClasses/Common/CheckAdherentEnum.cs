@@ -1,10 +1,10 @@
 namespace Borrowing.SharedClasses.Common;
 
-public enum EtatAdherentEnum
+public enum CheckAdherentEnum
 {
-    AUTHORIZED,
-    QUOTA_REACHED,
     PENALISED,
-    INACTIF,
+    AUTHORIZED,
+    SUSPENDED,
+    QUOTA_REACHED,
     NOT_FOUND 
 }
