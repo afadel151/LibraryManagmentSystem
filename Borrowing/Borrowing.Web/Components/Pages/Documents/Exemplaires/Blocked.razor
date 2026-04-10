@@ -26,7 +26,7 @@
                 <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="TitrePropre" Title="Titre" />
                 <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="DatePret" Title="Date Retour d'exemplaire">
                     <Template Context="data">
-                        @data.DatePret.ToString("dd/MM/yyyy HH:mm")
+                        @data.DatePret.ToString("dd/MM/yyyy")
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Title="Actions" Sortable="false" Filterable="false"
