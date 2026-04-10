@@ -18,6 +18,7 @@ public interface INoticeService
     Task<List<TopLoanedNoticeDto>> GetTopLoanedNoticesAsync(int n);
     Task<NoticeProfileDto?> GetNoticeProfile(int NoticeId);
     Task<PagedResult<ExemplaireBloqueDto>> GetExemplaireBloquesAsync(PaginatedQueryParameters parameters);
+    Task<CheckNoticeResponseDto> CheckNoticeAsync(string cote, string adherentId);
 
 }
 
@@ -255,10 +256,73 @@ public class NoticeService(
         }
         return exemplaire;
     }
-    //
+    public async Task<CheckNoticeResponseDto> CheckNoticeAsync(string cote, string adherentId)
+    {
+        var notice = await _noticesRepository.GetQueryable(n => n.Reservations, n => n.Exemplaires).FirstOrDefaultAsync(); ;
+
+        if (notice == null)
+            return new CheckNoticeResponseDto { Status = CheckNoticeEnum.NOT_FOUND };
+
+        var titre = notice.TitrePropre!;
+        List<string> availableCopies = [.. notice.Exemplaires.Where(e => e.IdEtat == 1).Select(e => e.IdExemplaire)];
+        List<Pret> blockedCopies = await _pretsRepository.GetQueryable()
+            .Where(p => EF.Functions.Like(
+                p.IdExemplaire.ToUpper(),
+                cote.ToUpper() + "/%"))
+            .Where(p => p.IdAdherent == "99/999")
+            .OrderBy(p => p.DatePret)
+            .ToListAsync();
+
+        if (notice.Reservations.Any(r => r.IdAdherent == adherentId))
+        {
+            var orderedReservations = await _reservationRepository.GetQueryable()
+                        .OrderByDescending(p => p.HeureReservation)
+                        .Take(blockedCopies.Count)
+                        .ToListAsync();
+
+            if (orderedReservations.Any(r => r.IdAdherent == adherentId))
+            {
+                int queuePosition = orderedReservations.FindIndex(r => r.IdAdherent == adherentId);
+                return new CheckNoticeResponseDto
+                {
+                    Status = CheckNoticeEnum.CAN_BORROW_RESERVATEUR,
+                    Exemplaires = [blockedCopies.ElementAt(queuePosition).IdExemplaire],
+                    Titre = titre
+                };
+            }
+            else
+            {
+                return new CheckNoticeResponseDto
+                {
+                    Status = CheckNoticeEnum.RESERVED_NOT_READY,
+                    Titre = titre
+                };
+            }
+        }
+        else
+        {
+            if (availableCopies.Count > 0)
+            {
+                return new CheckNoticeResponseDto
+                {
+                    Status = CheckNoticeEnum.CAN_BORROW,
+                    Exemplaires = availableCopies,
+                    Titre = titre
+                };
+            }
+            else
+            {
+                return new CheckNoticeResponseDto
+                {
+                    Status = CheckNoticeEnum.CAN_RESERVE,
+                    Titre = titre
+                };
+            }
+        }
+    }
     public async Task<PagedResult<ExemplaireBloqueDto>> GetExemplaireBloquesAsync(PaginatedQueryParameters parameters)
     {
-        var prets =  _pretsRepository.GetQueryable()
+        var prets = _pretsRepository.GetQueryable()
             .Include(p => p.Exemplaire)
                 .ThenInclude(e => e.Notice)
             .Where(p => p.IdAdherent == "99/999");
@@ -269,7 +333,7 @@ public class NoticeService(
                         IdExemplaire = p.IdExemplaire,
                         TitrePropre = p.Exemplaire.Notice.TitrePropre!,
                         IdNotice = p.Exemplaire.Notice.IdNotice,
-                        DatePret= p.DatePret
+                        DatePret = p.DatePret
                     };
         var totalCount = await query.CountAsync();
         var data = await query
@@ -277,7 +341,7 @@ public class NoticeService(
             .Take(parameters.PageSize)
             .ToListAsync();
         Console.WriteLine("#### prets count: " + totalCount);
-        
+
         return new PagedResult<ExemplaireBloqueDto>
         {
             Data = data,
