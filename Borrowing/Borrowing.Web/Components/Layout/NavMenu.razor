@@ -36,7 +36,7 @@
     <RadzenSidebar Position="CultureService.IsRtl? SidebarPosition.Right: SidebarPosition.Left" FullHeight="true"
                 Responsive="false" @bind-Expanded="@sidebarExpanded">
         <RadzenPanelMenu DisplayStyle="@(sidebarExpanded? MenuItemDisplayStyle.IconAndText: MenuItemDisplayStyle.Icon)">
-            <RadzenPanelMenuItem Text="Menu" Icon="apps" Path="/" />
+            <RadzenPanelMenuItem Text="@L["Menu"]" Icon="apps" Path="/" />
             <RadzenPanelMenuItem Text="@L["LoanManagement"]" Icon="hand_package" Path="/prets" />
             <RadzenPanelMenuItem Text="@L["MemberManagement"]" Icon="person" Path="/adherents" />
             <RadzenPanelMenuItem Text="@L["RestitutionManagment"]" Icon="source_notes" Path="/restitutions" />
