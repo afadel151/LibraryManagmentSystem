@@ -5,40 +5,34 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Borrowing.SharedClasses.Common;
+using Borrowing.Web.Providers;
 
 public interface IReservationService
 {
-    Task<PagedResult<ReservationDto>> GetReservationsAsync(PaginatedQueryParameters queryParameters);
-    Task<IEnumerable<ReservationDto>> GetAllReservationsAsync(string search = "");
+    Task<PagedResult<ReservationDto>?> GetReservationsAsync(PaginatedQueryParameters queryParameters);
+    Task<IEnumerable<ReservationDto>?> GetAllReservationsAsync(string search = "");
+    Task<List<RelanceDto>?> GetRelancesAsync();
 }
 
-public class ReservationService(IHttpClientFactory factory) : IReservationService
+public class ReservationService(ApiHttpClient api) : IReservationService
 {
-    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
-
-    public async Task<PagedResult<ReservationDto>> GetReservationsAsync(PaginatedQueryParameters queryParameters)
+    private readonly ApiHttpClient _api = api;
+    public async Task<PagedResult<ReservationDto>?> GetReservationsAsync(PaginatedQueryParameters queryParameters)
     {
         var orderBy = string.IsNullOrWhiteSpace(queryParameters.OrderBy)
                 ? "HeureReservation desc"
                 : queryParameters.OrderBy;
+
         var url = $"api/Reservation?" +
                 $"PageNumber={queryParameters.PageNumber}&" +
                 $"PageSize={queryParameters.PageSize}&" +
                 $"OrderBy={orderBy}&" +
                 $"Search={queryParameters.Search}";
 
-        var response = await _httpClient.GetAsync(url);
-        var content = await response.Content.ReadAsStringAsync();
-
-        response.EnsureSuccessStatusCode();
-
-        return JsonSerializer.Deserialize<PagedResult<ReservationDto>>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
+        return await _api.GetAsync<PagedResult<ReservationDto>>(url);
     }
 
-    public async Task<IEnumerable<ReservationDto>> GetAllReservationsAsync(string search = "")
+    public async Task<IEnumerable<ReservationDto>?> GetAllReservationsAsync(string search = "")
     {
         var queryParams = new PaginatedQueryParameters
         {
@@ -47,8 +41,13 @@ public class ReservationService(IHttpClientFactory factory) : IReservationServic
             OrderBy = "HeureReservation desc",
             Search = search
         };
-
         var result = await GetReservationsAsync(queryParams);
+        if(result == null) return null;
         return result.Data;
+    }
+
+    public async Task<List<RelanceDto>?> GetRelancesAsync()
+    {
+        return await _api.GetAsync<List<RelanceDto>>("api/Reservation/Relances");
     }
 }
