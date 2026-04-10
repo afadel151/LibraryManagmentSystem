@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Shared.Models;
 
 namespace Borrowing.ScheduledTask.Services;
+
 public interface IScopedPretService
 {
     Task Run();
@@ -44,7 +45,6 @@ public sealed class ScopedPretService(
                                     .Include(p => p.Exemplaire)
                                     .ToListAsync();
         var joursFeries = await _joursFeriesRepository.GetQueryable().ToListAsync();
-
         foreach (var pret in prets)
         {
             var adherent = pret.Adherent;
@@ -54,65 +54,99 @@ public sealed class ScopedPretService(
             dateRetourPrevu = BaseExtensions.Traiter_date(dateRetourPrevu, joursFeries);
             if (DateTime.Now.Date > dateRetourPrevu) // retard
             {
+                // en retard
                 if (pret.IdAdherent == "99/999")
                 {
-                    await HandleReservation(pret,prets);
+                    await HandleReservation(pret, prets);
                 }
-                if (adherent.PenaliteAdherents.Count > 0)
+                else //---------- Traiter le cas des p�nalit�s pour les autres utilisateurs autres que les reservateurs
                 {
-                    try
+                    if (adherent.PenaliteAdherents.Count > 0)
                     {
-                        adherent.EtatAdherent = 2;
-                        await _adherentRepository.UpdateAsync(adherent);
-                         _logger.LogInformation("Adherent penalise ....");
-
-                    }
-                    catch
-                    {
-                        _logger.LogError("Erreur lors de mise a jours d'un adherent en etat Bloque");
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        var penalite = new PenaliteAdherent
+                        try
                         {
-                            IdAdherent = adherent.IdAdherent,
-                            DatePenalite = dateRetourPrevu,
-                            NombreJoursPenalite = 0
-                        };
-                        await _penaliteAdherentRepository.AddAsync(penalite);
-                        adherent.EtatAdherent = 2;
-                        await _adherentRepository.UpdateAsync(adherent);
-                         _logger.LogInformation("Adherent penalise ....");
+                            adherent.EtatAdherent = 2;
+                            await _adherentRepository.UpdateAsync(adherent);
+                            _logger.LogInformation("Adherent penalise ....");
+
+                        }
+                        catch
+                        {
+                            _logger.LogError("Erreur lors de mise a jours d'un adherent en etat Bloque");
+                        }
                     }
-                    catch
+                    else
                     {
-                        _logger.LogError("Erreur lors de penalisation de l'adherent");
+                        try
+                        {
+                            var penalite = new PenaliteAdherent
+                            {
+                                IdAdherent = adherent.IdAdherent,
+                                DatePenalite = dateRetourPrevu,
+                                NombreJoursPenalite = 0
+                            };
+                            await _penaliteAdherentRepository.AddAsync(penalite);
+                            adherent.EtatAdherent = 2;
+                            await _adherentRepository.UpdateAsync(adherent);
+                            _logger.LogInformation("Adherent penalise ....");
+                        }
+                        catch
+                        {
+                            _logger.LogError("Erreur lors de penalisation de l'adherent");
+                        }
                     }
+
                 }
+                //---- fin de test sur (retard)
             }
 
-        }
+        }//------ fin de while (not requete_timer.eof)
     }
 
-    public async Task HandleReservation(Pret pret,List<Pret> prets)
+    public async Task HandleReservation(Pret pret, List<Pret> prets) // done
     {
         bool mail_connected = false;
-        int bloquedCopiesCount = prets.Count(p => p.IdExemplaire.StartsWith(pret.Exemplaire.Cote + "/") && p.IdAdherent == "99/999");
-        int reservationsCount = await _reservationRepository.GetQueryable()
-                                        .CountAsync(r => r.Cote == pret.Exemplaire.Cote);
-        if (bloquedCopiesCount == reservationsCount)
+        int bloquedCopiesCount = prets.Count(p => p.IdExemplaire.StartsWith(pret.Exemplaire.Cote + "/") && p.IdAdherent == "99/999");//N1
+        var coteReservations = await _reservationRepository.GetQueryable()
+                                        .Where(r => r.Cote == pret.Exemplaire.Cote)
+                                        .OrderBy(r => r.HeureReservation)
+                                        .ToListAsync();
+        var firstreservator = coteReservations.First();
+        if (bloquedCopiesCount == coteReservations.Count) // N1==N2
         {
-            _logger.LogInformation("Adherent penalise ....");
-
+            _logger.LogInformation("N1=N2 ....");
+            //----- Supprimer ( 99/999, ????= id_exemplaire ) de la table pret
+            try { await _pretRepository.DeleteAsync(pret); }
+            catch
+            {
+                _logger.LogError("Error deleting Pret 1");
+            }
+            //---------- selectionner le premier qui a reserv�
+            try { await _reservationRepository.DeleteAsync(firstreservator); }
+            catch
+            {
+                _logger.LogError("Error deleting Reservation 2");
+            }
+            var exemplaire = pret.Exemplaire;
+            exemplaire.IdEtat = 1;
+            try
+            {
+                await _exemplairesRepository.UpdateAsync(exemplaire);
+            }
+            catch
+            {
+                _logger.LogError("error editing exemplaire 3");
+            }
         }
         else
         {
-            var firstReservation = await _reservationRepository.GetQueryable()
-                                        .OrderBy(r => r.HeureReservation)
-                                        .FirstOrDefaultAsync(); 
+            //---------- selectionner le premier qui a reserv�
+            try { await _reservationRepository.DeleteAsync(firstreservator); }
+            catch
+            {
+                _logger.LogError("Error deleting Reservation 4");
+            }
+            //------------------ Lancer les relances
             if (mail_connected)
             {
                 // send email
@@ -121,13 +155,15 @@ public sealed class ScopedPretService(
             else
             {
                 _logger.LogInformation("MAIL SERVER NOT CONNECTED ....");
-                
             }
-            
-
+            //------------------ Changer la date dans la table pret
+            pret.DatePret = DateTime.Now.Date;
+            try
+            { await _pretRepository.UpdateAsync(pret); }
+            catch
+            {
+                _logger.LogError("Error updating pret 5");
+            }
         }
-
     }
-
-
 }
