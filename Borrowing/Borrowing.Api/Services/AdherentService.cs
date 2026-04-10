@@ -141,6 +141,10 @@ public class AdherentService(
                         .Where(a => a.EtatAdherent == 2)
                             .CountAsync();
 
+        int suspended = await _adherentRepository.GetQueryable()
+                        .Where(a => a.EtatAdherent == 3)
+                            .CountAsync();
+
         int totalActifs = await _adherentRepository.GetQueryable()
                         .Where(a => a.EtatAdherent == 1)
                             .CountAsync();
@@ -153,7 +157,8 @@ public class AdherentService(
         {
             TotalActif = totalActifs,
             Penalises = penalises,
-            Pretants = pretants
+            Pretants = pretants,
+            Suspended = suspended
         };
 
     }
@@ -233,7 +238,7 @@ public class AdherentService(
                             DateTime expectedReturnDate = await CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)adherent.Adherent?.Categorie.DureePret!);
                                 return new CheckAdhPretResponseDto
                                 {
-                                    Etat = EtatAdherentEnum.AUTHORIZED,
+                                    Etat = CheckAdherentEnum.AUTHORIZED,
                                     Adherent = adherent.Adherent,
                                     picture = adherent.Picture,
                                     ActiveLoans = activeLoans,
@@ -245,7 +250,7 @@ public class AdherentService(
                         {
                                 return new CheckAdhPretResponseDto
                                 {
-                                    Etat = EtatAdherentEnum.QUOTA_REACHED,
+                                    Etat = CheckAdherentEnum.QUOTA_REACHED,
                                     Adherent = adherent.Adherent,
                                     picture = adherent.Picture,
                                     ActiveLoans = activeLoans
@@ -256,7 +261,7 @@ public class AdherentService(
                     {
                             return new CheckAdhPretResponseDto
                             {
-                                Etat = EtatAdherentEnum.NOT_FOUND,
+                                Etat = CheckAdherentEnum.NOT_FOUND,
                             };
 
                     }
@@ -265,28 +270,37 @@ public class AdherentService(
                 {
                             return new CheckAdhPretResponseDto
                             {
-                                Etat = EtatAdherentEnum.PENALISED,
+                                Etat = CheckAdherentEnum.PENALISED,
                                 Adherent = adherent.Adherent,
                                 picture = adherent.Picture
                             };
                 }
             }
-            else // bloque
+            else if (adherent.Adherent?.EtatAdherent == 2)
             {
                             return new CheckAdhPretResponseDto
                             {
-                                Etat = EtatAdherentEnum.PENALISED,
+                                Etat = CheckAdherentEnum.PENALISED,
                                 Adherent = adherent.Adherent,
                                 picture = adherent.Picture
                             };
 
+            }
+            else
+            {
+                return new CheckAdhPretResponseDto
+                            {
+                                Etat = CheckAdherentEnum.SUSPENDED,
+                                Adherent = adherent.Adherent,
+                                picture = adherent.Picture
+                            };
             }
         }
         else
         {
                 return new CheckAdhPretResponseDto
                 {
-                    Etat = EtatAdherentEnum.NOT_FOUND,
+                    Etat = CheckAdherentEnum.NOT_FOUND,
                 };
         }
     }
