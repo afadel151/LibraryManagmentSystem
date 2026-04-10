@@ -72,9 +72,19 @@ else
                 <RadzenStack Style="margin-left:auto" AlignItems="AlignItems.End" Orientation="Orientation.Vertical"
                              Gap="0.5rem">
                     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                        <RadzenBadge
-                        BadgeStyle="@(adherent.Adherent!.EtatAdherent == 1 ? BadgeStyle.Success : BadgeStyle.Danger)"
-                        Text="@(adherent.Adherent!.EtatAdherent == 1 ? "Actif" : "Penalise ou suspendu")" />
+                        @switch (adherent.Adherent!.EtatAdherent)
+                        {
+                            case 1:
+                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="En règle" />
+                                break;
+                            case 2:
+                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="Pénalisé" />
+                                break;
+                            case 3:
+                            <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="Suspendu" />
+                                break;
+                        }
+                        
                     </RadzenStack>
                     @if (isAdmin && !isEditing)
                     {
