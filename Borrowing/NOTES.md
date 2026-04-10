@@ -9,4 +9,6 @@
 
 ## from exemplaire to notice link
 
-## 
+## icon sized 
+
+## etat adherent et exemplaire 
