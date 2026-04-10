@@ -15,6 +15,7 @@ public interface IReservationService
     Task<List<Reservation>> GetAllDescByHeur(int n);
     Task<List<RelanceDto>> GetRelances();
     Task<List<Reservation>> GetAllDescByHeur();
+    Task<bool> DeleteReservationAsync(string idAdherent, string cote, DateTime heureReservation);
 }
 
 public class ReservationService(
@@ -160,7 +161,7 @@ public class ReservationService(
     public async Task<List<RelanceDto>> GetRelances()
     {
         var allReservations = await _reservationRepository.GetQueryable()
-                        .Include(r=> r.Adherent)
+                        .Include(r => r.Adherent)
                             .ThenInclude(a => a.Categorie)
                         .Include(r => r.Adherent)
                             .ThenInclude(a => a.Position)
@@ -172,7 +173,7 @@ public class ReservationService(
         {
             int bloquedCount = await _pretRepository.GetQueryable()
                                 .CountAsync(p => p.IdAdherent == "99/999" && p.IdExemplaire.StartsWith(cote + "/"));
-            
+
             var firstInQueue = allReservations.OrderBy(r => r.HeureReservation).Take(bloquedCount).ToList();
             foreach (var res in firstInQueue)
             {
@@ -191,6 +192,35 @@ public class ReservationService(
         }
 
         return relancesList;
-        
-    } 
+
+    }
+    public async Task<bool> DeleteReservationAsync(string idAdherent, string cote, DateTime heureReservation)
+    {
+
+        var reservation = await _reservationRepository.GetQueryable()
+            .FirstOrDefaultAsync(
+                r => r.IdAdherent == idAdherent &&
+                r.Cote == cote &&
+                r.HeureReservation.Year == heureReservation.Year &&
+                r.HeureReservation.Month == heureReservation.Month &&
+                r.HeureReservation.Day == heureReservation.Day &&
+                r.HeureReservation.Hour == heureReservation.Hour &&
+                r.HeureReservation.Minute == heureReservation.Minute &&
+                r.HeureReservation.Second == heureReservation.Second
+            );
+        if (reservation == null)
+        {
+            return false;
+        }
+
+        try
+        {
+            await _reservationRepository.DeleteAsync(reservation);
+            return true;
+        }
+        catch (System.Exception)
+        {
+            return false;
+        }
+    }
 }

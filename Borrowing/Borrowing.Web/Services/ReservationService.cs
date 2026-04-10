@@ -12,6 +12,7 @@ public interface IReservationService
     Task<PagedResult<ReservationDto>?> GetReservationsAsync(PaginatedQueryParameters queryParameters);
     Task<IEnumerable<ReservationDto>?> GetAllReservationsAsync(string search = "");
     Task<List<RelanceDto>?> GetRelancesAsync();
+    Task<bool> DeleteReservationAsync(string idAdherent, string cote,DateTime heureReservation);
 }
 
 public class ReservationService(ApiHttpClient api) : IReservationService
@@ -49,5 +50,10 @@ public class ReservationService(ApiHttpClient api) : IReservationService
     public async Task<List<RelanceDto>?> GetRelancesAsync()
     {
         return await _api.GetAsync<List<RelanceDto>>("api/Reservation/Relances");
+    }
+
+    public async Task<bool> DeleteReservationAsync(string idAdherent, string cote,DateTime heureReservation)
+    {
+        return await _api.DeleteForSuccessAsync($"api/Reservation?idAdherent={idAdherent}&cote={cote}&heureReservation={heureReservation}");
     }
 }

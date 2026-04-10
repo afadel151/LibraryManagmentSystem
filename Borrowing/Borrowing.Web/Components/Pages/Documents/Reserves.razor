@@ -6,6 +6,8 @@
 @inject IReservationService _reservationService
 @inject NavigationManager navigationManager
 @inject IExportService exportService
+@inject DialogService dialogService
+@inject NotificationService notificationService
 
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
@@ -34,15 +36,18 @@
                 <RadzenDataGridColumn TItem="ReservationDto" Property="Cote" Title="Cote" Width="150px" />
                 <RadzenDataGridColumn TItem="ReservationDto" Property="HeureReservation" Title="Date Réservation" Width="180px">
                     <Template Context="data">
-                        @data.HeureReservation.ToString("dd/MM/yyyy")
+                        @data.HeureReservation
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ReservationDto" Title="Actions" Sortable="false" Filterable="false" Width="200px">
+                <RadzenDataGridColumn TItem="ReservationDto" Title="Actions" Sortable="false" Filterable="false" >
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                             <RadzenButton Click=@(args => navigationManager.NavigateTo($"/adherents/{data.IdAdherent}"))
                                           Size="ButtonSize.Small" Icon="person" Text="Adhérent"
                                           ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
+                            <RadzenButton Click=@(args => ConfirmDelete(data))
+                                          Size="ButtonSize.Small" Icon="delete" Text="Supprimer"
+                                          ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" />
                         </RadzenStack>
                     </Template>
                 </RadzenDataGridColumn>
@@ -95,6 +100,50 @@
             var result = await _reservationService.GetReservationsAsync(queryParams);
             reservations = result.Data;
             count = result.TotalCount;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task ConfirmDelete(ReservationDto data)
+    {
+        var result = await dialogService.Confirm($"Voulez-vous vraiment supprimer la réservation de {data.Nom} {data.Prenom} pour '{data.TitrePropre}' ?", "Confirmation de suppression", new ConfirmOptions() { OkButtonText = "Oui", CancelButtonText = "Non" });
+
+        if (result == true)
+        {
+            await DeleteReservation(data);
+        }
+    }
+
+    private async Task DeleteReservation(ReservationDto data)
+    {
+        isLoading = true;
+        try
+        {
+            var success = await _reservationService.DeleteReservationAsync(data.IdAdherent, data.Cote,data.HeureReservation);
+            if (success)
+            {
+                notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Succès",
+                    Detail = "Réservation supprimée avec succès",
+                    Duration = 4000
+                });
+                await DoSearch();
+            }
+            else
+            {
+                notificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Erreur",
+                    Detail = "Impossible de supprimer la réservation",
+                    Duration = 4000
+                });
+            }
         }
         finally
         {

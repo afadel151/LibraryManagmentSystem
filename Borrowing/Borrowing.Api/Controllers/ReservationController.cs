@@ -33,6 +33,18 @@ public class ReservationController(IReservationService reservationService) : Con
         return Ok(new CreateReservationResponseDto{Done = false});
     }
 
+    [HttpDelete]
+    public async Task<IActionResult> DeleteReservation(string idAdherent, string cote,DateTime heureReservation)
+    {
+        bool success = await _reservationService.DeleteReservationAsync(idAdherent, cote,heureReservation);
+        if (success)
+        {
+            return Ok(new { Done = true });
+        }
+        return NotFound(new { Done = false });
+    }
+
+
     [HttpGet]
     public async Task<ActionResult<PagedResult<Reservation>>> GetAllReservations([FromQuery] PaginatedQueryParameters queryParameters)
     {
