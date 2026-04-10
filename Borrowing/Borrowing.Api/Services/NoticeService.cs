@@ -20,6 +20,8 @@ public interface INoticeService
     Task<PagedResult<ExemplaireBloqueDto>> GetExemplaireBloquesAsync(PaginatedQueryParameters parameters);
     Task<CheckNoticeResponseDto> CheckNoticeAsync(string cote, string adherentId);
 
+    Task<bool> UpdateExemplaire(Exemplaire e,int etat);
+
 }
 
 public class NoticeService(
@@ -38,6 +40,19 @@ public class NoticeService(
     private readonly IPretRepository _pretsRepository = pretRepository;
     private readonly IHistoriquePretRepository _historiquePretRepository = historiquePretRepository;
 
+    public async Task<bool> UpdateExemplaire(Exemplaire e,int etat)
+    {
+        e.IdEtat = (decimal)etat;
+        try
+        {
+            await _exemplairesRepository.UpdateAsync(e);
+            return true;
+        }
+        catch (System.Exception)
+        {   
+            return false;
+        }
+    }
     public async Task<Notice?> GetNoticeAsync(string cote)
     {
         return await _noticesRepository.GetQueryable()

@@ -10,7 +10,7 @@ namespace Borrowing.Api.Controllers;
 [Microsoft.AspNetCore.Authorization.Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class PretController(IPretService pretService,IPenaliteAdherentService penaltieService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
+public class PretController(IPretService pretService, IPenaliteAdherentService penaltieService, IAdherentService adherentService, INoticeService noticeService, IReservationService reservationService) : ControllerBase
 {
     private readonly IPretService _pretService = pretService;
     private readonly IReservationService _reservationService = reservationService;
@@ -29,9 +29,9 @@ public class PretController(IPretService pretService,IPenaliteAdherentService pe
     [HttpPost("Create")]
     public async Task<ActionResult<CreatePretResponseDto?>> CreatePret([FromBody] CreatePretRequestDto pretRequestDto)
     {
-        var adherentCheck  = await _adherentService.CheckAdherentPourPret(pretRequestDto.AdherentId);
+        var adherentCheck = await _adherentService.CheckAdherentPourPret(pretRequestDto.AdherentId);
         string cote = pretRequestDto.ExemplaireId[..pretRequestDto.ExemplaireId.LastIndexOf('/')];
-        var noticeCheck = await _noticeService.CheckNoticeAsync(cote,pretRequestDto.AdherentId);
+        var noticeCheck = await _noticeService.CheckNoticeAsync(cote, pretRequestDto.AdherentId);
         var pret = await _pretService.GetPretByExemplaireId(pretRequestDto.ExemplaireId);
         var exemplaire = await _noticeService.GetExemplaireAsync(pretRequestDto.ExemplaireId);
 
@@ -44,16 +44,31 @@ public class PretController(IPretService pretService,IPenaliteAdherentService pe
                 }
             );
         }
-        var result = await _pretService.CreatePretAsync(pretRequestDto);
-        if (result != null)
+        var succesPret = await _pretService.CreatePretAsync(pretRequestDto);
+        if (succesPret)
         {
-            return Ok(
-                new CreatePretResponseDto
-                {
-                    Done = true,
-                    Message = "Pret created successfully"
-                }
-            );
+            var succesExemplaire = await _noticeService.UpdateExemplaire(exemplaire, 2);
+            if (!succesExemplaire)
+            {
+                await _pretService.DeletePret(pretRequestDto.AdherentId, pretRequestDto.ExemplaireId);
+                return Ok(
+                    new CreatePretResponseDto
+                    {
+                        Done = false,
+                        Message = "Failed to create pret"
+                    }
+                );
+            }
+            else
+            {
+                return Ok(
+                    new CreatePretResponseDto
+                    {
+                        Done = true,
+                        Message = "Pret creatd successfully"
+                    }
+                );
+            }
         }
         else
         {
