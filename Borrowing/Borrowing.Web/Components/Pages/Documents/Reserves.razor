@@ -34,7 +34,7 @@
                 <RadzenDataGridColumn TItem="ReservationDto" Property="Cote" Title="Cote" Width="150px" />
                 <RadzenDataGridColumn TItem="ReservationDto" Property="HeureReservation" Title="Date Réservation" Width="180px">
                     <Template Context="data">
-                        @data.HeureReservation.ToString("dd/MM/yyyy HH:mm")
+                        @data.HeureReservation.ToString("dd/MM/yyyy")
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="ReservationDto" Title="Actions" Sortable="false" Filterable="false" Width="200px">

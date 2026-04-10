@@ -1,4 +1,124 @@
 @page "/availability"
+@using Borrowing.Web.Components.Base
+@using Borrowing.Web.Services
+@using Borrowing.SharedClasses.Common
 
+@inject IReservationService reservationService
+@inject NavigationManager navigationManager
+@inject IExportService exportService
 
-<p>Avis de disponibilite</p>
+@inherits AuthorizedComponentBase
+
+<RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+             AlignItems="AlignItems.Center">
+    <RadzenText TextStyle="TextStyle.H3">Avis de disponibilité</RadzenText>
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+        <RadzenTextBox Placeholder="Rechercher par ID, Nom, Cote..." style="width:400px" @bind-Value="SearchText"
+                       @oninput="OnSearchChanged" Change="OnSearchChanged" />
+        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")" Icon="get_app" Click="Export"
+                      ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" />
+    </RadzenStack>
+</RadzenStack>
+
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn>
+        <RadzenDataGrid Data="@filteredRelances" TItem="RelanceDto" IsLoading="@isLoading"
+                        AllowPaging="true" PageSize="10" AllowSorting="true"
+                        PagerHorizontalAlign="HorizontalAlign.Justify" ShowPagingSummary="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="RelanceDto" Property="IdAdherent" Title="ID Adhérent" Width="130px" />
+                <RadzenDataGridColumn TItem="RelanceDto" Title="Adhérent" Property="Nom">
+                    <Template Context="data">
+                        @($"{data.Nom} {data.Prenom}")
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="RelanceDto" Property="Categorie" Title="Catégorie" />
+                <RadzenDataGridColumn TItem="RelanceDto" Property="Position" Title="Position" />
+                <RadzenDataGridColumn TItem="RelanceDto" Property="Cote" Title="Cote" Width="130px" />
+                <RadzenDataGridColumn TItem="RelanceDto" Property="TitrePropre" Title="Titre" />
+                <RadzenDataGridColumn TItem="RelanceDto" Title="Actions" Sortable="false" Filterable="false"
+                                      Width="250px">
+                    <Template Context="data">
+                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                            <RadzenButton Click=@(args => navigationManager.NavigateTo($"/adherents/{data.IdAdherent}"))
+                                          Size="ButtonSize.Small" Icon="person" Text="Adhérent"
+                                          ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
+                            <RadzenButton Click=@(args => navigationManager.NavigateTo($"/documents/{data.IdNotice}"))
+                                          Size="ButtonSize.Small" Icon="menu_book" Text="Notice"
+                                          ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" />
+                        </RadzenStack>
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    private List<RelanceDto>? allRelances;
+    private IEnumerable<RelanceDto>? filteredRelances;
+    private bool isLoading;
+    private bool isExporting;
+    private string SearchText = "";
+
+    protected override async Task OnPageInitializedAsync()
+    {
+        isLoading = true;
+        try
+        {
+            allRelances = await reservationService.GetRelancesAsync();
+            ApplyFilter();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void OnSearchChanged()
+    {
+        ApplyFilter();
+    }
+
+    private void ApplyFilter()
+    {
+        if (allRelances == null)
+        {
+            filteredRelances = null;
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(SearchText))
+        {
+            filteredRelances = allRelances;
+            return;
+        }
+
+        var search = SearchText.ToLower();
+        filteredRelances = allRelances.Where(r =>
+            r.IdAdherent.ToLower().Contains(search) ||
+            r.Nom.ToLower().Contains(search) ||
+            r.Prenom.ToLower().Contains(search) ||
+            r.Cote.ToLower().Contains(search) ||
+            r.TitrePropre.ToLower().Contains(search) ||
+            r.Categorie.ToLower().Contains(search) ||
+            r.Position.ToLower().Contains(search));
+    }
+
+    private async Task Export()
+    {
+        isExporting = true;
+        try
+        {
+            var dataToExport = filteredRelances ?? allRelances;
+            if (dataToExport != null)
+            {
+                await exportService.ExportToExcelAsync(dataToExport, "Avis_Disponibilite_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+            }
+        }
+        finally
+        {
+            isExporting = false;
+        }
+    }
+}
