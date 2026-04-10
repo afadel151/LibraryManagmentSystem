@@ -30,10 +30,12 @@ public class PretController(IPretService pretService,IPenaliteAdherentService pe
     public async Task<ActionResult<CreatePretResponseDto?>> CreatePret([FromBody] CreatePretRequestDto pretRequestDto)
     {
         var adherentCheck  = await _adherentService.CheckAdherentPourPret(pretRequestDto.AdherentId);
+        string cote = pretRequestDto.ExemplaireId[..pretRequestDto.ExemplaireId.LastIndexOf('/')];
+        var noticeCheck = await _noticeService.CheckNoticeAsync(cote,pretRequestDto.AdherentId);
         var pret = await _pretService.GetPretByExemplaireId(pretRequestDto.ExemplaireId);
         var exemplaire = await _noticeService.GetExemplaireAsync(pretRequestDto.ExemplaireId);
 
-        if (adherentCheck.Etat != EtatAdherentEnum.AUTHORIZED || exemplaire == null || exemplaire.IdEtat != 1 || pret != null)
+        if (adherentCheck.Etat != CheckAdherentEnum.AUTHORIZED || exemplaire == null || exemplaire.IdEtat != 1 || pret != null || noticeCheck.Status != CheckNoticeEnum.CAN_BORROW)
         {
             return Ok(
                 new CreatePretResponseDto

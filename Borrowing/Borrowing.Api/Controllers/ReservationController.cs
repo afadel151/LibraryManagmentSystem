@@ -39,4 +39,11 @@ public class ReservationController(IReservationService reservationService) : Con
         var reservations = await _reservationService.GetPaginated(queryParameters);
         return Ok(reservations);
     }
+
+    [HttpGet("Relances")]
+    public async Task<IActionResult> GetAvailabilityRelances()
+    {
+        List<RelanceDto> List = await _reservationService.GetRelances();
+        return Ok(List);
+    }
 }
