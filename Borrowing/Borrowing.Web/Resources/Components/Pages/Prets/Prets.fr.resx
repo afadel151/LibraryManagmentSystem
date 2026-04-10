@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActifMember" xml:space="preserve">
-    <value>Actif</value>
+    <value>En regle</value>
   </data>
   <data name="AdherentMangment" xml:space="preserve">
     <value>Gestion des Adherents</value>
@@ -225,8 +225,8 @@
   <data name="Parameters" xml:space="preserve">
     <value>Paramètres</value>
   </data>
-  <data name="PenalisedOrSuspended" xml:space="preserve">
-    <value>Adhérent pénalisé ou suspendu</value>
+  <data name="Penalised" xml:space="preserve">
+    <value>Pénalisé</value>
   </data>
   <data name="PenaltyDays" xml:space="preserve">
     <value>Nombre de jours de pénalité</value>
@@ -246,6 +246,9 @@
   <data name="ReserveDocument" xml:space="preserve">
     <value>Réserver ce document</value>
   </data>
+  <data name="ReservedButCopyNotReady" xml:space="preserve">
+    <value>Cote reservé mais aucun exemplaire retourné</value>
+  </data>
   <data name="ReservedDocs" xml:space="preserve">
     <value>Docs réservés</value>
   </data>
@@ -263,6 +266,9 @@
   </data>
   <data name="SelectACopy" xml:space="preserve">
     <value>Sélectionner un exemplaire</value>
+  </data>
+  <data name="Suspended" xml:space="preserve">
+    <value>Suspendu</value>
   </data>
   <data name="ThisMemberCantLoan" xml:space="preserve">
     <value>Cet adhérent ne peut pas emprunter</value>

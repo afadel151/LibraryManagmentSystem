@@ -225,8 +225,8 @@
   <data name="Parameters" xml:space="preserve">
     <value>الإعدادات</value>
   </data>
-  <data name="PenalisedOrSuspended" xml:space="preserve">
-    <value>منخرط موقوف أو مُعاقَب</value>
+  <data name="Penalised" xml:space="preserve">
+    <value>منخرط  مُعاقَب</value>
   </data>
   <data name="PenaltyDays" xml:space="preserve">
     <value>عدد أيام الغرامة</value>
@@ -263,6 +263,9 @@
   </data>
   <data name="SelectACopy" xml:space="preserve">
     <value>اختر نسخة</value>
+  </data>
+  <data name="Suspended" xml:space="preserve">
+    <value>منخرط موقوف</value>
   </data>
   <data name="ThisMemberCantLoan" xml:space="preserve">
     <value>هذا المنخرط لا يمكنه الاستعارة</value>

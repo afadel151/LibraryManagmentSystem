@@ -225,8 +225,8 @@
   <data name="Parameters" xml:space="preserve">
     <value>الإعدادات</value>
   </data>
-  <data name="PenalisedOrSuspended" xml:space="preserve">
-    <value>منخرط موقوف أو مُعاقَب</value>
+  <data name="Penalised" xml:space="preserve">
+    <value>مُعاقَب</value>
   </data>
   <data name="PenaltyDays" xml:space="preserve">
     <value>عدد أيام الغرامة</value>
@@ -246,6 +246,9 @@
   <data name="ReserveDocument" xml:space="preserve">
     <value>حجز هذه الوثيقة</value>
   </data>
+  <data name="ReservedButCopyNotReady" xml:space="preserve">
+    <value> وثيقة محجوزة  لكن  غير متوفرة </value>
+  </data>
   <data name="ReservedDocs" xml:space="preserve">
     <value>الوثائق المحجوزة</value>
   </data>
@@ -263,6 +266,9 @@
   </data>
   <data name="SelectACopy" xml:space="preserve">
     <value>اختر نسخة</value>
+  </data>
+  <data name="Suspended" xml:space="preserve">
+    <value> موقوف </value>
   </data>
   <data name="ThisMemberCantLoan" xml:space="preserve">
     <value>هذا المنخرط لا يمكنه الاستعارة</value>

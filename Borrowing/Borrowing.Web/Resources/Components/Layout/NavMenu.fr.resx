@@ -151,7 +151,7 @@
     <value>Prêts en cours</value>
   </data>
   <data name="DocsOnLoan" xml:space="preserve">
-    <value>Docs en prêt</value>
+    <value>Documents en prêt</value>
   </data>
   <data name="DocumentInformations" xml:space="preserve">
     <value>Informations Document &amp; Exemplaire</value>
@@ -225,8 +225,8 @@
   <data name="Parameters" xml:space="preserve">
     <value>Paramètres</value>
   </data>
-  <data name="PenalisedOrSuspended" xml:space="preserve">
-    <value>Adhérent pénalisé ou suspendu</value>
+  <data name="Penalised" xml:space="preserve">
+    <value>Adhérent pénalisé</value>
   </data>
   <data name="PenaltyDays" xml:space="preserve">
     <value>Nombre de jours de pénalité</value>
@@ -247,7 +247,7 @@
     <value>Réserver ce document</value>
   </data>
   <data name="ReservedDocs" xml:space="preserve">
-    <value>Docs réservés</value>
+    <value>Documents réservés</value>
   </data>
   <data name="ReservedDocuments" xml:space="preserve">
     <value>Documents réservés</value>
@@ -263,6 +263,9 @@
   </data>
   <data name="SelectACopy" xml:space="preserve">
     <value>Sélectionner un exemplaire</value>
+  </data>
+  <data name="Suspended" xml:space="preserve">
+    <value>Suspendu</value>
   </data>
   <data name="ThisMemberCantLoan" xml:space="preserve">
     <value>Cet adhérent ne peut pas emprunter</value>

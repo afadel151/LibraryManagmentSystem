@@ -121,7 +121,7 @@
     <value>Adhérents actifs</value>
   </data>
   <data name="Active" xml:space="preserve">
-    <value>Actif</value>
+    <value>EN regle</value>
   </data>
   <data name="AddMember" xml:space="preserve">
     <value>Ajouter un adhérent</value>
@@ -174,8 +174,8 @@
   <data name="MemberCreatedSuccess" xml:space="preserve">
     <value>Adhérent créé avec succès</value>
   </data>
-  <data name="PenalisedOrBlocked" xml:space="preserve">
-    <value>Pénalisé / suspendu</value>
+  <data name="Penalised" xml:space="preserve">
+    <value>Pénalisé</value>
   </data>
   <data name="Position" xml:space="preserve">
     <value>Position</value>
@@ -203,6 +203,9 @@
   </data>
   <data name="Success" xml:space="preserve">
     <value>Succès</value>
+  </data>
+  <data name="Suspended" xml:space="preserve">
+    <value>Suspendu</value>
   </data>
   <data name="TotalAdherents" xml:space="preserve">
     <value>Total adhérents</value>

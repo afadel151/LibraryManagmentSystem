@@ -174,8 +174,8 @@
   <data name="MemberCreatedSuccess" xml:space="preserve">
     <value>Member created successfully</value>
   </data>
-  <data name="PenalisedOrBlocked" xml:space="preserve">
-    <value>Penalised / Suspended</value>
+  <data name="Penalised" xml:space="preserve">
+    <value>Penalised </value>
   </data>
   <data name="Position" xml:space="preserve">
     <value>Position</value>
@@ -203,6 +203,9 @@
   </data>
   <data name="Success" xml:space="preserve">
     <value>Success</value>
+  </data>
+  <data name="Suspended" xml:space="preserve">
+    <value>Suspended</value>
   </data>
   <data name="TotalAdherents" xml:space="preserve">
     <value>Total Members</value>

@@ -225,8 +225,8 @@
   <data name="Parameters" xml:space="preserve">
     <value>Parameters</value>
   </data>
-  <data name="PenalisedOrSuspended" xml:space="preserve">
-    <value>Member penalised or suspended</value>
+  <data name="Penalised" xml:space="preserve">
+    <value>Penalised</value>
   </data>
   <data name="PenaltyDays" xml:space="preserve">
     <value>Penalty Days</value>
@@ -246,6 +246,9 @@
   <data name="ReserveDocument" xml:space="preserve">
     <value>Reserve this document</value>
   </data>
+  <data name="ReservedButCopyNotReady" xml:space="preserve">
+    <value>Reserved but no copy returned yet</value>
+  </data>
   <data name="ReservedDocs" xml:space="preserve">
     <value>Reserved Docs</value>
   </data>
@@ -263,6 +266,9 @@
   </data>
   <data name="SelectACopy" xml:space="preserve">
     <value>Select a copy</value>
+  </data>
+  <data name="Suspended" xml:space="preserve">
+    <value>Suspended</value>
   </data>
   <data name="ThisMemberCantLoan" xml:space="preserve">
     <value>This member cannot loan</value>
