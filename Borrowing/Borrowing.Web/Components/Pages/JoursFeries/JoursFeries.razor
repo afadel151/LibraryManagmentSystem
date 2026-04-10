@@ -13,6 +13,7 @@
 @using Radzen.Blazor
 @using Shared.Models
 @using Borrowing.Web.Components.Base
+@using System.Globalization
 
 @inherits AuthorizedComponentBase
 
@@ -37,7 +38,6 @@
                         AllowPaging="true" PageSize="10" AllowSorting="true">
             <Columns>
                 <RadzenDataGridColumn TItem="JoursFeryDto" Property="DateJourFerie" Title="Date" FormatString="{0:dd/MM/yyyy}" />
-                <RadzenDataGridColumn TItem="JoursFeryDto" Property="FormattedDate" Title="Date Formatée" />
                 <RadzenDataGridColumn TItem="JoursFeryDto" Title="Actions" Width="200px">
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
@@ -55,10 +55,7 @@
         </RadzenDataGrid>
     </RadzenColumn>
 </RadzenRow>
-@*
-<RadzenButton Text="@(isExporting ? \"Exportation...\" : \"Exporter\")" Icon="get_app" Click="Export"
-                      ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" />
-                *@
+
 @code {
     private string SearchText = "";
     private IEnumerable<JoursFeryDto>? joursFeries;
@@ -122,17 +119,17 @@
             isLoading = false;
         }
     }
-
+    
     private async Task OpenCreateModal()
     {
         var model = new CreateJoursFeryDto();
-
+        // add Notification about 
         await dialogService.OpenAsync("Ajouter un jour férié", ds =>
             @<RadzenTemplateForm Data="@model"
                                  Submit="@(async (CreateJoursFeryDto args) => { await SubmitCreate(args, ds); })">
                 <RadzenStack Gap="1rem" Style="width: 100%; min-width: 400px;">
                     <RadzenFormField Text="Date du jour férié">
-                        <RadzenDatePicker @bind-Value="model.DateJourFerie" Name="DateJourFerie" />
+                        <RadzenDatePicker  Culture="@CultureInfo.CurrentCulture" DateFormat="yyyy/MM/dd"  @bind-Value="model.DateJourFerie" Name="DateJourFerie" />
                         <RadzenRequiredValidator Component="DateJourFerie" Text="La date est requise" />
                     </RadzenFormField>
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
