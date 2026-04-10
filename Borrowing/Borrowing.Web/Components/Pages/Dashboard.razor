@@ -13,14 +13,10 @@
     <div class="rz-display-grid" style="grid-template-columns: repeat(3, 1fr);gap: 16px;height:100%;">
         @foreach (CardElement element in Elements)
         {
-
-            <RadzenButton Variant="Variant.Flat" ButtonStyle="element.Style" Style="
-
-            display:flex; 
-            align-items:center; 
-            justify-content:center;
-            font-size:30px;
-            " Click="@(args => Navigation.NavigateTo(element.Url))" Icon="@element.Icon" Text="@element.Text" />
+            <div class="card card-@element.Style.ToString().ToLower()" @onclick="() => Navigation.NavigateTo(element.Url)">
+                <RadzenIcon Icon="@element.Icon" Style="font-size:40px; margin-bottom:6px;" />
+                <span style="font-size:20px;">@element.Text</span>
+            </div>
 
         }
     </div>
@@ -51,7 +47,7 @@
             new() { Text = L["Availability"], Icon = "timelapse", Url = "/availability", Style = ButtonStyle.Dark },
             new() { Text = L["DocsOnLoan"], Icon = "assignment_turned_in", Url = "/documents/en_pret", Style = ButtonStyle.Primary
 },
-            new() { Text = L["ReservedDocs"], Icon = "date_range", Url = "/documents/reservees", Style = ButtonStyle.Success },
+            new() { Text = L["ReservedDocuments"], Icon = "date_range", Url = "/documents/reservees", Style = ButtonStyle.Success },
             new() { Text = L["RemindersManagment"], Icon = "notifications_active", Url = "/relances", Style = ButtonStyle.Success },
             new() { Text = L["CategoriesManagment"], Icon = "category", Url = "/categories", Style = ButtonStyle.Danger },
         };
