@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Borrowing.Api.Services;
+using Borrowing.SharedClasses.Common;
 
 namespace Borrowing.Api.Controllers;
 
@@ -21,5 +22,12 @@ public class PenaliteAdherentController(IPenaliteAdherentService penaltieAdheren
         }
         
         return NotFound("Pénalité introuvable ou impossible à supprimer.");
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<List<RelanceDto>>> GetRelancesRetard()
+    {
+        var result = await _penaltieAdherentService.GetRelancesRetard();
+        return Ok(result);
     }
 }

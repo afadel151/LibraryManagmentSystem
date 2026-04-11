@@ -54,9 +54,7 @@
                             <RadzenText  TextStyle="TextStyle.DisplayH6">@L["Quota"]: @adherentCheck.Adherent!.Prets.Count /
                                 @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
                                                 
-                                <RadzenText TextStyle="TextStyle.DisplayH6" class="rz-mt-3">@L["ExpectedReturnDate"]:
-                                    <b>@DateTime.Now.Date.ToShortDateString()</b>
-                                </RadzenText>
+                               
                             </div>
                             <RadzenText TextStyle="TextStyle.H6" class="rz-mt-3">@L["SelectExemplaire"] :</RadzenText>
                             <RadzenDropDown @bind-Value="selectedCopyId"

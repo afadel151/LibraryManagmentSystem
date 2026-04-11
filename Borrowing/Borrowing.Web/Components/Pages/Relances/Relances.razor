@@ -1,0 +1,63 @@
+@page "/relances"
+
+@using Borrowing.SharedClasses.Common
+@using Borrowing.Web.Components.Base
+@using Borrowing.Web.Services
+@using Radzen
+@using Radzen.Blazor
+@using Microsoft.Extensions.Localization
+
+@inject IPenaliteService penaliteService
+@inject NotificationService notificationService
+
+@inherits AuthorizedComponentBase   
+@inject IStringLocalizer<Relances> L
+
+<RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+             AlignItems="AlignItems.Center">
+    <RadzenText TextStyle="TextStyle.H3">@L["Reminders"]</RadzenText>
+</RadzenStack>
+
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn>
+        <RadzenDataGrid Data="@relances" Count="@count" TItem="RelanceRetardDto"
+                        IsLoading="@isLoading" ShowPagingSummary="true"
+                        AllowPaging="true" PageSize="10" AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="RelanceRetardDto" Property="IdAdherent" Title="@L["MemberId"]" />
+                <RadzenDataGridColumn TItem="RelanceRetardDto" Property="Nom" Title="@L["LastName"]" />
+                <RadzenDataGridColumn TItem="RelanceRetardDto" Property="Prenom" Title="@L["FirstName"]" />
+                <RadzenDataGridColumn TItem="RelanceRetardDto" Property="Position" Title="@L["Position"]" />
+                <RadzenDataGridColumn TItem="RelanceRetardDto" Property="Categorie" Title="@L["Category"]" />
+                <RadzenDataGridColumn TItem="RelanceRetardDto" Property="PretsEncours" Title="@L["CurrentLoans"]" />
+                <RadzenDataGridColumn TItem="RelanceRetardDto" Property="PenaliteEnCours" Title="@L["OngoingPenalties"]" />
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    private List<RelanceRetardDto>? relances;
+    private int count;
+    private bool isLoading;
+
+    protected override async Task OnPageInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoading = true;
+        try
+        {
+            var result = await penaliteService.GetRelancesRetard();
+            relances = result ?? new List<RelanceRetardDto>();
+            count = relances?.Count ?? 0;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
