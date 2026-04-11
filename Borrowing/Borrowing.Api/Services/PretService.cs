@@ -49,6 +49,7 @@ public class PretService(
 
     public async Task<bool> CreatePretAsync(CreatePretRequestDto pretRequestDTo)
     {
+        ArgumentNullException.ThrowIfNull(pretRequestDTo);
         var pret = new Pret
         {
             IdAdherent = pretRequestDTo.AdherentId,
@@ -60,8 +61,9 @@ public class PretService(
             await _pretRepository.AddAsync(pret);
             return true;
         }
-        catch (System.Exception)
-        {
+        catch (Exception ex)
+        {   
+
             return false;
         }
     }

@@ -172,7 +172,7 @@ public class ReservationService(
         foreach (string cote in allReservations.Select(r => r.Cote).Distinct())
         {
             int bloquedCount = await _pretRepository.GetQueryable()
-                                .CountAsync(p => p.IdAdherent == "99/999" && p.IdExemplaire.StartsWith(cote + "/", StringComparison.OrdinalIgnoreCase));
+                                .CountAsync(p => p.IdAdherent == "99/999" && p.IdExemplaire.StartsWith(cote + "/"));
 
             var firstInQueue = allReservations.OrderBy(r => r.HeureReservation).Take(bloquedCount).ToList();
             foreach (var res in firstInQueue)
