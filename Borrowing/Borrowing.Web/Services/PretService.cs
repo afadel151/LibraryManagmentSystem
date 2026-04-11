@@ -1,5 +1,5 @@
 namespace Borrowing.Web.Services;
-
+using Borrowing.Web.Providers;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -13,20 +13,20 @@ using Borrowing.SharedClasses.Responses.Reservation;
 
 public interface IPretService
 {
-    Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters);
+    Task<PagedResult<PretResponseDto>?> GetPretsAsync(PaginatedQueryParameters queryParameters);
     Task<IEnumerable<PretResponseDto>> GetAllPretsAsync(string search = "");
-    Task<CreateReservationResponseDto> CreateReservation(CreateReservationRequestDto createReservationRequestDto);
-    Task<PretStatsDto> GetStats();
-    Task<CheckAdhPretResponseDto> CheckAdherent(string id);
-    Task<CheckNoticeResponseDto> CheckNotice(string cote, string AdherentId);
+    Task<CreateReservationResponseDto?> CreateReservation(CreateReservationRequestDto createReservationRequestDto);
+    Task<PretStatsDto?> GetStats();
+    Task<CheckAdhPretResponseDto?> CheckAdherent(string id);
+    Task<CheckNoticeResponseDto?> CheckNotice(string cote, string AdherentId);
 
-    Task<CreatePretResponseDto> CreatePret(CreatePretRequestDto pretRequestDto);
+    Task<CreatePretResponseDto?> CreatePret(CreatePretRequestDto pretRequestDto);
 }
-public class PretService(IHttpClientFactory factory) : IPretService
+public class PretService(ApiHttpClient api) : IPretService
 {
-    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
+    private readonly ApiHttpClient _api = api;
 
-    public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters)
+    public async Task<PagedResult<PretResponseDto>?> GetPretsAsync(PaginatedQueryParameters queryParameters)
     {
         var orderBy = string.IsNullOrWhiteSpace(queryParameters.OrderBy)
                 ? "datepret desc"
@@ -37,16 +37,8 @@ public class PretService(IHttpClientFactory factory) : IPretService
                 $"OrderBy={orderBy}&" +
                 $"Search={queryParameters.Search}";
 
-        var response = await _httpClient.GetAsync(url);
+        return await _api.GetAsync<PagedResult<PretResponseDto>?>(url);
 
-        var content = await response.Content.ReadAsStringAsync();
-
-        response.EnsureSuccessStatusCode();
-
-        return JsonSerializer.Deserialize<PagedResult<PretResponseDto>>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
     }
     // In IPretService / PretService
     public async Task<IEnumerable<PretResponseDto>> GetAllPretsAsync(string search = "")
@@ -54,70 +46,37 @@ public class PretService(IHttpClientFactory factory) : IPretService
         var queryParams = new PaginatedQueryParameters
         {
             PageNumber = 1,
-            PageSize = int.MaxValue, 
+            PageSize = int.MaxValue,
             OrderBy = "datepret desc",
             Search = search
         };
 
         var result = await GetPretsAsync(queryParams);
-        return result.Data;
+        return result!.Data;
     }
-    public async Task<PretStatsDto> GetStats()
+    public async Task<PretStatsDto?> GetStats()
     {
-        var response = await _httpClient.GetAsync("api/Pret/Stats");
-        var content = await response.Content.ReadAsStringAsync();
-
-        response.EnsureSuccessStatusCode();
-        return JsonSerializer.Deserialize<PretStatsDto>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
+        return await _api.GetAsync<PretStatsDto?>("api/Pret/Stats"); 
     }
 
-    public async Task<CheckAdhPretResponseDto> CheckAdherent(string id)
+    public async Task<CheckAdhPretResponseDto?> CheckAdherent(string id)
     {
-        var response = await _httpClient.GetAsync($"api/Adherent/Pret/Check?id={id}");
-        var content = await response.Content.ReadAsStringAsync();
-
-        response.EnsureSuccessStatusCode();
-        return JsonSerializer.Deserialize<CheckAdhPretResponseDto>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
+        return await _api.GetAsync<CheckAdhPretResponseDto?>($"api/Adherent/Pret/Check?id={id}");
     }
 
-    public async Task<CheckNoticeResponseDto> CheckNotice(string cote, string AdherentId)
+    public async Task<CheckNoticeResponseDto?> CheckNotice(string cote, string AdherentId)
     {
-        var response = await _httpClient.GetAsync($"api/Notice/Pret/Check?cote={cote}&AdherentId={AdherentId}");
-        var content = await response.Content.ReadAsStringAsync();
-
-        response.EnsureSuccessStatusCode();
-        return JsonSerializer.Deserialize<CheckNoticeResponseDto>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
+        return await _api.GetAsync<CheckNoticeResponseDto?>($"api/Notice/Pret/Check?cote={cote}&AdherentId={AdherentId}");
     }
 
-    public async Task<CreatePretResponseDto> CreatePret(CreatePretRequestDto createPretRequestDto)
+    public async Task<CreatePretResponseDto?> CreatePret(CreatePretRequestDto createPretRequestDto)
     {
-        var response = await _httpClient.PostAsJsonAsync($"api/Pret/Create", createPretRequestDto);
-        var content = await response.Content.ReadAsStringAsync();
-
-        response.EnsureSuccessStatusCode();
-        return JsonSerializer.Deserialize<CreatePretResponseDto>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
+        return await _api.PostAsync<CreatePretResponseDto>($"api/Pret/Create", createPretRequestDto);
+        
     }
-    public async Task<CreateReservationResponseDto> CreateReservation(CreateReservationRequestDto createReservationRequestDto)
+    public async Task<CreateReservationResponseDto?> CreateReservation(CreateReservationRequestDto createReservationRequestDto)
     {
-        var response = await _httpClient.PostAsJsonAsync($"api/Reservation/Create", createReservationRequestDto);
-        var content = await response.Content.ReadAsStringAsync();
+        return await _api.PostAsync<CreateReservationResponseDto?>($"api/Reservation/Create", createReservationRequestDto);
 
-        response.EnsureSuccessStatusCode();
-        return JsonSerializer.Deserialize<CreateReservationResponseDto>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
     }
 }

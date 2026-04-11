@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Common.Models;
 
-namespace  Common.Data;
+namespace Common.Data;
 
 public partial class LibraryDbContext : DbContext
 {
@@ -17,122 +17,122 @@ public partial class LibraryDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Adherent> Adherents { get; set; }  = null!;
+    public virtual DbSet<Adherent> Adherents { get; set; } = null!;
 
-    public virtual DbSet<Admin> Admins { get; set; }  = null!;
+    public virtual DbSet<Admin> Admins { get; set; } = null!;
 
-    public virtual DbSet<Aquisition> Aquisitions { get; set; }  = null!;
+    public virtual DbSet<Aquisition> Aquisitions { get; set; } = null!;
 
-    public virtual DbSet<Auteur> Auteurs { get; set; }  = null!;
+    public virtual DbSet<Auteur> Auteurs { get; set; } = null!;
 
-    public virtual DbSet<AuteurSecondaire> AuteurSecondaires { get; set; }  = null!;
+    public virtual DbSet<AuteurSecondaire> AuteurSecondaires { get; set; } = null!;
 
-    public virtual DbSet<Categorie> Categories { get; set; }  = null!;
+    public virtual DbSet<Categorie> Categories { get; set; } = null!;
 
-    public virtual DbSet<CoAuteur> CoAuteurs { get; set; }  = null!;
-    public virtual DbSet<CollectionModel> Collections { get; set; }  = null!;
+    public virtual DbSet<CoAuteur> CoAuteurs { get; set; } = null!;
+    public virtual DbSet<CollectionModel> Collections { get; set; } = null!;
 
-    public virtual DbSet<Commande> Commandes { get; set; }  = null!;
+    public virtual DbSet<Commande> Commandes { get; set; } = null!;
 
-    public virtual DbSet<CopieHistoPenaliteAdherent> CopieHistoPenaliteAdherents { get; set; }  = null!;
+    public virtual DbSet<CopieHistoPenaliteAdherent> CopieHistoPenaliteAdherents { get; set; } = null!;
 
-    public virtual DbSet<Diplome> Diplomes { get; set; }  = null!;
+    public virtual DbSet<Diplome> Diplomes { get; set; } = null!;
 
-    public virtual DbSet<Discipline> Disciplines { get; set; }  = null!;
+    public virtual DbSet<Discipline> Disciplines { get; set; } = null!;
 
-    public virtual DbSet<Editeur> Editeurs { get; set; }  = null!;
+    public virtual DbSet<Editeur> Editeurs { get; set; } = null!;
 
-    public virtual DbSet<Etablissement> Etablissements { get; set; }  = null!;
+    public virtual DbSet<Etablissement> Etablissements { get; set; } = null!;
 
-    public virtual DbSet<EtatAdherent> EtatAdherents { get; set; }  = null!;
+    public virtual DbSet<EtatAdherent> EtatAdherents { get; set; } = null!;
 
-    public virtual DbSet<EtatExemplaire> EtatExemplaires { get; set; }  = null!;
+    public virtual DbSet<EtatExemplaire> EtatExemplaires { get; set; } = null!;
 
-    public virtual DbSet<Exemplaire> Exemplaires { get; set; }  = null!;
+    public virtual DbSet<Exemplaire> Exemplaires { get; set; } = null!;
 
-    public virtual DbSet<Fonction> Fonctions { get; set; }  = null!;
+    public virtual DbSet<Fonction> Fonctions { get; set; } = null!;
 
-    public virtual DbSet<Fournisseur> Fournisseurs { get; set; }  = null!;
+    public virtual DbSet<Fournisseur> Fournisseurs { get; set; } = null!;
 
-    public virtual DbSet<HistoriqueAuth> HistoriqueAuths { get; set; }  = null!;
+    public virtual DbSet<HistoriqueAuth> HistoriqueAuths { get; set; } = null!;
 
-    public virtual DbSet<HistoriquePenaliteAdherent> HistoriquePenaliteAdherents { get; set; }  = null!;
+    public virtual DbSet<HistoriquePenaliteAdherent> HistoriquePenaliteAdherents { get; set; } = null!;
 
-    public virtual DbSet<HistoriquePret> HistoriquePrets { get; set; }  = null!;
+    public virtual DbSet<HistoriquePret> HistoriquePrets { get; set; } = null!;
 
-    public virtual DbSet<JoursFery> JoursFeries { get; set; }  = null!;
+    public virtual DbSet<JoursFery> JoursFeries { get; set; } = null!;
 
-    public virtual DbSet<Langue> Langues { get; set; }  = null!;
+    public virtual DbSet<Langue> Langues { get; set; } = null!;
 
-    public virtual DbSet<MentionEdition> MentionEditions { get; set; }  = null!;
-    public virtual DbSet<MentionResCollection> MentionResCollections { get; set; }  = null!;
-    public virtual DbSet<MentionResponsabilite> MentionResponsabilites { get; set; }  = null!;
+    public virtual DbSet<MentionEdition> MentionEditions { get; set; } = null!;
+    public virtual DbSet<MentionResCollection> MentionResCollections { get; set; } = null!;
+    public virtual DbSet<MentionResponsabilite> MentionResponsabilites { get; set; } = null!;
 
-    public virtual DbSet<MotsCle> MotsCles { get; set; }  = null!;
+    public virtual DbSet<MotsCle> MotsCles { get; set; } = null!;
 
-    public virtual DbSet<MotsVide> MotsVides { get; set; }  = null!;
+    public virtual DbSet<MotsVide> MotsVides { get; set; } = null!;
 
-    public virtual DbSet<Newacqui> Newacquis { get; set; }  = null!;
+    public virtual DbSet<Newacqui> Newacquis { get; set; } = null!;
 
-    public virtual DbSet<Notice> Notices { get; set; }  = null!;
+    public virtual DbSet<Notice> Notices { get; set; } = null!;
 
-    public virtual DbSet<NoticeCollection> NoticeCollections { get; set; }  = null!;
+    public virtual DbSet<NoticeCollection> NoticeCollections { get; set; } = null!;
 
-    public virtual DbSet<NoticeDipDisEtab> NoticeDipDisEtabs { get; set; }  = null!;
+    public virtual DbSet<NoticeDipDisEtab> NoticeDipDisEtabs { get; set; } = null!;
 
-    public virtual DbSet<NoticeEdition> NoticeEditions { get; set; }  = null!;
-
-
-
-    public virtual DbSet<NoticeMentionEdition> NoticeMentionEditions { get; set; }  = null!;
-
-    public virtual DbSet<NoticeTerme> NoticeTermes { get; set; }  = null!;
-    public virtual DbSet<NoticeLangue> NoticeLangues { get; set; }  = null!;
-
-    public virtual DbSet<NoticeTermeExact> NoticeTermeExacts { get; set; }  = null!;
-
-    public virtual DbSet<NoticeTheme> NoticeThemes { get; set; }  = null!;
-
-    public virtual DbSet<Operation> Operations { get; set; }  = null!;
-
-    public virtual DbSet<ParametresCatlibPret> ParametresCatlibPrets { get; set; }  = null!;
-
-    public virtual DbSet<Pay> Pays { get; set; }  = null!;
-
-    public virtual DbSet<PaysPublication> PaysPublications { get; set; }  = null!;
-    public virtual DbSet<Penalite> Penalites { get; set; }  = null!;
-
-    public virtual DbSet<PenaliteAdherent> PenaliteAdherents { get; set; }  = null!;
-
-    public virtual DbSet<PenaliteAdherentTemp> PenaliteAdherentTemps { get; set; }  = null!;
-
-    public virtual DbSet<Periodicite> Periodicites { get; set; }  = null!;
-
-    public virtual DbSet<Position> Positions { get; set; }  = null!;
-
-    public virtual DbSet<Pret> Prets { get; set; }  = null!;
-
-    public virtual DbSet<Reservation> Reservations { get; set; }  = null!;
-
-    public virtual DbSet<Selection> Selections { get; set; }  = null!;
-    public virtual DbSet<SelectionNotice> SelectionNotices { get; set; }  = null!;
+    public virtual DbSet<NoticeEdition> NoticeEditions { get; set; } = null!;
 
 
-    public virtual DbSet<SourceArticle> SourceArticles { get; set; }  = null!;
 
-    public virtual DbSet<TableCdd> TableCdds { get; set; }  = null!;
+    public virtual DbSet<NoticeMentionEdition> NoticeMentionEditions { get; set; } = null!;
 
-    public virtual DbSet<Terme> Termes { get; set; }  = null!;
+    public virtual DbSet<NoticeTerme> NoticeTermes { get; set; } = null!;
+    public virtual DbSet<NoticeLangue> NoticeLangues { get; set; } = null!;
 
-    public virtual DbSet<TermeExact> TermeExacts { get; set; }  = null!;
+    public virtual DbSet<NoticeTermeExact> NoticeTermeExacts { get; set; } = null!;
 
-    public virtual DbSet<Theme> Themes { get; set; }  = null!;
+    public virtual DbSet<NoticeTheme> NoticeThemes { get; set; } = null!;
 
-    public virtual DbSet<TypeNotice> TypeNotices { get; set; }  = null!;
+    public virtual DbSet<Operation> Operations { get; set; } = null!;
 
-    public virtual DbSet<Utilisateur> Utilisateurs { get; set; }  = null!;
+    public virtual DbSet<ParametresCatlibPret> ParametresCatlibPrets { get; set; } = null!;
 
-    public virtual DbSet<Ville> Villes { get; set; }  = null!;
+    public virtual DbSet<Pay> Pays { get; set; } = null!;
+
+    public virtual DbSet<PaysPublication> PaysPublications { get; set; } = null!;
+    public virtual DbSet<Penalite> Penalites { get; set; } = null!;
+
+    public virtual DbSet<PenaliteAdherent> PenaliteAdherents { get; set; } = null!;
+
+    public virtual DbSet<PenaliteAdherentTemp> PenaliteAdherentTemps { get; set; } = null!;
+
+    public virtual DbSet<Periodicite> Periodicites { get; set; } = null!;
+
+    public virtual DbSet<Position> Positions { get; set; } = null!;
+
+    public virtual DbSet<Pret> Prets { get; set; } = null!;
+
+    public virtual DbSet<Reservation> Reservations { get; set; } = null!;
+
+    public virtual DbSet<Selection> Selections { get; set; } = null!;
+    public virtual DbSet<SelectionNotice> SelectionNotices { get; set; } = null!;
+
+
+    public virtual DbSet<SourceArticle> SourceArticles { get; set; } = null!;
+
+    public virtual DbSet<TableCdd> TableCdds { get; set; } = null!;
+
+    public virtual DbSet<Terme> Termes { get; set; } = null!;
+
+    public virtual DbSet<TermeExact> TermeExacts { get; set; } = null!;
+
+    public virtual DbSet<Theme> Themes { get; set; } = null!;
+
+    public virtual DbSet<TypeNotice> TypeNotices { get; set; } = null!;
+
+    public virtual DbSet<Utilisateur> Utilisateurs { get; set; } = null!;
+
+    public virtual DbSet<Ville> Villes { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -180,7 +180,7 @@ public partial class LibraryDbContext : DbContext
                 .HasForeignKey(a => a.IdPosition);
 
             entity.HasOne(a => a.Categorie)
-                .WithMany()
+                .WithMany(c => c.Adherents)
                 .HasForeignKey(a => a.IdCategorie);
 
             entity.HasMany(a => a.PenaliteAdherents)
@@ -197,7 +197,7 @@ public partial class LibraryDbContext : DbContext
                 .HasForeignKey(h => h.IdAdherent)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired(false);
-                
+
             entity.HasMany(a => a.HistoriquePrets)
                 .WithOne(a => a.Adherent)
                 .HasForeignKey(a => a.IdAdherent);
@@ -530,7 +530,7 @@ public partial class LibraryDbContext : DbContext
             entity.HasMany(d => d.HistoriquePrets)
                 .WithOne(d => d.Exemplaire)
                 .HasForeignKey(d => d.IdExemplaire);
-            
+
             entity.HasOne(e => e.Notice)
                 .WithMany(n => n.Exemplaires)
                 .HasForeignKey(e => e.Cote)
@@ -816,7 +816,7 @@ public partial class LibraryDbContext : DbContext
         {
             entity.HasKey(e => e.IdNotice);
             entity.ToTable("NOTICE");
-            
+
             entity.HasIndex(e => e.Date1erPub, "INDEX_DATE_1ER_PUB");
             entity.HasIndex(e => e.IdPeriodicite, "NOTICE_PERIODICITE_FK");
             entity.HasIndex(e => e.IdSourceArticle, "NOTICE_SOURCE_ARTICLE_FK");
@@ -1087,7 +1087,7 @@ public partial class LibraryDbContext : DbContext
                    }
                );
 
-               
+
 
 
         });
@@ -1403,7 +1403,7 @@ public partial class LibraryDbContext : DbContext
                 .HasDefaultValueSql("0\n   ")
                 .HasColumnType("NUMBER")
                 .HasColumnName("NOMBRE_JOURS_PENALITE");
-            
+
             entity.HasOne(p => p.Adherent)
                     .WithMany(a => a.PenaliteAdherents)
                     .HasForeignKey(p => p.IdAdherent)
@@ -1469,7 +1469,7 @@ public partial class LibraryDbContext : DbContext
         {
             entity.HasKey(e => new { e.IdAdherent, e.IdExemplaire, e.DatePret }).HasName("PRET_PK");
 
-            entity.ToTable("PRET","MATAOUI");
+            entity.ToTable("PRET", "MATAOUI");
 
             entity.Property(e => e.IdAdherent)
                 .HasMaxLength(10)

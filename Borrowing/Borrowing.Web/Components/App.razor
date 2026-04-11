@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Web
+@using Microsoft.Extensions.Options
 
 @inject CultureService CultureService
 <!DOCTYPE html>
@@ -14,11 +15,13 @@
     <link rel="stylesheet" href="@Assets["Borrowing.Web.styles.css"]" />
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
-    <link rel="stylesheet" href="_content/Radzen.Blazor/css/standard.css">
+    @* <link rel="stylesheet" href="_content/Radzen.Blazor/css/standard-dark.css"> *@
+     <RadzenTheme Theme="standard" @rendermode="InteractiveServer" />
     <HeadOutlet  @rendermode="InteractiveServer"  />
 </head>
 <body>
-    <Routes  @rendermode="InteractiveServer"  />
+    <Routes  @rendermode="InteractiveServer"  />\
+    
     <ReconnectModal />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
@@ -32,3 +35,33 @@
     </script>
 </body>
 </html>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; }
+
+    [Inject]
+    private ThemeService ThemeService { get; set; }
+    
+    [Inject]
+    private IOptions<CookieThemeServiceOptions> Options { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (HttpContext != null)
+        {
+            var theme = HttpContext.Request.Cookies["MyApplicationTheme"];
+
+            if (!string.IsNullOrEmpty(theme))
+            {
+                ThemeService.SetTheme(theme, false);
+            }
+            else
+            {
+                HttpContext.Response.Cookies.Append("MyApplicationTheme", "standard" , new CookieOptions { Secure = Options.Value.IsSecure, Expires = DateTimeOffset.Now.Add(Options.Value.Duration) });    
+            }
+        }
+    }
+}

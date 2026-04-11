@@ -17,10 +17,7 @@ public class RestitutionService(
     IAdherentRepository adherentRepository
     ) : IRestitutionService
 {
-    private readonly IPretRepository _pretRepository = pretRepository;
-    private readonly IExemplairesRepository _exemplairesRepository = exemplairesRepository;
-    private readonly IPenaliteAdherentRepository _penaliteAdherentRepository = penaliteAdherentRepository;
     private readonly IAdherentRepository _adherentRepository = adherentRepository;
 
-   
+
 }

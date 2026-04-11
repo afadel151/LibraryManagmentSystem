@@ -1,4 +1,5 @@
 namespace Borrowing.SharedClasses.Responses.Notice;
+
 using Common.Models;
 public class NoticeWithResExe
 {

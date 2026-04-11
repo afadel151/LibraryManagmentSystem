@@ -1,22 +1,20 @@
 using System.Net.Http.Json;
 using Borrowing.SharedClasses.Responses.Adherent;
-
+using Borrowing.Web.Providers;
 namespace Borrowing.Web.Services;
 
 public interface IEtatAdherentService
 {
-    Task<IEnumerable<EtatAdherentDto>> GetAllEtatsAsync();
+    Task<List<EtatAdherentDto>?> GetAllEtatsAsync();
 }
 
-public class EtatAdherentService(IHttpClientFactory factory) : IEtatAdherentService
+public class EtatAdherentService(ApiHttpClient api) : IEtatAdherentService
 {
-    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
+    private readonly ApiHttpClient _api = api;
 
-    public async Task<IEnumerable<EtatAdherentDto>> GetAllEtatsAsync()
+    public async Task<List<EtatAdherentDto>?> GetAllEtatsAsync()
     {
-        var response = await _httpClient.GetAsync("api/EtatAdherent");
-        response.EnsureSuccessStatusCode();
-
-        return await response.Content.ReadFromJsonAsync<IEnumerable<EtatAdherentDto>>() ?? Array.Empty<EtatAdherentDto>();
+        return await _api.GetAsync<List<EtatAdherentDto>?>("api/EtatAdherent");
+        
     }
 }

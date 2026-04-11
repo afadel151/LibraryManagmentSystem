@@ -39,28 +39,33 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 
     public virtual async Task<T?> GetByIdAsync(params object[] keyValues)
     {
+        ArgumentNullException.ThrowIfNull(keyValues);
         return await _dbSet.FindAsync(keyValues);
     }
 
     public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
     {
+        ArgumentNullException.ThrowIfNull(predicate);
         return await _dbSet.Where(predicate).ToListAsync();
     }
 
     public virtual async Task AddAsync(T entity)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         await _dbSet.AddAsync(entity);
         await _context.SaveChangesAsync();
     }
 
     public virtual async Task UpdateAsync(T entity)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         _dbSet.Update(entity);
         await _context.SaveChangesAsync();
     }
 
     public virtual async Task DeleteAsync(T entity)
     {
+        ArgumentNullException.ThrowIfNull(entity);
         _dbSet.Remove(entity);
         await _context.SaveChangesAsync();
     }
@@ -72,6 +77,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
 
     public virtual IQueryable<T> GetQueryable(params Expression<Func<T, object>>[] includes)
     {
+        ArgumentNullException.ThrowIfNull(includes);
         IQueryable<T> query = _dbSet.AsQueryable();
         if (includes != null)
         {

@@ -9,5 +9,5 @@ public partial class NoticeMentionEdition
 
     public string? MentionEdition { get; set; }
 
-    public virtual Notice Notice {get;set;} = null!;
+    public virtual Notice Notice { get; set; } = null!;
 }

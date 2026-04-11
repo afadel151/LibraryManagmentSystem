@@ -15,12 +15,13 @@ public class PenaliteAdherentController(IPenaliteAdherentService penaltieAdheren
     [Microsoft.AspNetCore.Authorization.Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> DeletePenaliteAdherent(string adherentId, DateTime datePenalite)
     {
+        ArgumentNullException.ThrowIfNull(adherentId);
         var success = await _penaltieAdherentService.DeletePenaliteAsync(adherentId, datePenalite);
         if (success)
         {
             return Ok();
         }
-        
+
         return NotFound("Pénalité introuvable ou impossible à supprimer.");
     }
 

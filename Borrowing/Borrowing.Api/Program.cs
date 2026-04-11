@@ -25,13 +25,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer           = true,
-            ValidateAudience         = true,
-            ValidateLifetime         = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer              = builder.Configuration["Jwt:Issuer"],
-            ValidAudience            = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey         = new SymmetricSecurityKey(
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
     });
@@ -39,8 +39,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", p => p.RequireRole("ADMIN"));
-    options.AddPolicy("UserOnly",  p => p.RequireRole("UTILISATEUR"));
-    options.AddPolicy("AnyUser",   p => p.RequireAuthenticatedUser());
+    options.AddPolicy("UserOnly", p => p.RequireRole("UTILISATEUR"));
+    options.AddPolicy("AnyUser", p => p.RequireAuthenticatedUser());
 });
 
 builder.Services.AddCors(options =>
@@ -66,7 +66,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("BlazorFrontend");   
+app.UseCors("BlazorFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -8,7 +8,8 @@ public class EtatAdherentSeeder : ISeeder
     public int Order => 1;
 
     public async Task SeedAsync(LibraryDbContext context)
-    {  ArgumentNullException.ThrowIfNull(context);
+    {
+        ArgumentNullException.ThrowIfNull(context);
         var count = await context.Database
             .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.ETAT_ADHERENT")
             .FirstOrDefaultAsync();

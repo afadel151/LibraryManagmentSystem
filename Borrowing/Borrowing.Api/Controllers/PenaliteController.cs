@@ -16,6 +16,7 @@ public class PenaliteController(IPenaliteService penaliteService) : ControllerBa
     [HttpGet]
     public async Task<ActionResult<PagedResult<PenaliteDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var result = await _penaliteService.GetPenalitesAsync(queryParameters);
         return Ok(result);
     }
@@ -31,6 +32,7 @@ public class PenaliteController(IPenaliteService penaliteService) : ControllerBa
     [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<bool>> Create([FromBody] CreatePenaliteDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var result = await _penaliteService.CreatePenaliteAsync(dto);
         if (result)
         {
@@ -43,6 +45,7 @@ public class PenaliteController(IPenaliteService penaliteService) : ControllerBa
     [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<bool>> Update([FromBody] UpdatePenaliteDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var result = await _penaliteService.UpdatePenaliteAsync(dto);
         if (result)
         {
@@ -55,6 +58,7 @@ public class PenaliteController(IPenaliteService penaliteService) : ControllerBa
     [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<bool>> Delete(string idCategorie)
     {
+        ArgumentNullException.ThrowIfNull(idCategorie);
         var result = await _penaliteService.DeletePenaliteAsync(idCategorie);
         if (result)
         {

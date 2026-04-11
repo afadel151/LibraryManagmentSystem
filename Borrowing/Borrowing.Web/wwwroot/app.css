@@ -1,4 +1,14 @@
-html, body {
+
+.rz-datatable-thead .rz-column-title {
+    font-size: 14px;
+}
+
+/* Data cells */
+.rz-datatable-data td {
+    font-size: 20px;
+}
+
+html, body {    
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 

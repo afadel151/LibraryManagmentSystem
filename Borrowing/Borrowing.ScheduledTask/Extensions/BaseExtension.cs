@@ -4,7 +4,7 @@ using Common.Models;
 namespace Borrowing.ScheduledTask.Extensions;
 public static class BaseExtensions
 {
-    public static  DateTime Traiter_date(DateTime date,List<JoursFery> joursFeries)
+    public static  DateTime Traiter_date(DateTime date, List<JoursFery> joursFeries)
     {
         bool changement = false;
         // si vendredi ou samedi

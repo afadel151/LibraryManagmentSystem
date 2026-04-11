@@ -5,7 +5,7 @@ using System;
 using Common.Models;
 public class AdherentProfileDto
 {
-    public Adherent? Adherent {get;set;}
+    public Adherent? Adherent { get; set; }
 
-    public string Picture {get;set;} = string.Empty;    
+    public string Picture { get; set; } = string.Empty;
 }

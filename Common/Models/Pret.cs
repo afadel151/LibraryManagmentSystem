@@ -13,5 +13,5 @@ public partial class Pret
 
     public string? EtatDuree { get; set; }
     public virtual Exemplaire Exemplaire { get; set; } = null!;
-    public virtual Adherent Adherent  { get; set; } = null!;
+    public virtual Adherent Adherent { get; set; } = null!;
 }

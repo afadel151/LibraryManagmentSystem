@@ -13,7 +13,7 @@ public partial class CollectionModel
 
     public string? IssnCollection { get; set; }
 
-    public virtual  ICollection<Notice> Notices { get; set; } = [];
+    public virtual ICollection<Notice> Notices { get; set; } = [];
     public virtual ICollection<MentionResponsabilite> MentionResponsabilites { get; set; } = [];
 
 

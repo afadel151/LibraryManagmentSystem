@@ -17,6 +17,8 @@ public class CalendarificService(HttpClient httpClient, IConfiguration configura
 
     public async Task<List<CalendarificHoliday>> GetHolidaysForYearAsync(int year, string country = "DZ", string language = "en")
     {
+        ArgumentNullException.ThrowIfNull(country);
+        ArgumentNullException.ThrowIfNull(language);
         var url = $"https://calendarific.com/api/v2/holidays?api_key={_apiKey}&country={country}&year={year}&type=national,religious&language={language}";
         var response = await _httpClient.GetFromJsonAsync<CalendarificResponse>(url);
 

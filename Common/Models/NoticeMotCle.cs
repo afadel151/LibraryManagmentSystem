@@ -10,8 +10,8 @@ public partial class NoticeMotCle
 
 
 
-    public virtual  Notice Notice { get; set; } = null!;
-    public virtual  MotsCle MotsCle { get; set; } = null!;
+    public virtual Notice Notice { get; set; } = null!;
+    public virtual MotsCle MotsCle { get; set; } = null!;
 
 
 }

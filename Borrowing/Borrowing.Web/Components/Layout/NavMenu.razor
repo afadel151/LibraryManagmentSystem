@@ -1,121 +1,123 @@
-    @using Microsoft.AspNetCore.Components.Authorization
-    @using System.Security.Claims
-    @using Microsoft.Extensions.Localization
-    @inject AuthService AuthService
-    @inject NavigationManager Nav
-    @inject CultureService CultureService
-    @implements IDisposable
-    @inject IStringLocalizer<NavMenu> L
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using Microsoft.Extensions.Localization
+@inject AuthService AuthService
+@inject NavigationManager Nav
+@inject NavigationManager UriHelper
+@inject CultureService CultureService
+@implements IDisposable
+@inject IStringLocalizer<NavMenu> L
 
-    <RadzenHeader>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
-                    JustifyContent="JustifyContent.SpaceBetween" Style="width: 100%">
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
-                <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-                <RadzenLabel Text="CATlib-PRET" />
-            </RadzenStack>
-
-            <AuthorizeView>
-                <Authorized>
-                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem"
-                                Style="padding-right: 1rem">
-                        <RadzenLabel Text="@GetGreeting(context.User)" />
-
-                        <RadzenDropDown Data="@languages" TextProperty="Label" ValueProperty="Code"
-                                        @bind-Value="@selectedLanguage" Change="@(async (v) => await OnLanguageChanged(v))"
-                                        Style="width: 130px" />
-
-                        <RadzenButton Text="Déconnexion" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat"
-                                    Size="ButtonSize.Small" Click="@(() => Logout(context.User))" />
-                    </RadzenStack>
-                </Authorized>
-            </AuthorizeView>
+<RadzenHeader>
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
+                 JustifyContent="JustifyContent.SpaceBetween" Style="width: 100%">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0">
+            <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
+            <RadzenLabel Text="CATlib-PRET" />
         </RadzenStack>
-    </RadzenHeader>
 
-    <RadzenSidebar Position="CultureService.IsRtl? SidebarPosition.Right: SidebarPosition.Left" FullHeight="true"
-                Responsive="false" @bind-Expanded="@sidebarExpanded">
-        <RadzenPanelMenu DisplayStyle="@(sidebarExpanded? MenuItemDisplayStyle.IconAndText: MenuItemDisplayStyle.Icon)">
-            <RadzenPanelMenuItem Text="@L["Menu"]" Icon="apps" Path="/" />
-            <RadzenPanelMenuItem Text="@L["LoanManagement"]" Icon="hand_package" Path="/prets" />
-            <RadzenPanelMenuItem Text="@L["MemberManagement"]" Icon="person" Path="/adherents" />
-            <RadzenPanelMenuItem Text="@L["RestitutionManagment"]" Icon="source_notes" Path="/restitutions" />
-            <RadzenPanelMenuItem Text="@L["DocumentManagment"]" Icon="article">
-                <RadzenPanelMenuItem Text="@L["AllDocuments"]" Icon="newsstand" Match="NavLinkMatch.All"
-                                    Path="/documents" />
-                <RadzenPanelMenuItem Text="@L["DocsOnLoan"]" Icon="assignment_turned_in" Path="/documents/en_pret" />
-                <RadzenPanelMenuItem Text="@L["ReservedDocuments"]" Icon="date_range" Path="/documents/reservees" />
-                <RadzenPanelMenuItem Text="@L["BlockedCopies"]" Icon="date_range" Path="/exemplaire/bloques" />
-            </RadzenPanelMenuItem>
-            <RadzenPanelMenuItem Text="@L["Availability"]" Icon="timelapse" Path="/availability" />
-            <RadzenPanelMenuItem Text="@L["RemindersManagment"]" Icon="notifications_active" Path="/relances" />
-            <RadzenPanelMenuItem Text="@L["CategoriesManagment"]" Icon="category" Path="/categories" />
-            <RadzenPanelMenuItem Text="@L["Parameters"]" Icon="settings">
-                <RadzenPanelMenuItem Text="@L["Holidays"]" Icon="celebration" Path="/jours_feries" />
-                <RadzenPanelMenuItem Text="Penalites" Icon="block" Path="/penalites" />
-            </RadzenPanelMenuItem>
+        <AuthorizeView>
+            <Authorized>
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem"
+                             Style="padding-right: 1rem">
+                    <RadzenAppearanceToggle />
+                    <RadzenLabel Text="@GetGreeting(context.User)" />
 
-            <AuthorizeView Roles="ADMIN">
-                <Authorized>
-                    <RadzenPanelMenuItem Text="Administration" Icon="admin_panel_settings" Path="/admin" />
-                </Authorized>
-            </AuthorizeView>
-        </RadzenPanelMenu>
-    </RadzenSidebar>
+                    <RadzenDropDown Data="@languages" TextProperty="Label" ValueProperty="Code"
+                                    @bind-Value="@selectedLanguage" Change="@(async (v) => await OnLanguageChanged(v))"
+                                    Style="width: 130px" />
 
-    @code {
-        bool sidebarExpanded = true;
+                    <RadzenButton Text="Déconnexion" ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat"
+                                  Size="ButtonSize.Small" Click="@(() => Logout(context.User))" />
+                </RadzenStack>
+            </Authorized>
+        </AuthorizeView>
+    </RadzenStack>
+</RadzenHeader>
 
-        private string GetGreeting(ClaimsPrincipal user)
-        {
-            var nom = user.FindFirst("nom")?.Value
-                    ?? user.Identity?.Name
-                    ?? "Utilisateur";
-            var role = user.FindFirst(ClaimTypes.Role)?.Value ?? "";
-            return $"Bonjour, {nom} ({role})";
-        }
+<RadzenSidebar Position="CultureService.IsRtl? SidebarPosition.Right: SidebarPosition.Left" FullHeight="true"
+               Responsive="false" @bind-Expanded="@sidebarExpanded">
+    <RadzenPanelMenu DisplayStyle="@(sidebarExpanded? MenuItemDisplayStyle.IconAndText: MenuItemDisplayStyle.Icon)">
+        <RadzenPanelMenuItem Text="@L["Menu"]" Icon="apps" Path="/" />
+        <RadzenPanelMenuItem Text="@L["LoanManagement"]" Icon="hand_package" Path="/prets" />
+        <RadzenPanelMenuItem Text="@L["MemberManagement"]" Icon="person" Path="/adherents" />
+        <RadzenPanelMenuItem Text="@L["RestitutionManagment"]" Icon="source_notes" Path="/restitutions" />
+        <RadzenPanelMenuItem Text="@L["DocumentManagment"]" Icon="article">
+            <RadzenPanelMenuItem Text="@L["AllDocuments"]" Icon="newsstand" Match="NavLinkMatch.All"
+                                 Path="/documents" />
+            <RadzenPanelMenuItem Text="@L["DocsOnLoan"]" Icon="assignment_turned_in" Path="/documents/en_pret" />
+            <RadzenPanelMenuItem Text="@L["ReservedDocuments"]" Icon="date_range" Path="/documents/reservees" />
+            <RadzenPanelMenuItem Text="@L["BlockedCopies"]" Icon="date_range" Path="/exemplaire/bloques" />
+        </RadzenPanelMenuItem>
+        <RadzenPanelMenuItem Text="@L["Availability"]" Icon="timelapse" Path="/availability" />
+        <RadzenPanelMenuItem Text="@L["RemindersManagment"]" Icon="notifications_active" Path="/relances" />
+        <RadzenPanelMenuItem Text="@L["CategoriesManagment"]" Icon="category" Path="/categories" />
+        <RadzenPanelMenuItem Text="@L["Parameters"]" Icon="settings">
+            <RadzenPanelMenuItem Text="@L["Holidays"]" Icon="celebration" Path="/jours_feries" />
+            <RadzenPanelMenuItem Text="Penalites" Icon="block" Path="/penalites" />
+        </RadzenPanelMenuItem>
 
-        private async Task Logout(ClaimsPrincipal user)
-        {
-            var compte = user.Identity?.Name ?? "";
-            await AuthService.LogoutAsync(compte);
-        }
+        <AuthorizeView Roles="ADMIN">
+            <Authorized>
+                <RadzenPanelMenuItem Text="Administration" Icon="admin_panel_settings" Path="/admin" />
+            </Authorized>
+        </AuthorizeView>
+    </RadzenPanelMenu>
+</RadzenSidebar>
 
-        private async Task ChangeLanguage(string culture)
-        {
-            await CultureService.SetCultureAsync(culture);
-        }
+@code {
+    bool sidebarExpanded = true;
+    
+    private string GetGreeting(ClaimsPrincipal user)
+    {
+        var nom = user.FindFirst("nom")?.Value
+                ?? user.Identity?.Name
+                ?? "Utilisateur";
+        var role = user.FindFirst(ClaimTypes.Role)?.Value ?? "";
+        return $"Bonjour, {nom} ({role})";
+    }
 
-        protected override void OnInitialized()
-        {
-            selectedLanguage = CultureService.CurrentCulture; // ← sync dropdown with actual culture
-            CultureService.OnCultureChanged += StateHasChanged;
-        }
+    private async Task Logout(ClaimsPrincipal user)
+    {
+        var compte = user.Identity?.Name ?? "";
+        await AuthService.LogoutAsync(compte);
+    }
 
-        public void Dispose()
-        {
-            CultureService.OnCultureChanged -= StateHasChanged;
-        }
-        private string selectedLanguage = "fr";
+    private async Task ChangeLanguage(string culture)
+    {
+        await CultureService.SetCultureAsync(culture);
+    }
 
-        private List<LanguageOption> languages = new()
+    protected override void OnInitialized()
+    {
+        selectedLanguage = CultureService.CurrentCulture; // ← sync dropdown with actual culture
+        CultureService.OnCultureChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        CultureService.OnCultureChanged -= StateHasChanged;
+    }
+    private string selectedLanguage = "fr";
+
+    private List<LanguageOption> languages = new()
         {
             new LanguageOption { Code = "fr", Label = "🇫🇷 Français" },
             new LanguageOption { Code = "ar", Label = "🇩🇿 العربية" },
             new LanguageOption { Code = "en", Label = "🇬🇧 English"  },
         };
 
-        private async Task OnLanguageChanged(object value)
-        {
-            var culture = value.ToString()!;
-            await CultureService.SetCultureAsync(culture);
-            // Force full reload so IStringLocalizer and middleware pick up new culture
-            Nav.NavigateTo(Nav.Uri, forceLoad: true);
-        }
-
-        private class LanguageOption
-        {
-            public string Code { get; set; } = "";
-            public string Label { get; set; } = "";
-        }
+    private async Task OnLanguageChanged(object value)
+    {
+        var culture = value.ToString()!;
+        await CultureService.SetCultureAsync(culture);
+        // Force full reload so IStringLocalizer and middleware pick up new culture
+        Nav.NavigateTo(Nav.Uri, forceLoad: true);
     }
+
+    private class LanguageOption
+    {
+        public string Code { get; set; } = "";
+        public string Label { get; set; } = "";
+    }
+}

@@ -51,7 +51,7 @@ public class PenaliteService(ApiHttpClient api) : IPenaliteService
 
     public async Task<bool> DeletePenaliteAsync(string idCategorie) =>
         await _api.DeleteForSuccessAsync($"api/Penalite/{Uri.EscapeDataString(idCategorie)}");
-    
-    public async  Task<List<RelanceRetardDto>?> GetRelancesRetard() => 
+
+    public async Task<List<RelanceRetardDto>?> GetRelancesRetard() =>
         await _api.GetAsync<List<RelanceRetardDto>>("api/PenaliteAdherent");
 }

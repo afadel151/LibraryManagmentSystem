@@ -6,5 +6,5 @@ public enum CheckAdherentEnum
     AUTHORIZED,
     SUSPENDED,
     QUOTA_REACHED,
-    NOT_FOUND 
+    NOT_FOUND
 }

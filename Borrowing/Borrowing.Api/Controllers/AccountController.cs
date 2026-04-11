@@ -35,6 +35,8 @@ namespace Borrowing.Api.Controllers
         public async Task<IActionResult> RequestAuth([FromQuery] string compte,
                                                      [FromQuery] string ipClient)
         {
+            ArgumentNullException.ThrowIfNull(compte);
+            ArgumentNullException.ThrowIfNull(ipClient);
             // Validate user exists in YOUR DB first (same as GetUserByCompteUtilisateur)
             var utilisateur = await _db.Utilisateurs
                 .FirstOrDefaultAsync(u => u.Compte == compte).ConfigureAwait(false);
@@ -73,6 +75,7 @@ namespace Borrowing.Api.Controllers
         [HttpGet("response")]
         public async Task<IActionResult> ResponseAuth([FromQuery] string AuthToken)
         {
+            ArgumentNullException.ThrowIfNull(AuthToken);
             // Verify token with auth server
             using var handler = new HttpClientHandler
             {
@@ -139,6 +142,8 @@ namespace Borrowing.Api.Controllers
         public async Task<IActionResult> Logout([FromQuery] string compte,
                                                 [FromQuery] string ipClient)
         {
+            ArgumentNullException.ThrowIfNull(compte);
+            ArgumentNullException.ThrowIfNull(ipClient);
             using var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
@@ -153,6 +158,9 @@ namespace Borrowing.Api.Controllers
 
         private string GenerateJwt(string compte, string role, string nom)
         {
+            ArgumentNullException.ThrowIfNull(compte);
+            ArgumentNullException.ThrowIfNull(role);
+            ArgumentNullException.ThrowIfNull(nom);
             var key = new SymmetricSecurityKey(
                              Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

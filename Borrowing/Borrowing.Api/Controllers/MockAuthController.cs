@@ -21,6 +21,7 @@ public class MockAuthController : Controller
     [HttpGet]
     public IActionResult Login(string IdRequest)
     {
+        ArgumentNullException.ThrowIfNull(IdRequest);
         // Retrieve prefilled username from mapping if available
         var prefilledUser = _requestUserMapping.TryGetValue(IdRequest ?? "", out var user) ? user : null;
         return Content(GetLoginHtml(IdRequest, null, prefilledUser), "text/html");
@@ -29,6 +30,9 @@ public class MockAuthController : Controller
     [HttpPost]
     public IActionResult Login(string IdRequest, string compteUtilisateur, string password)
     {
+        ArgumentNullException.ThrowIfNull(IdRequest);
+        ArgumentNullException.ThrowIfNull(compteUtilisateur);
+        ArgumentNullException.ThrowIfNull(password);
         // Optionally, fall back to mapping if posted username is empty (but allow override)
         if (string.IsNullOrEmpty(compteUtilisateur) && !string.IsNullOrEmpty(IdRequest))
         {
@@ -62,8 +66,10 @@ public class MockAuthController : Controller
         return Content(GetLoginHtml(IdRequest, "Identifiants invalides!", compteUtilisateur), "text/html");
     }
 
-    private string GetLoginHtml(string idRequest, string error, string compteUtilisateur)
+    private string GetLoginHtml(string idRequest, string? error, string compteUtilisateur)
     {
+        ArgumentNullException.ThrowIfNull(idRequest);
+        ArgumentNullException.ThrowIfNull(compteUtilisateur);
         var errorHtml = string.IsNullOrEmpty(error) ? "" : $"<div style='color:red; margin-bottom: 10px;'>{error}</div>";
         return $@" 
                 <html>
@@ -103,6 +109,10 @@ public class MockAuthController : Controller
     [HttpGet]
     public IActionResult RequestAuth(string idApp, string key, string compteUtilisateur, string ipClient)
     {
+        ArgumentNullException.ThrowIfNull(idApp);
+        ArgumentNullException.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(compteUtilisateur);
+        ArgumentNullException.ThrowIfNull(ipClient);
         // In a more realistic mock, validate idApp and key against config
         // For now, simulate generating a request ID and map it to the provided compteUtilisateur
         string idRequest = Guid.NewGuid().ToString();
@@ -117,8 +127,8 @@ public class MockAuthController : Controller
     [HttpGet]
     public IActionResult CheckAuthToken(string idApp, string token)
     {
-        ArgumentNullException.ThrowIfNull(token); 
-        ArgumentNullException.ThrowIfNull(idApp); 
+        ArgumentNullException.ThrowIfNull(token);
+        ArgumentNullException.ThrowIfNull(idApp);
         // In reality, validate token signature/expiration
         if (token.StartsWith("MOCK_TOKEN_", StringComparison.OrdinalIgnoreCase))
         {
@@ -132,6 +142,8 @@ public class MockAuthController : Controller
     [HttpGet]
     public IActionResult Logout(string compteUtilisateur, string ipClient)
     {
+        ArgumentNullException.ThrowIfNull(compteUtilisateur);
+        ArgumentNullException.ThrowIfNull(ipClient);
         // In reality, invalidate token in cache/revocation list
         return Ok("LoggedOut");
     }

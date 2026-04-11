@@ -16,6 +16,7 @@ public class ReservationController(IReservationService reservationService) : Con
     [HttpPost("Create")]
     public async Task<ActionResult<CreateReservationResponseDto>> CreateReservation([FromBody] CreateReservationRequestDto createReservationDto)
     {
+        ArgumentNullException.ThrowIfNull(createReservationDto);
         if (createReservationDto == null)
         {
             return BadRequest(new CreateReservationResponseDto { Done = false });
@@ -24,20 +25,22 @@ public class ReservationController(IReservationService reservationService) : Con
         if (reserving == false)
         {
             var reservation = await _reservationService.CreateReservationAsync(createReservationDto);
-            
-                return Ok(new CreateReservationResponseDto
-                {
-                    Done =  reservation != null
-                });
+
+            return Ok(new CreateReservationResponseDto
+            {
+                Done = reservation != null
+            });
         }
-        return Ok(new CreateReservationResponseDto{Done = false});
+        return Ok(new CreateReservationResponseDto { Done = false });
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteReservation([FromQuery] string idAdherent, [FromQuery] string cote,[FromQuery] DateTime heureReservation)
+    public async Task<IActionResult> DeleteReservation([FromQuery] string idAdherent, [FromQuery] string cote, [FromQuery] DateTime heureReservation)
     {
-        Console.WriteLine("########## date "+heureReservation);
-        bool success = await _reservationService.DeleteReservationAsync(idAdherent, cote,heureReservation);
+        ArgumentNullException.ThrowIfNull(idAdherent);
+        ArgumentNullException.ThrowIfNull(cote);
+        Console.WriteLine("########## date " + heureReservation);
+        bool success = await _reservationService.DeleteReservationAsync(idAdherent, cote, heureReservation);
         if (success)
         {
             return Ok(new { Done = true });
@@ -49,6 +52,7 @@ public class ReservationController(IReservationService reservationService) : Con
     [HttpGet]
     public async Task<ActionResult<PagedResult<Reservation>>> GetAllReservations([FromQuery] PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var reservations = await _reservationService.GetPaginated(queryParameters);
         return Ok(reservations);
     }

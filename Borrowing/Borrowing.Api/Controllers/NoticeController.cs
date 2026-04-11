@@ -19,12 +19,14 @@ public class NoticeController(
     ) : ControllerBase
 {
     private readonly INoticeService _noticeService = noticeService;
-    private readonly IReservationService _reservationService = reservationService;
     private readonly IPretService _pretService = pretService;
 
     [HttpGet("Pret/Check")]
     public async Task<ActionResult<CheckNoticeResponseDto>> CheckNotice([FromQuery] string cote, [FromQuery] string AdherentId)
     {
+        ArgumentNullException.ThrowIfNull(cote);
+        ArgumentNullException.ThrowIfNull(AdherentId);
+
         var result = await _noticeService.CheckNoticeAsync(cote, AdherentId);
         return Ok(result);
     }
@@ -32,6 +34,7 @@ public class NoticeController(
     [HttpGet]
     public async Task<ActionResult<PagedResult<NoticeDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var result = await _noticeService.GetNoticesAsync(queryParameters);
         return Ok(result);
     }
@@ -58,6 +61,7 @@ public class NoticeController(
     [HttpGet("Exemplaire")]
     public async Task<ActionResult<Exemplaire>> GetExemplaireById([FromQuery] string Id)
     {
+        ArgumentNullException.ThrowIfNull(Id);
         var exemplaire = await _noticeService.GetExemplaireDetailedAsync(Id);
         if (exemplaire == null)
         {
@@ -69,6 +73,7 @@ public class NoticeController(
     [HttpGet("Exemplaire/Bloques")]
     public async Task<ActionResult<PagedResult<ExemplaireBloqueDto>>> GetBlockedCopies([FromQuery] PaginatedQueryParameters parameters)
     {
+        ArgumentNullException.ThrowIfNull(parameters);
         Console.WriteLine("#### API triggered");
         var result = await _noticeService.GetExemplaireBloquesAsync(parameters);
         return Ok(result);

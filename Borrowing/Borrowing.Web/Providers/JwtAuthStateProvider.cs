@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Borrowing.Web.Providers;
+
 public class JwtAuthStateProvider : AuthenticationStateProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -26,7 +27,7 @@ public class JwtAuthStateProvider : AuthenticationStateProvider
         if (string.IsNullOrEmpty(token) || IsTokenExpired(token))
             return Task.FromResult(Anonymous);
 
-        var claims   = ParseClaimsFromJwt(token);
+        var claims = ParseClaimsFromJwt(token);
         var identity = new ClaimsIdentity(claims, "jwt");
 
         Console.WriteLine($"[JwtAuthStateProvider] authenticated as: {identity.Name}");

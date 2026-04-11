@@ -9,7 +9,12 @@ builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
 builder.Services.AddRadzenComponents();
-
+builder.Services.AddScoped<ThemeService>();
+builder.Services.AddRadzenCookieThemeService(options =>
+{
+    options.Name = "MyApplicationTheme"; // The name of the cookie
+    options.Duration = TimeSpan.FromDays(365); // The duration of the cookie
+});
 var apiBase = builder.Configuration["ApiSettings:BaseAddress"]
               ?? throw new InvalidOperationException("ApiSettings:BaseAddress is not configured.");
 

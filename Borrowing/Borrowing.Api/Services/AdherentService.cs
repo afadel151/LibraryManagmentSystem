@@ -30,9 +30,6 @@ public class AdherentService(
 ) : IAdherentService
 {
     private readonly IAdherentRepository _adherentRepository = adherentRepository;
-    private readonly ICategorieRepository _categorieRepository = categorieRepository;
-    private readonly IPenaliteAdherentRepository _penaliteRepository = penaliteAdherentRepository;
-    private readonly IReservationRepository _reservationRepository = reservationRepository;
     private readonly IJoursFeriesRepository _joursFeriesRepository = joursFeriesRepository;
     private readonly IPretRepository _pretRepository = pretRepository;
 
@@ -41,6 +38,7 @@ public class AdherentService(
 
     public async Task<PagedResult<AdherentDto>> GetAdherentsAsync(PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var adherents = _adherentRepository.GetQueryable(a => a.Categorie!, a => a.Position!, a => a.PenaliteAdherents, a => a.Reservations, a => a.Prets)
             .Where(p =>
                     string.IsNullOrEmpty(queryParameters.Search) ||
@@ -63,32 +61,32 @@ public class AdherentService(
         var totalCount = await query.CountAsync();
         if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))
         {
-            query = queryParameters.OrderBy.ToLower() switch
+            query = queryParameters.OrderBy.ToUpper() switch
             {
-                "idadherent asc" => query.OrderBy(x => x.IdAdherent),
-                "idadherent desc" => query.OrderByDescending(x => x.IdAdherent),
+                "IDADHERENT ASC" => query.OrderBy(x => x.IdAdherent),
+                "IDADHERENT DESC" => query.OrderByDescending(x => x.IdAdherent),
 
 
-                "nom asc" => query.OrderBy(x => x.Nom),
-                "nom desc" => query.OrderByDescending(x => x.Nom),
+                "NOM ASC" => query.OrderBy(x => x.Nom),
+                "NOM DESC" => query.OrderByDescending(x => x.Nom),
 
-                "prenom asc" => query.OrderBy(x => x.Prenom),
-                "prenom desc" => query.OrderByDescending(x => x.Prenom),
+                "PRENOM ASC" => query.OrderBy(x => x.Prenom),
+                "PRENOM DESC" => query.OrderByDescending(x => x.Prenom),
 
-                "categorie asc" => query.OrderBy(x => x.Categorie),
-                "categorie desc" => query.OrderByDescending(x => x.Categorie),
+                "CATEGORIE ASC" => query.OrderBy(x => x.Categorie),
+                "CATEGORIE DESC" => query.OrderByDescending(x => x.Categorie),
 
-                "position asc" => query.OrderBy(x => x.Position!),
-                "position desc" => query.OrderByDescending(x => x.Position!),
+                "POSITION ASC" => query.OrderBy(x => x.Position!),
+                "POSITION DESC" => query.OrderByDescending(x => x.Position!),
 
-                "etat asc" => query.OrderBy(x => x.Etat),
-                "etat desc" => query.OrderByDescending(x => x.Etat),
+                "ETAT ASC" => query.OrderBy(x => x.Etat),
+                "ETAT DESC" => query.OrderByDescending(x => x.Etat),
 
-                "prets asc" => query.OrderBy(x => x.Prets),
-                "prets desc" => query.OrderByDescending(x => x.Prets),
+                "PRETS ASC" => query.OrderBy(x => x.Prets),
+                "PRETS DESC" => query.OrderByDescending(x => x.Prets),
 
-                "reservations asc" => query.OrderBy(x => x.Reservations),
-                "reservations desc" => query.OrderByDescending(x => x.Reservations),
+                "RESERVATIONS ASC" => query.OrderBy(x => x.Reservations),
+                "RESERVATIONS DESC" => query.OrderByDescending(x => x.Reservations),
                 _ => query.OrderBy(x => x.IdAdherent)
             };
         }
@@ -113,6 +111,7 @@ public class AdherentService(
     }
     public async Task<AdherentProfileDto?> GetAdherentWithDetailsAsync(string adherentId)
     {
+        ArgumentNullException.ThrowIfNull(adherentId);
         var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!, a => a.Position!, a => a.PenaliteAdherents, a => a.HistoriquePenaliteAdherents, a => a.Reservations, a => a.Prets, a => a.HistoriquePrets).FirstOrDefaultAsync(a => a.IdAdherent == adherentId);
 
         if (adherent != null)
@@ -129,7 +128,7 @@ public class AdherentService(
 
     public async Task<DateTime> CalculateExpectedReturnDate(DateTime startDate, decimal duration)
     {
-        DateTime rawReturnDate = startDate.AddDays((double)duration);
+        var rawReturnDate = startDate.AddDays((double)duration);
         List<JoursFery> joursFeries = await _joursFeriesRepository.GetQueryable().ToListAsync();
         return BaseExtensions.Traiter_date(rawReturnDate, joursFeries);
     }
@@ -164,6 +163,7 @@ public class AdherentService(
     }
     public async Task<Adherent?> GetAdherentWithPretsPenaliteAsync(string AdherentId)
     {
+        ArgumentNullException.ThrowIfNull(AdherentId);
         var adherent = await _adherentRepository.GetQueryable(a => a.Prets, a => a.PenaliteAdherents, a => a.Categorie!)
                         .Where(a => a.IdAdherent == AdherentId)
                         .FirstOrDefaultAsync();
@@ -176,6 +176,7 @@ public class AdherentService(
 
     public async Task<bool> CreateAdherentAsync(CreateAdherentDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var adherent = new Adherent
         {
             IdAdherent = dto.IdAdherent,
@@ -199,6 +200,7 @@ public class AdherentService(
 
     public async Task<bool> UpdateAdherentAsync(UpdateAdherentDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var adherent = await _adherentRepository.GetQueryable()
                         .FirstOrDefaultAsync(a => a.IdAdherent == dto.IdAdherent);
 
@@ -223,6 +225,7 @@ public class AdherentService(
 
     public async Task<CheckAdhPretResponseDto> CheckAdherentPourPret(string id)
     {
+        ArgumentNullException.ThrowIfNull(id);
         var adherent = await GetAdherentWithDetailsAsync(id);
         if (adherent != null)
         {

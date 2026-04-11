@@ -98,7 +98,6 @@ public class JoursFeriesServiceTest
         _joursFeriesRepositoryMock
             .Setup(r => r.GetQueryable())
             .Returns(new TestAsyncQueryable<JoursFery>([]));
-            
         _joursFeriesRepositoryMock
             .Setup(r => r.AddAsync(It.IsAny<JoursFery>()))
             .ThrowsAsync(new Exception("DB error"));

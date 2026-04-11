@@ -62,13 +62,15 @@ public class PretService(
             return true;
         }
         catch (Exception ex)
-        {   
+        {
 
             return false;
         }
     }
     public async Task<bool> DeletePret(string IdAdherent, string IdExemplaire)
     {
+        ArgumentNullException.ThrowIfNull(IdAdherent);
+        ArgumentNullException.ThrowIfNull(IdExemplaire);
         var pret = await _pretRepository.GetQueryable()
                 .Where(p => p.IdAdherent == IdAdherent && p.IdExemplaire == IdExemplaire)
                 .FirstOrDefaultAsync();
@@ -86,6 +88,7 @@ public class PretService(
     }
     public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
 
         var prets = _pretRepository.GetQueryable();
         var adherents = _adherentRepository.GetQueryable();
@@ -119,45 +122,45 @@ public class PretService(
         // Apply search
         if (!string.IsNullOrWhiteSpace(queryParameters.Search))
         {
-            var search = queryParameters.Search.ToLower(); // only once, on the in-memory value
+            var search = queryParameters.Search.ToUpper(); // only once, on the in-memory value
             query = query.Where(x =>
-                x.AdherentId.ToLower().Contains(search) ||
-                x.AdherentNom.ToLower().Contains(search) ||
-                x.AdherentPrenom.ToLower().Contains(search) ||
-                x.NoticeTitrePropre.ToLower().Contains(search) ||
-                x.ExemplaireId.ToLower().Contains(search));
+                x.AdherentId.ToUpper().Contains(search,StringComparison.InvariantCulture) ||
+                x.AdherentNom.ToUpper().Contains(search,StringComparison.InvariantCulture) ||
+                x.AdherentPrenom.ToUpper().Contains(search,StringComparison.InvariantCulture) ||
+                x.NoticeTitrePropre.ToUpper().Contains(search,StringComparison.InvariantCulture) ||
+                x.ExemplaireId.ToUpper().Contains(search,StringComparison.InvariantCulture));
         }
         // Apply ordering
         if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))
         {
-            query = queryParameters.OrderBy.ToLower() switch
+            query = queryParameters.OrderBy.ToUpper() switch
             {
-                "datepret asc" => query.OrderBy(x => x.DatePret),
-                "datepret desc" => query.OrderByDescending(x => x.DatePret),
+                "datepret ASC" => query.OrderBy(x => x.DatePret),
+                "datepret DESC" => query.OrderByDescending(x => x.DatePret),
 
-                "adherentid asc" => query.OrderBy(x => x.AdherentId),
-                "adherentid desc" => query.OrderByDescending(x => x.AdherentId),
+                "ADHERENTID ASC" => query.OrderBy(x => x.AdherentId),
+                "ADHERENTID DESC" => query.OrderByDescending(x => x.AdherentId),
 
-                "adherentnom asc" => query.OrderBy(x => x.AdherentNom),
-                "adherentnom desc" => query.OrderByDescending(x => x.AdherentNom),
+                "ADHERENTNOM ASC" => query.OrderBy(x => x.AdherentNom),
+                "ADHERENTNOM DESC" => query.OrderByDescending(x => x.AdherentNom),
 
-                "adherentprenom asc" => query.OrderBy(x => x.AdherentPrenom),
-                "adherentprenom desc" => query.OrderByDescending(x => x.AdherentPrenom),
+                "ADHERENTPRENOM ASC" => query.OrderBy(x => x.AdherentPrenom),
+                "ADHERENTPRENOM DESC" => query.OrderByDescending(x => x.AdherentPrenom),
 
-                "adherentcategorie asc" => query.OrderBy(x => x.AdherentCategorie),
-                "adherentcategorie desc" => query.OrderByDescending(x => x.AdherentCategorie),
+                "ADHERENTCATEGORIE ASC" => query.OrderBy(x => x.AdherentCategorie),
+                "ADHERENTCATEGORIE DESC" => query.OrderByDescending(x => x.AdherentCategorie),
 
-                "exemplaireid asc" => query.OrderBy(x => x.NoticeTitrePropre),
-                "exemplaireid desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
+                "EXEMPLAIREID ASC" => query.OrderBy(x => x.ExemplaireId),
+                "EXEMPLAIREID DESC" => query.OrderByDescending(x => x.ExemplaireId),
 
-                "noticetitrepropre asc" => query.OrderBy(x => x.NoticeTitrePropre),
-                "noticetitrepropre desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
+                "NOTICETITREPROPRE ASC" => query.OrderBy(x => x.NoticeTitrePropre),
+                "NOTICETITREPROPRE DESC" => query.OrderByDescending(x => x.NoticeTitrePropre),
 
-                "titre asc" => query.OrderBy(x => x.NoticeTitrePropre),
-                "titre desc" => query.OrderByDescending(x => x.NoticeTitrePropre),
+                "TITRE ASC" => query.OrderBy(x => x.NoticeTitrePropre),
+                "TITRE DESC" => query.OrderByDescending(x => x.NoticeTitrePropre),
 
-                "etatduree asc" => query.OrderBy(x => x.EtatDuree),
-                "etatduree desc" => query.OrderByDescending(x => x.EtatDuree),
+                "ETATDUREE ASC" => query.OrderBy(x => x.EtatDuree),
+                "ETATDUREE DESC" => query.OrderByDescending(x => x.EtatDuree),
                 _ => query.OrderByDescending(x => x.DatePret) // defalt 
             };
         }
@@ -167,7 +170,6 @@ public class PretService(
         }
 
         var totalCount = await query.CountAsync();
-        Console.WriteLine("######## count"+totalCount);
         var data = await query
             .Skip((queryParameters.PageNumber - 1) * queryParameters.PageSize)
             .Take(queryParameters.PageSize)
@@ -182,11 +184,12 @@ public class PretService(
         };
     }
 
-    public async Task<int> CountAdherentActiveLoans(string adherentId)
+    public async Task<int> CountAdherentActiveLoans(string AdherentId)
     {
+        ArgumentNullException.ThrowIfNull(AdherentId);
         return await _pretRepository.GetQueryable()
                     .Where(
-                        p => p.IdAdherent == adherentId
+                        p => p.IdAdherent == AdherentId
                     )
                     .CountAsync();
     }
@@ -197,6 +200,7 @@ public class PretService(
 
     public async Task<List<Pret>> GetBlockedCopies(string cote)
     {
+        ArgumentNullException.ThrowIfNull(cote);
         return await _pretRepository.GetQueryable()
             .Where(p => EF.Functions.Like(
                 p.IdExemplaire.ToUpper(),
@@ -208,6 +212,7 @@ public class PretService(
 
     public async Task<Pret?> GetPretByExemplaireId(string IdExemplaire)
     {
+        ArgumentNullException.ThrowIfNull(IdExemplaire);
         return await _pretRepository.GetQueryable()
             .Where(p => p.IdExemplaire == IdExemplaire)
             .FirstOrDefaultAsync();
@@ -236,7 +241,7 @@ public class PretService(
 
             // Extraction de la cote
             string cote = exemplaire.Cote!;
-            if (string.IsNullOrEmpty(cote) && IdExemplaire.Contains('/'))
+            if (string.IsNullOrEmpty(cote) && IdExemplaire.Contains('/',StringComparison.InvariantCulture))
             {
                 cote = IdExemplaire.Substring(0, IdExemplaire.LastIndexOf('/'));
             }
@@ -280,7 +285,6 @@ public class PretService(
                         {
                             retard = true; // il est en retard
                             nbrJoursRetardDocEnCours = (DateTime.Now.Date - dateRestitutionPrevue).Days;
-                            Console.WriteLine("##### 1");
 
                             // Extraire le nombre de jours de pénalité depuis la table penalite
                             var penaliteRecord = await _penaliteRepository.GetQueryable()
@@ -290,7 +294,6 @@ public class PretService(
 
                             if (penaliteRecord != null)
                             {
-                                Console.WriteLine("##### 2");
                                 nbrJoursRetardDocEnCours = (int)penaliteRecord.NombreJoursRetard!;
                             }
                         }
@@ -299,12 +302,10 @@ public class PretService(
             }
 
             // 3. Vérification existence dans penalite_adherent
-            Console.WriteLine("##### 3");
 
             bool existeDansPenaliteAdherent = false;
             int nbrJoursRetardDansTablePenaliteAdherent = 0;
             var penaliteAdherentExistante = adherent!.PenaliteAdherents.FirstOrDefault();
-            Console.WriteLine("##### 4");
 
             if (penaliteAdherentExistante != null)
             {
@@ -314,12 +315,10 @@ public class PretService(
 
             // prets en cours
             int nbrPretUtilisateurEnCours = adherent.Prets.Count;
-            Console.WriteLine("##### 5");
 
             // gestion des pénalités
             if (retard)
             {
-                Console.WriteLine("##### 6");
 
                 int joursRetardFinal = 0;
 
@@ -416,7 +415,6 @@ public class PretService(
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             return false;
         }
     }
@@ -444,13 +442,10 @@ public class PretService(
                         return true;
                     } // pret non cree
                 }
-                Console.WriteLine("adherent penalise");
                 return false; // adherent penalise
             }
-            Console.WriteLine("exemplaire no longer available");
             return false; // exemplaire no longer available
         }
-        Console.WriteLine("Erreur de restitution");
 
         return false;// erreur de restitution
     }

@@ -22,7 +22,7 @@ public class CookieStorageService
             $"document.cookie='{key}={value}; path=/; expires={expiry}; SameSite=Strict'");
     }
 
-     public async Task SetCultureAsync(string culture, int expiryDays = 365)
+    public async Task SetCultureAsync(string culture, int expiryDays = 365)
     {
         var expiry = DateTimeOffset.UtcNow.AddDays(expiryDays).ToString("R");
         var cookieValue = CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture));

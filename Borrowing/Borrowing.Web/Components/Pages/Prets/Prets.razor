@@ -25,7 +25,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H5">@L["CurrentLoans"]</RadzenText> @*CurrentLoans*@
+                    <RadzenText TextStyle="TextStyle.DisplayH5">@L["CurrentLoans"]</RadzenText> @*CurrentLoans*@
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-success rz-m-0">
                         @(stats?.Prets ?? 0)
                     </RadzenText>
@@ -38,7 +38,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H5">@L["LateLoans"]</RadzenText> @*LateLoans*@
+                    <RadzenText TextStyle="TextStyle.DisplayH5">@L["LateLoans"]</RadzenText> @*LateLoans*@
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-info rz-m-0">
                         @(stats?.Retard ?? 0)
                     </RadzenText>
@@ -51,7 +51,7 @@
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
                 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H5">@L["Reservations"]</RadzenText>
+                    <RadzenText TextStyle="TextStyle.DisplayH5">@L["Reservations"]</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-warning rz-m-0">
                         @(stats?.Reservations ?? 0)
                     </RadzenText>
@@ -66,7 +66,7 @@
 <RadzenRow class="rz-mt-4">
     <RadzenColumn Size="12" SizeMD="6">
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
-            <RadzenText TextStyle="TextStyle.H5">@L["MemberInformations"]</RadzenText> @**@
+            <RadzenText TextStyle="TextStyle.DisplayH5">@L["MemberInformations"]</RadzenText> @**@
 
             <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3"> @**@
                 <RadzenTextBox Placeholder="@L["InsertMemberId"]" @bind-Value="AdherentId" @oninput="OnMemberTyping"
@@ -90,9 +90,9 @@
                                      onerror="this.style.display='none'" />
                             </RadzenColumn>
                             <RadzenColumn Size="8">
-                                <RadzenText TextStyle="TextStyle.Subtitle1"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
+                                <RadzenText TextStyle="TextStyle.H6"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
                                     @adherentCheck.Adherent?.Prenom</b></RadzenText>
-                                    <RadzenText TextStyle="TextStyle.Body2">@L["Category"]: 
+                                    <RadzenText TextStyle="TextStyle.Body2">@L["Category"]:
                                         @adherentCheck.Adherent?.Categorie?.LibelleCategorie
                                     </RadzenText>
                                     
@@ -103,136 +103,143 @@
                                                 <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@L["ActifMember"]" class="rz-mb-2" />
                                                 <RadzenText TextStyle="TextStyle.Body2">@L["Quota"]: @adherentCheck.ActiveLoans /
                                                     @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
-                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-success"><b>@L["AuthorizedLoan"]</b></RadzenText>
+                                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-success"><b>@L["AuthorizedLoan"]</b>
+                                                    </RadzenText>
 
-                                                <div class="rz-mt-3">
-                                                    <RadzenText TextStyle="TextStyle.Body2">@L["LoanDate"]</RadzenText>
-                                                    <RadzenDatePicker @bind-Value="loanDate" Disabled="true" class="w-100" />
+                                                    <div class="rz-mt-3">
+                                                        <RadzenText TextStyle="TextStyle.Body2">@L["LoanDate"]</RadzenText>
+                                                        <RadzenDatePicker @bind-Value="loanDate" Disabled="true" class="w-100" />
+                                                    </div>
+
+                                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">@L["ExpectedReturnDate"] :
+                                                        <b>@adherentCheck.ExpectedReturnDate.ToShortDateString()</b>
+                                                    </RadzenText>
                                                 </div>
-
-                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">@L["ExpectedReturnDate"] :
-                                                    <b>@adherentCheck.ExpectedReturnDate.ToShortDateString()</b>
-                                                </RadzenText>
-                                            </div>
-                                            break;
+                                                break;
 
                                         case CheckAdherentEnum.QUOTA_REACHED:
-                                            <div class="rz-mt-2">
-                                                <RadzenText TextStyle="TextStyle.Body2">@L["Quota"]: @adherentCheck.ActiveLoans /
-                                                    @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
-                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-color-warning"><b>@L["QuotaReached"]</b></RadzenText>
-                                            </div>
-                                            break;
+                                                    <div class="rz-mt-2">
+                                                        <RadzenText TextStyle="TextStyle.Body2">@L["Quota"]: @adherentCheck.ActiveLoans /
+                                                            @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
+                                                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-warning"><b>@L["QuotaReached"]</b>
+                                                            </RadzenText>
+                                                        </div>
+                                                        break;
 
                                         case CheckAdherentEnum.PENALISED:
-                                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@L["Penalised"]" class="rz-mb-2" />
-                                            break;
+                                                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@L["Penalised"]" class="rz-mb-2" />
+                                                            break;
 
-                                        case CheckAdherentEnum.SUSPENDED:
-                                            <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@L["Suspended"]" class="rz-mb-2" />
-                                            break;
+                                                        case CheckAdherentEnum.SUSPENDED:
+                                                            <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="@L["Suspended"]" class="rz-mb-2" />
+                                                            break;
+                                                        }
+                                                    </RadzenColumn>
+                                                </RadzenRow>
+                                            }
                                     }
-                            </RadzenColumn>
-                        </RadzenRow>
-                    }
-                }
                 else if (hasSearchedMember && adherentCheck == null)
-                {
-                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">@L["ErrorWhileVerifyingMember"]</RadzenText>
-                }
-                        </RadzenStack>
-                    </RadzenCard>
-                </RadzenColumn>
+                                    {
+                                        <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">@L["ErrorWhileVerifyingMember"]
+                                        </RadzenText>
+                                    }
+                                </RadzenStack>
+                            </RadzenCard>
+                        </RadzenColumn>
 
-                <RadzenColumn Size="12" SizeMD="6">
-                    <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
-                        <RadzenText TextStyle="TextStyle.H5">@L["DocumentInformations"]</RadzenText> @**@
+                        <RadzenColumn Size="12" SizeMD="6">
+                            <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
+                                <RadzenText TextStyle="TextStyle.DisplayH5">@L["DocumentInformations"]</RadzenText> @**@
 
-                        <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
-                            <RadzenTextBox Placeholder="@L["InsertCote"]" @oninput="OnCoteTyping" @bind-Value="Cote"
-                                           Change="OnCoteChanged" class="w-100" /> @**@
+                                <RadzenStack Orientation="Orientation.Vertical" Gap="1rem" class="rz-mt-3">
+                                    <RadzenTextBox Placeholder="@L["InsertCote"]" @oninput="OnCoteTyping" @bind-Value="Cote"
+                                                   Change="OnCoteChanged" class="w-100" /> @**@
 
-                            @if (isLoadingDocument)
+                                    @if (isLoadingDocument)
+                                    {
+                                        <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+                                    }
+                                    else if (noticeCheck != null)
+                                    {
+                                        @if (noticeCheck.Status != CheckNoticeEnum.NOT_FOUND)
+                                        {
+                                            <RadzenText TextStyle="TextStyle.H6">@L["Title"] :</RadzenText>
+                                            <RadzenText TextStyle="TextStyle.DisplayH5">@noticeCheck.Titre</RadzenText>
+                                        }
+
+                                        @switch (noticeCheck.Status)
+                                        {
+                                            case CheckNoticeEnum.NOT_FOUND:
+                                                <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" class="rz-mt-2">
+                                                    @L["CoteNotFound"]
+                                                </RadzenAlert>
+                                                break;
+                                            case CheckNoticeEnum.ALREADY_BORROWED:
+                                                <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">
+                                                    @L["MemberHasBorrowedThisDocument"]
+                                                </RadzenAlert>
+                                                break;
+                                            case CheckNoticeEnum.CAN_BORROW:
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">@L["SelectACopy"] :</RadzenText>
+                                                <RadzenDropDown @bind-Value="selectedCopyId" Data="@noticeCheck.Exemplaires" class="w-100" />
+                                                break;
+
+                                            case CheckNoticeEnum.CAN_BORROW_RESERVATEUR:
+                                                <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">
+                                                    @L["MemberHasReservedThisDocument"]
+                                                </RadzenAlert>
+                                                <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">@L["SelectACopy"] :</RadzenText>
+                                                <RadzenDropDown @bind-Value="selectedCopyId" Data="@noticeCheck.Exemplaires" class="w-100" />
+                                                break;
+
+                                            case CheckNoticeEnum.CAN_RESERVE:
+                                                <RadzenAlert AlertStyle="AlertStyle.Info" AllowClose="false" class="rz-mt-2">
+                                                    @L["NoAvailableCopiesCanReserve"]
+                                                </RadzenAlert>
+                                                break;
+
+                                            case CheckNoticeEnum.RESERVED_NOT_READY:
+                                                <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">
+                                                    @L["ReservedButCopyNotReady"]
+                                                </RadzenAlert>
+                                                break;
+
+                                            case CheckNoticeEnum.PENALISED:
+                                                <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" class="rz-mt-2">
+                                                    @L["AdherentPenalised"]
+                                                </RadzenAlert>
+                                                break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @if (hasSearchedDocument)
+                                        {
+                                            <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">@L["ErrorWhileSearchingCote"]
+                                            </RadzenText>
+                                        }
+                                    }
+                                </RadzenStack>
+                            </RadzenCard>
+                        </RadzenColumn>
+                    </RadzenRow>
+
+                    <RadzenRow class="rz-mt-4" JustifyContent="JustifyContent.End">
+                        @if (noticeCheck != null)
+                        {
+                            @if (noticeCheck.Status == CheckNoticeEnum.CAN_RESERVE)
                             {
-                                <RadzenProgressBar Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" />
+                                <RadzenButton class="rz-mr-2" Text="@L["ReserveDocument"]" Size="ButtonSize.Medium"
+                                              ButtonStyle="ButtonStyle.Secondary" Click=ReserverCote />
                             }
-                             else if (noticeCheck != null)
+                            @if ((noticeCheck.Status == CheckNoticeEnum.CAN_BORROW || noticeCheck.Status ==
+                                                                                                                                                                                                                    CheckNoticeEnum.CAN_BORROW_RESERVATEUR) && selectedCopyId != null)
                             {
-                                @if (noticeCheck.Status != CheckNoticeEnum.NOT_FOUND)
-                                {
-                                    <RadzenText TextStyle="TextStyle.Subtitle1">@L["Title"] :</RadzenText>
-                                    <RadzenText TextStyle="TextStyle.DisplayH5">@noticeCheck.Titre</RadzenText>
-                                }
-
-                                @switch (noticeCheck.Status)
-                                {
-                                    case CheckNoticeEnum.NOT_FOUND:
-                                        <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" class="rz-mt-2">
-                                            @L["CoteNotFound"]
-                                        </RadzenAlert>
-                                        break;
-
-                                    case CheckNoticeEnum.CAN_BORROW:
-                                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">@L["SelectACopy"] :</RadzenText>
-                                        <RadzenDropDown @bind-Value="selectedCopyId" Data="@noticeCheck.Exemplaires" class="w-100" />
-                                        break;
-
-                                    case CheckNoticeEnum.CAN_BORROW_RESERVATEUR:
-                                        <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">
-                                            @L["MemberHasReservedThisDocument"]
-                                        </RadzenAlert>
-                                        <RadzenText TextStyle="TextStyle.Body2" class="rz-mt-2">@L["SelectACopy"] :</RadzenText>
-                                        <RadzenDropDown @bind-Value="selectedCopyId" Data="@noticeCheck.Exemplaires" class="w-100" />
-                                        break;
-
-                                    case CheckNoticeEnum.CAN_RESERVE:
-                                        <RadzenAlert AlertStyle="AlertStyle.Info" AllowClose="false" class="rz-mt-2">
-                                            @L["NoAvailableCopiesCanReserve"]
-                                        </RadzenAlert>
-                                        break;
-
-                                    case CheckNoticeEnum.RESERVED_NOT_READY:
-                                        <RadzenAlert AlertStyle="AlertStyle.Warning" AllowClose="false" class="rz-mt-2">
-                                            @L["ReservedButCopyNotReady"]
-                                        </RadzenAlert>
-                                        break;
-
-                                    case CheckNoticeEnum.PENALISED:
-                                        <RadzenAlert AlertStyle="AlertStyle.Danger" AllowClose="false" class="rz-mt-2">
-                                            @L["AdherentPenalised"]
-                                        </RadzenAlert>
-                                        break;
-                                }
+                                <RadzenButton Disabled="!IsLoanValidatable" Click=ValiderPret Text="@L["ValidateLoan"]"
+                                              ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" class="rz-mr-2" />
                             }
-                            else
-                            {
-                                @if (hasSearchedDocument)
-                                {
-                                    <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">@L["ErrorWhileSearchingCote"]
-                                    </RadzenText>
-                                }
-                            }
-                        </RadzenStack>
-                    </RadzenCard>
-                </RadzenColumn>
-            </RadzenRow>
-
-            <RadzenRow class="rz-mt-4" JustifyContent="JustifyContent.End">
-                @if (noticeCheck != null)
-                {
-                    @if (noticeCheck.Status == CheckNoticeEnum.CAN_RESERVE)
-                    {
-                        <RadzenButton class="rz-mr-2" Text="@L["ReserveDocument"]" Size="ButtonSize.Medium"
-                                      ButtonStyle="ButtonStyle.Secondary" Click=ReserverCote />
-                    }
-                    @if ((noticeCheck.Status == CheckNoticeEnum.CAN_BORROW || noticeCheck.Status ==
-                                            CheckNoticeEnum.CAN_BORROW_RESERVATEUR) && selectedCopyId != null)
-                    {
-                        <RadzenButton Disabled="!IsLoanValidatable" Click=ValiderPret Text="@L["ValidateLoan"]"
-                                         ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" class="rz-mr-2" />
-                    }
-                }
-            </RadzenRow>
+                        }
+                    </RadzenRow>
 
 
 @code {
@@ -339,6 +346,7 @@
                     Duration = 4000
                 });
             }
+            
         }
         isLoadingMember = false;
     }
@@ -385,16 +393,42 @@
         StateHasChanged();
         // Strip trailing path segments from barcode scan
         noticeCheck = await pretService.CheckNotice(Cote, AdherentId);
-        ShowNotification(new NotificationMessage
+        if (noticeCheck != null)
         {
-            Severity = NotificationSeverity.Success,
-            Summary = L["FetchedDocument"], //
-        });
-        if (noticeCheck != null && (noticeCheck.Status == CheckNoticeEnum.CAN_BORROW || noticeCheck.Status ==
+           
+            if (noticeCheck.Status == CheckNoticeEnum.ALREADY_BORROWED)
+            {
+                ShowNotification(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = L["AlreadyBorrowed"], //
+                });
+            }
+            else
+            {
+                ShowNotification(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = L["FetchedDocument"], //
+                });
+            }
+            if (noticeCheck != null && (noticeCheck.Status == CheckNoticeEnum.CAN_BORROW || noticeCheck.Status ==
 CheckNoticeEnum.CAN_BORROW_RESERVATEUR))
-        {
-            IsLoanValidatable = adherentCheck != null && adherentCheck.Etat == CheckAdherentEnum.AUTHORIZED;
+            {
+                IsLoanValidatable = adherentCheck != null && adherentCheck.Etat == CheckAdherentEnum.AUTHORIZED;
+            }
         }
+        else
+        {
+            ShowNotification(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = L["DocumentNotFount"], //
+            });
+        }
+
+        
+
         isLoadingDocument = false;
     }
 

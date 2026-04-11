@@ -21,6 +21,7 @@ public class RestitutionController(
     [HttpPost("Restituer")]
     public async Task<IActionResult> PerformRestitution([FromBody] CreateRestitutionDto form)
     {
+        ArgumentNullException.ThrowIfNull(form);
         var pret = await _pretService.GetPretByExemplaireId(form.ExemplaireId);
         if (pret != null && pret.IdAdherent == form.AdherentId)
         {
@@ -43,11 +44,12 @@ public class RestitutionController(
     [HttpPost("Renouvler")]
     public async Task<IActionResult> RenouvlerPret([FromBody] CreateRestitutionDto form)
     {
-       var success = await _pretService.RenouvlementPret(form.AdherentId,form.ExemplaireId);
-       if (success)
-       {
+        ArgumentNullException.ThrowIfNull(form);
+        var success = await _pretService.RenouvlementPret(form.AdherentId, form.ExemplaireId);
+        if (success)
+        {
             return Ok("Renouvlement avec succes");
-       }
+        }
         return NotFound("Erreur de renouvlement");
     }
 

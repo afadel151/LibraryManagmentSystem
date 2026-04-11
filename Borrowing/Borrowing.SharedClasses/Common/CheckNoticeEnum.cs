@@ -2,6 +2,7 @@ namespace Borrowing.SharedClasses.Models;
 
 public enum CheckNoticeEnum
 {
+    ALREADY_BORROWED,
     NOT_FOUND,              // notice doesn't exist
     PENALISED,
     CAN_BORROW,             // available copies exist, go ahead

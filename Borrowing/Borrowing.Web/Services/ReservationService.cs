@@ -12,7 +12,7 @@ public interface IReservationService
     Task<PagedResult<ReservationDto>?> GetReservationsAsync(PaginatedQueryParameters queryParameters);
     Task<IEnumerable<ReservationDto>?> GetAllReservationsAsync(string search = "");
     Task<List<RelanceDto>?> GetRelancesAsync();
-    Task<bool> DeleteReservationAsync(string idAdherent, string cote,DateTime heureReservation);
+    Task<bool> DeleteReservationAsync(string idAdherent, string cote, DateTime heureReservation);
 }
 
 public class ReservationService(ApiHttpClient api) : IReservationService
@@ -43,7 +43,7 @@ public class ReservationService(ApiHttpClient api) : IReservationService
             Search = search
         };
         var result = await GetReservationsAsync(queryParams);
-        if(result == null) return null;
+        if (result == null) return null;
         return result.Data;
     }
 
@@ -52,9 +52,9 @@ public class ReservationService(ApiHttpClient api) : IReservationService
         return await _api.GetAsync<List<RelanceDto>>("api/Reservation/Relances");
     }
 
-    public async Task<bool> DeleteReservationAsync(string idAdherent, string cote,DateTime heureReservation)
+    public async Task<bool> DeleteReservationAsync(string idAdherent, string cote, DateTime heureReservation)
     {
-        string dateStr = heureReservation.ToString("s"); 
+        string dateStr = heureReservation.ToString("s");
         var url = $"api/Reservation?idAdherent={idAdherent}&cote={cote}&heureReservation={Uri.EscapeDataString(dateStr)}";
         return await _api.DeleteForSuccessAsync(url);
     }

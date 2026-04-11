@@ -2,21 +2,18 @@ using System.Net.Http.Json;
 using Borrowing.SharedClasses.Responses.Position;
 
 namespace Borrowing.Web.Services;
-
+using Borrowing.Web.Providers;
 public interface IPositionService
 {
-    Task<IEnumerable<PositionDto>> GetAllPositionsAsync();
+    Task<List<PositionDto>?> GetAllPositionsAsync();
 }
 
-public class PositionService(IHttpClientFactory factory) : IPositionService
+public class PositionService(ApiHttpClient api) : IPositionService
 {
-    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
+    private readonly ApiHttpClient _api = api;
 
-    public async Task<IEnumerable<PositionDto>> GetAllPositionsAsync()
+    public async Task<List<PositionDto>?> GetAllPositionsAsync()
     {
-        var response = await _httpClient.GetAsync("api/Position");
-        response.EnsureSuccessStatusCode();
-
-        return await response.Content.ReadFromJsonAsync<IEnumerable<PositionDto>>() ?? Array.Empty<PositionDto>();
+        return await _api.GetAsync<List<PositionDto>?>("api/Position");
     }
 }

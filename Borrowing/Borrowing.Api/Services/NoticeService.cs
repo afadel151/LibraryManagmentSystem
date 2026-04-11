@@ -20,7 +20,7 @@ public interface INoticeService
     Task<PagedResult<ExemplaireBloqueDto>> GetExemplaireBloquesAsync(PaginatedQueryParameters parameters);
     Task<CheckNoticeResponseDto> CheckNoticeAsync(string cote, string adherentId);
 
-    Task<bool> UpdateExemplaire(Exemplaire e,int etat);
+    Task<bool> UpdateExemplaire(Exemplaire e, int etat);
 
 }
 
@@ -29,8 +29,8 @@ public class NoticeService(
     IExemplairesRepository exemplairesRepository,
     IReservationRepository reservationRepository,
     IPretRepository pretRepository,
-    IHistoriquePretRepository historiquePretRepository
-
+    IHistoriquePretRepository historiquePretRepository,
+    ILogger<NoticeService> logger
     ) : INoticeService
 {
     private readonly INoticesRepository _noticesRepository = noticesRepository;
@@ -40,8 +40,10 @@ public class NoticeService(
     private readonly IPretRepository _pretsRepository = pretRepository;
     private readonly IHistoriquePretRepository _historiquePretRepository = historiquePretRepository;
 
-    public async Task<bool> UpdateExemplaire(Exemplaire e,int etat)
+    private readonly ILogger<NoticeService> _logger = logger;
+    public async Task<bool> UpdateExemplaire(Exemplaire e, int etat)
     {
+        ArgumentNullException.ThrowIfNull(e);
         e.IdEtat = (decimal)etat;
         try
         {
@@ -49,12 +51,13 @@ public class NoticeService(
             return true;
         }
         catch (System.Exception)
-        {   
+        {
             return false;
         }
     }
     public async Task<Notice?> GetNoticeAsync(string cote)
     {
+        ArgumentNullException.ThrowIfNull(cote);
         return await _noticesRepository.GetQueryable()
             .Where(
                 n => n.Cote == cote
@@ -62,6 +65,7 @@ public class NoticeService(
     }
     public async Task<List<Exemplaire>> GetAvailableCopies(string cote)
     {
+        ArgumentNullException.ThrowIfNull(cote);
         return await _exemplairesRepository.GetQueryable()
                 .Where(
                     e => e.Cote == cote && e.IdEtat == 1
@@ -70,6 +74,7 @@ public class NoticeService(
 
     public async Task<NoticeWithResExe?> GetNoticeWithDetailsByCoteAsync(string cote)
     {
+        ArgumentNullException.ThrowIfNull(cote);
         var notice = await _noticesRepository.GetQueryable()
             .Where(n => n.Cote == cote)
             .SingleOrDefaultAsync();
@@ -113,6 +118,7 @@ public class NoticeService(
 
     public async Task<Exemplaire?> GetExemplaireAsync(string idExemplaire)
     {
+        ArgumentNullException.ThrowIfNull(idExemplaire);
         return await _exemplairesRepository.GetQueryable()
             .Where(e => e.IdExemplaire == idExemplaire)
             .FirstOrDefaultAsync();
@@ -120,6 +126,7 @@ public class NoticeService(
 
     public async Task<PagedResult<NoticeDto>> GetNoticesAsync(PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var notices = _noticesRepository.GetQueryable(n => n.TypeNotice).Include(n => n.Exemplaires).ThenInclude(e => e.Prets)
                     .Where(p =>
                             string.IsNullOrEmpty(queryParameters.Search) ||
@@ -145,25 +152,25 @@ public class NoticeService(
 
         if (!string.IsNullOrEmpty(queryParameters.OrderBy))
         {
-            query = queryParameters.OrderBy.ToLower() switch
+            query = queryParameters.OrderBy.ToUpper() switch
             {
-                "titrepropre asc" => query.OrderBy(x => x.TitrePropre),
-                "titrepropre desc" => query.OrderByDescending(x => x.TitrePropre),
+                "TITREPROPRE ASC" => query.OrderBy(x => x.TitrePropre),
+                "TITREPROPRE DESC" => query.OrderByDescending(x => x.TitrePropre),
 
-                "cote asc" => query.OrderBy(x => x.Cote),
-                "cote desc" => query.OrderByDescending(x => x.Cote),
+                "COTE ASC" => query.OrderBy(x => x.Cote),
+                "COTE DESC" => query.OrderByDescending(x => x.Cote),
 
-                "typenotice1 asc" => query.OrderBy(x => x.TypeNotice1),
-                "typenotice1 desc" => query.OrderByDescending(x => x.TypeNotice1),
+                "TYPENOTICE1 ASC" => query.OrderBy(x => x.TypeNotice1),
+                "TYPENOTICE1 DESC" => query.OrderByDescending(x => x.TypeNotice1),
 
-                "exemplairedispo asc" => query.OrderBy(x => x.ExemplaireDispo),
-                "exemplairedispo desc" => query.OrderByDescending(x => x.ExemplaireDispo),
+                "EXEMPLAIREDISPO ASC" => query.OrderBy(x => x.ExemplaireDispo),
+                "EXEMPLAIREDISPO DESC" => query.OrderByDescending(x => x.ExemplaireDispo),
 
-                "exemplaireenpret asc" => query.OrderBy(x => x.ExemplaireEnPret),
-                "exemplaireenpret desc" => query.OrderByDescending(x => x.ExemplaireEnPret),
+                "EXEMPLAIREENPRET ASC" => query.OrderBy(x => x.ExemplaireEnPret),
+                "EXEMPLAIREENPRET DESC" => query.OrderByDescending(x => x.ExemplaireEnPret),
 
-                "reservations asc" => query.OrderBy(x => x.Reservations),
-                "reservations desc" => query.OrderByDescending(x => x.Reservations),
+                "RESERVATIONS ASC" => query.OrderBy(x => x.Reservations),
+                "RESERVATIONS DESC" => query.OrderByDescending(x => x.Reservations),
 
                 _ => query.OrderBy(x => x.Cote)
             };
@@ -254,6 +261,7 @@ public class NoticeService(
 
     public async Task<Exemplaire?> GetExemplaireDetailedAsync(string Id)
     {
+        ArgumentNullException.ThrowIfNull(Id);
         var exemplaire = await _exemplairesRepository.GetQueryable(
             e => e.EtatExemplaire!
             )
@@ -273,13 +281,31 @@ public class NoticeService(
     }
     public async Task<CheckNoticeResponseDto> CheckNoticeAsync(string cote, string adherentId)
     {
-        var notice = await _noticesRepository.GetQueryable(n => n.Reservations, n => n.Exemplaires).FirstOrDefaultAsync(); ;
-
+        ArgumentNullException.ThrowIfNull(cote);
+        ArgumentNullException.ThrowIfNull(adherentId);
+        var pret = await _pretsRepository.GetQueryable()
+                        .Where(p =>
+                            EF.Functions.Like(p.IdExemplaire.ToUpper(), cote.ToUpper() + "/%")
+                        ).FirstOrDefaultAsync();
+        var notice = await _noticesRepository.GetQueryable(n => n.Reservations, n => n.Exemplaires).FirstOrDefaultAsync(n => n.Cote == cote); ;
         if (notice == null)
             return new CheckNoticeResponseDto { Status = CheckNoticeEnum.NOT_FOUND };
+            
+        if (pret != null)
+        {
+            return new CheckNoticeResponseDto
+            {
+                Status = CheckNoticeEnum.ALREADY_BORROWED,
+                Titre = notice.TitrePropre
+            };
+        }
 
+
+        _logger.LogInformation("Notice titre : " + notice.TitrePropre!);
         var titre = notice.TitrePropre!;
+
         List<string> availableCopies = [.. notice.Exemplaires.Where(e => e.IdEtat == 1).Select(e => e.IdExemplaire)];
+
         List<Pret> blockedCopies = await _pretsRepository.GetQueryable()
             .Where(p => EF.Functions.Like(
                 p.IdExemplaire.ToUpper(),
@@ -337,6 +363,7 @@ public class NoticeService(
     }
     public async Task<PagedResult<ExemplaireBloqueDto>> GetExemplaireBloquesAsync(PaginatedQueryParameters parameters)
     {
+        ArgumentNullException.ThrowIfNull(parameters);
         var prets = _pretsRepository.GetQueryable()
             .Include(p => p.Exemplaire)
                 .ThenInclude(e => e.Notice)

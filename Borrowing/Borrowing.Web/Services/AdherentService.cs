@@ -51,9 +51,9 @@ public class AdherentService(ApiHttpClient api) : IAdherentService
         var result = await GetAdherentsAsync(new PaginatedQueryParameters
         {
             PageNumber = 1,
-            PageSize   = int.MaxValue,
-            OrderBy    = "datepret desc",
-            Search     = search
+            PageSize = int.MaxValue,
+            OrderBy = "datepret desc",
+            Search = search
         });
         return result?.Data ?? Enumerable.Empty<AdherentDto>();
     }

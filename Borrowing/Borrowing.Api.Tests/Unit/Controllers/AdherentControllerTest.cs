@@ -14,5 +14,4 @@ public class AdherentControllerTest
         _sut = new(_adherentServiceMock.Object);
     }
 
-    
 }

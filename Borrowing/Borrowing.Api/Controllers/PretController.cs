@@ -22,6 +22,7 @@ public class PretController(IPretService pretService, IPenaliteAdherentService p
     [HttpGet]
     public async Task<ActionResult<PagedResult<PretResponseDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var result = await _pretService.GetPretsAsync(queryParameters);
         return Ok(result);
     }
@@ -29,6 +30,7 @@ public class PretController(IPretService pretService, IPenaliteAdherentService p
     [HttpPost("Create")]
     public async Task<ActionResult<CreatePretResponseDto?>> CreatePret([FromBody] CreatePretRequestDto pretRequestDto)
     {
+        ArgumentNullException.ThrowIfNull(pretRequestDto);
         var adherentCheck = await _adherentService.CheckAdherentPourPret(pretRequestDto.AdherentId);
         string cote = pretRequestDto.ExemplaireId[..pretRequestDto.ExemplaireId.LastIndexOf('/')];
         var noticeCheck = await _noticeService.CheckNoticeAsync(cote, pretRequestDto.AdherentId);

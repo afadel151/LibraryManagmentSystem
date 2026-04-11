@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 using Borrowing.SharedClasses.Models;
 using Borrowing.SharedClasses.Responses.Adherent;
 using System.Net;
-
+using Borrowing.Web.Providers;
 public interface INoticeService
 {
 
-    Task<List<TopLoanedNoticeDto>> GetChartData();
-    Task<PagedResult<NoticeDto>> GetNoticesAsync(PaginatedQueryParameters queryParameters);
-    Task<IEnumerable<NoticeDto>> GetAllNoticesAsync(string search = "");
+    Task<List<TopLoanedNoticeDto>?> GetChartData();
+    Task<PagedResult<NoticeDto>?> GetNoticesAsync(PaginatedQueryParameters queryParameters);
+    Task<List<NoticeDto>?> GetAllNoticesAsync(string search = "");
     Task<NoticeProfileDto?> GetNoticeProfileAsync(int Id);
 }
 
 
-public class NoticeService(IHttpClientFactory factory) : INoticeService
+public class NoticeService(ApiHttpClient api) : INoticeService
 {
-    private readonly HttpClient _httpClient = factory.CreateClient("BorrowingApi");
+    private readonly ApiHttpClient _api = api;
 
-    public async Task<PagedResult<NoticeDto>> GetNoticesAsync(PaginatedQueryParameters queryParameters)
+    public async Task<PagedResult<NoticeDto>?> GetNoticesAsync(PaginatedQueryParameters queryParameters)
     {
         var orderBy = string.IsNullOrWhiteSpace(queryParameters.OrderBy)
                    ? "Cote asc"
@@ -32,50 +32,22 @@ public class NoticeService(IHttpClientFactory factory) : INoticeService
                 $"Search={queryParameters.Search}&" +
                 $"OrderBy={orderBy}";
 
-        var response = await _httpClient.GetAsync(url);
+        return await _api.GetAsync<PagedResult<NoticeDto>?>(url);
 
-        var content = await response.Content.ReadAsStringAsync();
-
-        response.EnsureSuccessStatusCode();
-
-        return JsonSerializer.Deserialize<PagedResult<NoticeDto>>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
     }
 
-    
-    public async Task<List<TopLoanedNoticeDto>> GetChartData()
-    {
-        var response = await _httpClient.GetAsync("api/Notice/Chart");
-        var content = await response.Content.ReadAsStringAsync();
 
-        response.EnsureSuccessStatusCode();
-        return JsonSerializer.Deserialize<List<TopLoanedNoticeDto>>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
+    public async Task<List<TopLoanedNoticeDto>?> GetChartData()
+    {
+        return await _api.GetAsync<List<TopLoanedNoticeDto>?>("api/Notice/Chart");
+        
     }
     public async Task<NoticeProfileDto?> GetNoticeProfileAsync(int Id)
     {
-        var response = await _httpClient.GetAsync("api/Notice/Profile?Id=" + Id);
-        var content = await response.Content.ReadAsStringAsync();
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            return JsonSerializer.Deserialize<NoticeProfileDto>(content, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            })!;
-        }
-        else
-        {
-            return null;
-        }
-
-        
+        return await _api.GetAsync<NoticeProfileDto>("api/Notice/Profile?Id=" + Id);
     }
 
-    public async Task<IEnumerable<NoticeDto>> GetAllNoticesAsync(string search = "")
+    public async Task<List<NoticeDto>?> GetAllNoticesAsync(string search = "")
     {
         var queryParams = new PaginatedQueryParameters
         {
@@ -86,6 +58,6 @@ public class NoticeService(IHttpClientFactory factory) : INoticeService
         };
 
         var result = await GetNoticesAsync(queryParams);
-        return result.Data;
+        return result?.Data;
     }
 }

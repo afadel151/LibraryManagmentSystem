@@ -1,10 +1,9 @@
-namespace Borrowing.SharedClasses.Responses.Categorie;
+namespace Borrowing.SharedClasses.Requests.Categorie;
 
-public class CategorieDto
+public class CreateCategorieDto
 {
     public string IdCategorie { get; set; } = string.Empty;
     public string LibelleCategorie { get; set; } = string.Empty;
     public decimal? NombreDocument { get; set; }
     public decimal? DureePret { get; set; }
-    public int AdherentCount { get; set; }
 }

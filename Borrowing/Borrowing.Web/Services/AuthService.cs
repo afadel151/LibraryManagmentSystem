@@ -3,7 +3,7 @@ using Borrowing.Web.Providers;
 using Microsoft.AspNetCore.Components;
 namespace Borrowing.Web.Services;
 
-public class AuthService(IHttpClientFactory factory, CookieStorageService storage, NavigationManager nav,JwtAuthStateProvider authStateProvider)
+public class AuthService(IHttpClientFactory factory, CookieStorageService storage, NavigationManager nav, JwtAuthStateProvider authStateProvider)
 {
     private readonly HttpClient _http = factory.CreateClient("BorrowingApi");
     private readonly CookieStorageService _storage = storage;

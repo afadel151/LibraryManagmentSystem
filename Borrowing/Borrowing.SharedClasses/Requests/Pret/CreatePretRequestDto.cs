@@ -1,4 +1,5 @@
 namespace Borrowing.SharedClasses.Requests.Pret;
+
 public class CreatePretRequestDto
 {
     public string AdherentId { get; set; } = string.Empty;

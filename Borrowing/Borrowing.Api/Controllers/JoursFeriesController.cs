@@ -16,6 +16,7 @@ public class JoursFeriesController(IJoursFeriesService joursFeriesService) : Con
     [HttpGet]
     public async Task<ActionResult<PagedResult<JoursFeryDto>>> Get([FromQuery] PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var result = await _joursFeriesService.GetJoursFeriesAsync(queryParameters);
         return Ok(result);
     }
@@ -31,6 +32,7 @@ public class JoursFeriesController(IJoursFeriesService joursFeriesService) : Con
     [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<bool>> Create([FromBody] CreateJoursFeryDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var result = await _joursFeriesService.CreateJoursFeryAsync(dto);
         if (result)
         {
@@ -43,6 +45,7 @@ public class JoursFeriesController(IJoursFeriesService joursFeriesService) : Con
     [Authorize(Roles = "ADMIN")]
     public async Task<ActionResult<bool>> Update([FromBody] UpdateJoursFeryDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var result = await _joursFeriesService.UpdateJoursFeryAsync(dto);
         if (result)
         {

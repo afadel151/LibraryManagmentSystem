@@ -18,10 +18,10 @@ public interface IPenaliteService
 public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieRepository categorieRepository) : IPenaliteService
 {
     private readonly IPenaliteRepository _penaliteRepository = penaliteRepository;
-    private readonly ICategorieRepository _categorieRepository = categorieRepository;
 
     public async Task<PagedResult<PenaliteDto>> GetPenalitesAsync(PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var penalites = _penaliteRepository.GetQueryable(p => p.Categorie!)
             .Where(p =>
                     string.IsNullOrEmpty(queryParameters.Search) ||
@@ -42,16 +42,16 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
 
         if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))
         {
-            query = queryParameters.OrderBy.ToLower() switch
+            query = queryParameters.OrderBy.ToUpper() switch
             {
-                "idcategorie asc" => query.OrderBy(x => x.IdCategorie),
-                "idcategorie desc" => query.OrderByDescending(x => x.IdCategorie),
-                "libellecategorie asc" => query.OrderBy(x => x.LibelleCategorie),
-                "libellecategorie desc" => query.OrderByDescending(x => x.LibelleCategorie),
-                "joursretard asc" => query.OrderBy(x => x.JoursRetard),
-                "joursretard desc" => query.OrderByDescending(x => x.JoursRetard),
-                "nombrejoursretard asc" => query.OrderBy(x => x.NombreJoursRetard),
-                "nombrejoursretard desc" => query.OrderByDescending(x => x.NombreJoursRetard),
+                "IDCATEGORIe ASC" => query.OrderBy(x => x.IdCategorie),
+                "IDCATEGORIE DESC" => query.OrderByDescending(x => x.IdCategorie),
+                "LIBELLECATEGORIE ASC" => query.OrderBy(x => x.LibelleCategorie),
+                "LIBELLECATEGORIE DESC" => query.OrderByDescending(x => x.LibelleCategorie),
+                "JOURSRETARD ASC" => query.OrderBy(x => x.JoursRetard),
+                "JOURSRETARD DESC" => query.OrderByDescending(x => x.JoursRetard),
+                "NOMBREJOURSRETARD ASC" => query.OrderBy(x => x.NombreJoursRetard),
+                "NOMBREJOURSRETARD DESC" => query.OrderByDescending(x => x.NombreJoursRetard),
                 _ => query.OrderBy(x => x.IdCategorie)
             };
         }
@@ -91,6 +91,7 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
 
     public async Task<bool> CreatePenaliteAsync(CreatePenaliteDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var existingPenalite = await _penaliteRepository.GetQueryable()
             .FirstOrDefaultAsync(p => p.IdCategorie == dto.IdCategorie);
 
@@ -119,6 +120,7 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
 
     public async Task<bool> UpdatePenaliteAsync(UpdatePenaliteDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var penalite = await _penaliteRepository.GetQueryable()
             .FirstOrDefaultAsync(p => p.IdCategorie == dto.IdCategorie);
 
@@ -140,6 +142,7 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
 
     public async Task<bool> DeletePenaliteAsync(string idCategorie)
     {
+        ArgumentNullException.ThrowIfNull(idCategorie);
         var penalite = await _penaliteRepository.GetQueryable()
             .FirstOrDefaultAsync(p => p.IdCategorie == idCategorie);
 

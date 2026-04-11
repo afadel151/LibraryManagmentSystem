@@ -5,12 +5,7 @@ namespace Common.Models;
 
 public partial class Adherent
 {
-    public Adherent()
-    {
-        PenaliteAdherents = new List<PenaliteAdherent>();
-        Prets = new List<Pret>();
-        Reservations = new List<Reservation>();
-    }   
+ 
     public string IdAdherent { get; set; } = null!;
 
     public string? Nom { get; set; }
@@ -26,7 +21,7 @@ public partial class Adherent
     public virtual ICollection<HistoriqueAuth> HistoriqueAuths { get; set; } = [];
     public virtual ICollection<HistoriquePret> HistoriquePrets { get; set; } = [];
     public virtual ICollection<HistoriquePenaliteAdherent> HistoriquePenaliteAdherents { get; set; } = [];
-    public virtual ICollection<PenaliteAdherent> PenaliteAdherents { get;set; } = [];
+    public virtual ICollection<PenaliteAdherent> PenaliteAdherents { get; set; } = [];
     public virtual ICollection<Reservation> Reservations { get; set; } = [];
     public virtual ICollection<Pret> Prets { get; set; } = [];
     public virtual Position? Position { get; set; }

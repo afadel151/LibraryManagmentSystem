@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-Borrowing.Worker-5eba8790-f3b2-4dec-8eed-40b7ddf8cbe5</UserSecretsId>
     <RuntimeIdentifiers>linux-x64;win-x64</RuntimeIdentifiers>
+    <!-- <NoWarn>CA1812</NoWarn> -->
   </PropertyGroup>
 
   <ItemGroup>

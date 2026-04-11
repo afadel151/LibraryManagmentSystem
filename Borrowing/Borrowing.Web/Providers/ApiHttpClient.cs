@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Components;
+using Radzen;
 
 namespace Borrowing.Web.Providers;
 
-public class ApiHttpClient(IHttpClientFactory factory, NavigationManager nav)
+public class ApiHttpClient(IHttpClientFactory factory, NavigationManager nav,ILogger<ApiHttpClient> logger)
 {
     private readonly HttpClient _http = factory.CreateClient("BorrowingApi");
     private readonly NavigationManager _nav = nav;
-
+    private readonly ILogger<ApiHttpClient> _logger = logger;
     public async Task<T?> GetAsync<T>(string url)
     {
         var response = await _http.GetAsync(url);
@@ -44,7 +45,6 @@ public class ApiHttpClient(IHttpClientFactory factory, NavigationManager nav)
             _nav.NavigateTo("/unauthorized", forceLoad: true);
             return default;
         }
-
         response.EnsureSuccessStatusCode();
 
         if (typeof(T) == typeof(object)) return default;

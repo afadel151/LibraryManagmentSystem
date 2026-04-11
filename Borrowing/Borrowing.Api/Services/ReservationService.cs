@@ -20,21 +20,17 @@ public interface IReservationService
 
 public class ReservationService(
     IReservationRepository reservationRepository,
-    IAdherentRepository adherentRepository,
     IPretRepository pretRepository,
-    INoticesRepository noticesRepository,
-    IExemplairesRepository exemplairesRepository) : IReservationService
+    INoticesRepository noticesRepository) : IReservationService
 {
     private readonly IReservationRepository _reservationRepository = reservationRepository;
-    private readonly IAdherentRepository _adherentRepository = adherentRepository;
     private readonly INoticesRepository _noticesRepository = noticesRepository;
-    private readonly IExemplairesRepository _exemplairesRepository = exemplairesRepository;
-
     private readonly IPretRepository _pretRepository = pretRepository;
 
     // Sample method to demonstrate repository usage
     public async Task<Reservation?> CreateReservationAsync(CreateReservationRequestDto reservation)
     {
+        ArgumentNullException.ThrowIfNull(reservation);
         // Example: save a reservation
         Reservation res = new()
         {
@@ -47,7 +43,7 @@ public class ReservationService(
             await _reservationRepository.AddAsync(res);
             return res;
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
             return null;
         }
@@ -55,6 +51,8 @@ public class ReservationService(
 
     public async Task<bool> CheckAdherentReservingCote(string AdherentId, string cote)
     {
+        ArgumentNullException.ThrowIfNull(AdherentId);
+        ArgumentNullException.ThrowIfNull(cote);
         int count = await _reservationRepository.GetQueryable()
                 .Where(
                     r => r.IdAdherent == AdherentId && r.Cote == cote
@@ -83,6 +81,7 @@ public class ReservationService(
 
     public async Task<PagedResult<ReservationDto>> GetPaginated(PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var reservations = _reservationRepository.GetQueryable()
                             .Include(r => r.Adherent);
 
@@ -101,37 +100,37 @@ public class ReservationService(
                     };
         if (!string.IsNullOrWhiteSpace(queryParameters.Search))
         {
-            var search = queryParameters.Search.ToLower(); // only once, on the in-memory value
+            var search = queryParameters.Search.ToUpperInvariant(); // only once, on the in-memory value
             query = query.Where(x =>
-                x.IdAdherent.ToLower().Contains(search) ||
-                x.Nom!.ToLower().Contains(search) ||
-                x.Prenom!.ToLower().Contains(search) ||
-                x.Cote.ToLower().Contains(search) ||
-                x.TitrePropre!.ToLower().Contains(search));
+                x.IdAdherent.ToUpperInvariant().Contains(search, StringComparison.InvariantCulture) ||
+                x.Nom!.ToUpperInvariant().Contains(search, StringComparison.InvariantCulture) ||
+                x.Prenom!.ToUpperInvariant().Contains(search, StringComparison.InvariantCulture) ||
+                x.Cote.ToUpperInvariant().Contains(search, StringComparison.InvariantCulture) ||
+                x.TitrePropre!.ToUpperInvariant().Contains(search, StringComparison.InvariantCulture));
         }
         if (!string.IsNullOrEmpty(queryParameters.OrderBy))
         {
-            query = queryParameters.OrderBy.ToLower() switch
+            query = queryParameters.OrderBy.ToUpperInvariant() switch
             {
-                "cote asc" => query.OrderBy(x => x.Cote),
-                "cote desc" => query.OrderByDescending(x => x.Cote),
+                "COTE ASC" => query.OrderBy(x => x.Cote),
+                "COTE DESC" => query.OrderByDescending(x => x.Cote),
 
-                "titrepropre asc" => query.OrderBy(x => x.TitrePropre),
-                "titrepropre desc" => query.OrderByDescending(x => x.TitrePropre),
-
-
-                "nom asc" => query.OrderBy(x => x.Nom),
-                "nom desc" => query.OrderByDescending(x => x.Nom),
-
-                "prenom asc" => query.OrderBy(x => x.Prenom),
-                "prenom desc" => query.OrderByDescending(x => x.Prenom),
-
-                "idadherent asc" => query.OrderBy(x => x.IdAdherent),
-                "idadherent desc" => query.OrderByDescending(x => x.IdAdherent),
+                "TITREPROPRE ASC" => query.OrderBy(x => x.TitrePropre),
+                "TITREPROPRE DESC" => query.OrderByDescending(x => x.TitrePropre),
 
 
-                "heurereservation asc" => query.OrderBy(x => x.HeureReservation),
-                "heurereservation desc" => query.OrderByDescending(x => x.HeureReservation),
+                "NOM ASC" => query.OrderBy(x => x.Nom),
+                "NOM DESC" => query.OrderByDescending(x => x.Nom),
+
+                "PRENOM ASC" => query.OrderBy(x => x.Prenom),
+                "PRENOM DESC" => query.OrderByDescending(x => x.Prenom),
+
+                "IDADHERENT ASC" => query.OrderBy(x => x.IdAdherent),
+                "IDADHERENT DESC" => query.OrderByDescending(x => x.IdAdherent),
+
+
+                "HEURERESERVATION ASC" => query.OrderBy(x => x.HeureReservation),
+                "HEURERESERVATION DESC" => query.OrderByDescending(x => x.HeureReservation),
 
                 _ => query.OrderByDescending(x => x.HeureReservation)
             };
@@ -196,7 +195,9 @@ public class ReservationService(
     }
     public async Task<bool> DeleteReservationAsync(string idAdherent, string cote, DateTime heureReservation)
     {
-        Console.WriteLine("##### Data :"+heureReservation);
+        ArgumentNullException.ThrowIfNull(idAdherent);
+        ArgumentNullException.ThrowIfNull(cote);
+        Console.WriteLine("##### Data :" + heureReservation);
         var reservation = await _reservationRepository.GetQueryable()
             .FirstOrDefaultAsync(
                 r => r.IdAdherent == idAdherent &&
@@ -210,7 +211,6 @@ public class ReservationService(
             );
         if (reservation == null)
         {
-            Console.WriteLine("####### not fount");
             return false;
         }
 

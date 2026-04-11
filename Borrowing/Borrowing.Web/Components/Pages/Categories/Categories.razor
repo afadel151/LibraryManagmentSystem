@@ -1,4 +1,319 @@
 @page "/categories"
 
+@inject NavigationManager navigationManager
+@inject ICategorieService categorieService
+@inject IExportService exportService
+@inject DialogService dialogService
+@inject NotificationService notificationService
 
-<p>categories</p>
+@using Borrowing.SharedClasses.Models
+@using Borrowing.SharedClasses.Requests.Categorie
+@using Borrowing.SharedClasses.Responses.Categorie
+@using Borrowing.Web.Services
+@using Radzen
+@using Radzen.Blazor
+@using Common.Models
+@using Borrowing.Web.Components.Base
+
+@inherits AuthorizedComponentBase
+
+<RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
+             AlignItems="AlignItems.Center">
+    <RadzenText TextStyle="TextStyle.H3">Catégories</RadzenText>
+    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
+        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")" Icon="get_app" Click="Export"
+                      ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" />
+        <Microsoft.AspNetCore.Components.Authorization.AuthorizeView Roles="ADMIN">
+            <RadzenButton Text="Ajouter" Icon="add" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Flat"
+                          Click="OpenCreateModal" />
+        </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+    </RadzenStack>
+</RadzenStack>
+
+<RadzenRow class="rz-mt-4">
+    <RadzenColumn>
+        <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@categories"
+                        IsLoading="@isLoading" TItem="CategorieDto" ShowPagingSummary="true"
+                        AllowPaging="true" PageSize="10" AllowSorting="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="CategorieDto" Property="IdCategorie" Title="ID Catégorie" />
+                <RadzenDataGridColumn TItem="CategorieDto" Property="LibelleCategorie" Title="Libellé" />
+                <RadzenDataGridColumn TItem="CategorieDto" Property="NombreDocument" Title="Nombre de documents" />
+                <RadzenDataGridColumn TItem="CategorieDto" Property="DureePret" Title="Durée de prêt (jours)" />
+                <RadzenDataGridColumn TItem="CategorieDto" Property="AdherentCount" Title="Nombre d'adhérents" />
+                <RadzenDataGridColumn Visible="isAdmin" TItem="CategorieDto" Title="Actions" Width="300px">
+                    <Template Context="data">
+                        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                            <AuthorizeView Roles="ADMIN">
+                                <Authorized>
+                                    <RadzenButton Click=@(args => OpenEditModal(data)) Size="ButtonSize.Small"
+                                                  Shade="Shade.Darker" ButtonStyle="ButtonStyle.Primary"
+                                                  Icon="edit" Text="Modifier" />
+                                    <RadzenButton Click=@(args => OpenDeleteModal(data)) Size="ButtonSize.Small"
+                                                  Shade="Shade.Darker" ButtonStyle="ButtonStyle.Danger"
+                                                  Icon="delete" Text="Supprimer" />
+                                </Authorized>
+                            </AuthorizeView>
+                        </RadzenStack>
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
+
+@code {
+    private List<CategorieDto>? categories;
+    private bool isLoading;
+    private bool isAdmin = false;
+    private bool isExporting = false;
+    private bool _ready = false;
+    private int confirmationStep = 0;
+    private CategorieDto? categorieToDelete;
+
+    protected override async Task OnPageInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        isAdmin = authState.User.IsInRole("ADMIN");
+        _ready = true;
+        await LoadCategories();
+    }
+
+    private async Task LoadCategories()
+    {
+        if (!_ready) return;
+        isLoading = true;
+        try
+        {
+            var result = await categorieService.GetAllCategoriesAsync();
+            categories = result ?? new List<CategorieDto>();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task Export()
+    {
+        isExporting = true;
+        try
+        {
+            var data = await categorieService.GetAllCategoriesAsync();
+            await exportService.ExportToExcelAsync(data, "Categories_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+        }
+        finally
+        {
+            isExporting = false;
+        }
+    }
+
+    private async Task OpenCreateModal()
+    {
+        var model = new CreateCategorieDto();
+
+        await dialogService.OpenAsync("Ajouter une catégorie", ds =>
+            @<RadzenTemplateForm Data="@model"
+                                 Submit="@(async (CreateCategorieDto args) => { await SubmitCreate(args, ds); })">
+                <RadzenStack Gap="1rem" Style="width: 100%; min-width: 400px;">
+                    <RadzenFormField Text="ID Catégorie">
+                        <RadzenTextBox @bind-Value="model.IdCategorie" Name="IdCategorie" />
+                        <RadzenRequiredValidator Component="IdCategorie" Text="L'ID est requis" />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Libellé">
+                        <RadzenTextBox @bind-Value="model.LibelleCategorie" Name="LibelleCategorie" />
+                        <RadzenRequiredValidator Component="LibelleCategorie" Text="Le libellé est requis" />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Nombre de documents">
+                        <RadzenNumeric @bind-Value="model.NombreDocument" Name="NombreDocument" Min="0" Style="width: 100%" />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Durée de prêt (jours)">
+                        <RadzenNumeric @bind-Value="model.DureePret" Name="DureePret" Min="0" Style="width: 100%" />
+                    </RadzenFormField>
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
+                                 class="rz-mt-4">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Enregistrer" Variant="Variant.Flat" />
+                        <RadzenButton Text="Annuler" Variant="Variant.Outlined" Click="() => ds.Close(false)"
+                                      ButtonStyle="ButtonStyle.Light" />
+                    </RadzenStack>
+                </RadzenStack>
+            </RadzenTemplateForm>
+        );
+    }
+
+    private async Task SubmitCreate(CreateCategorieDto model, DialogService ds)
+    {
+        bool success = await categorieService.CreateCategorieAsync(model);
+        if (success)
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Succès",
+                Detail = "Catégorie créée avec succès",
+                Duration = 4000
+            });
+            ds.Close(true);
+            await LoadCategories();
+        }
+        else
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Erreur",
+                Detail = "Erreur lors de la création de la catégorie",
+                Duration = 4000
+            });
+        }
+    }
+
+    private async Task OpenEditModal(CategorieDto data)
+    {
+        var model = new UpdateCategorieDto
+        {
+            IdCategorie = data.IdCategorie,
+            LibelleCategorie = data.LibelleCategorie,
+            NombreDocument = data.NombreDocument,
+            DureePret = data.DureePret
+        };
+
+        await dialogService.OpenAsync("Modifier une catégorie", ds =>
+            @<RadzenTemplateForm Data="@model"
+                                 Submit="@(async (UpdateCategorieDto args) => { await SubmitEdit(args, ds); })">
+                <RadzenStack Gap="1rem" Style="width: 100%; min-width: 400px;">
+                    <RadzenFormField Text="ID Catégorie">
+                        <RadzenTextBox @bind-Value="model.IdCategorie" Name="IdCategorie" Disabled="true" />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Libellé">
+                        <RadzenTextBox @bind-Value="model.LibelleCategorie" Name="LibelleCategorie" Disabled="true" />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Nombre de documents">
+                        <RadzenNumeric @bind-Value="model.NombreDocument" Name="NombreDocument" Min="0" Style="width: 100%" />
+                    </RadzenFormField>
+                    <RadzenFormField Text="Durée de prêt (jours)">
+                        <RadzenNumeric @bind-Value="model.DureePret" Name="DureePret" Min="0" Style="width: 100%" />
+                    </RadzenFormField>
+                    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
+                                 class="rz-mt-4">
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="Mettre à jour" Variant="Variant.Flat" />
+                        <RadzenButton Text="Annuler" Variant="Variant.Outlined" Click="() => ds.Close(false)"
+                                      ButtonStyle="ButtonStyle.Light" />
+                    </RadzenStack>
+                </RadzenStack>
+            </RadzenTemplateForm>
+        );
+    }
+
+    private async Task SubmitEdit(UpdateCategorieDto model, DialogService ds)
+    {
+        bool success = await categorieService.UpdateCategorieAsync(model);
+        if (success)
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Succès",
+                Detail = "Catégorie mise à jour avec succès",
+                Duration = 4000
+            });
+            ds.Close(true);
+            await LoadCategories();
+        }
+        else
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Erreur",
+                Detail = "Erreur lors de la mise à jour de la catégorie",
+                Duration = 4000
+            });
+        }
+    }
+
+    private async Task OpenDeleteModal(CategorieDto data)
+    {
+        confirmationStep = 0;
+        categorieToDelete = data;
+
+        await dialogService.OpenAsync("Confirmation de suppression", ds =>
+        @<RadzenStack Gap="1rem">
+            <RadzenSteps @bind-SelectedIndex="confirmationStep" Change="OnStepChange">
+                <Steps>
+                    <RadzenStepsItem Text="Avertissement">
+                        <RadzenCard Style="background-color: var(--rz-warning-light); border-left: 4px solid var(--rz-warning);">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+                                <RadzenIcon Icon="warning" Style="color: var(--rz-black); font-size: 2rem;" />
+                                <RadzenStack Gap="0.5rem">
+                                    <RadzenText TextStyle="TextStyle.H6" Text="Attention" />
+                                    <RadzenText Text="Vous êtes sur le point de supprimer la catégorie ? Cette action pourrait affecter les adhérents associés." Style="width: 100%; min-width: 400px;" />
+                                </RadzenStack>
+                            </RadzenStack>
+                        </RadzenCard>
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
+                                     Style="margin-top: 1rem;">
+                            <RadzenButton Text="Continuer" ButtonStyle="ButtonStyle.Primary"
+                                          Click="() => { confirmationStep = 1; }" />
+                            <RadzenButton Text="Annuler" Variant="Variant.Outlined"
+                                          Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+                        </RadzenStack>
+                    </RadzenStepsItem>
+                    <RadzenStepsItem Text="Confirmation">
+                        <RadzenCard Style="background-color: var(--rz-danger-light); border-left: 4px solid var(--rz-danger);">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+                                <RadzenIcon Icon="info" Style="color: var(--rz-black); font-size: 2rem;" />
+                                <RadzenStack Gap="0.5rem">
+                                    <RadzenText TextStyle="TextStyle.H6" Text="Confirmation finale" />
+                                    <RadzenText Text="Êtes-vous sûr de vouloir supprimer cette catégorie ? Cette action est irréversible." />
+                                </RadzenStack>
+                            </RadzenStack>
+                        </RadzenCard>
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
+                                     Style="margin-top: 1rem;">
+                            <RadzenButton Text="Confirmer la suppression" ButtonStyle="ButtonStyle.Danger"
+                                          Click="async () => { ds.Close(true); await ConfirmDelete(); }" />
+                            <RadzenButton Text="Annuler" Variant="Variant.Outlined"
+                                          Click="() => ds.Close(false)" ButtonStyle="ButtonStyle.Light" />
+                        </RadzenStack>
+                    </RadzenStepsItem>
+                </Steps>
+            </RadzenSteps>
+        </RadzenStack>
+        , new DialogOptions() { Width = "600px", Height = "auto", CloseDialogOnOverlayClick = false });
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (categorieToDelete == null) return;
+
+        bool success = await categorieService.DeleteCategorieAsync(categorieToDelete.IdCategorie);
+        if (success)
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Succès",
+                Detail = "Catégorie supprimée avec succès",
+                Duration = 4000
+            });
+            await LoadCategories();
+        }
+        else
+        {
+            notificationService.Notify(new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Erreur",
+                Detail = "Erreur lors de la suppression de la catégorie",
+                Duration = 4000
+            });
+        }
+        categorieToDelete = null;
+    }
+
+    private void OnStepChange(int index)
+    {
+        confirmationStep = index;
+    }
+}

@@ -22,6 +22,7 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository) : 
 
     public async Task<PagedResult<JoursFeryDto>> GetJoursFeriesAsync(PaginatedQueryParameters queryParameters)
     {
+        ArgumentNullException.ThrowIfNull(queryParameters);
         var joursFeries = _joursFeriesRepository.GetQueryable()
             .Where(p =>
                     string.IsNullOrEmpty(queryParameters.Search) ||
@@ -38,10 +39,10 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository) : 
 
         if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))
         {
-            query = queryParameters.OrderBy.ToLower() switch
+            query = queryParameters.OrderBy.ToUpper() switch
             {
-                "datejourferie asc" => query.OrderBy(x => x.DateJourFerie),
-                "datejourferie desc" => query.OrderByDescending(x => x.DateJourFerie),
+                "DATEJOURFERIE ASC" => query.OrderBy(x => x.DateJourFerie),
+                "DATEJOURFERIE DESC" => query.OrderByDescending(x => x.DateJourFerie),
                 _ => query.OrderBy(x => x.DateJourFerie)
             };
         }
@@ -78,6 +79,7 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository) : 
 
     public async Task<bool> CreateJoursFeryAsync(CreateJoursFeryDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var existingJoursFery = await _joursFeriesRepository.GetQueryable()
             .FirstOrDefaultAsync(jf => jf.DateJourFerie == dto.DateJourFerie);
 
@@ -104,6 +106,7 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository) : 
 
     public async Task<bool> UpdateJoursFeryAsync(UpdateJoursFeryDto dto)
     {
+        ArgumentNullException.ThrowIfNull(dto);
         var joursFery = await _joursFeriesRepository.GetQueryable()
             .FirstOrDefaultAsync(jf => jf.DateJourFerie == dto.DateJourFerie);
 

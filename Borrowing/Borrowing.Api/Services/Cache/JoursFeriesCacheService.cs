@@ -21,6 +21,7 @@ public class JoursFeriesCacheService
 
     public JoursFeriesCacheService(IMemoryCache cache)
     {
+        ArgumentNullException.ThrowIfNull(cache);
         _cache = cache;
         foreach (var lang in SupportedLanguages)
             _tokens[lang] = new CancellationTokenSource();
@@ -28,11 +29,16 @@ public class JoursFeriesCacheService
 
     private static string Key(string lang) => $"JoursFeries_Enriched_{lang}";
 
-    public bool TryGet<T>(string lang, out T? value) =>
-        _cache.TryGetValue(Key(lang), out value);
+    public bool TryGet<T>(string lang, out T? value)
+    {
+        ArgumentNullException.ThrowIfNull(lang);
+        return _cache.TryGetValue(Key(lang), out value);
+    }
 
     public void Set<T>(string lang, T value)
     {
+        ArgumentNullException.ThrowIfNull(lang);
+        ArgumentNullException.ThrowIfNull(value);
         var options = new MemoryCacheEntryOptions()
             .AddExpirationToken(new CancellationChangeToken(_tokens[lang].Token));
         _cache.Set(Key(lang), value, options);

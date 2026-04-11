@@ -13,7 +13,7 @@ public interface IPenaliteAdherentService
     Task<List<RelanceRetardDto>> GetRelancesRetard();
 }
 
-public class PenaltieAdherentService : IPenaliteAdherentService
+internal class PenaltieAdherentService : IPenaliteAdherentService
 {
     private readonly IPenaliteRepository _penaliteRepository;
     private readonly IPenaliteAdherentRepository _penaliteAdherentRepository;
@@ -35,6 +35,7 @@ public class PenaltieAdherentService : IPenaliteAdherentService
     // Sample method to demonstrate repository usage
     public async Task<IEnumerable<PenaliteAdherent>> GetPenaltiesForAdherentAsync(string adherentId)
     {
+        ArgumentNullException.ThrowIfNull(adherentId);
         // Example: retrieve penalties (Needs actual predicate if FindAsync is implemented)
         var penalties = await _penaliteAdherentRepository.FindAsync(p => p.IdAdherent == adherentId);
         return penalties;
@@ -42,6 +43,7 @@ public class PenaltieAdherentService : IPenaliteAdherentService
 
     public async Task<bool> DeletePenaliteAsync(string adherentId, DateTime datePenalite)
     {
+        ArgumentNullException.ThrowIfNull(adherentId);
         var penalite = await _penaliteAdherentRepository.GetQueryable()
                         .Where(p => p.IdAdherent == adherentId && p.DatePenalite.Date == datePenalite.Date)
                         .FirstOrDefaultAsync();
