@@ -8,7 +8,7 @@ public class CategorieSeeder : ISeeder
     public int Order => 1;
 
     public async Task SeedAsync(LibraryDbContext context)
-    {
+    {  ArgumentNullException.ThrowIfNull(context);
         var count = await context.Database
             .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.CATEGORIE")
             .FirstOrDefaultAsync();
@@ -23,7 +23,7 @@ public class CategorieSeeder : ISeeder
             new() { IdCategorie = "EXT", LibelleCategorie = "Externe", NombreDocument = 2, DureePret = 7 }
         };
 
-        await context.Categories.AddRangeAsync(categories);
-        await context.SaveChangesAsync();
+        await context.Categories.AddRangeAsync(categories).ConfigureAwait(false);
+        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 }

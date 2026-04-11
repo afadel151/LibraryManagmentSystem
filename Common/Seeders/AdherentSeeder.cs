@@ -9,7 +9,7 @@ public class AdherentSeeder : ISeeder
     public int Order => 2;
 
     public async Task SeedAsync(LibraryDbContext context)
-    {
+    {  ArgumentNullException.ThrowIfNull(context);
         var count = await context.Database
             .SqlQueryRaw<int>("SELECT COUNT(*) AS \"Value\" FROM MATAOUI.ADHERENT")
             .FirstOrDefaultAsync();
