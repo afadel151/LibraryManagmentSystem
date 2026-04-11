@@ -2,7 +2,7 @@ using Borrowing.Api.Repositories;
 using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Requests.Reservation;
 using Microsoft.EntityFrameworkCore;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 
 namespace Borrowing.Api.Services;
 

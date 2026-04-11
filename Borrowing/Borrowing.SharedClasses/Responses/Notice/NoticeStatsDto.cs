@@ -1,5 +1,5 @@
 namespace Borrowing.SharedClasses.Responses.Notice;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 public class NoticeStatsDto
 {
     

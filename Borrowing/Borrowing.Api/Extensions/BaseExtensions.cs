@@ -1,6 +1,6 @@
 
 using Borrowing.Api.Repositories;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 
 namespace Borrowing.Api.Extensions;
 public static class BaseExtensions

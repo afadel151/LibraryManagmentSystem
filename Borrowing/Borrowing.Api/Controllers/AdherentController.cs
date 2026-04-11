@@ -4,7 +4,7 @@ using Borrowing.SharedClasses.Requests.Pret;
 using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Common;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace Borrowing.Api.Controllers;
 

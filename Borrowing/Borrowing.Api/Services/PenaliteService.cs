@@ -1,6 +1,6 @@
 using Borrowing.Api.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Requests.Penalite;
 

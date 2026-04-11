@@ -1,5 +1,5 @@
 using Borrowing.Api.Repositories;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Requests.JoursFery;

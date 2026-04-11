@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 
-namespace Shared.Models;
+namespace LibraryManagement.Shared.Models;
 
 public partial class Reservation
 {

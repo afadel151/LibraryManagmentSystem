@@ -1,5 +1,5 @@
 using Shared.Data;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 
 namespace Borrowing.Api.Repositories;
 public interface IPositionRepository : IBaseRepository<Position>

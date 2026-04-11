@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 
 namespace Shared.Data;
 

@@ -1,6 +1,6 @@
 namespace Borrowing.SharedClasses.Common;
 
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 public class NoticeDto
 {
     public decimal IdNotice { get; set; } 

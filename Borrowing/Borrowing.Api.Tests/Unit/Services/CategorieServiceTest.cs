@@ -2,7 +2,7 @@ using Borrowing.Api.Repositories;
 using Borrowing.Api.Services;
 using FluentAssertions;
 using Moq;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 using Borrowing.Api.Tests.Helpers;
 namespace Borrowing.Api.Tests.Unit.Services;
 

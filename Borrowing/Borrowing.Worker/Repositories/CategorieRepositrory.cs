@@ -1,5 +1,5 @@
 using Shared.Data;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 
 namespace Borrowing.Worker.Repositories;
 public interface ICategorieRepository : IBaseRepository<Categorie>

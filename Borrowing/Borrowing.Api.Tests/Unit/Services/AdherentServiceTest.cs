@@ -3,7 +3,7 @@ using Borrowing.Api.Services;
 using Borrowing.Api.Tests.Helpers;
 using Borrowing.SharedClasses.Common;
 using Moq;
-using Shared.Models;
+using LibraryManagement.Shared.Models;
 using System.Linq.Expressions;
 namespace Borrowing.Api.Tests.Unit.Services;
 
