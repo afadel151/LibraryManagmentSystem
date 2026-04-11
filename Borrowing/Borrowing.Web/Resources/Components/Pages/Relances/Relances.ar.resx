@@ -61,4 +61,25 @@
   <data name="Reminders" xml:space="preserve">
     <value>التذكيرات</value>
   </data>
+  <data name="MemberId" xml:space="preserve">
+    <value>معرف العضو</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>اللقب</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>المنصب</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>الفئة</value>
+  </data>
+  <data name="CurrentLoans" xml:space="preserve">
+    <value>القروض الحالية</value>
+  </data>
+  <data name="OngoingPenalties" xml:space="preserve">
+    <value>العقوبات الجارية</value>
+  </data>
 </root>

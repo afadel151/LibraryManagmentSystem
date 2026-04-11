@@ -61,4 +61,25 @@
   <data name="Reminders" xml:space="preserve">
     <value>Relances</value>
   </data>
+  <data name="MemberId" xml:space="preserve">
+    <value>ID Adhérent</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Prénom</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Catégorie</value>
+  </data>
+  <data name="CurrentLoans" xml:space="preserve">
+    <value>Prêts en cours</value>
+  </data>
+  <data name="OngoingPenalties" xml:space="preserve">
+    <value>Pénalités en cours</value>
+  </data>
 </root>
