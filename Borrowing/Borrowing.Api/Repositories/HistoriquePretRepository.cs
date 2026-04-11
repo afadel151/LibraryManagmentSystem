@@ -1,5 +1,5 @@
 using Common.Models;
-
+using Common.Data;
 namespace Borrowing.Api.Repositories;
 
 public interface IHistoriquePretRepository : IBaseRepository<HistoriquePret>

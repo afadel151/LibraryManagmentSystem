@@ -1,5 +1,5 @@
 @page "/adherents/{Id}"
-@using Borrowing.SharedClasses.Common
+@using Borrowing.SharedClasses.Models
 @using Borrowing.SharedClasses.Requests.Adherent
 @using Borrowing.SharedClasses.Responses.Adherent
 @using Borrowing.SharedClasses.Responses.Categorie
@@ -143,7 +143,7 @@ else
                                           Sortable="false" TextAlign="TextAlign.Center">
                         <Template Context="penalite">
                             <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.Small"
-                                          Click="@(args => DeletePenalite((Shared.Models.PenaliteAdherent)penalite))"
+                                          Click="@(args => DeletePenalite((Common.Models.PenaliteAdherent)penalite))"
                                           @onclick:stopPropagation="true" />
                         </Template>
                     </RadzenDataGridColumn>
@@ -369,7 +369,7 @@ $"Penalites_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
 $"Reservations_{adherent.Adherent.IdAdherent}_{DateTime.Now:yyyyMMdd_HHmmss}");
     }
 
-    private async Task DeletePenalite(Shared.Models.PenaliteAdherent penalite)
+    private async Task DeletePenalite(Common.Models.PenaliteAdherent penalite)
     {
         var confirm = await DialogService.Confirm("Êtes-vous sûr de vouloir supprimer cette pénalité ?", "Confirmation", new
 ConfirmOptions()

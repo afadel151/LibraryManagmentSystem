@@ -1,4 +1,5 @@
 using Borrowing.Api.Controllers;
+using Common.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;

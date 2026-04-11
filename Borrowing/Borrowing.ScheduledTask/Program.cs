@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Borrowing.ScheduledTask.Extensions;
 using Borrowing.ScheduledTask.Services;
 using Microsoft.Extensions.Logging;
+using Common.Data;
 
 var config = new ConfigurationBuilder()
     .SetBasePath(AppContext.BaseDirectory)
