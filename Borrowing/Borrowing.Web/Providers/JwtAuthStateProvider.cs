@@ -44,7 +44,7 @@ public class JwtAuthStateProvider : AuthenticationStateProvider
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
             return jwt.ValidTo < DateTime.UtcNow;
         }
-        catch { return true; }
+        catch (Exception ex) { return true; }
     }
 
     private IEnumerable<Claim> ParseClaimsFromJwt(string token)

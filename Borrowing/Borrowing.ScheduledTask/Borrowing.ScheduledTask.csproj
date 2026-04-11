@@ -1,7 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+     
+    <NoWarn>CA1711;CA2227;CA2007:CA1823</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common.csproj" />
+
   </ItemGroup>
 
   <ItemGroup>

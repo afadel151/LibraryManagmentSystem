@@ -2,10 +2,10 @@ using Common.Models;
 using Common.Data;
 namespace Borrowing.ScheduledTask.Repositories;
 
-public interface IPenaliteRepository : IBaseRepository<Penalite>
+internal interface IPenaliteRepository : IBaseRepository<Penalite>
 {
 }
 
-public class PenaliteRepository(LibraryDbContext context) : BaseRepository<Penalite>(context), IPenaliteRepository
+internal class PenaliteRepository(LibraryDbContext context) : BaseRepository<Penalite>(context), IPenaliteRepository
 {
 }

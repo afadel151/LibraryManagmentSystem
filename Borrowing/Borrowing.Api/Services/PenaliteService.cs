@@ -111,7 +111,7 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
             await _penaliteRepository.AddAsync(penalite);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
             return false;
         }
@@ -132,7 +132,7 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
             await _penaliteRepository.UpdateAsync(penalite);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
             return false;
         }
@@ -150,7 +150,7 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
             await _penaliteRepository.DeleteAsync(penalite);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
             return false;
         }

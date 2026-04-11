@@ -8,11 +8,11 @@ using Common.Models;
 
 namespace Borrowing.ScheduledTask.Services;
 
-public interface IScopedPretService
+internal interface IScopedPretService
 {
     Task Run();
 }
-public sealed class ScopedPretService(
+internal sealed class ScopedPretService(
     IPretRepository pretRepository,
     IHistoriquePenaliteAdherentRepository historiquePretRepository,
     IExemplairesRepository exemplairesRepository,
@@ -70,7 +70,7 @@ public sealed class ScopedPretService(
                             _logger.LogInformation("Adherent penalise ....");
 
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             _logger.LogError("Erreur lors de mise a jours d'un adherent en etat Bloque");
                         }
@@ -90,7 +90,7 @@ public sealed class ScopedPretService(
                             await _adherentRepository.UpdateAsync(adherent);
                             _logger.LogInformation("Adherent penalise ....");
                         }
-                        catch
+                        catch (Exception ex)
                         {
                             _logger.LogError("Erreur lors de penalisation de l'adherent");
                         }
@@ -117,13 +117,13 @@ public sealed class ScopedPretService(
             _logger.LogInformation("N1=N2 ....");
             //----- Supprimer ( 99/999, ????= id_exemplaire ) de la table pret
             try { await _pretRepository.DeleteAsync(pret); }
-            catch
+            catch (Exception ex)
             {
                 _logger.LogError("Error deleting Pret 1");
             }
             //---------- selectionner le premier qui a reserv�
             try { await _reservationRepository.DeleteAsync(firstreservator); }
-            catch
+            catch (Exception ex)
             {
                 _logger.LogError("Error deleting Reservation 2");
             }
@@ -133,7 +133,7 @@ public sealed class ScopedPretService(
             {
                 await _exemplairesRepository.UpdateAsync(exemplaire);
             }
-            catch
+            catch (Exception ex)
             {
                 _logger.LogError("error editing exemplaire 3");
             }
@@ -142,7 +142,7 @@ public sealed class ScopedPretService(
         {
             //---------- selectionner le premier qui a reserv�
             try { await _reservationRepository.DeleteAsync(firstreservator); }
-            catch
+            catch (Exception ex)
             {
                 _logger.LogError("Error deleting Reservation 4");
             }
@@ -160,7 +160,7 @@ public sealed class ScopedPretService(
             pret.DatePret = DateTime.Now.Date;
             try
             { await _pretRepository.UpdateAsync(pret); }
-            catch
+            catch (Exception ex)
             {
                 _logger.LogError("Error updating pret 5");
             }

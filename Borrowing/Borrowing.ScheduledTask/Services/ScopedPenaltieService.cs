@@ -3,11 +3,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Borrowing.ScheduledTask.Services;
 
-public interface IScopedPenaltieService
+internal interface IScopedPenaltieService
 {
 }
 
-public sealed class ScopedPenaltieService(
+internal sealed class ScopedPenaltieService(
     IPenaliteRepository penaliteRepository,
     ICategorieRepository categorieRepository,
     IPenaliteAdherentRepository penaliteAdherentRepository,

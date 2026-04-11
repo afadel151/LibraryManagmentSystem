@@ -1,10 +1,10 @@
 using Common.Models;
 
 namespace Borrowing.Worker.Repositories;
-public interface ICategorieRepository : IBaseRepository<Categorie>
+internal interface ICategorieRepository : IBaseRepository<Categorie>
 {
 }
 
-public class CategorieRepository(LibraryDbContext context) : BaseRepository<Categorie>(context), ICategorieRepository
+internal class CategorieRepository(LibraryDbContext context) : BaseRepository<Categorie>(context), ICategorieRepository
 {
 }

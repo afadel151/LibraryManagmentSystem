@@ -2,9 +2,9 @@ using Common.Models;
 using Common.Data;
 namespace Borrowing.ScheduledTask.Repositories;
 
-public interface IPretRepository : IBaseRepository<Pret>
+internal interface IPretRepository : IBaseRepository<Pret>
 {
 }
-public class PretRepository(LibraryDbContext context) : BaseRepository<Pret>(context), IPretRepository
+internal class PretRepository(LibraryDbContext context) : BaseRepository<Pret>(context), IPretRepository
 {
 }

@@ -191,7 +191,7 @@ public class AdherentService(
             await _adherentRepository.AddAsync(adherent);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
             return false; // Typically duplicate key exception or generic DB error
         }
@@ -215,7 +215,7 @@ public class AdherentService(
             await _adherentRepository.UpdateAsync(adherent);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
             return false;
         }

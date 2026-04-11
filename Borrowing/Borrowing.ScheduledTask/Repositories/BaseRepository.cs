@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Common.Data;
 namespace Borrowing.ScheduledTask.Repositories;
-public interface IBaseRepository<T> where T : class
+internal interface IBaseRepository<T> where T : class
 {
     Task<IEnumerable<T>> GetAllAsync();
     Task<T?> GetByIdAsync(params object[] keyValues);
@@ -13,7 +13,7 @@ public interface IBaseRepository<T> where T : class
     IQueryable<T> GetQueryable();
     IQueryable<T> GetQueryable(params Expression<Func<T, object>>[] includes);
 }
-public class BaseRepository<T>(LibraryDbContext context) where T : class
+internal class BaseRepository<T>(LibraryDbContext context) where T : class
 {
     protected readonly LibraryDbContext _context = context;
     protected readonly DbSet<T> _dbSet = context.Set<T>();

@@ -96,7 +96,7 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository) : 
             await _joursFeriesRepository.AddAsync(joursFery);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
             return false;
         }
@@ -127,7 +127,7 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository) : 
             await _joursFeriesRepository.DeleteAsync(joursFery);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
             return false;
         }

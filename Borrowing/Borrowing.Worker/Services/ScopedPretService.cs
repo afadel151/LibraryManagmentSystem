@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Common.Models;
 
 namespace Borrowing.Worker.Services;
-public interface IScopedPretService
+internal interface IScopedPretService
 {
     Task Run();
 }
-public sealed class ScopedPretService(
+internal sealed class ScopedPretService(
     IPretRepository pretRepository,
     IHistoriquePenaliteAdherentRepository historiquePretRepository,
     IExemplairesRepository exemplairesRepository,
@@ -66,7 +66,7 @@ public sealed class ScopedPretService(
                          _logger.LogInformation("Adherent penalise ....");
 
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         _logger.LogError("Erreur lors de mise a jours d'un adherent en etat Bloque");
                     }
@@ -86,7 +86,7 @@ public sealed class ScopedPretService(
                         await _adherentRepository.UpdateAsync(adherent);
                          _logger.LogInformation("Adherent penalise ....");
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         _logger.LogError("Erreur lors de penalisation de l'adherent");
                     }
