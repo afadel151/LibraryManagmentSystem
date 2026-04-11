@@ -37,16 +37,16 @@ namespace Borrowing.Api.Controllers
         {
             // Validate user exists in YOUR DB first (same as GetUserByCompteUtilisateur)
             var utilisateur = await _db.Utilisateurs
-                .FirstOrDefaultAsync(u => u.Compte == compte);
+                .FirstOrDefaultAsync(u => u.Compte == compte).ConfigureAwait(false);
 
             var admin = await _db.Admins
-                .FirstOrDefaultAsync(a => a.IdAdmin == compte);
+                .FirstOrDefaultAsync(a => a.IdAdmin == compte).ConfigureAwait(false);
 
             if (utilisateur == null && admin == null)
                 return NotFound("Compte introuvable dans la base de donnees.");
 
             // Ask auth server for a requestId
-            var handler = new HttpClientHandler
+            using var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
             };
@@ -56,9 +56,9 @@ namespace Borrowing.Api.Controllers
             var authAddress = $"{AuthServer}RequestAuth?idApp={IdApp}&key={KeyApp}" +
                               $"&compteUtilisateur={compte}&ipClient={ipClient}";
             Console.WriteLine("#### authAdress" + authAddress);
-            var response = await http.GetAsync(authAddress);
+            var response = await http.GetAsync(authAddress).ConfigureAwait(false);
             Console.WriteLine("#### authAdress response" + response);
-            var idRequest = await response.Content.ReadAsStringAsync();
+            var idRequest = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(idRequest))
                 return StatusCode(502, "Erreur de communication avec le serveur d'authentification.");
@@ -74,7 +74,7 @@ namespace Borrowing.Api.Controllers
         public async Task<IActionResult> ResponseAuth([FromQuery] string AuthToken)
         {
             // Verify token with auth server
-            var handler = new HttpClientHandler
+            using var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
             };
@@ -83,12 +83,12 @@ namespace Borrowing.Api.Controllers
             using (var http = new HttpClient(handler))
             {
                 var checkUrl = $"{AuthServer}CheckAuthToken?idApp={IdApp}&token={AuthToken}";
-                var response = await http.GetAsync(checkUrl);
+                var response = await http.GetAsync(checkUrl).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                     return Redirect($"{GetBlazorBaseUrl()}/login?error=Token+invalide");
 
-                compte = await response.Content.ReadAsStringAsync();
+                compte = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 Console.WriteLine($"[ResponseAuth] compte from token: '{compte}'");
             }
 
@@ -99,7 +99,7 @@ namespace Borrowing.Api.Controllers
             string role, nom;
 
             var admin = await _db.Admins
-                .FirstOrDefaultAsync(a => a.IdAdmin == compte);
+                .FirstOrDefaultAsync(a => a.IdAdmin == compte).ConfigureAwait(false);
             Console.WriteLine($"[ResponseAuth] admin found: {admin != null}");
             if (admin != null)
             {
@@ -109,7 +109,7 @@ namespace Borrowing.Api.Controllers
             else
             {
                 var utilisateur = await _db.Utilisateurs
-                    .FirstOrDefaultAsync(u => u.Compte == compte);
+                    .FirstOrDefaultAsync(u => u.Compte == compte).ConfigureAwait(false);
                 Console.WriteLine($"[ResponseAuth] utilisateur found: {utilisateur != null}");
                 if (utilisateur == null)
                     return Redirect($"{GetBlazorBaseUrl()}/login?error=Compte+non+autorise");
@@ -139,7 +139,7 @@ namespace Borrowing.Api.Controllers
         public async Task<IActionResult> Logout([FromQuery] string compte,
                                                 [FromQuery] string ipClient)
         {
-            var handler = new HttpClientHandler
+            using var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
             };

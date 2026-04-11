@@ -66,7 +66,7 @@ internal sealed class ScopedPretService(
                         try
                         {
                             adherent.EtatAdherent = 2;
-                            await _adherentRepository.UpdateAsync(adherent);
+                            await _adherentRepository.UpdateAsync(adherent).ConfigureAwait(false);
                             _logger.LogInformation("Adherent penalise ....");
 
                         }

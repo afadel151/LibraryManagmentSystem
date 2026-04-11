@@ -29,7 +29,7 @@ try
     using var scope = provider.CreateScope();
     var pretsChecker = scope.ServiceProvider.GetRequiredService<IScopedPretService>();
     var penaltyCHekcer = scope.ServiceProvider.GetRequiredService<IScopedPenaltieService>();
-    await pretsChecker.Run();
+    await pretsChecker.Run().ConfigureAwait(false);
     Console.WriteLine($"[{DateTime.Now}] Loan check completed successfully.");
 }
 catch (Exception ex)
