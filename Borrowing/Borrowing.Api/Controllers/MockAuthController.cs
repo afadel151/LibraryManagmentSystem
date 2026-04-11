@@ -117,11 +117,13 @@ public class MockAuthController : Controller
     [HttpGet]
     public IActionResult CheckAuthToken(string idApp, string token)
     {
+        ArgumentNullException.ThrowIfNull(token); 
+        ArgumentNullException.ThrowIfNull(idApp); 
         // In reality, validate token signature/expiration
-        if (token.StartsWith("MOCK_TOKEN_"))
+        if (token.StartsWith("MOCK_TOKEN_", StringComparison.OrdinalIgnoreCase))
         {
             // Extract username (in real JWT, parse claims)
-            string compteUtilisateur = token.Replace("MOCK_TOKEN_", "").Split('_')[0];
+            string compteUtilisateur = token.Replace("MOCK_TOKEN_", "", StringComparison.OrdinalIgnoreCase).Split('_')[0];
             return Ok(compteUtilisateur);
         }
         return BadRequest("Invalid token");

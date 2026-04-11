@@ -106,7 +106,7 @@ internal sealed class ScopedPretService(
     public async Task HandleReservation(Pret pret, List<Pret> prets) // done
     {
         bool mail_connected = false;
-        int bloquedCopiesCount = prets.Count(p => p.IdExemplaire.StartsWith(pret.Exemplaire.Cote + "/") && p.IdAdherent == "99/999");//N1
+        int bloquedCopiesCount = prets.Count(p => p.IdExemplaire.StartsWith(pret.Exemplaire.Cote + "/", StringComparison.OrdinalIgnoreCase) && p.IdAdherent == "99/999");//N1
         var coteReservations = await _reservationRepository.GetQueryable()
                                         .Where(r => r.Cote == pret.Exemplaire.Cote)
                                         .OrderBy(r => r.HeureReservation)

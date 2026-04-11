@@ -10,5 +10,5 @@ public class NoticeDto
     public int ExemplaireDispo { get; set; }
     public int ExemplaireEnPret { get; set; }
     public int Reservations { get; set; }
-    public int CopiesBloques {get;set;} = 0;
+    public int CopiesBloques {get;set;}
 }

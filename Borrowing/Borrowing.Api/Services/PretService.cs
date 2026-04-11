@@ -387,7 +387,7 @@ public class PretService(
                 .CountAsync(r => r.Cote == cote);
 
             int nbrPretReservations = await _pretRepository.GetQueryable()
-                .CountAsync(p => p.IdAdherent == "99/999" && p.IdExemplaire.StartsWith(cote + "/"));
+                .CountAsync(p => p.IdAdherent == "99/999" && p.IdExemplaire.StartsWith(cote + "/", StringComparison.OrdinalIgnoreCase));
 
             if (nbrReservations > 0 && nbrPretReservations < nbrReservations)
             {
