@@ -17,122 +17,122 @@ public partial class LibraryDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Adherent> Adherents { get; set; }
+    public virtual DbSet<Adherent> Adherents { get; set; }  = null!;
 
-    public virtual DbSet<Admin> Admins { get; set; }
+    public virtual DbSet<Admin> Admins { get; set; }  = null!;
 
-    public virtual DbSet<Aquisition> Aquisitions { get; set; }
+    public virtual DbSet<Aquisition> Aquisitions { get; set; }  = null!;
 
-    public virtual DbSet<Auteur> Auteurs { get; set; }
+    public virtual DbSet<Auteur> Auteurs { get; set; }  = null!;
 
-    public virtual DbSet<AuteurSecondaire> AuteurSecondaires { get; set; }
+    public virtual DbSet<AuteurSecondaire> AuteurSecondaires { get; set; }  = null!;
 
-    public virtual DbSet<Categorie> Categories { get; set; }
+    public virtual DbSet<Categorie> Categories { get; set; }  = null!;
 
-    public virtual DbSet<CoAuteur> CoAuteurs { get; set; }
-    public virtual DbSet<CollectionModel> Collections { get; set; }
+    public virtual DbSet<CoAuteur> CoAuteurs { get; set; }  = null!;
+    public virtual DbSet<CollectionModel> Collections { get; set; }  = null!;
 
-    public virtual DbSet<Commande> Commandes { get; set; }
+    public virtual DbSet<Commande> Commandes { get; set; }  = null!;
 
-    public virtual DbSet<CopieHistoPenaliteAdherent> CopieHistoPenaliteAdherents { get; set; }
+    public virtual DbSet<CopieHistoPenaliteAdherent> CopieHistoPenaliteAdherents { get; set; }  = null!;
 
-    public virtual DbSet<Diplome> Diplomes { get; set; }
+    public virtual DbSet<Diplome> Diplomes { get; set; }  = null!;
 
-    public virtual DbSet<Discipline> Disciplines { get; set; }
+    public virtual DbSet<Discipline> Disciplines { get; set; }  = null!;
 
-    public virtual DbSet<Editeur> Editeurs { get; set; }
+    public virtual DbSet<Editeur> Editeurs { get; set; }  = null!;
 
-    public virtual DbSet<Etablissement> Etablissements { get; set; }
+    public virtual DbSet<Etablissement> Etablissements { get; set; }  = null!;
 
-    public virtual DbSet<EtatAdherent> EtatAdherents { get; set; }
+    public virtual DbSet<EtatAdherent> EtatAdherents { get; set; }  = null!;
 
-    public virtual DbSet<EtatExemplaire> EtatExemplaires { get; set; }
+    public virtual DbSet<EtatExemplaire> EtatExemplaires { get; set; }  = null!;
 
-    public virtual DbSet<Exemplaire> Exemplaires { get; set; }
+    public virtual DbSet<Exemplaire> Exemplaires { get; set; }  = null!;
 
-    public virtual DbSet<Fonction> Fonctions { get; set; }
+    public virtual DbSet<Fonction> Fonctions { get; set; }  = null!;
 
-    public virtual DbSet<Fournisseur> Fournisseurs { get; set; }
+    public virtual DbSet<Fournisseur> Fournisseurs { get; set; }  = null!;
 
-    public virtual DbSet<HistoriqueAuth> HistoriqueAuths { get; set; }
+    public virtual DbSet<HistoriqueAuth> HistoriqueAuths { get; set; }  = null!;
 
-    public virtual DbSet<HistoriquePenaliteAdherent> HistoriquePenaliteAdherents { get; set; }
+    public virtual DbSet<HistoriquePenaliteAdherent> HistoriquePenaliteAdherents { get; set; }  = null!;
 
-    public virtual DbSet<HistoriquePret> HistoriquePrets { get; set; }
+    public virtual DbSet<HistoriquePret> HistoriquePrets { get; set; }  = null!;
 
-    public virtual DbSet<JoursFery> JoursFeries { get; set; }
+    public virtual DbSet<JoursFery> JoursFeries { get; set; }  = null!;
 
-    public virtual DbSet<Langue> Langues { get; set; }
+    public virtual DbSet<Langue> Langues { get; set; }  = null!;
 
-    public virtual DbSet<MentionEdition> MentionEditions { get; set; }
-    public virtual DbSet<MentionResCollection> MentionResCollections { get; set; }
-    public virtual DbSet<MentionResponsabilite> MentionResponsabilites { get; set; }
+    public virtual DbSet<MentionEdition> MentionEditions { get; set; }  = null!;
+    public virtual DbSet<MentionResCollection> MentionResCollections { get; set; }  = null!;
+    public virtual DbSet<MentionResponsabilite> MentionResponsabilites { get; set; }  = null!;
 
-    public virtual DbSet<MotsCle> MotsCles { get; set; }
+    public virtual DbSet<MotsCle> MotsCles { get; set; }  = null!;
 
-    public virtual DbSet<MotsVide> MotsVides { get; set; }
+    public virtual DbSet<MotsVide> MotsVides { get; set; }  = null!;
 
-    public virtual DbSet<Newacqui> Newacquis { get; set; }
+    public virtual DbSet<Newacqui> Newacquis { get; set; }  = null!;
 
-    public virtual DbSet<Notice> Notices { get; set; }
+    public virtual DbSet<Notice> Notices { get; set; }  = null!;
 
-    public virtual DbSet<NoticeCollection> NoticeCollections { get; set; }
+    public virtual DbSet<NoticeCollection> NoticeCollections { get; set; }  = null!;
 
-    public virtual DbSet<NoticeDipDisEtab> NoticeDipDisEtabs { get; set; }
+    public virtual DbSet<NoticeDipDisEtab> NoticeDipDisEtabs { get; set; }  = null!;
 
-    public virtual DbSet<NoticeEdition> NoticeEditions { get; set; }
-
-
-
-    public virtual DbSet<NoticeMentionEdition> NoticeMentionEditions { get; set; }
-
-    public virtual DbSet<NoticeTerme> NoticeTermes { get; set; }
-    public virtual DbSet<NoticeLangue> NoticeLangues { get; set; }
-
-    public virtual DbSet<NoticeTermeExact> NoticeTermeExacts { get; set; }
-
-    public virtual DbSet<NoticeTheme> NoticeThemes { get; set; }
-
-    public virtual DbSet<Operation> Operations { get; set; }
-
-    public virtual DbSet<ParametresCatlibPret> ParametresCatlibPrets { get; set; }
-
-    public virtual DbSet<Pay> Pays { get; set; }
-
-    public virtual DbSet<PaysPublication> PaysPublications { get; set; }
-    public virtual DbSet<Penalite> Penalites { get; set; }
-
-    public virtual DbSet<PenaliteAdherent> PenaliteAdherents { get; set; }
-
-    public virtual DbSet<PenaliteAdherentTemp> PenaliteAdherentTemps { get; set; }
-
-    public virtual DbSet<Periodicite> Periodicites { get; set; }
-
-    public virtual DbSet<Position> Positions { get; set; }
-
-    public virtual DbSet<Pret> Prets { get; set; }
-
-    public virtual DbSet<Reservation> Reservations { get; set; }
-
-    public virtual DbSet<Selection> Selections { get; set; }
-    public virtual DbSet<SelectionNotice> SelectionNotices { get; set; }
+    public virtual DbSet<NoticeEdition> NoticeEditions { get; set; }  = null!;
 
 
-    public virtual DbSet<SourceArticle> SourceArticles { get; set; }
 
-    public virtual DbSet<TableCdd> TableCdds { get; set; }
+    public virtual DbSet<NoticeMentionEdition> NoticeMentionEditions { get; set; }  = null!;
 
-    public virtual DbSet<Terme> Termes { get; set; }
+    public virtual DbSet<NoticeTerme> NoticeTermes { get; set; }  = null!;
+    public virtual DbSet<NoticeLangue> NoticeLangues { get; set; }  = null!;
 
-    public virtual DbSet<TermeExact> TermeExacts { get; set; }
+    public virtual DbSet<NoticeTermeExact> NoticeTermeExacts { get; set; }  = null!;
 
-    public virtual DbSet<Theme> Themes { get; set; }
+    public virtual DbSet<NoticeTheme> NoticeThemes { get; set; }  = null!;
 
-    public virtual DbSet<TypeNotice> TypeNotices { get; set; }
+    public virtual DbSet<Operation> Operations { get; set; }  = null!;
 
-    public virtual DbSet<Utilisateur> Utilisateurs { get; set; }
+    public virtual DbSet<ParametresCatlibPret> ParametresCatlibPrets { get; set; }  = null!;
 
-    public virtual DbSet<Ville> Villes { get; set; }
+    public virtual DbSet<Pay> Pays { get; set; }  = null!;
+
+    public virtual DbSet<PaysPublication> PaysPublications { get; set; }  = null!;
+    public virtual DbSet<Penalite> Penalites { get; set; }  = null!;
+
+    public virtual DbSet<PenaliteAdherent> PenaliteAdherents { get; set; }  = null!;
+
+    public virtual DbSet<PenaliteAdherentTemp> PenaliteAdherentTemps { get; set; }  = null!;
+
+    public virtual DbSet<Periodicite> Periodicites { get; set; }  = null!;
+
+    public virtual DbSet<Position> Positions { get; set; }  = null!;
+
+    public virtual DbSet<Pret> Prets { get; set; }  = null!;
+
+    public virtual DbSet<Reservation> Reservations { get; set; }  = null!;
+
+    public virtual DbSet<Selection> Selections { get; set; }  = null!;
+    public virtual DbSet<SelectionNotice> SelectionNotices { get; set; }  = null!;
+
+
+    public virtual DbSet<SourceArticle> SourceArticles { get; set; }  = null!;
+
+    public virtual DbSet<TableCdd> TableCdds { get; set; }  = null!;
+
+    public virtual DbSet<Terme> Termes { get; set; }  = null!;
+
+    public virtual DbSet<TermeExact> TermeExacts { get; set; }  = null!;
+
+    public virtual DbSet<Theme> Themes { get; set; }  = null!;
+
+    public virtual DbSet<TypeNotice> TypeNotices { get; set; }  = null!;
+
+    public virtual DbSet<Utilisateur> Utilisateurs { get; set; }  = null!;
+
+    public virtual DbSet<Ville> Villes { get; set; }  = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         // #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -140,6 +140,7 @@ public partial class LibraryDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        ArgumentNullException.ThrowIfNull(modelBuilder);
         modelBuilder
             .HasDefaultSchema("MATAOUI")
             .UseCollation("USING_NLS_COMP");

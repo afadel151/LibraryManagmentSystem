@@ -9,5 +9,5 @@ public partial class Etablissement
 
     public string? Etablissement1 { get; set; }
 
-    public virtual ICollection<NoticeDipDisEtab> NoticeDipDisEtabs { get; } = [];
+    public virtual ICollection<NoticeDipDisEtab> NoticeDipDisEtabs { get; set; } = [];
 }

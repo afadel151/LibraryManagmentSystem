@@ -17,5 +17,5 @@ public partial class SourceArticle
 
     public string? IssnRevue { get; set; }
 
-    public virtual ICollection<Notice> Notices { get; } = [];
+    public virtual ICollection<Notice> Notices { get; set; } = [];
 }

@@ -8,6 +8,6 @@ public partial class TermeExact
     public decimal IdTermeExact { get; set; }
 
     public string? TermeExact1 { get; set; }
-    public virtual ICollection<Notice> Notices { get; } = [];
+    public virtual ICollection<Notice> Notices { get; set; } = [];
 
 }

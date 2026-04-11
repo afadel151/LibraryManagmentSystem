@@ -9,5 +9,5 @@ public partial class Periodicite
 
     public string? Periodicite1 { get; set; }
 
-    public virtual ICollection<Notice> Notices { get; } = [];
+    public virtual ICollection<Notice> Notices { get; set; } = [];
 }

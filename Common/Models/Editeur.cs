@@ -9,5 +9,5 @@ public partial class Editeur
 
     public string? Editeur1 { get; set; }
 
-    public virtual ICollection<NoticeEdition> NoticeEditions { get; } = [];
+    public virtual ICollection<NoticeEdition> NoticeEditions { get; set; } = [];
 }

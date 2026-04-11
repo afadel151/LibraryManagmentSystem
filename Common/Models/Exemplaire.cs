@@ -13,8 +13,8 @@ public partial class Exemplaire
 
     public virtual EtatExemplaire? EtatExemplaire { get; set; }
 
-    public virtual ICollection<Pret> Prets { get; } = []; 
-    public virtual ICollection<HistoriquePret> HistoriquePrets { get; } = []; 
+    public virtual ICollection<Pret> Prets { get; set; } = []; 
+    public virtual ICollection<HistoriquePret> HistoriquePrets { get; set; } = []; 
 
     public virtual Notice Notice {get;set;} = null!;
 }

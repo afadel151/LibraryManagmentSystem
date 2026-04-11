@@ -9,5 +9,5 @@ public partial class EtatExemplaire
 
     public string? LibelleEtat { get; set; }
 
-    public virtual ICollection<Exemplaire> Exemplaires { get; } = [];
+    public virtual ICollection<Exemplaire> Exemplaires { get; set; } = [];
 }

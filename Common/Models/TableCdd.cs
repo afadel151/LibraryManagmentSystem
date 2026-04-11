@@ -9,5 +9,5 @@ public partial class TableCdd
 
     public string? Libelle { get; set; }
 
-    public ICollection<Notice> Notices {get;} = [];     
+    public ICollection<Notice> Notices {get; set; } = [];     
 }
