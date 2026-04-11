@@ -14,6 +14,8 @@ public interface IPenaliteService
     Task<bool> CreatePenaliteAsync(CreatePenaliteDto dto);
     Task<bool> UpdatePenaliteAsync(UpdatePenaliteDto dto);
     Task<bool> DeletePenaliteAsync(string idCategorie);
+
+    Task<List<RelanceRetardDto>?> GetRelancesRetard();
 }
 
 public class PenaliteService(ApiHttpClient api) : IPenaliteService
@@ -49,4 +51,7 @@ public class PenaliteService(ApiHttpClient api) : IPenaliteService
 
     public async Task<bool> DeletePenaliteAsync(string idCategorie) =>
         await _api.DeleteForSuccessAsync($"api/Penalite/{Uri.EscapeDataString(idCategorie)}");
+    
+    public async  Task<List<RelanceRetardDto>?> GetRelancesRetard() => 
+        await _api.GetAsync<List<RelanceRetardDto>>("api/PenaliteAdherent");
 }

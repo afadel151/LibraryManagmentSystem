@@ -54,6 +54,8 @@ public class ReservationService(ApiHttpClient api) : IReservationService
 
     public async Task<bool> DeleteReservationAsync(string idAdherent, string cote,DateTime heureReservation)
     {
-        return await _api.DeleteForSuccessAsync($"api/Reservation?idAdherent={idAdherent}&cote={cote}&heureReservation={heureReservation}");
+        string dateStr = heureReservation.ToString("s"); 
+        var url = $"api/Reservation?idAdherent={idAdherent}&cote={cote}&heureReservation={Uri.EscapeDataString(dateStr)}";
+        return await _api.DeleteForSuccessAsync(url);
     }
 }
