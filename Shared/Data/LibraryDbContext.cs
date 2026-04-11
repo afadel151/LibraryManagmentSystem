@@ -1402,6 +1402,11 @@ public partial class LibraryDbContext : DbContext
                 .HasDefaultValueSql("0\n   ")
                 .HasColumnType("NUMBER")
                 .HasColumnName("NOMBRE_JOURS_PENALITE");
+            
+            entity.HasOne(p => p.Adherent)
+                    .WithMany(a => a.PenaliteAdherents)
+                    .HasForeignKey(p => p.IdAdherent)
+                    .IsRequired(false);
         });
 
         modelBuilder.Entity<PenaliteAdherentTemp>(entity =>
@@ -1463,7 +1468,7 @@ public partial class LibraryDbContext : DbContext
         {
             entity.HasKey(e => new { e.IdAdherent, e.IdExemplaire, e.DatePret }).HasName("PRET_PK");
 
-            entity.ToTable("PRET");
+            entity.ToTable("PRET","MATAOUI");
 
             entity.Property(e => e.IdAdherent)
                 .HasMaxLength(10)

@@ -1,4 +1,4 @@
-using Borrowing.Worker.Services.Interfaces;
+using Borrowing.Worker.Services;
 
 namespace Borrowing.Worker;
 

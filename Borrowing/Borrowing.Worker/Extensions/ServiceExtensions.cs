@@ -1,6 +1,5 @@
 using Borrowing.Worker.Repositories;
 using Borrowing.Worker.Services;
-using Borrowing.Worker.Services.Interfaces;
 
 namespace Borrowing.Worker.Extensions;
 

@@ -27,8 +27,9 @@ Console.WriteLine($"[{DateTime.Now}] Starting loan check...");
 try
 {
     using var scope = provider.CreateScope();
-    var checker = scope.ServiceProvider.GetRequiredService<IScopedPretService>();
-    await checker.Run();
+    var pretsChecker = scope.ServiceProvider.GetRequiredService<IScopedPretService>();
+    var penaltyCHekcer = scope.ServiceProvider.GetRequiredService<IScopedPenaltieService>();
+    await pretsChecker.Run();
     Console.WriteLine($"[{DateTime.Now}] Loan check completed successfully.");
 }
 catch (Exception ex)

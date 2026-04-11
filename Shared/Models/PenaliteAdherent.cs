@@ -10,4 +10,6 @@ public partial class PenaliteAdherent
     public DateTime DatePenalite { get; set; }
 
     public decimal? NombreJoursPenalite { get; set; }
+
+    public virtual Adherent Adherent {get;set;} = null!;
 }
