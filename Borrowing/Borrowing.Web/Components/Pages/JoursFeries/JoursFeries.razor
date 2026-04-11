@@ -38,16 +38,16 @@
                         AllowPaging="true" PageSize="10" AllowSorting="true">
             <Columns>
                 <RadzenDataGridColumn TItem="JoursFeryDto" Property="DateJourFerie" Title="Date" FormatString="{0:dd/MM/yyyy}" />
-                <RadzenDataGridColumn TItem="JoursFeryDto" Title="Actions" Width="200px">
+                <RadzenDataGridColumn Visible="isAdmin" TItem="JoursFeryDto" Title="Actions" Width="200px">
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                            <Microsoft.AspNetCore.Components.Authorization.AuthorizeView Roles="ADMIN">
+                            <AuthorizeView Roles="ADMIN">
                                 <Authorized>
                                     <RadzenButton Click=@(args => OpenDeleteModal(data)) Size="ButtonSize.Small" 
                                                   Shade="Shade.Darker" ButtonStyle="ButtonStyle.Danger"
                                                   Icon="delete" Text="Supprimer" />
                                 </Authorized>
-                            </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+                            </AuthorizeView>
                         </RadzenStack>
                     </Template>
                 </RadzenDataGridColumn>
@@ -61,11 +61,14 @@
     private IEnumerable<JoursFeryDto>? joursFeries;
     private int count;
     private bool isLoading;
+    private bool isAdmin;
     private bool isExporting = false;
     private bool _ready = false;
 
     protected override async Task OnPageInitializedAsync()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        isAdmin = authState.User.IsInRole("ADMIN");
         _ready = true;
         await DoSearch();
     }

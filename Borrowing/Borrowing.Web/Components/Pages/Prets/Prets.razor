@@ -23,9 +23,9 @@
     <RadzenColumn>
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">@L["CurrentLoans"]</RadzenText> @*CurrentLoans*@
+                    <RadzenText TextStyle="TextStyle.H5">@L["CurrentLoans"]</RadzenText> @*CurrentLoans*@
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-success rz-m-0">
                         @(stats?.Prets ?? 0)
                     </RadzenText>
@@ -36,9 +36,9 @@
     <RadzenColumn>
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">@L["LateLoans"]</RadzenText> @*LateLoans*@
+                    <RadzenText TextStyle="TextStyle.H5">@L["LateLoans"]</RadzenText> @*LateLoans*@
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-info rz-m-0">
                         @(stats?.Retard ?? 0)
                     </RadzenText>
@@ -49,9 +49,9 @@
     <RadzenColumn>
         <RadzenCard Variant="Variant.Filled" Style="height: 100%;">
             <RadzenStack JustifyContent="JustifyContent.SpaceBetween" Style="height: 100%;">
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start"
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                              JustifyContent="JustifyContent.SpaceBetween">
-                    <RadzenText TextStyle="TextStyle.H6">@L["Reservations"]</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H5">@L["Reservations"]</RadzenText>
                     <RadzenText TextStyle="TextStyle.H2" class="rz-color-warning rz-m-0">
                         @(stats?.Reservations ?? 0)
                     </RadzenText>
@@ -61,7 +61,7 @@
     </RadzenColumn>
 </RadzenRow>
 
-<RadzenText TextStyle="TextStyle.H3" class="rz-mt-4">@L["InsertLoan"]</RadzenText> @**@
+<RadzenText TextStyle="TextStyle.H3" class="rz-mt-8">@L["InsertLoan"]</RadzenText> @**@
 
 <RadzenRow class="rz-mt-4">
     <RadzenColumn Size="12" SizeMD="6">

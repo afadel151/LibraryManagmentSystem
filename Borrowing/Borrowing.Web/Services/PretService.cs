@@ -29,7 +29,7 @@ public class PretService(IHttpClientFactory factory) : IPretService
     public async Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters)
     {
         var orderBy = string.IsNullOrWhiteSpace(queryParameters.OrderBy)
-                ? "DatePret desc"
+                ? "datepret desc"
                 : queryParameters.OrderBy;
         var url = $"api/Pret?" +
                 $"PageNumber={queryParameters.PageNumber}&" +

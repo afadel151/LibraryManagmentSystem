@@ -38,10 +38,10 @@
                 <RadzenDataGridColumn TItem="PenaliteDto" Property="LibelleCategorie" Title="Libelle Catégorie" />
                 <RadzenDataGridColumn TItem="PenaliteDto" Property="JoursRetard" Title="Jours Retard" />
                 <RadzenDataGridColumn TItem="PenaliteDto" Property="NombreJoursRetard" Title="Nombre de Jours Retard" />
-                <RadzenDataGridColumn TItem="PenaliteDto" Title="Actions">
+                <RadzenDataGridColumn Visible="isAdmin" TItem="PenaliteDto" Title="Actions">
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                            <Microsoft.AspNetCore.Components.Authorization.AuthorizeView Roles="ADMIN">
+                            <AuthorizeView Roles="ADMIN">
                                 <Authorized>
                                     <RadzenButton Click=@(args => OpenEditModal(data)) Size="ButtonSize.Small" 
                                                   Shade="Shade.Darker" ButtonStyle="ButtonStyle.Primary"
@@ -50,7 +50,7 @@
                                                   Shade="Shade.Darker" ButtonStyle="ButtonStyle.Danger"
                                                   Icon="delete" Text="Supprimer" />
                                 </Authorized>
-                            </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+                            </AuthorizeView>
                         </RadzenStack>
                     </Template>
                 </RadzenDataGridColumn>
@@ -65,9 +65,12 @@
     private int count;
     private bool isLoading;
     private bool _ready = false;
-
+     private bool isAdmin = false;
     protected override async Task OnPageInitializedAsync()
     {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        isAdmin = authState.User.IsInRole("ADMIN");
+
         _ready = true;
         await DoSearch();
     }
