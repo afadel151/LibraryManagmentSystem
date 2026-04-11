@@ -1,4 +1,8 @@
 <Solution>
-  <Project Path="Borrowing/Borrowing.csproj" />
+  <Project Path="Borrowing/Borrowing.Api/Borrowing.Api.csproj" />
+  <Project Path="Borrowing/Borrowing.Api.Tests/Borrowing.Api.Tests.csproj" />
+  <Project Path="Borrowing/Borrowing.Web/Borrowing.Web.csproj" />
+  <Project Path="Borrowing/Borrowing.ScheduledTask/Borrowing.ScheduledTask.csproj" />
+  <Project Path="Borrowing/Borrowing.SharedClasses/Borrowing.SharedClasses.csproj" />
   <Project Path="Shared/Shared.csproj" />
 </Solution>
