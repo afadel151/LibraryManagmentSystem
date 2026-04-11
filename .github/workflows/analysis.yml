@@ -1,0 +1,99 @@
+name: Code Analysis
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.cs'
+      - '**.csproj'
+  pull_request:
+    branches: [main]
+    paths:
+      - '**.cs'
+      - '**.csproj'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  codeql:
+    name: CodeQL Security Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: true
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: csharp
+          build-mode: manual  
+          queries: security-extended
+
+      - name: Build Solution
+        run: dotnet build LibraryManagmentSystem.slnx --configuration Release
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:csharp'
+
+
+  format-check:
+    name: Code Format Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: true
+
+      - name: Verify Formatting
+        run: |
+          dotnet format LibraryManagmentSystem.slnx \
+            --verify-no-changes \
+            --verbosity diagnostic
+
+
+  analyze:
+    name: Static Code Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: true
+
+      - name: Restore
+        run: dotnet restore LibraryManagmentSystem.slnx
+
+      - name: Run Analyzers (Treat Warnings as Errors)
+        run: |
+          dotnet build LibraryManagmentSystem.slnx \
+            --configuration Release \
+            --no-restore \
+            -p:EnforceCodeStyleInBuild=true \
+            -p:AnalysisMode=AllEnabledByDefault \
+            -p:TreatWarningsAsErrors=true \
+            -warnaserror
