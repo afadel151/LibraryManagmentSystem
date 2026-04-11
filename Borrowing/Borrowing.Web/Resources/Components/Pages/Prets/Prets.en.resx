@@ -159,6 +159,9 @@
   <data name="DocumentManagment" xml:space="preserve">
     <value>Document Management</value>
   </data>
+  <data name="DocumentNotFount" xml:space="preserve">
+    <value>Error fetching document</value>
+  </data>
   <data name="DocumentsOnLoan" xml:space="preserve">
     <value>Documents on Loan</value>
   </data>
@@ -200,6 +203,9 @@
   </data>
   <data name="LoanManagement" xml:space="preserve">
     <value>Loan Management</value>
+  </data>
+  <data name="MemberHasBorrowedThisDocument" xml:space="preserve">
+    <value>Member has already borrowed this document</value>
   </data>
   <data name="MemberHasReservedThisDocument" xml:space="preserve">
     <value>Member has reserved this document</value>

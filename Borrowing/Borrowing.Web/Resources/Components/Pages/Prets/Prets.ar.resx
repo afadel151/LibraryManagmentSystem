@@ -159,6 +159,9 @@
   <data name="DocumentManagment" xml:space="preserve">
     <value>إدارة الوثائق</value>
   </data>
+  <data name="DocumentNotFount" xml:space="preserve">
+    <value>خطا اثناء التاكد من الوثيقة</value>
+  </data>
   <data name="DocumentsOnLoan" xml:space="preserve">
     <value>الوثائق المعارة</value>
   </data>
@@ -200,6 +203,9 @@
   </data>
   <data name="LoanManagement" xml:space="preserve">
     <value>إدارة الإعارات</value>
+  </data>
+  <data name="MemberHasBorrowedThisDocument" xml:space="preserve">
+    <value>المنخرط قام باستعارة هذه الوثيقة</value>
   </data>
   <data name="MemberHasReservedThisDocument" xml:space="preserve">
     <value>المنخرط قام بحجز هذه الوثيقة</value>

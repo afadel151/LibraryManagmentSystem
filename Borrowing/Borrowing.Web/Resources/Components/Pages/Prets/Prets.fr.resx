@@ -159,6 +159,9 @@
   <data name="DocumentManagment" xml:space="preserve">
     <value>Gestion des documents</value>
   </data>
+  <data name="DocumentNotFount" xml:space="preserve">
+    <value>Erreur lors de verification du document</value>
+  </data>
   <data name="DocumentsOnLoan" xml:space="preserve">
     <value>Documents en prêt</value>
   </data>
@@ -200,6 +203,9 @@
   </data>
   <data name="LoanManagement" xml:space="preserve">
     <value>Gestion des prêts</value>
+  </data>
+  <data name="MemberHasBorrowedThisDocument" xml:space="preserve">
+    <value>L'adherent a deja pret ce document</value>
   </data>
   <data name="MemberHasReservedThisDocument" xml:space="preserve">
     <value>L'adhérent a réservé ce document</value>
