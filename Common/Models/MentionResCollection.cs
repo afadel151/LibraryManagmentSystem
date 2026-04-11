@@ -9,7 +9,7 @@ public partial class MentionResCollection
 
     public decimal IdMentionRes { get; set; }
 
-    public virtual Collection Collection { get; set; } = null!;
+    public virtual CollectionModel Collection { get; set; } = null!;
     public virtual MentionResponsabilite MentionResponsabilite { get; set; } = null!;
 
 }

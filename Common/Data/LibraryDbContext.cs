@@ -30,7 +30,7 @@ public partial class LibraryDbContext : DbContext
     public virtual DbSet<Categorie> Categories { get; set; }
 
     public virtual DbSet<CoAuteur> CoAuteurs { get; set; }
-    public virtual DbSet<Collection> Collections { get; set; }
+    public virtual DbSet<CollectionModel> Collections { get; set; }
 
     public virtual DbSet<Commande> Commandes { get; set; }
 
@@ -332,7 +332,7 @@ public partial class LibraryDbContext : DbContext
                 .HasColumnName("ID_MENTION_RES");
 
         });
-        modelBuilder.Entity<Collection>(entity =>
+        modelBuilder.Entity<CollectionModel>(entity =>
         {
             entity.HasKey(e => e.IdCollection);
 

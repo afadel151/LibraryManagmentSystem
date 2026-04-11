@@ -77,11 +77,11 @@ public partial class Notice
     // on to many  backward
     public virtual ICollection<NoticeEdition> NoticeEditions { get; } = [];
     public virtual ICollection<NoticeCollection> NoticeCollections { get; } = [];
-    public virtual ICollection<AuteurSecondaire> AuteurSecondaires {get;set;} = [];
+    public virtual ICollection<AuteurSecondaire> AuteurSecondaires {get;} = [];
     public virtual ICollection<NoticeTerme> NoticeTermes { get; } = [];
     public virtual ICollection<NoticeTermeExact> NoticeTermeExacts { get; } = [];
-    public virtual ICollection<Exemplaire> Exemplaires {get;set;} = [];
-    public virtual ICollection<Reservation> Reservations {get;set;} = [];
+    public virtual ICollection<Exemplaire> Exemplaires {get;} = [];
+    public virtual ICollection<Reservation> Reservations {get;} = [];
 
     // many to many 
     public virtual ICollection<MentionResponsabilite> CoAuteurs { get; } = [];
@@ -92,13 +92,13 @@ public partial class Notice
 
 
     public virtual ICollection<Terme> Termes { get; } = [];
-    public virtual ICollection<TermeExact> TermeExacts {get;set;} = [];
-    public virtual ICollection<Collection> Collections {get;set;} = [];
+    public virtual ICollection<TermeExact> TermeExacts {get;} = [];
+    public virtual ICollection<CollectionModel> Collections {get;} = [];
 
-    public virtual ICollection<Pay> Pays {get;set;} = [];
+    public virtual ICollection<Pay> Pays {get;} = [];
 
-    public virtual ICollection<MotsCle> MotsCles {get;set;} = [];
-    public virtual ICollection<Langue> Langues {get;set;} = [];
-    public virtual ICollection<Selection> Selections {get;set;} = [];
+    public virtual ICollection<MotsCle> MotsCles {get;} = [];
+    public virtual ICollection<Langue> Langues {get;} = [];
+    public virtual ICollection<Selection> Selections {get;} = [];
 
 }

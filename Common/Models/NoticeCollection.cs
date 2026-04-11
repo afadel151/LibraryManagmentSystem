@@ -11,7 +11,7 @@ public partial class NoticeCollection
 
     public string? NumeroDansCollection { get; set; }
 
-    public virtual Collection Collection { get; set; } = null!;
+    public virtual CollectionModel Collection { get; set; } = null!;
 
     public virtual Notice Notice { get; set; } = null!;
 }

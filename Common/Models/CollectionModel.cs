@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Common.Models;
 
-public partial class Collection
+public partial class CollectionModel
 {
     public decimal IdCollection { get; set; }
 
@@ -13,8 +13,8 @@ public partial class Collection
 
     public string? IssnCollection { get; set; }
 
-    public virtual ICollection<Notice> Notices { get; set; } = [];
-    public virtual ICollection<MentionResponsabilite> MentionResponsabilites { get; set; } = [];
+    public virtual  ICollection<Notice> Notices { get; } = [];
+    public virtual ICollection<MentionResponsabilite> MentionResponsabilites { get; } = [];
 
 
 }
