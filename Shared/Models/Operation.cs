@@ -9,5 +9,5 @@ public partial class Operation
 
     public string? Operation1 { get; set; }
 
-    public virtual ICollection<HistoriqueAuth> HistoriqueAuths { get; set; } = new List<HistoriqueAuth>();
+    public virtual ICollection<HistoriqueAuth> HistoriqueAuths { get; set; } = [];
 }

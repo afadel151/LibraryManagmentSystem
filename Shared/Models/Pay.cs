@@ -10,5 +10,5 @@ public partial class Pay
     public string? Pays { get; set; }
 
     
-    public virtual ICollection<Notice> Notices { get; set; } = new List<Notice>();
+    public virtual ICollection<Notice> Notices { get; set; } = [];
 }

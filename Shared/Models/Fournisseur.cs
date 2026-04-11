@@ -15,5 +15,5 @@ public partial class Fournisseur
 
     public string? Mail { get; set; }
 
-    public virtual ICollection<Commande> Commandes { get; set; } = new List<Commande>();
+    public virtual ICollection<Commande> Commandes { get; set; } = [];
 }

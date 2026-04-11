@@ -11,5 +11,5 @@ public partial class MotsCle
 
     public decimal? IsIndexed { get; set; }
 
-    public virtual ICollection<Notice> Notices { get; set; } = new List<Notice>();
+    public virtual ICollection<Notice> Notices { get; set; } = [];
 }

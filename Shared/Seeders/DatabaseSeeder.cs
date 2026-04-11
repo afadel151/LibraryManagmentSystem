@@ -11,8 +11,8 @@ public class DatabaseSeeder
     public DatabaseSeeder(LibraryDbContext context)
     {
         _context = context;
-        _seeders = new List<ISeeder>
-        {
+        _seeders =
+        [
             // lvl 1 
             new EtatAdherentSeeder(),
             new EtatExemplaireSeeder(),
@@ -33,7 +33,7 @@ public class DatabaseSeeder
             new PenaliteAdherentSeeder(),
             new HistoriquePretSeeder(),
             new HistoriquePenaliteAdherentSeeder(),
-        };
+        ];
     }
 
     public async Task SeedAllAsync()

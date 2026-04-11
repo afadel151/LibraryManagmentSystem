@@ -16,7 +16,7 @@ public interface IJoursFeriesCacheService
 public class JoursFeriesCacheService
 {
     private readonly IMemoryCache _cache;
-    private readonly Dictionary<string, CancellationTokenSource> _tokens = new();
+    private readonly Dictionary<string, CancellationTokenSource> _tokens = [];
     private static readonly string[] SupportedLanguages = ["fr", "en", "ar"];
 
     public JoursFeriesCacheService(IMemoryCache cache)

@@ -13,8 +13,8 @@ public partial class Collection
 
     public string? IssnCollection { get; set; }
 
-    public virtual ICollection<Notice> Notices { get; set; } = new List<Notice>();
-    public virtual ICollection<MentionResponsabilite> MentionResponsabilites { get; set; } = new List<MentionResponsabilite>();
+    public virtual ICollection<Notice> Notices { get; set; } = [];
+    public virtual ICollection<MentionResponsabilite> MentionResponsabilites { get; set; } = [];
 
 
 }

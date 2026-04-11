@@ -75,30 +75,30 @@ public partial class Notice
 
 
     // on to many  backward
-    public virtual ICollection<NoticeEdition> NoticeEditions { get; set; } = new List<NoticeEdition>();
-    public virtual ICollection<NoticeCollection> NoticeCollections { get; set; } = new List<NoticeCollection>();
+    public virtual ICollection<NoticeEdition> NoticeEditions { get; set; } = [];
+    public virtual ICollection<NoticeCollection> NoticeCollections { get; set; } = [];
     public virtual ICollection<AuteurSecondaire> AuteurSecondaires {get;set;} = [];
-    public virtual ICollection<NoticeTerme> NoticeTermes { get; set; } = new List<NoticeTerme>();
-    public virtual ICollection<NoticeTermeExact> NoticeTermeExacts { get; set; } = new List<NoticeTermeExact>();
+    public virtual ICollection<NoticeTerme> NoticeTermes { get; set; } = [];
+    public virtual ICollection<NoticeTermeExact> NoticeTermeExacts { get; set; } = [];
     public virtual ICollection<Exemplaire> Exemplaires {get;set;} = [];
     public virtual ICollection<Reservation> Reservations {get;set;} = [];
 
     // many to many 
-    public virtual ICollection<MentionResponsabilite> CoAuteurs { get; set; } = new List<MentionResponsabilite>();
+    public virtual ICollection<MentionResponsabilite> CoAuteurs { get; set; } = [];
 
-    public virtual ICollection<MentionResponsabilite> Auteurs { get; set; } = new List<MentionResponsabilite>();
-    public virtual ICollection<MentionResponsabilite> AuteurSecondairesMentionRes { get; set; } = new List<MentionResponsabilite>();
+    public virtual ICollection<MentionResponsabilite> Auteurs { get; set; } = [];
+    public virtual ICollection<MentionResponsabilite> AuteurSecondairesMentionRes { get; set; } = [];
 
 
 
-    public virtual ICollection<Terme> Termes { get; set; } = new List<Terme>();
-    public virtual ICollection<TermeExact> TermeExacts {get;set;} = new List<TermeExact>();
-    public virtual ICollection<Collection> Collections {get;set;} = new List<Collection>();
+    public virtual ICollection<Terme> Termes { get; set; } = [];
+    public virtual ICollection<TermeExact> TermeExacts {get;set;} = [];
+    public virtual ICollection<Collection> Collections {get;set;} = [];
 
-    public virtual ICollection<Pay> Pays {get;set;} = new List<Pay>();
+    public virtual ICollection<Pay> Pays {get;set;} = [];
 
-    public virtual ICollection<MotsCle> MotsCles {get;set;} = new List<MotsCle>();
-    public virtual ICollection<Langue> Langues {get;set;} = new List<Langue>();
-    public virtual ICollection<Selection> Selections {get;set;} = new List<Selection>();
+    public virtual ICollection<MotsCle> MotsCles {get;set;} = [];
+    public virtual ICollection<Langue> Langues {get;set;} = [];
+    public virtual ICollection<Selection> Selections {get;set;} = [];
 
 }

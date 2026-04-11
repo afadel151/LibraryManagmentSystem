@@ -9,5 +9,5 @@ public partial class Ville
 
     public string? Ville1 { get; set; }
 
-    public virtual ICollection<NoticeEdition> NoticeEditions { get; set; } = new List<NoticeEdition>();
+    public virtual ICollection<NoticeEdition> NoticeEditions { get; set; } = [];
 }
