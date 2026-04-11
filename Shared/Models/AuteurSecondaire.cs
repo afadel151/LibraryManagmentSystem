@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LibraryManagement.Shared.Models;
+namespace LibraryManagement.Common.Models;
 
 public partial class AuteurSecondaire
 {

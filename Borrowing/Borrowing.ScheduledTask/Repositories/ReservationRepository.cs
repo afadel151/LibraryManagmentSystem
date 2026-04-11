@@ -1,5 +1,5 @@
 using Shared.Data;
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 
 namespace Borrowing.ScheduledTask.Repositories;
 public interface IReservationRepository : IBaseRepository<Reservation>

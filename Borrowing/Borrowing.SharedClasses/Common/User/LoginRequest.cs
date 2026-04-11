@@ -1,6 +1,6 @@
 namespace Borrowing.SharedClasses.Common;
 
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 public class LoginRequest
 {
     public string compte {get;set;} = string.Empty;

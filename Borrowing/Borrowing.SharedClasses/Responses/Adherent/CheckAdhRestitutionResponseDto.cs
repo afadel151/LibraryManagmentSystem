@@ -2,7 +2,7 @@ namespace Borrowing.SharedClasses.Responses.Adherent;
 
 using System;
 
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 using Borrowing.SharedClasses.Common;
 public class CheckAdhRestitutionResponseDto
 {

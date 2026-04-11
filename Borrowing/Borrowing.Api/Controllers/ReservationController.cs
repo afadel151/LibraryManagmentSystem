@@ -3,7 +3,7 @@ using Borrowing.Api.Services;
 using Borrowing.SharedClasses.Requests.Reservation;
 using Borrowing.SharedClasses.Responses.Reservation;
 using Borrowing.SharedClasses.Common;
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 namespace Borrowing.Api.Controllers;
 
 [Microsoft.AspNetCore.Authorization.Authorize]

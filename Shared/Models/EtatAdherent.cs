@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-namespace LibraryManagement.Shared.Models;
+namespace LibraryManagement.Common.Models;
 
 public partial class EtatAdherent
 {

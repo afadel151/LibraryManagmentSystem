@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Shared.Data;
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 
 namespace Shared.Seeders;
 

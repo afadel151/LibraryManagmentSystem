@@ -2,7 +2,7 @@ using Borrowing.Api.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 
 namespace Borrowing.Api.Services;
 

@@ -3,7 +3,7 @@ using Borrowing.Worker.Extensions;
 using Borrowing.Worker.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 
 namespace Borrowing.Worker.Services;
 public interface IScopedPretService

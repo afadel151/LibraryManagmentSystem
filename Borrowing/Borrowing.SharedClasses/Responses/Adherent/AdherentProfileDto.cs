@@ -2,7 +2,7 @@ namespace Borrowing.SharedClasses.Responses.Adherent;
 
 using System;
 
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 public class AdherentProfileDto
 {
     public Adherent? Adherent {get;set;}

@@ -4,7 +4,7 @@ using Borrowing.SharedClasses.Requests.Pret;
 using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Common;
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 using Borrowing.SharedClasses.Requests.Restitution;
 namespace Borrowing.Api.Controllers;
 

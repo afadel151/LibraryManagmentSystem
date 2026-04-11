@@ -5,7 +5,7 @@ using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Responses.Notice;
 using Borrowing.SharedClasses.Common;
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 using System;
 namespace Borrowing.Api.Controllers;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Borrowing.SharedClasses.Common;
 using Borrowing.SharedClasses.Responses.Adherent;
 using System.Net;
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 using Borrowing.Web.Providers;
 
 public interface IExemplaireService

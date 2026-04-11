@@ -4,7 +4,7 @@ using Borrowing.ScheduledTask.Repositories;
 using Borrowing.ScheduledTask.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 
 namespace Borrowing.ScheduledTask.Services;
 

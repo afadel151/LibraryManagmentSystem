@@ -1,5 +1,5 @@
 
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 
 namespace Borrowing.ScheduledTask.Extensions;
 public static class BaseExtensions

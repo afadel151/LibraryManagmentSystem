@@ -1,7 +1,7 @@
 namespace Borrowing.SharedClasses.Responses.Notice;
 
 using Borrowing.SharedClasses.Common;
-using LibraryManagement.Shared.Models;
+using LibraryManagement.Common.Models;
 public class CheckNoticeResponseDto
 {
     public CheckNoticeEnum Status { get; set; }
