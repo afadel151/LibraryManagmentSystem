@@ -28,76 +28,85 @@
 else
 {
     <RadzenStack Gap="1.5rem" Style="padding: 2rem">
-        <RadzenCard>
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1.5rem">
-                <RadzenImage Path="@adherent.Picture" Style="width:150px;height:150px;border-radius:50%;object-fit:cover" />
-                @if (isEditing)
-                {
-                    <RadzenTemplateForm Data="@adherentDto" Submit="@SaveProfile"
-                                        TItem="Borrowing.SharedClasses.Requests.Adherent.UpdateAdherentDto">
-                        <RadzenStack Gap="0.5rem">
-                            <RadzenTextBox @bind-Value="adherentDto.IdAdherent" Placeholder="ID" Disabled="true" />
-                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                                <RadzenTextBox @bind-Value="adherentDto.Prenom" Placeholder="Prénom" />
-                                <RadzenTextBox @bind-Value="adherentDto.Nom" Placeholder="Nom" />
-                            </RadzenStack>
-                            <RadzenDropDown @bind-Value="adherentDto.IdCategorie" Data="@categories"
-                                            TextProperty="LibelleCategorie" ValueProperty="IdCategorie"
-                                            Placeholder="Sélectionner Catégorie" />
-                            <RadzenDropDown @bind-Value="adherentDto.IdPosition" Data="@positions"
-                                            TextProperty="LibellePosition" ValueProperty="IdPosition" Placeholder="Sélectionner Position" />
-                            <RadzenDropDown @bind-Value="adherentDto.EtatAdherent" Data="@etats" TextProperty="DescEtat"
-                                            ValueProperty="IdEtat" Placeholder="Sélectionner État" />
-                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                                <RadzenButton ButtonType="ButtonType.Submit" Text="Sauvegarder"
-                                              ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small" />
-                                <RadzenButton Text="Annuler" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
-                                              Click="CancelEdit" />
-                            </RadzenStack>
-                        </RadzenStack>
-                    </RadzenTemplateForm>
-                }
-                else
-                {
-                    <RadzenStack Gap="0.25rem">
-                        <RadzenText TextStyle="TextStyle.H4"
-                                    Text="@($"{adherent.Adherent!.Prenom} {adherent.Adherent!.Nom}")" />
-                        <RadzenText TextStyle="TextStyle.Body1" Text="@($"ID : {adherent.Adherent!.IdAdherent}")" />
-                        <RadzenText TextStyle="TextStyle.Body1"
-                                    Text="@($"Catégorie : {adherent.Adherent.Categorie!.LibelleCategorie ?? "—"}")" />
-                        <RadzenText TextStyle="TextStyle.Body1"
-                                    Text="@($"Position : {adherent.Adherent.Position!.LibellePosition ?? "—"}")" />
-                    </RadzenStack>
-                }
-                <RadzenStack Style="margin-left:auto" AlignItems="AlignItems.End" Orientation="Orientation.Vertical"
-                             Gap="0.5rem">
-                    <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                        @switch (adherent.Adherent!.EtatAdherent)
-                        {
-                            case 1:
-                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="En règle" />
-                                break;
-                            case 2:
-                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="Pénalisé" />
-                                break;
-                            case 3:
-                            <RadzenBadge BadgeStyle="BadgeStyle.Danger" Text="Suspendu" />
-                                break;
-                        }
-                        
-                    </RadzenStack>
-                    @if (isAdmin && !isEditing)
-                    {
-                        <RadzenButton Text="Éditer le profil" Icon="edit" ButtonStyle="ButtonStyle.Secondary"
-                                      Size="ButtonSize.Small" Click="EditProfile" />
-                    }
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="1.5rem" Style="align-items: stretch;">
+            <RadzenCard Style="flex: 0 0 auto;">
+                <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Style="height: 100%;">
+                    <RadzenImage Path="@adherent.Picture"
+                                 Style="width:200px;height:200px;border-radius:50%;object-fit:cover" />
                 </RadzenStack>
-            </RadzenStack>
-        </RadzenCard>
+            </RadzenCard>
+            <RadzenCard Style="flex: 1 1 auto;">
+                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Style="height: 100%;">
+                    @if (isEditing)
+                    {
+                        <RadzenTemplateForm Data="@adherentDto" Submit="@SaveProfile" TItem="UpdateAdherentDto"
+                                            Style="width: 100%;">
+                            <RadzenStack Gap="0.5rem" Style="width: 100%;">
+                                <RadzenTextBox @bind-Value="adherentDto.IdAdherent" Placeholder="ID" Disabled="true"
+                                               Style="width: 100%;" />
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                    <RadzenTextBox @bind-Value="adherentDto.Prenom" Placeholder="Prénom" Style="flex: 1;" />
+                                    <RadzenTextBox @bind-Value="adherentDto.Nom" Placeholder="Nom" Style="flex: 1;" />
+                                </RadzenStack>
+                                <RadzenDropDown @bind-Value="adherentDto.IdCategorie" Data="@categories"
+                                                TextProperty="LibelleCategorie" ValueProperty="IdCategorie"
+                                                Placeholder="Sélectionner Catégorie" Style="width: 100%;" />
+                                <RadzenDropDown @bind-Value="adherentDto.IdPosition" Data="@positions"
+                                                TextProperty="LibellePosition" ValueProperty="IdPosition"
+                                                Placeholder="Sélectionner Position" Style="width: 100%;" />
+                                <RadzenDropDown @bind-Value="adherentDto.EtatAdherent" Data="@etats" TextProperty="DescEtat"
+                                                ValueProperty="IdEtat" Placeholder="Sélectionner État" Style="width: 100%;" />
+                                <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+                                    <RadzenButton ButtonType="ButtonType.Submit" Text="Sauvegarder"
+                                                  ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Small" />
+                                    <RadzenButton Text="Annuler" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small"
+                                                  Click="CancelEdit" />
+                                </RadzenStack>
+                            </RadzenStack>
+                        </RadzenTemplateForm>
+                    }
+                    else
+                    {
+                        <RadzenStack Gap="0.5rem">
+                            <RadzenText TextStyle="TextStyle.H3"
+                                        Text="@($"{adherent.Adherent!.Prenom} {adherent.Adherent!.Nom}")" />
+                            <RadzenText TextStyle="TextStyle.Subtitle1" Text="@($"ID : {adherent.Adherent!.IdAdherent}")" />
+                            <RadzenText TextStyle="TextStyle.Subtitle1"
+                                        Text="@($"Catégorie : {adherent.Adherent.Categorie!.LibelleCategorie ?? "—"}")" />
+                            <RadzenText TextStyle="TextStyle.Subtitle1"
+                                        Text="@($"Position : {adherent.Adherent.Position!.LibellePosition ?? "—"}")" />
+                            @switch (adherent.Adherent!.EtatAdherent)
+                            {
+                                case 1:
+                                    <RadzenBadge Style="width: fit-content;padding: 0 5px;"  BadgeStyle="BadgeStyle.Success" Text="En règle" />
+                                    break;
+                                case 2:
+                                    <RadzenBadge Style="width: fit-content;padding: 0 5px;"  BadgeStyle="BadgeStyle.Warning" Text="Pénalisé" />
+                                    break;
+                                case 3:
+                                    <RadzenBadge Style="width: fit-content;padding: 0 5px;"  BadgeStyle="BadgeStyle.Danger" Text="Suspendu" />
+                                    break;
+                            }
+                        
+                        </RadzenStack>
+                    }
+                    <RadzenStack Style="margin-left:auto" AlignItems="AlignItems.End" Orientation="Orientation.Vertical"
+                                 Gap="0.5rem">
+
+                        
+                        @if (isAdmin && !isEditing)
+                        {
+                            <RadzenButton Text="Éditer le profil" Icon="edit" ButtonStyle="ButtonStyle.Secondary"
+                                          Size="ButtonSize.Medium" Click="EditProfile" />
+                        }
+                    </RadzenStack>
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenStack>
         <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
-                <RadzenText TextStyle="TextStyle.H6" Text="Prêts" />
+                <RadzenText TextStyle="TextStyle.DisplayH5" Text="Prêts" />
                 <RadzenButton Text="Exporter" Icon="download" Click="@ExportPrets" ButtonStyle="ButtonStyle.Light"
                               Size="ButtonSize.Small" />
             </RadzenStack>
@@ -117,7 +126,7 @@ else
         <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
-                <RadzenText TextStyle="TextStyle.H6" Text="Pénalités" />
+                <RadzenText TextStyle="TextStyle.DisplayH5" Text="Pénalités" />
                 <RadzenButton Text="Exporter" Icon="download" Click="@ExportPenalites" ButtonStyle="ButtonStyle.Light"
                               Size="ButtonSize.Small" />
             </RadzenStack>
@@ -144,7 +153,7 @@ else
         <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
-                <RadzenText TextStyle="TextStyle.H6" Text="Réservations" />
+                <RadzenText TextStyle="TextStyle.DisplayH5" Text="Réservations" />
                 <RadzenButton Text="Exporter" Icon="download" Click="@ExportReservations" ButtonStyle="ButtonStyle.Light"
                               Size="ButtonSize.Small" />
             </RadzenStack>
@@ -159,7 +168,7 @@ else
         <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
-                <RadzenText TextStyle="TextStyle.H6" Text="Historique des Prêts" />
+                <RadzenText TextStyle="TextStyle.DisplayH5" Text="Historique des Prêts" />
                 <RadzenButton Text="Exporter" Icon="download" Click="@ExportPrets" ButtonStyle="ButtonStyle.Light"
                               Size="ButtonSize.Small" />
             </RadzenStack>
@@ -175,7 +184,7 @@ else
         <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
-                <RadzenText TextStyle="TextStyle.H6" Text="Historique de penalites" />
+                <RadzenText TextStyle="TextStyle.DisplayH5" Text="Historique de penalites" />
                 <RadzenButton Text="Exporter" Icon="download" Click="@ExportPenalites" ButtonStyle="ButtonStyle.Light"
                               Size="ButtonSize.Small" />
             </RadzenStack>
@@ -197,7 +206,10 @@ else
     private AdherentProfileDto? adherent;
     private bool isAdmin = false;
     private bool isEditing = false;
-    private Borrowing.SharedClasses.Requests.Adherent.UpdateAdherentDto adherentDto = new();
+    private int confirmationStep = 0;
+    private string warningMessage = "Vous êtes sur le point de modifier les informations de cet adhérent. Veuillez vérifier que toutes les données sont correctes avant de continuer.";
+
+    private UpdateAdherentDto adherentDto = new();
     private IEnumerable<CategorieDto> categories = Array.Empty<CategorieDto>();
     private IEnumerable<PositionDto> positions = Array.Empty<PositionDto>();
     private IEnumerable<EtatAdherentDto> etats = Array.Empty<EtatAdherentDto>();
@@ -241,12 +253,55 @@ else
         isEditing = true;
     }
 
-    private void CancelEdit()
-    {
-        isEditing = false;
-    }
+    
 
     private async Task SaveProfile()
+    {
+        confirmationStep = 0;
+        await DialogService.OpenAsync("Confirmation de mise à jour", ds =>
+        @<RadzenStack Gap="1rem">
+            <RadzenSteps @bind-SelectedIndex="confirmationStep" Change="OnStepChange">
+                <Steps>
+                    <RadzenStepsItem Text="Avertissement">
+                        <RadzenCard
+                            Style="background-color: var(--rz-warning-light); border-left: 4px solid var(--rz-warning);">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+                                <RadzenIcon Icon="warning" Style="color: var(--rz-black); font-size: 2rem;" />
+                                <RadzenStack Gap="0.5rem">
+                                    <RadzenText TextStyle="TextStyle.H6" Text="Attention" />
+                                    <RadzenText Text="@warningMessage" Style="width: 100%; min-width: 400px;" />
+                                </RadzenStack>
+                            </RadzenStack>
+                        </RadzenCard>
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
+                                     Style="margin-top: 1rem;">
+                        </RadzenStack>
+                    </RadzenStepsItem>
+                    <RadzenStepsItem Text="Confirmation">
+                        <RadzenCard Style="background-color: var(--rz-danger-light); border-left: 4px solid var(--rz-danger);">
+                            <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" AlignItems="AlignItems.Center">
+                                <RadzenIcon Icon="info" Style="color: var(--rz-black); font-size: 2rem;" />
+                                <RadzenStack Gap="0.5rem">
+                                    <RadzenText TextStyle="TextStyle.H6" Text="Confirmation finale" />
+                                    <RadzenText
+                                    Text="Êtes-vous sûr de vouloir enregistrer ces modifications ? Cette action est irréversible." />
+                                </RadzenStack>
+                            </RadzenStack>
+                        </RadzenCard>
+                        <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
+                                     Style="margin-top: 1rem;">
+                            <RadzenButton Text="Confirmer" ButtonStyle="ButtonStyle.Success"
+                                          Click="async () => { ds.Close(true); await ConfirmUpdate(); }" />
+                        </RadzenStack>
+                    </RadzenStepsItem>
+                </Steps>
+            </RadzenSteps>
+        </RadzenStack>
+        , new DialogOptions() { Width = "600px", Height = "auto", CloseDialogOnOverlayClick = false });
+    }
+
+  
+    private async Task ConfirmUpdate()
     {
         var success = await AdherentService.UpdateAdherentAsync(adherentDto);
         if (success)
@@ -257,8 +312,7 @@ else
             {
                 Severity = NotificationSeverity.Success,
                 Summary = "Succès",
-                Detail
-= "Profil mis à jour."
+                Detail = "Profil mis à jour."
             });
         }
         else
@@ -267,8 +321,7 @@ else
             {
                 Severity = NotificationSeverity.Error,
                 Summary = "Erreur",
-                Detail =
-"Impossible de mettre à jour le profil."
+                Detail = "Impossible de mettre à jour le profil."
             });
         }
     }
@@ -331,8 +384,7 @@ ConfirmOptions()
                 {
                     Severity = NotificationSeverity.Success,
                     Summary = "Succès",
-                    Detail
-= "Pénalité supprimée."
+                    Detail = "Pénalité supprimée."
                 });
             }
             else
@@ -341,10 +393,17 @@ ConfirmOptions()
                 {
                     Severity = NotificationSeverity.Error,
                     Summary = "Erreur",
-                    Detail =
-"Impossible de supprimer la pénalité."
+                    Detail = "Impossible de supprimer la pénalité."
                 });
             }
         }
+    }
+    private void CancelEdit()
+    {
+        isEditing = false;
+    }
+    private void OnStepChange(int index)
+    {
+        confirmationStep = index;
     }
 }
