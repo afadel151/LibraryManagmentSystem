@@ -8,7 +8,7 @@
     <AnalysisLevel>latest-all</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AnalysisModeSecurity>all</AnalysisModeSecurity>
-    <NoWarn>CA1711;CA2227;CA2007</NoWarn>
+    <NoWarn>CA1711;CA2227;CA2007;CA1852</NoWarn>
 
     <!-- <OutputType>exe</OutputType>
     <PublishSingleFile Condition="'$(Configuration)' == 'Release'">true</PublishSingleFile>

@@ -5,6 +5,6 @@ internal interface ICategorieRepository : IBaseRepository<Categorie>
 {
 }
 
-internal class CategorieRepository(LibraryDbContext context) : BaseRepository<Categorie>(context), ICategorieRepository
+internal sealed class  CategorieRepository(LibraryDbContext context) : BaseRepository<Categorie>(context), ICategorieRepository
 {
 }

@@ -6,6 +6,6 @@ internal interface IPenaliteRepository : IBaseRepository<Penalite>
 {
 }
 
-internal class PenaliteRepository(LibraryDbContext context) : BaseRepository<Penalite>(context), IPenaliteRepository
+internal sealed class  PenaliteRepository(LibraryDbContext context) : BaseRepository<Penalite>(context), IPenaliteRepository
 {
 }

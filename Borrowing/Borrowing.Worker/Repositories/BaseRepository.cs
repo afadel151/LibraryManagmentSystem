@@ -13,7 +13,7 @@ internal interface IBaseRepository<T> where T : class
     IQueryable<T> GetQueryable();
     IQueryable<T> GetQueryable(params Expression<Func<T, object>>[] includes);
 }
-internal class BaseRepository<T>(LibraryDbContext context) where T : class
+internal sealed class  BaseRepository<T>(LibraryDbContext context) where T : class
 {
     protected readonly LibraryDbContext _context = context;
     protected readonly DbSet<T> _dbSet = context.Set<T>();

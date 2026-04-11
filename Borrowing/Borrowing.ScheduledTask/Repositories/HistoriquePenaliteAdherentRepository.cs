@@ -7,6 +7,6 @@ internal interface IHistoriquePenaliteAdherentRepository : IBaseRepository<Histo
 {
 }
 
-internal class HistoriquePenaliteAdherentRepository(LibraryDbContext context) : BaseRepository<HistoriquePenaliteAdherent>(context), IHistoriquePenaliteAdherentRepository
+internal sealed class  HistoriquePenaliteAdherentRepository(LibraryDbContext context) : BaseRepository<HistoriquePenaliteAdherent>(context), IHistoriquePenaliteAdherentRepository
 {
 }

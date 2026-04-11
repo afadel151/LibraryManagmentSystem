@@ -5,6 +5,6 @@ namespace Borrowing.ScheduledTask.Repositories;
 internal interface IPenaliteAdherentRepository : IBaseRepository<PenaliteAdherent>
 {
 }
-internal class PenaliteAdherentRepository(LibraryDbContext context) : BaseRepository<PenaliteAdherent>(context), IPenaliteAdherentRepository
+internal sealed class  PenaliteAdherentRepository(LibraryDbContext context) : BaseRepository<PenaliteAdherent>(context), IPenaliteAdherentRepository
 {
 }

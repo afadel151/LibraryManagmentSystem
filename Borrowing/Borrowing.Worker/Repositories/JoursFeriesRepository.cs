@@ -5,6 +5,6 @@ namespace Borrowing.Worker.Repositories;
 internal interface IJoursFeriesRepository : IBaseRepository<JoursFery>
 {
 }
-internal class JoursFeriesRepository(LibraryDbContext context) : BaseRepository<JoursFery>(context), IJoursFeriesRepository
+internal sealed class  JoursFeriesRepository(LibraryDbContext context) : BaseRepository<JoursFery>(context), IJoursFeriesRepository
 {
 }

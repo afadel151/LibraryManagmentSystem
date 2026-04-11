@@ -6,6 +6,6 @@ internal interface IExemplairesRepository : IBaseRepository<Exemplaire>
 {
 }
 
-internal class ExemplairesRepository(LibraryDbContext context) : BaseRepository<Exemplaire>(context), IExemplairesRepository
+internal sealed class  ExemplairesRepository(LibraryDbContext context) : BaseRepository<Exemplaire>(context), IExemplairesRepository
 {
 }
