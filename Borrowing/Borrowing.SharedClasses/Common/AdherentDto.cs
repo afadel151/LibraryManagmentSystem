@@ -1,6 +1,6 @@
-namespace Borrowing.SharedClasses.Common;
+namespace Borrowing.SharedClasses.Models;
 
-using LibraryManagement.Common.Models;
+using Common.Models;
 public class AdherentDto
 {
     public string IdAdherent {get;set;} = string.Empty;

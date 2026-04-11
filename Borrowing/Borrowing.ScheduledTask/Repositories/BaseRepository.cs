@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Shared.Data;
-
+using Common.Data;
 namespace Borrowing.ScheduledTask.Repositories;
 public interface IBaseRepository<T> where T : class
 {

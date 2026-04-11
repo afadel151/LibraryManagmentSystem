@@ -3,10 +3,10 @@ namespace Borrowing.Web.Services;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Models;
 using Borrowing.SharedClasses.Responses.Adherent;
 using System.Net;
-using LibraryManagement.Common.Models;
+using Common.Models;
 using Borrowing.Web.Providers;
 
 public interface IExemplaireService

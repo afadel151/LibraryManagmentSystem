@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Data;
 using Borrowing.ScheduledTask.Extensions;
 using Borrowing.ScheduledTask.Services;
 using Microsoft.Extensions.Logging;

@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borrowing.Api", "Borrowing.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borrowing.SharedClasses", "Borrowing.SharedClasses\Borrowing.SharedClasses.csproj", "{093B8020-E4C5-4461-BDE1-4846E71AD036}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "..\Shared\Shared.csproj", "{A57BB4A4-59CC-424A-964A-496D0FE92E6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "..\Common\Common.csproj", "{A57BB4A4-59CC-424A-964A-496D0FE92E6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Borrowing.Worker", "Borrowing.Worker\Borrowing.Worker.csproj", "{61FAA840-5D95-4DC6-A251-3347CA6D124C}"
 EndProject

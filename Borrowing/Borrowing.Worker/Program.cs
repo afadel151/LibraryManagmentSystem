@@ -1,6 +1,5 @@
 using Borrowing.Worker.Extensions;
 using Borrowing.Worker;
-using Shared.Data;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddWorkerServices();

@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Borrowing.Api\Borrowing.Api.csproj" />
-    <ProjectReference Include="..\..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\..\Common\Common.csproj" />
   </ItemGroup>
 
 </Project>

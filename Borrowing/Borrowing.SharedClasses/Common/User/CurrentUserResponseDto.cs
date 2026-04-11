@@ -1,4 +1,4 @@
-namespace Borrowing.SharedClasses.Common.User;
+namespace Borrowing.SharedClasses.Models.User;
 
 
 public class CurrentUserResponseDto

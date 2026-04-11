@@ -1,5 +1,5 @@
 using Borrowing.Api.Repositories;
-using LibraryManagement.Common.Models;
+using Common.Models;
 
 namespace Borrowing.Api.Services;
 

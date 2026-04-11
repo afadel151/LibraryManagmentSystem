@@ -1,7 +1,7 @@
 using Borrowing.Api.Repositories;
-using LibraryManagement.Common.Models;
+using Common.Models;
 using Microsoft.EntityFrameworkCore;
-using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Models;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Requests.Adherent;
 using Borrowing.Api.Extensions;

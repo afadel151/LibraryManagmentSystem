@@ -3,7 +3,7 @@ namespace Borrowing.Web.Services;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Models;
 using Borrowing.SharedClasses.Responses.Adherent;
 using System.Net;
 using Borrowing.Web.Providers;

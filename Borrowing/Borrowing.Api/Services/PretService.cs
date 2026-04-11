@@ -1,8 +1,8 @@
-using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Models;
 using Borrowing.SharedClasses.Requests.Pret;
 using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.Api.Repositories;
-using LibraryManagement.Common.Models;
+using Common.Models;
 using Microsoft.EntityFrameworkCore;
 using Borrowing.Api.Extensions;
 

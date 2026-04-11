@@ -2,8 +2,8 @@ namespace Borrowing.SharedClasses.Responses.Adherent;
 
 using System;
 
-using LibraryManagement.Common.Models;
-using Borrowing.SharedClasses.Common;
+using Common.Models;
+using Borrowing.SharedClasses.Models;
 public class CheckAdhRestitutionResponseDto
 {
     public bool Found {get;set;} = true;

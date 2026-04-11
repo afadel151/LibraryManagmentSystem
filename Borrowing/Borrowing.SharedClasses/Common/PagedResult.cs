@@ -1,4 +1,4 @@
-namespace Borrowing.SharedClasses.Common;
+namespace Borrowing.SharedClasses.Models;
 using System.Collections.Generic;
 
 

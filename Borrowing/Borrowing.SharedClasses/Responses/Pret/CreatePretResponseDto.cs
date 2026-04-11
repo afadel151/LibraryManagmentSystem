@@ -1,6 +1,6 @@
 namespace Borrowing.SharedClasses.Responses.Pret;
 using System;
-using LibraryManagement.Common.Models;
+using Common.Models;
 
 public class CreatePretResponseDto
 {

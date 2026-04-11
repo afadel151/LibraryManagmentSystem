@@ -2,7 +2,7 @@ namespace Borrowing.SharedClasses.Responses.Adherent;
 
 using System;
 
-using LibraryManagement.Common.Models;
+using Common.Models;
 public class AdherentsStatsDto
 {
     public int TotalActif {get;set;} = 0;

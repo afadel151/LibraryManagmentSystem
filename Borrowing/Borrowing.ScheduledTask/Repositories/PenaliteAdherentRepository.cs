@@ -1,6 +1,5 @@
-using Shared.Data;
-using LibraryManagement.Common.Models;
-
+using Common.Models;
+using Common.Data;
 namespace Borrowing.ScheduledTask.Repositories;
 
 public interface IPenaliteAdherentRepository : IBaseRepository<PenaliteAdherent>

@@ -3,8 +3,8 @@ using Borrowing.Api.Services;
 using Borrowing.SharedClasses.Requests.Pret;
 using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
-using Borrowing.SharedClasses.Common;
-using LibraryManagement.Common.Models;
+using Borrowing.SharedClasses.Models;
+using Common.Models;
 namespace Borrowing.Api.Controllers;
 
 [Microsoft.AspNetCore.Authorization.Authorize]

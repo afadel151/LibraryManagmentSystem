@@ -1,9 +1,9 @@
 using Borrowing.Api.Repositories;
 using Borrowing.Api.Services;
 using Borrowing.Api.Tests.Helpers;
-using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Models;
 using Moq;
-using LibraryManagement.Common.Models;
+using Common.Models;
 using System.Linq.Expressions;
 namespace Borrowing.Api.Tests.Unit.Services;
 

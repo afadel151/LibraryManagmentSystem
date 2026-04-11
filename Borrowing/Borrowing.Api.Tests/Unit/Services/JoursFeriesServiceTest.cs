@@ -4,7 +4,7 @@ using Borrowing.Api.Tests.Helpers;
 using Borrowing.SharedClasses.Requests.JoursFery;
 using FluentAssertions;
 using Moq;
-using LibraryManagement.Common.Models;
+using Common.Models;
 namespace Borrowing.Api.Tests.Unit.Services;
 
 public class JoursFeriesServiceTest

@@ -1,6 +1,6 @@
 
 using System.Text.Json.Serialization;
-using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Models;
 
 namespace Borrowing.Api.Services;
 

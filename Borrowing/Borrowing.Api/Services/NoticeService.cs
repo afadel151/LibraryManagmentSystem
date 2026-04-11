@@ -1,9 +1,9 @@
 using Borrowing.Api.Repositories;
 using Microsoft.EntityFrameworkCore;
-using LibraryManagement.Common.Models;
+using Common.Models;
 using Borrowing.SharedClasses.Responses.Notice;
 
-using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 namespace Borrowing.Api.Services;

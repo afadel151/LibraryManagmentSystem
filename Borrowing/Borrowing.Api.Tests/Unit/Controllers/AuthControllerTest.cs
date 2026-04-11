@@ -2,7 +2,6 @@ using Borrowing.Api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using Shared.Data;
 
 namespace Borrowing.Api.Tests.Unit.Controllers;
 

@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Borrowing.Api.Services;
 using Borrowing.SharedClasses.Requests.Reservation;
 using Borrowing.SharedClasses.Responses.Reservation;
-using Borrowing.SharedClasses.Common;
-using LibraryManagement.Common.Models;
+using Borrowing.SharedClasses.Models;
+using Common.Models;
 namespace Borrowing.Api.Controllers;
 
 [Microsoft.AspNetCore.Authorization.Authorize]

@@ -1,6 +1,4 @@
 using Borrowing.Api.Extensions;
-using Shared.Data;
-using Shared.Seeders;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

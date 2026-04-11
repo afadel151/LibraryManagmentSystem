@@ -1,5 +1,4 @@
-using Shared.Data;
-using LibraryManagement.Common.Models;
+using Common.Models;
 
 namespace Borrowing.Api.Repositories;
 public interface IReservationRepository : IBaseRepository<Reservation>

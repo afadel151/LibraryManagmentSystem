@@ -1,5 +1,5 @@
 
-using LibraryManagement.Common.Models;
+using Common.Models;
 
 namespace Borrowing.Worker.Extensions;
 public static class BaseExtensions

@@ -4,5 +4,5 @@
   <Project Path="Borrowing/Borrowing.Web/Borrowing.Web.csproj" />
   <Project Path="Borrowing/Borrowing.ScheduledTask/Borrowing.ScheduledTask.csproj" />
   <Project Path="Borrowing/Borrowing.SharedClasses/Borrowing.SharedClasses.csproj" />
-  <Project Path="Shared/Shared.csproj" />
+  <Project Path="Common/Common.csproj" />
 </Solution>

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Shared.Data;
 using System.Collections.Concurrent;
 
 namespace Borrowing.Api.Controllers;

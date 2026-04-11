@@ -4,8 +4,8 @@ using Borrowing.SharedClasses.Requests.Pret;
 using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Responses.Notice;
-using Borrowing.SharedClasses.Common;
-using LibraryManagement.Common.Models;
+using Borrowing.SharedClasses.Models;
+using Common.Models;
 using System;
 namespace Borrowing.Api.Controllers;
 

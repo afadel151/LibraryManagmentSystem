@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Borrowing.Api.Services;
 using Borrowing.SharedClasses.Requests.Penalite;
-using Borrowing.SharedClasses.Common;
+using Borrowing.SharedClasses.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Borrowing.Api.Controllers;

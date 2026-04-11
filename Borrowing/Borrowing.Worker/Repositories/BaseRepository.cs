@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Shared.Data;
 
 namespace Borrowing.Worker.Repositories;
 public interface IBaseRepository<T> where T : class

@@ -1,5 +1,5 @@
 
-namespace Borrowing.SharedClasses.Common;
+namespace Borrowing.SharedClasses.Models;
 
 public class TopLoanedNoticeDto
 {
