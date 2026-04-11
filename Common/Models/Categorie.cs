@@ -13,5 +13,5 @@ public partial class Categorie
 
     public decimal? DureePret { get; set; }
 
-    public virtual ICollection<Penalite> Penalites {get;set;}= [];
+    public virtual ICollection<Penalite> Penalites {get;}=[];
 }

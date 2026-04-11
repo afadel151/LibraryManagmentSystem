@@ -9,6 +9,6 @@ public partial class Selection
 
     public string? LibelleSelection { get; set; }
 
-    public virtual ICollection<Notice> Notices { get; set; } = [];
+    public virtual ICollection<Notice> Notices { get; } = [];
 
 }

@@ -37,7 +37,7 @@ file class CalendarificResponse
 file class CalendarificResponseBody
 {
     [JsonPropertyName("holidays")]
-    public List<CalendarificHolidayRaw> Holidays { get; set; } = [];
+    public List<CalendarificHolidayRaw> Holidays { get; } = [];
 }
 file class CalendarificHolidayRaw
 {

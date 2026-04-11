@@ -9,6 +9,6 @@ public partial class Langue
 
     public string? Langue1 { get; set; }
 
-    public virtual ICollection<Notice> Notices { get; set; } = [];
+    public virtual ICollection<Notice> Notices { get; } = [];
 
 }

@@ -15,10 +15,10 @@ public partial class MentionResponsabilite
 
     // many to many 
     public virtual ICollection<AuteurSecondaire> AuteurSecondaires {get;set;} = [];
-    public virtual ICollection<Collection> Collections { get; set; } = [];
-    public virtual ICollection<Notice> AuteurNotices { get; set; } = [];    
-    public virtual ICollection<Notice> CoAuteurNotices { get; set; } = [];
-    public virtual ICollection<Notice> AuteurSecondaireNotices { get; set; } = [];
+    public virtual ICollection<Collection> Collections { get; } = [];
+    public virtual ICollection<Notice> AuteurNotices { get; } = [];    
+    public virtual ICollection<Notice> CoAuteurNotices { get; } = [];
+    public virtual ICollection<Notice> AuteurSecondaireNotices { get; } = [];
 
 
 }

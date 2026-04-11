@@ -9,8 +9,8 @@ public partial class Fonction
 
     public string? Fonction1 { get; set; }
 
-    public virtual ICollection<AuteurSecondaire> AuteurSecondaires { get; set; } = [];
+    public virtual ICollection<AuteurSecondaire> AuteurSecondaires { get; } = [];
     public virtual ICollection<Notice> Notices {get;set;} = null!;
-    public virtual ICollection<MentionResponsabilite> MentionResponsabilites{ get; set; } = [];
+    public virtual ICollection<MentionResponsabilite> MentionResponsabilites{ get; } = [];
 
 }

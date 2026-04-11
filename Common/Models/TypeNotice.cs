@@ -9,5 +9,5 @@ public partial class TypeNotice
 
     public string? TypeNotice1 { get; set; }
 
-    public virtual ICollection<Notice> Notices { get; set; } = [];
+    public virtual ICollection<Notice> Notices { get; } = [];
 }

@@ -75,23 +75,23 @@ public partial class Notice
 
 
     // on to many  backward
-    public virtual ICollection<NoticeEdition> NoticeEditions { get; set; } = [];
-    public virtual ICollection<NoticeCollection> NoticeCollections { get; set; } = [];
+    public virtual ICollection<NoticeEdition> NoticeEditions { get; } = [];
+    public virtual ICollection<NoticeCollection> NoticeCollections { get; } = [];
     public virtual ICollection<AuteurSecondaire> AuteurSecondaires {get;set;} = [];
-    public virtual ICollection<NoticeTerme> NoticeTermes { get; set; } = [];
-    public virtual ICollection<NoticeTermeExact> NoticeTermeExacts { get; set; } = [];
+    public virtual ICollection<NoticeTerme> NoticeTermes { get; } = [];
+    public virtual ICollection<NoticeTermeExact> NoticeTermeExacts { get; } = [];
     public virtual ICollection<Exemplaire> Exemplaires {get;set;} = [];
     public virtual ICollection<Reservation> Reservations {get;set;} = [];
 
     // many to many 
-    public virtual ICollection<MentionResponsabilite> CoAuteurs { get; set; } = [];
+    public virtual ICollection<MentionResponsabilite> CoAuteurs { get; } = [];
 
-    public virtual ICollection<MentionResponsabilite> Auteurs { get; set; } = [];
-    public virtual ICollection<MentionResponsabilite> AuteurSecondairesMentionRes { get; set; } = [];
+    public virtual ICollection<MentionResponsabilite> Auteurs { get; } = [];
+    public virtual ICollection<MentionResponsabilite> AuteurSecondairesMentionRes { get; } = [];
 
 
 
-    public virtual ICollection<Terme> Termes { get; set; } = [];
+    public virtual ICollection<Terme> Termes { get; } = [];
     public virtual ICollection<TermeExact> TermeExacts {get;set;} = [];
     public virtual ICollection<Collection> Collections {get;set;} = [];
 

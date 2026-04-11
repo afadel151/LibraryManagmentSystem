@@ -9,5 +9,5 @@ public partial class Diplome
 
     public string? Diplome1 { get; set; }
 
-    public virtual ICollection<NoticeDipDisEtab> NoticeDipDisEtabs { get; set; } = [];
+    public virtual ICollection<NoticeDipDisEtab> NoticeDipDisEtabs { get; } = [];
 }
