@@ -228,80 +228,69 @@ public class AdherentService(
         {
             if (adherent.Adherent?.EtatAdherent == 1) // actif
             {
-                if (adherent.Adherent?.PenaliteAdherents.Count == 0) // allowed
+                if (adherent.Adherent?.Categorie != null) // categorie exists
                 {
-                    if (adherent.Adherent?.Categorie != null) // categorie exists
+                    int activeLoans = adherent.Adherent.Prets.Count; // count active loans
+                    if (activeLoans < adherent.Adherent?.Categorie.NombreDocument)
                     {
-                        int activeLoans = adherent.Adherent.Prets.Count; // count active loans
-                        if (activeLoans < adherent.Adherent?.Categorie.NombreDocument)
+                        DateTime expectedReturnDate = await CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)adherent.Adherent?.Categorie.DureePret!);
+                        return new CheckAdhPretResponseDto
                         {
-                            DateTime expectedReturnDate = await CalculateExpectedReturnDate(DateTime.Now.Date, (decimal)adherent.Adherent?.Categorie.DureePret!);
-                                return new CheckAdhPretResponseDto
-                                {
-                                    Etat = CheckAdherentEnum.AUTHORIZED,
-                                    Adherent = adherent.Adherent,
-                                    picture = adherent.Picture,
-                                    ActiveLoans = activeLoans,
-                                    ExpectedReturnDate = expectedReturnDate
+                            Etat = CheckAdherentEnum.AUTHORIZED,
+                            Adherent = adherent.Adherent,
+                            picture = adherent.Picture,
+                            ActiveLoans = activeLoans,
+                            ExpectedReturnDate = expectedReturnDate
 
-                                };
-                        }
-                        else
-                        {
-                                return new CheckAdhPretResponseDto
-                                {
-                                    Etat = CheckAdherentEnum.QUOTA_REACHED,
-                                    Adherent = adherent.Adherent,
-                                    picture = adherent.Picture,
-                                    ActiveLoans = activeLoans
-                                };
-                        }
+                        };
                     }
                     else
                     {
-                            return new CheckAdhPretResponseDto
-                            {
-                                Etat = CheckAdherentEnum.NOT_FOUND,
-                            };
-
+                        return new CheckAdhPretResponseDto
+                        {
+                            Etat = CheckAdherentEnum.QUOTA_REACHED,
+                            Adherent = adherent.Adherent,
+                            picture = adherent.Picture,
+                            ActiveLoans = activeLoans
+                        };
                     }
                 }
                 else
                 {
-                            return new CheckAdhPretResponseDto
-                            {
-                                Etat = CheckAdherentEnum.PENALISED,
-                                Adherent = adherent.Adherent,
-                                picture = adherent.Picture
-                            };
+                    return new CheckAdhPretResponseDto
+                    {
+                        Etat = CheckAdherentEnum.NOT_FOUND,
+                    };
+
                 }
+
             }
             else if (adherent.Adherent?.EtatAdherent == 2)
             {
-                            return new CheckAdhPretResponseDto
-                            {
-                                Etat = CheckAdherentEnum.PENALISED,
-                                Adherent = adherent.Adherent,
-                                picture = adherent.Picture
-                            };
+                return new CheckAdhPretResponseDto
+                {
+                    Etat = CheckAdherentEnum.PENALISED,
+                    Adherent = adherent.Adherent,
+                    picture = adherent.Picture
+                };
 
             }
             else
             {
                 return new CheckAdhPretResponseDto
-                            {
-                                Etat = CheckAdherentEnum.SUSPENDED,
-                                Adherent = adherent.Adherent,
-                                picture = adherent.Picture
-                            };
+                {
+                    Etat = CheckAdherentEnum.SUSPENDED,
+                    Adherent = adherent.Adherent,
+                    picture = adherent.Picture
+                };
             }
         }
         else
         {
-                return new CheckAdhPretResponseDto
-                {
-                    Etat = CheckAdherentEnum.NOT_FOUND,
-                };
+            return new CheckAdhPretResponseDto
+            {
+                Etat = CheckAdherentEnum.NOT_FOUND,
+            };
         }
     }
 }
