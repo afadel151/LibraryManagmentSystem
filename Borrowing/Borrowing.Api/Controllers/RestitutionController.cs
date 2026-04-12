@@ -22,25 +22,22 @@ public class RestitutionController(
     public async Task<IActionResult> PerformRestitution([FromBody] CreateRestitutionDto form)
     {
         ArgumentNullException.ThrowIfNull(form);
-        var pret = await _pretService.GetPretByExemplaireId(form.ExemplaireId);
-        if (pret != null && pret.IdAdherent == form.AdherentId)
-        {
-            try
-            {
-                var success = await _pretService.RestitutionPret(form.AdherentId, form.ExemplaireId);
-                if (success)
-                {
-                    return Ok("Notice restitue avec succe");
-                }
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex.ToString());
-            }
-        }
-        return NotFound("Erreur ");
 
+        var pret = await _pretService.GetPretByExemplaireId(form.ExemplaireId);
+
+        if (pret == null)
+            return Ok(ApiResult.Fail("Prêt introuvable pour cet exemplaire.", "PRET_NOT_FOUND"));
+
+        if (pret.IdAdherent != form.AdherentId)
+            return Ok(ApiResult.Fail("L'adhérent ne correspond pas à ce prêt.", "ADHERENT_MISMATCH"));
+
+        var result = await _pretService.RestitutionPret(form.AdherentId, form.ExemplaireId);
+        
+        return Ok(result);
     }
+
+
+
     [HttpPost("Renouvler")]
     public async Task<IActionResult> RenouvlerPret([FromBody] CreateRestitutionDto form)
     {

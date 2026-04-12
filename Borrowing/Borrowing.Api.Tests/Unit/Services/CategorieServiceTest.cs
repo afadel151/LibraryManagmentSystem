@@ -9,11 +9,18 @@ namespace Borrowing.Api.Tests.Unit.Services;
 public class CategorieServiceTests
 {
     private readonly Mock<ICategorieRepository> _categorieRepositoryMock = new();
+    private readonly Mock<IAdherentRepository> _adherentRepositoryMock = new();
     private readonly CategorieService _sut;
 
     public CategorieServiceTests()
     {
-        _sut = new(_categorieRepositoryMock.Object);
+        _sut = new(
+            _categorieRepositoryMock.Object,
+            _adherentRepositoryMock.Object
+            );
+        _adherentRepositoryMock
+            .Setup(r => r.GetQueryable())
+            .Returns(new TestAsyncQueryable<Adherent>([]));
     }
 
     [Fact]
@@ -25,11 +32,20 @@ public class CategorieServiceTests
             new() { IdCategorie = "C1", LibelleCategorie = "Etudiant" },
             new() { IdCategorie = "C2", LibelleCategorie = "Enseignant" }
         };
+        var adherents = new List<Adherent>
+        {
+            new() { IdCategorie = "C1" },
+            new() { IdCategorie = "C1" },
+            new() { IdCategorie = "C2" }
+        };
 
-        var mockQueryable = new TestAsyncQueryable<Categorie>(categories);
         _categorieRepositoryMock
             .Setup(r => r.GetQueryable())
-            .Returns(mockQueryable);
+            .Returns(new TestAsyncQueryable<Categorie>(categories));
+
+        _adherentRepositoryMock
+            .Setup(r => r.GetQueryable())
+            .Returns(new TestAsyncQueryable<Adherent>(adherents));
 
         // Act
         var result = await _sut.GetAllCategoriesAsync();

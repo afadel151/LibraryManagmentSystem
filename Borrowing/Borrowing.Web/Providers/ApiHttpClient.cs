@@ -1,9 +1,11 @@
+using System.Net;
+using Borrowing.SharedClasses.Models;
 using Microsoft.AspNetCore.Components;
 using Radzen;
 
 namespace Borrowing.Web.Providers;
 
-public class ApiHttpClient(IHttpClientFactory factory, NavigationManager nav,ILogger<ApiHttpClient> logger)
+public class ApiHttpClient(IHttpClientFactory factory, NavigationManager nav, ILogger<ApiHttpClient> logger)
 {
     private readonly HttpClient _http = factory.CreateClient("BorrowingApi");
     private readonly NavigationManager _nav = nav;
@@ -83,5 +85,27 @@ public class ApiHttpClient(IHttpClientFactory factory, NavigationManager nav,ILo
         }
 
         return Task.FromResult(response.IsSuccessStatusCode);
+    }
+    public async Task<ApiResult> PostForResultAsync(string url, object body)
+    {
+        var response = await _http.PostAsJsonAsync(url, body);
+
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            _nav.NavigateTo("/Login", forceLoad: true);
+            return ApiResult.Fail("Non autorisé.", "UNAUTHORIZED");
+        }
+
+        if (response.StatusCode == HttpStatusCode.Forbidden)
+        {
+            _nav.NavigateTo("/unauthorized", forceLoad: true);
+            return ApiResult.Fail("Accès refusé.", "FORBIDDEN");
+        }
+
+        if (!response.IsSuccessStatusCode)
+            return ApiResult.Fail($"Erreur HTTP {(int)response.StatusCode}.", "HTTP_ERROR");
+
+        return await response.Content.ReadFromJsonAsync<ApiResult>()
+               ?? ApiResult.Fail("Réponse vide du serveur.", "EMPTY_RESPONSE");
     }
 }

@@ -15,12 +15,10 @@ public class ReservationServiceTest
 
     public ReservationServiceTest()
     {
-        _sut = new(
+        _sut = new( 
             _reservationRepositoryMock.Object,
-            _adherentRepositoryMock.Object,
             _pretRepositoryMock.Object,
-            _noticesRepositoryMock.Object,
-            _exemplairesRepositoryMock.Object
+            _noticesRepositoryMock.Object
         );
     }
 }

@@ -5,6 +5,7 @@ using Borrowing.SharedClasses.Models;
 using Moq;
 using Common.Models;
 using System.Linq.Expressions;
+using Microsoft.Extensions.Logging;
 namespace Borrowing.Api.Tests.Unit.Services;
 
 public class AdherentServiceTest
@@ -15,17 +16,17 @@ public class AdherentServiceTest
     private readonly Mock<ICategorieRepository> _categorieRepositoryMock = new();
     private readonly Mock<IJoursFeriesRepository> _joursFeriesRepositoryMock = new();
     private readonly Mock<IPretRepository> _pretRepositoryMock = new();
+    private readonly Mock<ILogger<AdherentService>> _logger = new();
+
     private readonly AdherentService _sut;
 
     public AdherentServiceTest()
     {
         _sut = new(
             _adherentRepositoryMock.Object,
-            _reservationRepositoryMock.Object,
-            _penaliteAdherentRepositoryMock.Object,
-            _categorieRepositoryMock.Object,
             _joursFeriesRepositoryMock.Object,
-            _pretRepositoryMock.Object
+            _pretRepositoryMock.Object,
+            _logger.Object
         );
     }
 
@@ -148,7 +149,9 @@ public class AdherentServiceTest
                     It.IsAny<Expression<Func<Adherent, object>>>()
                 ))
                 .Returns(mockQueryable);
+
             var joursFeriesQueryable = new TestAsyncQueryable<JoursFery>(joursFeries);
+            
             _joursFeriesRepositoryMock
                 .Setup(r => r.GetQueryable())
                 .Returns(joursFeriesQueryable);

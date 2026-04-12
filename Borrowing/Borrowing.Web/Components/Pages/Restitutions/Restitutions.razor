@@ -45,16 +45,16 @@
                         </RadzenText>
 
                        
-                        <RadzenBadge  Style="scale: 150% 150%;margin-left:10px;margin-top:10px;"
+                        <RadzenBadge Style="scale: 150% 150%;margin-left:10px;margin-top:10px;"
                                      BadgeStyle="@(adherentCheck.Adherent!.EtatAdherent == 1 ? BadgeStyle.Success : BadgeStyle.Danger)"
                                      Text="@(adherentCheck.Adherent!.EtatAdherent == 1 ? @L["Active"] : adherentCheck.Adherent!.EtatAdherent == 2 ?  @L["Penalised"] : @L["Suspended"])" />
 
                             
                         <div class="rz-mt-5">
-                            <RadzenText  TextStyle="TextStyle.DisplayH6">@L["Quota"]: @adherentCheck.Adherent!.Prets.Count /
+                            <RadzenText TextStyle="TextStyle.DisplayH6">@L["Quota"]: @adherentCheck.Adherent!.Prets.Count /
                                 @adherentCheck.Adherent?.Categorie?.NombreDocument</RadzenText>
+
                                                 
-                               
                             </div>
                             <RadzenText TextStyle="TextStyle.H6" class="rz-mt-3">@L["SelectExemplaire"] :</RadzenText>
                             <RadzenDropDown @bind-Value="selectedCopyId"
@@ -130,25 +130,23 @@
 
     private async Task ValiderRestitution()
     {
-        if (string.IsNullOrEmpty(selectedCopyId))
-            return;
-        if (adherentCheck == null)
+        if (string.IsNullOrEmpty(selectedCopyId) || adherentCheck == null)
             return;
 
-
-        CreateRestitutionDto dto = new()
+        var dto = new CreateRestitutionDto
         {
-            AdherentId = adherentCheck!.Adherent!.IdAdherent,
-            ExemplaireId = selectedCopyId!
+            AdherentId = adherentCheck.Adherent!.IdAdherent,
+            ExemplaireId = selectedCopyId
         };
 
-        var success = await restitutionService.ValiderRestitution(dto);
-        if (success)
+        var result = await restitutionService.ValiderRestitution(dto);
+
+        if (result.Success)
         {
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Success,
-                Summary = @L["RestitutionValid"],
+                Summary = L["RestitutionValid"], // or result.Message
                 Duration = 4000
             });
             ResetMemberState();
@@ -158,12 +156,11 @@
             ShowNotification(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = @L["ErrorDuringRestitution"],
+                Summary = result.Message ?? L["ErrorDuringRestitution"],
+                Detail = result.ErrorCode ?? "ERROR_CODE", // helpful during dev
                 Duration = 4000
             });
         }
-
-
     }
 
     private async Task ValiderRenouvlement()
