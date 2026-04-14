@@ -62,7 +62,7 @@
     <value>Documents en prêt</value>
   </data>
   <data name="SearchByIdOrName" xml:space="preserve">
-    <value>Rechercher par ID, Nom ou Prenom...</value>
+    <value>Rechercher par ID, Nom, Prenom, Cote ou Titre...</value>
   </data>
   <data name="Export" xml:space="preserve">
     <value>Exporter</value>
@@ -88,7 +88,13 @@
   <data name="State" xml:space="preserve">
     <value>État</value>
   </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Exemplaire</value>
+  </data>
   <data name="Actions" xml:space="preserve">
     <value>Actions</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Voir</value>
   </data>
 </root>

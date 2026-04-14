@@ -103,4 +103,43 @@
   <data name="Export" xml:space="preserve">
     <value>Exporter</value>
   </data>
+  <data name="Cote" xml:space="preserve">
+    <value>Cote</value>
+  </data>
+  <data name="UnknownState" xml:space="preserve">
+    <value>État inconnu</value>
+  </data>
+  <data name="CurrentLoan" xml:space="preserve">
+    <value>Prêt en cours</value>
+  </data>
+  <data name="NoCurrentLoan" xml:space="preserve">
+    <value>Aucun prêt en cours</value>
+  </data>
+  <data name="AdherentId" xml:space="preserve">
+    <value>Id d'Adhérent</value>
+  </data>
+  <data name="AdherentName" xml:space="preserve">
+    <value>Nom d'Adhérent</value>
+  </data>
+  <data name="AdherentFirstName" xml:space="preserve">
+    <value>Prénom d'Adhérent</value>
+  </data>
+  <data name="AdherentCategory" xml:space="preserve">
+    <value>Catégorie d'Adhérent</value>
+  </data>
+  <data name="LoanDate" xml:space="preserve">
+    <value>Date de prêt</value>
+  </data>
+  <data name="DurationState" xml:space="preserve">
+    <value>État durée</value>
+  </data>
+  <data name="LoanHistory" xml:space="preserve">
+    <value>Historique des prêts</value>
+  </data>
+  <data name="NoHistory" xml:space="preserve">
+    <value>Aucun historique</value>
+  </data>
+  <data name="ReturnDate" xml:space="preserve">
+    <value>Date de retour</value>
+  </data>
 </root>

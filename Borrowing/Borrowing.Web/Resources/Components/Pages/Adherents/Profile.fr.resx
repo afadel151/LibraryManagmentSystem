@@ -205,4 +205,34 @@
   <data name="Cote" xml:space="preserve">
     <value>Cote</value>
   </data>
+  <data name="IdLabel" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Active" xml:space="preserve">
+    <value>En règle</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="WarningMessage" xml:space="preserve">
+    <value>Vous êtes sur le point de modifier les informations de cet adhérent. Veuillez vérifier que toutes les données sont correctes avant de continuer.</value>
+  </data>
+  <data name="FinalConfirmation" xml:space="preserve">
+    <value>Confirmation finale</value>
+  </data>
+  <data name="ConfirmUpdateMessage" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir enregistrer ces modifications ? Cette action est irréversible.</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirmer</value>
+  </data>
+  <data name="NoLoanHistory" xml:space="preserve">
+    <value>Aucun prêt en historique</value>
+  </data>
+  <data name="NoPenaltyHistory" xml:space="preserve">
+    <value>Aucune pénalité en historique</value>
+  </data>
 </root>

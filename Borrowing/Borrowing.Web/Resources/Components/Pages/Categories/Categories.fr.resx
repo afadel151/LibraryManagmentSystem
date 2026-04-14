@@ -61,4 +61,106 @@
   <data name="Categories" xml:space="preserve">
     <value>Catégories</value>
   </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>Export...</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="CategoryId" xml:space="preserve">
+    <value>ID Catégorie</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>Libellé</value>
+  </data>
+  <data name="DocumentCount" xml:space="preserve">
+    <value>Nombre de documents</value>
+  </data>
+  <data name="LoanDuration" xml:space="preserve">
+    <value>Durée de prêt (jours)</value>
+  </data>
+  <data name="AdherentCount" xml:space="preserve">
+    <value>Nombre d'adhérents</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Modifier</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="AddCategory" xml:space="preserve">
+    <value>Ajouter une catégorie</value>
+  </data>
+  <data name="IdRequired" xml:space="preserve">
+    <value>L'ID est requis</value>
+  </data>
+  <data name="LabelRequired" xml:space="preserve">
+    <value>Le libellé est requis</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Succès</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="CategoryCreatedSuccess" xml:space="preserve">
+    <value>Catégorie créée avec succès</value>
+  </data>
+  <data name="ErrorCreatingCategory" xml:space="preserve">
+    <value>Erreur lors de la création de la catégorie</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>Modifier une catégorie</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Mettre à jour</value>
+  </data>
+  <data name="CategoryUpdatedSuccess" xml:space="preserve">
+    <value>Catégorie mise à jour avec succès</value>
+  </data>
+  <data name="ErrorUpdatingCategory" xml:space="preserve">
+    <value>Erreur lors de la mise à jour de la catégorie</value>
+  </data>
+  <data name="DeleteConfirmation" xml:space="preserve">
+    <value>Confirmation de suppression</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="DeleteCategoryWarning" xml:space="preserve">
+    <value>Vous êtes sur le point de supprimer la catégorie ? Cette action pourrait affecter les adhérents associés.</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continuer</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="FinalConfirmation" xml:space="preserve">
+    <value>Confirmation finale</value>
+  </data>
+  <data name="ConfirmDeleteCategory" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir supprimer cette catégorie ? Cette action est irréversible.</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Confirmer la suppression</value>
+  </data>
+  <data name="CategoryDeletedSuccess" xml:space="preserve">
+    <value>Catégorie supprimée avec succès</value>
+  </data>
+  <data name="ErrorDeletingCategory" xml:space="preserve">
+    <value>Erreur lors de la suppression de la catégorie</value>
+  </data>
 </root>

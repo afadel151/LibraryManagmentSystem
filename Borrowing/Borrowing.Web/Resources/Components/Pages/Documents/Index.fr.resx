@@ -109,7 +109,34 @@
   <data name="TotalLoans" xml:space="preserve">
     <value>Nombre total de prets</value>
   </data>
+  <data name="TotalNumberOfLoans" xml:space="preserve">
+    <value>Nombre total de prets</value>
+  </data>
+  <data name="Document" xml:space="preserve">
+    <value>Document (Titre)</value>
+  </data>
+  <data name="MostBorrowedDocuments" xml:space="preserve">
+    <value>Les Documents les Plus Empruntés</value>
+  </data>
   <data name="loans" xml:space="preserve">
     <value>prets</value>
+  </data>
+  <data name="AvailableCopies" xml:space="preserve">
+    <value>Exemplaires disponibles</value>
+  </data>
+  <data name="CopiesOnLoan" xml:space="preserve">
+    <value>Exemplaires en prêt</value>
+  </data>
+  <data name="ActiveReservations" xml:space="preserve">
+    <value>Réservations en cours</value>
+  </data>
+  <data name="BlockedCopies" xml:space="preserve">
+    <value>Copies bloquées pour les reservateurs</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Voir</value>
   </data>
 </root>

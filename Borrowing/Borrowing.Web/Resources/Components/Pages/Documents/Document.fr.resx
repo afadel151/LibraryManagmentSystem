@@ -121,4 +121,34 @@
   <data name="Summary" xml:space="preserve">
     <value>Résumé</value>
   </data>
+  <data name="Copies" xml:space="preserve">
+    <value>Exemplaires</value>
+  </data>
+  <data name="NoCopy" xml:space="preserve">
+    <value>Aucun exemplaire</value>
+  </data>
+  <data name="Authors" xml:space="preserve">
+    <value>Auteurs</value>
+  </data>
+  <data name="NoAuthor" xml:space="preserve">
+    <value>Aucun auteur</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="OtherPart" xml:space="preserve">
+    <value>Autre partie</value>
+  </data>
+  <data name="Action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="State" xml:space="preserve">
+    <value>État</value>
+  </data>
+  <data name="View" xml:space="preserve">
+    <value>Voir</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exporter</value>
+  </data>
 </root>

@@ -61,4 +61,88 @@
   <data name="Penalties" xml:space="preserve">
     <value>Pénalités</value>
   </data>
+  <data name="SearchByCategory" xml:space="preserve">
+    <value>Rechercher par catégorie</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>Libellé</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Catégorie</value>
+  </data>
+  <data name="DaysDelayed" xml:space="preserve">
+    <value>Jours de retard</value>
+  </data>
+  <data name="NumberOfDaysDelayed" xml:space="preserve">
+    <value>Nombre de jours de retard</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Modifier</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="AddPenalty" xml:space="preserve">
+    <value>Ajouter une pénalité</value>
+  </data>
+  <data name="CategoryIsRequired" xml:space="preserve">
+    <value>La catégorie est requise</value>
+  </data>
+  <data name="DaysDelayedIsRequired" xml:space="preserve">
+    <value>Les jours de retard sont requis</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Succès</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="PenaltyCreatedSuccess" xml:space="preserve">
+    <value>Pénalité créée avec succès</value>
+  </data>
+  <data name="ErrorCreatingPenalty" xml:space="preserve">
+    <value>Erreur lors de la création de la pénalité</value>
+  </data>
+  <data name="EditPenalty" xml:space="preserve">
+    <value>Modifier une pénalité</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Mettre à jour</value>
+  </data>
+  <data name="PenaltyUpdatedSuccess" xml:space="preserve">
+    <value>Pénalité mise à jour avec succès</value>
+  </data>
+  <data name="ErrorUpdatingPenalty" xml:space="preserve">
+    <value>Erreur lors de la mise à jour de la pénalité</value>
+  </data>
+  <data name="ConfirmDeletePenalty" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir supprimer cette pénalité ?</value>
+  </data>
+  <data name="DeleteConfirmation" xml:space="preserve">
+    <value>Confirmation de suppression</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Oui</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Non</value>
+  </data>
+  <data name="PenaltyDeletedSuccess" xml:space="preserve">
+    <value>Pénalité supprimée avec succès</value>
+  </data>
+  <data name="ErrorDeletingPenalty" xml:space="preserve">
+    <value>Erreur lors de la suppression de la pénalité</value>
+  </data>
 </root>
