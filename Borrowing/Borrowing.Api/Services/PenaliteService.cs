@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Common.Models;
 using Borrowing.SharedClasses.Models;
 using Borrowing.SharedClasses.Requests.Penalite;
+using System.Data.Common;
 
 namespace Borrowing.Api.Services;
 
@@ -15,10 +16,13 @@ public interface IPenaliteService
     Task<bool> DeletePenaliteAsync(string idCategorie);
 }
 
-public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieRepository categorieRepository) : IPenaliteService
+public class PenaltieService(
+    IPenaliteRepository penaliteRepository,
+    ILogger<PenaltieService> logger
+ ) : IPenaliteService
 {
     private readonly IPenaliteRepository _penaliteRepository = penaliteRepository;
-
+    private readonly ILogger<PenaltieService> _logger = logger;
     public async Task<PagedResult<PenaliteDto>> GetPenalitesAsync(PaginatedQueryParameters queryParameters)
     {
         ArgumentNullException.ThrowIfNull(queryParameters);
@@ -112,8 +116,9 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
             await _penaliteRepository.AddAsync(penalite);
             return true;
         }
-        catch (Exception ex)
+        catch (DbException ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }
@@ -134,8 +139,9 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
             await _penaliteRepository.UpdateAsync(penalite);
             return true;
         }
-        catch (Exception ex)
+         catch (DbException ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }
@@ -153,8 +159,9 @@ public class PenaltieService(IPenaliteRepository penaliteRepository, ICategorieR
             await _penaliteRepository.DeleteAsync(penalite);
             return true;
         }
-        catch (Exception ex)
+         catch (DbException ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }

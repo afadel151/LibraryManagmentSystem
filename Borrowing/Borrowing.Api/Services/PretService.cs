@@ -13,7 +13,7 @@ public interface IPretService
     Task<bool> CreatePretAsync(CreatePretRequestDto pretRequestDTo);
     Task<int> CountAsync();
     Task<PagedResult<PretResponseDto>> GetPretsAsync(PaginatedQueryParameters queryParameters);
-    Task<bool> RestitutionPret(string IdAdherent, string IdExemplaire);
+    Task<ApiResult> RestitutionPret(string IdAdherent, string IdExemplaire);
     Task<bool> RenouvlementPret(string IdAdherent, string IdExemplaire);
     Task<int> CountAdherentActiveLoans(string AdherentId);
     Task<bool> DeletePret(string IdAdherent, string IdExemplaire);
@@ -124,11 +124,11 @@ public class PretService(
         {
             var search = queryParameters.Search.ToUpper(); // only once, on the in-memory value
             query = query.Where(x =>
-                x.AdherentId.ToUpper().Contains(search,StringComparison.InvariantCulture) ||
-                x.AdherentNom.ToUpper().Contains(search,StringComparison.InvariantCulture) ||
-                x.AdherentPrenom.ToUpper().Contains(search,StringComparison.InvariantCulture) ||
-                x.NoticeTitrePropre.ToUpper().Contains(search,StringComparison.InvariantCulture) ||
-                x.ExemplaireId.ToUpper().Contains(search,StringComparison.InvariantCulture));
+                x.AdherentId.ToUpper().Contains(search, StringComparison.InvariantCulture) ||
+                x.AdherentNom.ToUpper().Contains(search, StringComparison.InvariantCulture) ||
+                x.AdherentPrenom.ToUpper().Contains(search, StringComparison.InvariantCulture) ||
+                x.NoticeTitrePropre.ToUpper().Contains(search, StringComparison.InvariantCulture) ||
+                x.ExemplaireId.ToUpper().Contains(search, StringComparison.InvariantCulture));
         }
         // Apply ordering
         if (!string.IsNullOrWhiteSpace(queryParameters.OrderBy))
@@ -220,7 +220,7 @@ public class PretService(
 
 
 
-    public async Task<bool> RestitutionPret(string IdAdherent, string IdExemplaire)
+    public async Task<ApiResult> RestitutionPret(string IdAdherent, string IdExemplaire)
     {
         ArgumentNullException.ThrowIfNull(IdAdherent);
         ArgumentNullException.ThrowIfNull(IdExemplaire);
@@ -231,198 +231,266 @@ public class PretService(
         //cherchcer pret
         var pret = prets.FirstOrDefault();
 
-        if (pret == null) return false;
+        if (pret == null) return ApiResult.Fail("Prêt introuvable.", "PRET_NOT_FOUND"); 
 
+
+        // rechercher exemplaire
+        var exemplaire = await _exemplairesRepository.GetQueryable().Where(e => e.IdExemplaire == pret.IdExemplaire).FirstOrDefaultAsync();
+        if (exemplaire == null) return ApiResult.Fail("Exemplaire introuvable.", "EXEMPLAIRE_NOT_FOUND"); ;
+
+        // Extraction de la cote
+        string cote = exemplaire.Cote!;
+        if (string.IsNullOrEmpty(cote) && IdExemplaire.Contains('/'))
+        {
+            cote = IdExemplaire.Substring(0, IdExemplaire.LastIndexOf('/'));
+        }
+        cote ??= IdExemplaire;
+        Console.WriteLine("######## COTE : " + cote);
+        //  Sauvegarder dans historique_pret
+        var historique = new HistoriquePret
+        {
+            IdAdherent = IdAdherent,
+            IdExemplaire = IdExemplaire,
+            DatePret = pret.DatePret,
+            DateRetour = dateRetour
+        };
         try
         {
-            // rechercher exemplaire
-            var exemplaire = await _exemplairesRepository.GetQueryable().Where(e => e.IdExemplaire == pret.IdExemplaire).FirstOrDefaultAsync();
-            if (exemplaire == null) return false;
-
-            // Extraction de la cote
-            string cote = exemplaire.Cote!;
-            if (string.IsNullOrEmpty(cote) && IdExemplaire.Contains('/',StringComparison.InvariantCulture))
-            {
-                cote = IdExemplaire.Substring(0, IdExemplaire.LastIndexOf('/'));
-            }
-            cote ??= IdExemplaire;
-
-            //  Sauvegarder dans historique_pret
-            var historique = new HistoriquePret
-            {
-                IdAdherent = IdAdherent,
-                IdExemplaire = IdExemplaire,
-                DatePret = pret.DatePret,
-                DateRetour = dateRetour
-            };
             await _historiquePretRepository.AddAsync(historique);
 
-            //  Calcul du retard
-            bool retard = false;
-            int nbrJoursRetardDocEnCours = 0;
-            // get adherent
-            var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!, a => a.PenaliteAdherents, a => a.Prets).Where(a => a.IdAdherent == IdAdherent).FirstOrDefaultAsync();
+        }
+        catch (Exception)
+        {
+            return ApiResult.Fail("Erreur lors d'ajout d'historique ");
+        }
+        //  Calcul du retard
+        bool retard = false;
+        int nbrJoursRetardDocEnCours = 0;
+        // get adherent
+        var adherent = await _adherentRepository.GetQueryable(a => a.Categorie!, a => a.PenaliteAdherents, a => a.Prets).Where(a => a.IdAdherent == IdAdherent).FirstOrDefaultAsync();
 
-            if (adherent != null && adherent.IdCategorie != null)
+        if (adherent != null && adherent.IdCategorie != null)
+        {
+
+            var categorie = adherent.Categorie;
+
+            if (categorie != null && categorie.DureePret.HasValue)
             {
+                int dureePret = (int)categorie.DureePret;
+                DateTime dateRestitutionPrevue = pret.DatePret.AddDays(dureePret);
 
-                var categorie = adherent.Categorie;
+                // calculer date restitution prevue
+                var joursFeries = await _joursFeriesRepository.GetAllAsync();
+                dateRestitutionPrevue = BaseExtensions.Traiter_date(dateRestitutionPrevue, joursFeries.ToList());
 
-                if (categorie != null && categorie.DureePret.HasValue)
+                // Vérifier si durée ouverte
+                if (pret.EtatDuree?.ToUpper() != "O")
                 {
-                    int dureePret = (int)categorie.DureePret;
-                    DateTime dateRestitutionPrevue = pret.DatePret.AddDays(dureePret);
-
-                    // calculer date restitution prevue
-                    var joursFeries = await _joursFeriesRepository.GetAllAsync();
-                    dateRestitutionPrevue = BaseExtensions.Traiter_date(dateRestitutionPrevue, joursFeries.ToList());
-
-                    // Vérifier si durée ouverte
-                    if (pret.EtatDuree?.ToUpper() != "O")
+                    // date aujourdhui > date rest prevue
+                    if (DateTime.Now.Date > dateRestitutionPrevue)
                     {
-                        // date aujourdhui > date rest prevue
-                        if (DateTime.Now.Date > dateRestitutionPrevue)
+                        retard = true; // il est en retard
+                        nbrJoursRetardDocEnCours = (DateTime.Now.Date - dateRestitutionPrevue).Days;
+
+                        // Extraire le nombre de jours de pénalité depuis la table penalite
+                        var penaliteRecord = await _penaliteRepository.GetQueryable()
+                            .Where(p => p.IdCategorie == adherent.IdCategorie && p.JoursRetard <= nbrJoursRetardDocEnCours)
+                            .OrderBy(p => p.NombreJoursRetard)
+                            .LastOrDefaultAsync();
+
+                        if (penaliteRecord != null)
                         {
-                            retard = true; // il est en retard
-                            nbrJoursRetardDocEnCours = (DateTime.Now.Date - dateRestitutionPrevue).Days;
-
-                            // Extraire le nombre de jours de pénalité depuis la table penalite
-                            var penaliteRecord = await _penaliteRepository.GetQueryable()
-                                .Where(p => p.IdCategorie == adherent.IdCategorie && p.JoursRetard <= nbrJoursRetardDocEnCours)
-                                .OrderBy(p => p.NombreJoursRetard)
-                                .LastOrDefaultAsync();
-
-                            if (penaliteRecord != null)
-                            {
-                                nbrJoursRetardDocEnCours = (int)penaliteRecord.NombreJoursRetard!;
-                            }
+                            nbrJoursRetardDocEnCours = (int)penaliteRecord.NombreJoursRetard!;
                         }
                     }
                 }
             }
+        }
 
-            // 3. Vérification existence dans penalite_adherent
+        // 3. Vérification existence dans penalite_adherent
 
-            bool existeDansPenaliteAdherent = false;
-            int nbrJoursRetardDansTablePenaliteAdherent = 0;
-            var penaliteAdherentExistante = adherent!.PenaliteAdherents.FirstOrDefault();
+        bool existeDansPenaliteAdherent = false;
+        int nbrJoursRetardDansTablePenaliteAdherent = 0;
+        var penaliteAdherentExistante = adherent!.PenaliteAdherents.FirstOrDefault();
 
-            if (penaliteAdherentExistante != null)
+        if (penaliteAdherentExistante != null)
+        {
+            existeDansPenaliteAdherent = true;
+            nbrJoursRetardDansTablePenaliteAdherent = Math.Abs((int)(penaliteAdherentExistante.NombreJoursPenalite ?? 0));
+        }
+
+        // prets en cours
+        int nbrPretUtilisateurEnCours = adherent.Prets.Count;
+
+        // gestion des pénalités
+        if (retard)
+        {
+
+            int joursRetardFinal = 0;
+
+            if (nbrPretUtilisateurEnCours == 1) // Dernier document
             {
-                existeDansPenaliteAdherent = true;
-                nbrJoursRetardDansTablePenaliteAdherent = Math.Abs((int)(penaliteAdherentExistante.NombreJoursPenalite ?? 0));
+                if (existeDansPenaliteAdherent)
+                {
+                    joursRetardFinal = Math.Max(nbrJoursRetardDocEnCours, nbrJoursRetardDansTablePenaliteAdherent);
+                    penaliteAdherentExistante!.DatePenalite = DateTime.Now.Date;
+                    penaliteAdherentExistante.NombreJoursPenalite = joursRetardFinal;
+                    await _penaliteAdherentRepository.UpdateAsync(penaliteAdherentExistante);
+                }
+                else
+                {
+                    joursRetardFinal = nbrJoursRetardDocEnCours;
+                    try
+                    {
+                        await _penaliteAdherentRepository.AddAsync(new PenaliteAdherent
+                        {
+                            IdAdherent = IdAdherent,
+                            DatePenalite = DateTime.Now.Date,
+                            NombreJoursPenalite = joursRetardFinal
+                        });
+
+                    }
+                    catch (Exception)
+                    {
+
+                        return ApiResult.Fail("Erreur lors de la penalisation de l'adherent ");
+                    }
+                }
+            }
+            else // Il a d'autres documents en possession
+            {
+                if (existeDansPenaliteAdherent)
+                {
+                    joursRetardFinal = Math.Max(nbrJoursRetardDocEnCours, nbrJoursRetardDansTablePenaliteAdherent) * -1; // Négatif
+                    penaliteAdherentExistante!.DatePenalite = DateTime.Now.Date;
+                    penaliteAdherentExistante.NombreJoursPenalite = joursRetardFinal;
+                    try
+                    {
+                        await _penaliteAdherentRepository.UpdateAsync(penaliteAdherentExistante);
+
+                    }
+                    catch (Exception)
+                    {
+                        return ApiResult.Fail("Erreur de penalisation s'il existe d'autre documents ");
+                    }
+                }
+                else
+                {
+                    joursRetardFinal = nbrJoursRetardDocEnCours * -1; // Négatif
+                    try
+                    {
+                        await _penaliteAdherentRepository.AddAsync(new PenaliteAdherent
+                        {
+                            IdAdherent = IdAdherent,
+                            DatePenalite = DateTime.Now.Date,
+                            NombreJoursPenalite = joursRetardFinal
+                        });
+
+                    }
+                    catch (Exception)
+                    {
+
+                        return ApiResult.Fail("Erreur lors de penalisation lors du dernier document ");
+
+                    }
+                }
             }
 
-            // prets en cours
-            int nbrPretUtilisateurEnCours = adherent.Prets.Count;
-
-            // gestion des pénalités
-            if (retard)
+            // Pénaliser l'adhérent (Etat 2)
+            if (adherent != null)
             {
-
-                int joursRetardFinal = 0;
-
-                if (nbrPretUtilisateurEnCours == 1) // Dernier document
+                adherent.EtatAdherent = 2;
+                try
                 {
-                    if (existeDansPenaliteAdherent)
-                    {
-                        joursRetardFinal = Math.Max(nbrJoursRetardDocEnCours, nbrJoursRetardDansTablePenaliteAdherent);
-                        penaliteAdherentExistante!.DatePenalite = DateTime.Now.Date;
-                        penaliteAdherentExistante.NombreJoursPenalite = joursRetardFinal;
-                        await _penaliteAdherentRepository.UpdateAsync(penaliteAdherentExistante);
-                    }
-                    else
-                    {
-                        joursRetardFinal = nbrJoursRetardDocEnCours;
-                        await _penaliteAdherentRepository.AddAsync(new PenaliteAdherent
-                        {
-                            IdAdherent = IdAdherent,
-                            DatePenalite = DateTime.Now.Date,
-                            NombreJoursPenalite = joursRetardFinal
-                        });
-                    }
-                }
-                else // Il a d'autres documents en possession
-                {
-                    if (existeDansPenaliteAdherent)
-                    {
-                        joursRetardFinal = Math.Max(nbrJoursRetardDocEnCours, nbrJoursRetardDansTablePenaliteAdherent) * -1; // Négatif
-                        penaliteAdherentExistante!.DatePenalite = DateTime.Now.Date;
-                        penaliteAdherentExistante.NombreJoursPenalite = joursRetardFinal;
-                        await _penaliteAdherentRepository.UpdateAsync(penaliteAdherentExistante);
-                    }
-                    else
-                    {
-                        joursRetardFinal = nbrJoursRetardDocEnCours * -1; // Négatif
-                        await _penaliteAdherentRepository.AddAsync(new PenaliteAdherent
-                        {
-                            IdAdherent = IdAdherent,
-                            DatePenalite = DateTime.Now.Date,
-                            NombreJoursPenalite = joursRetardFinal
-                        });
-                    }
-                }
-
-                // Pénaliser l'adhérent (Etat 2)
-                if (adherent != null)
-                {
-                    adherent.EtatAdherent = 2;
                     await _adherentRepository.UpdateAsync(adherent);
+
+                }
+                catch (Exception)
+                {
+                    return ApiResult.Fail("Erreur lors de la mise a jours d'etat d'adherent ");
                 }
             }
-            else
+        }
+        else
+        {
+            if (nbrPretUtilisateurEnCours == 1)
             {
-                if (nbrPretUtilisateurEnCours == 1)
+                if (existeDansPenaliteAdherent)
                 {
-                    if (existeDansPenaliteAdherent)
+                    penaliteAdherentExistante!.DatePenalite = DateTime.Now.Date;
+                    penaliteAdherentExistante.NombreJoursPenalite = nbrJoursRetardDansTablePenaliteAdherent;
+                    try
                     {
-                        penaliteAdherentExistante!.DatePenalite = DateTime.Now.Date;
-                        penaliteAdherentExistante.NombreJoursPenalite = nbrJoursRetardDansTablePenaliteAdherent;
+
                         await _penaliteAdherentRepository.UpdateAsync(penaliteAdherentExistante);
+                    }
+                    catch (Exception)
+                    {
+                        return ApiResult.Fail("Erreur lors de la mise a jours de penalite ");
                     }
                 }
             }
+        }
 
-            // 6. Traitement des réservations
-            int nbrReservations = await _reservationRepository.GetQueryable()
-                .CountAsync(r => r.Cote == cote);
+        // 6. Traitement des réservations
+        int nbrReservations = await _reservationRepository.GetQueryable()
+            .CountAsync(r => r.Cote == cote);
 
-            int nbrPretReservations = await _pretRepository.GetQueryable()
-                .CountAsync(p => p.IdAdherent == "99/999" && p.IdExemplaire.StartsWith(cote + "/", StringComparison.OrdinalIgnoreCase));
+        int nbrPretReservations = await _pretRepository.GetQueryable()
+            .CountAsync(p => p.IdAdherent == "99/999" && p.IdExemplaire.StartsWith(cote + "/"));
 
-            if (nbrReservations > 0 && nbrPretReservations < nbrReservations)
+        if (nbrReservations > 0 && nbrPretReservations < nbrReservations)
+        {
+            // Création du prêt fictif de réservation
+            var pretFictif = new Pret
             {
-                // Création du prêt fictif de réservation
-                var pretFictif = new Pret
-                {
-                    IdAdherent = "99/999",
-                    IdExemplaire = IdExemplaire,
-                    DatePret = dateRetour,
-                    EtatDuree = "F"
-                };
+                IdAdherent = "99/999",
+                IdExemplaire = IdExemplaire,
+                DatePret = dateRetour,
+                EtatDuree = "F"
+            };
+            try
+            {
+
                 await _pretRepository.AddAsync(pretFictif);
-                exemplaire.IdEtat = 2; // État Réservé
             }
-            else
+            catch (Exception)
             {
-                exemplaire.IdEtat = 1; // disponible
+                return ApiResult.Fail("Erreur lors de bloquage de l'exemplaire ");
             }
+            exemplaire.IdEtat = 2; // État Réservé
+        }
+        else
+        {
+            exemplaire.IdEtat = 1; // disponible
+        }
+        try
+        {
+
             await _exemplairesRepository.UpdateAsync(exemplaire);
-            // 7. Suppression définitive du prêt
+        }
+        catch (Exception)
+        {
+            return ApiResult.Fail("Erreur lors de la mise a jours de l'exemplaire ");
+        }
+        try
+        {
             await _pretRepository.DeleteAsync(pret);
 
-            return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return false;
+            return ApiResult.Fail("Erreur lors de suppression de pret ");
         }
+
+        return ApiResult.Ok("Notice restituée avec succès.");
+
     }
 
     public async Task<bool> RenouvlementPret(string IdAdherent, string IdExemplaire)
     {
         var result = await RestitutionPret(IdAdherent, IdExemplaire);
-        if (result)
+        if (result.Success)
         {
             var exemplaire = await _exemplairesRepository.GetQueryable().Where(e => e.IdExemplaire == IdExemplaire).FirstOrDefaultAsync();
             var adherent = await _adherentRepository.GetQueryable().Where(a => a.IdAdherent == IdAdherent).FirstOrDefaultAsync();
@@ -433,7 +501,7 @@ public class PretService(
                 if (adherent.EtatAdherent == 1)
                 {
                     var pret = await CreatePretAsync(new CreatePretRequestDto { AdherentId = IdAdherent, ExemplaireId = IdExemplaire });
-                    if (pret == null)
+                    if (pret == false)
                     {
                         return false;
                     }

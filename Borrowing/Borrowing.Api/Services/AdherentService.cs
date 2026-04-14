@@ -22,17 +22,15 @@ public interface IAdherentService
 
 public class AdherentService(
     IAdherentRepository adherentRepository,
-    IReservationRepository reservationRepository,
-    IPenaliteAdherentRepository penaliteAdherentRepository,
-    ICategorieRepository categorieRepository,
     IJoursFeriesRepository joursFeriesRepository,
-    IPretRepository pretRepository
+    IPretRepository pretRepository,
+    ILogger<AdherentService> logger
 ) : IAdherentService
 {
     private readonly IAdherentRepository _adherentRepository = adherentRepository;
     private readonly IJoursFeriesRepository _joursFeriesRepository = joursFeriesRepository;
     private readonly IPretRepository _pretRepository = pretRepository;
-
+    private readonly ILogger<AdherentService> _logger = logger;
 
 
 
@@ -194,6 +192,7 @@ public class AdherentService(
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex.Message);
             return false; // Typically duplicate key exception or generic DB error
         }
     }
@@ -219,6 +218,7 @@ public class AdherentService(
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }

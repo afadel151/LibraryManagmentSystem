@@ -16,9 +16,10 @@ public interface IJoursFeriesService
     Task<bool> DeleteJoursFeryAsync(DateTime dateJourFerie);
 }
 
-public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository) : IJoursFeriesService
+public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository,ILogger<JoursFeriesService> logger) : IJoursFeriesService
 {
     private readonly IJoursFeriesRepository _joursFeriesRepository = joursFeriesRepository;
+    private readonly ILogger<JoursFeriesService> _logger = logger;
 
     public async Task<PagedResult<JoursFeryDto>> GetJoursFeriesAsync(PaginatedQueryParameters queryParameters)
     {
@@ -100,6 +101,7 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository) : 
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }
@@ -132,6 +134,7 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository) : 
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }

@@ -3,6 +3,7 @@ using Borrowing.SharedClasses.Requests.Categorie;
 using Borrowing.SharedClasses.Responses.Categorie;
 using Microsoft.EntityFrameworkCore;
 using Common.Models;
+using System.Data.Common;
 
 namespace Borrowing.Api.Services;
 
@@ -14,11 +15,16 @@ public interface ICategorieService
     Task<bool> DeleteCategorieAsync(string idCategorie);
 }
 
-public class CategorieService(ICategorieRepository categorieRepository, IAdherentRepository adherentRepository) : ICategorieService
+public class CategorieService(
+    ICategorieRepository categorieRepository, 
+    IAdherentRepository adherentRepository,
+    ILogger<CategorieService> logger
+    ) : ICategorieService
 {
     private readonly ICategorieRepository _categorieRepository = categorieRepository;
     private readonly IAdherentRepository _adherentRepository = adherentRepository;
 
+    private readonly ILogger<CategorieService> _logger = logger;
     public async Task<List<CategorieDto>> GetAllCategoriesAsync()
     {
         var categories = await _categorieRepository.GetQueryable()
@@ -32,10 +38,12 @@ public class CategorieService(ICategorieRepository categorieRepository, IAdheren
             .ToListAsync();
 
         // Get adherent counts per category
-        var adherentCounts = await _adherentRepository.GetQueryable()
+        var adherentCounts = (await _adherentRepository.GetQueryable()
+                                .Where(a => a.IdCategorie != null)
                                 .GroupBy(a => a.IdCategorie)
-                                .Select(g => new { IdCategorie = g.Key, Count = g.Count() })
-                                .ToDictionaryAsync(x => x.IdCategorie, x => x.Count);
+                                .Select(g => new { IdCategorie = g.Key!, Count = g.Count() })
+                                .ToListAsync())
+                             .ToDictionary(x => x.IdCategorie, x => x.Count);
 
         foreach (var categorie in categories)
         {
@@ -61,8 +69,9 @@ public class CategorieService(ICategorieRepository categorieRepository, IAdheren
             await _categorieRepository.UpdateAsync(categorie);
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }
@@ -83,8 +92,9 @@ public class CategorieService(ICategorieRepository categorieRepository, IAdheren
             await _categorieRepository.AddAsync(categorie);
             return true;
         }
-        catch (Exception)
+        catch (DbException ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }
@@ -102,8 +112,9 @@ public class CategorieService(ICategorieRepository categorieRepository, IAdheren
             await _categorieRepository.DeleteAsync(categorie);
             return true;
         }
-        catch (Exception)
+        catch (DbException ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }

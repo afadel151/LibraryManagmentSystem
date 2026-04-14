@@ -21,7 +21,8 @@ public interface IReservationService
 public class ReservationService(
     IReservationRepository reservationRepository,
     IPretRepository pretRepository,
-    INoticesRepository noticesRepository) : IReservationService
+    INoticesRepository noticesRepository
+    ) : IReservationService
 {
     private readonly IReservationRepository _reservationRepository = reservationRepository;
     private readonly INoticesRepository _noticesRepository = noticesRepository;

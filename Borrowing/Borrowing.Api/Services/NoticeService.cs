@@ -50,8 +50,9 @@ public class NoticeService(
             await _exemplairesRepository.UpdateAsync(e);
             return true;
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex.Message);
             return false;
         }
     }
@@ -283,11 +284,16 @@ public class NoticeService(
     {
         ArgumentNullException.ThrowIfNull(cote);
         ArgumentNullException.ThrowIfNull(adherentId);
+
         var pret = await _pretsRepository.GetQueryable()
-                        .Where(p =>
-                            EF.Functions.Like(p.IdExemplaire.ToUpper(), cote.ToUpper() + "/%")
+                        .Where(
+                            p =>
+                            EF.Functions.Like(p.IdExemplaire.ToUpper(), cote.ToUpper() + "/%") && 
+                            p.IdAdherent == adherentId
                         ).FirstOrDefaultAsync();
+
         var notice = await _noticesRepository.GetQueryable(n => n.Reservations, n => n.Exemplaires).FirstOrDefaultAsync(n => n.Cote == cote); ;
+
         if (notice == null)
             return new CheckNoticeResponseDto { Status = CheckNoticeEnum.NOT_FOUND };
             

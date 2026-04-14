@@ -2,6 +2,7 @@ using Borrowing.Api.Repositories;
 using Borrowing.SharedClasses.Models;
 using Microsoft.EntityFrameworkCore;
 using Common.Models;
+using System.Data.Common;
 
 namespace Borrowing.Api.Services;
 
@@ -13,24 +14,16 @@ public interface IPenaliteAdherentService
     Task<List<RelanceRetardDto>> GetRelancesRetard();
 }
 
-internal class PenaltieAdherentService : IPenaliteAdherentService
+public class PenaltieAdherentService(
+    IPenaliteAdherentRepository penaliteAdherentRepository,
+    IHistoriquePenaliteAdherentRepository historiquePenaliteAdherentRepository,
+    ILogger<PenaltieAdherentService> logger
+    ) : IPenaliteAdherentService
 {
-    private readonly IPenaliteRepository _penaliteRepository;
-    private readonly IPenaliteAdherentRepository _penaliteAdherentRepository;
-    private readonly IHistoriquePenaliteAdherentRepository _historiquePenaliteAdherentRepository;
-    private readonly IPenaliteAdherentTempRepository _penaliteAdherentTempRepository;
+    private readonly IPenaliteAdherentRepository _penaliteAdherentRepository = penaliteAdherentRepository;
+    private readonly IHistoriquePenaliteAdherentRepository _historiquePenaliteAdherentRepository = historiquePenaliteAdherentRepository;
+    private readonly ILogger<PenaltieAdherentService> _logger = logger;
 
-    public PenaltieAdherentService(
-        IPenaliteRepository penaliteRepository,
-        IPenaliteAdherentRepository penaliteAdherentRepository,
-        IHistoriquePenaliteAdherentRepository historiquePenaliteAdherentRepository,
-        IPenaliteAdherentTempRepository penaliteAdherentTempRepository)
-    {
-        _penaliteRepository = penaliteRepository;
-        _penaliteAdherentRepository = penaliteAdherentRepository;
-        _historiquePenaliteAdherentRepository = historiquePenaliteAdherentRepository;
-        _penaliteAdherentTempRepository = penaliteAdherentTempRepository;
-    }
 
     // Sample method to demonstrate repository usage
     public async Task<IEnumerable<PenaliteAdherent>> GetPenaltiesForAdherentAsync(string adherentId)
@@ -102,9 +95,9 @@ internal class PenaltieAdherentService : IPenaliteAdherentService
             return [.. result];
 
         }
-        catch (Exception ex)
+        catch (DbException ex)
         {
-            Console.WriteLine(ex.Message);
+            _logger.LogError(ex.Message);
             return [];
         }
     }
