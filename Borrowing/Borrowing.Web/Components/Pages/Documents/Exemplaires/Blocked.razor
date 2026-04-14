@@ -1,12 +1,14 @@
 @page "/exemplaire/bloques"
 
 
-@using Borrowing.SharedClasses.Models
-@using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
-@using Common.Models
+@using Borrowing.Web.Components.Base
 
+@using Microsoft.Extensions.Localization
+@using Common.Models
+@using Borrowing.SharedClasses.Models
 @inject IExemplaireService exemplaireService
+@inject IStringLocalizer<Blocked> L
 @inject NavigationManager navigationManager
 @inject IExportService exportService
 
@@ -14,7 +16,7 @@
 
 
 
-<RadzenText TextStyle="TextStyle.H3">Exemplaires Bloques</RadzenText>
+<RadzenText TextStyle="TextStyle.H3">@L["BlockedExemplaires"]</RadzenText>
 
 <RadzenRow class="rz-mt-4">
     <RadzenColumn>
@@ -22,23 +24,21 @@
                         LoadData="@LoadData" IsLoading="@isLoading" TItem="ExemplaireBloqueDto" ShowPagingSummary="true"
                         AllowPaging="true" PageSize="10" AllowSorting="true">
             <Columns>
-                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="IdExemplaire" Title="ID Exemplaire" />
-                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="TitrePropre" Title="Titre" />
-                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="DatePret" Title="Date Retour d'exemplaire">
+                <RadzenDataGridColumn Property="IdExemplaire" Title="@L["ExemplaireId"]" />
+                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="TitrePropre" Title="@L["Title"]" />
+                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Property="DatePret" Title="@L["ReturnDate"]">
                     <Template Context="data">
                         @data.DatePret.ToString("dd/MM/yyyy")
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ExemplaireBloqueDto" Title="Actions" Sortable="false" Filterable="false"
+                <RadzenDataGridColumn Title="@L["Actions"]"  Filterable="false" Sortable="false" 
                                       Width="300px">
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                            <RadzenButton Click=@(args =>navigationManager.NavigateTo($"/exemplaire/{data.IdExemplaire}"))
-                                          Size="ButtonSize.Small" Icon="book" Text="Exemplaire"
+                            <RadzenButton Click=@(args => navigationManager.NavigateTo($"/exemplaires/{data.IdExemplaire}")) Size="ButtonSize.Small" Icon="visibility" Text="@L["Exemplaire"]"
                                           ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
 
-                            <RadzenButton Click=@(args => navigationManager.NavigateTo($"/documents/{data.IdNotice}"))
-                                          Size="ButtonSize.Small" Icon="book_4" Text="Document"
+                            <RadzenButton Click=@(args => navigationManager.NavigateTo($"/documents/{data.IdNotice}")) Size="ButtonSize.Small" Icon="menu_book" Text="@L["Document"]"
                                           ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
 
                         </RadzenStack>

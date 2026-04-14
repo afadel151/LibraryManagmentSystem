@@ -1,10 +1,11 @@
 @page "/exemplaire/{*Id}"
-
-@using Borrowing.Web.Components.Base
-@using Borrowing.Web.Services
 @using Common.Models
 
+@using Borrowing.Web.Services
+@using Borrowing.Web.Components.Base
+@using Microsoft.Extensions.Localization
 @inject IExemplaireService exemplaireService
+@inject IStringLocalizer<ExemplairePage> L
 @inject NavigationManager NavigationManager
 @inject IExportService exportService
 
@@ -26,13 +27,13 @@ else
                 <RadzenStack Gap="0.4rem" Style="flex:1">
                     <RadzenText TextStyle="TextStyle.H4" Text="@exemplaire.IdExemplaire" />
                     <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem" Wrap="FlexWrap.Wrap" Style="margin-top:0.25rem">
-                        <RadzenText TextStyle="TextStyle.Body1" Text="@($"Cote : {exemplaire.Cote ?? "—"}")" />
+                        <RadzenText TextStyle="TextStyle.Body1" Text="@($"{L["Cote"]} : {exemplaire.Cote ?? "—"}")" />
                     </RadzenStack>
                 </RadzenStack>
                 <RadzenStack AlignItems="AlignItems.End" Gap="0.5rem">
                     <RadzenBadge
                         BadgeStyle="exemplaire.IdEtat == 1 ? BadgeStyle.Success : BadgeStyle.Warning"
-                        Text="@(exemplaire.EtatExemplaire?.LibelleEtat ?? "État inconnu")" />
+                        Text="@(exemplaire.EtatExemplaire?.LibelleEtat ?? L["UnknownState"])" />
                 </RadzenStack>
             </RadzenStack>
         </RadzenCard>
@@ -41,17 +42,17 @@ else
         <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
-                <RadzenText TextStyle="TextStyle.H6" Text="Prêt en cours" />
+                <RadzenText TextStyle="TextStyle.DisplayH5" Text="@L["CurrentLoan"]" />
             </RadzenStack>
             <RadzenDataGrid Data="@exemplaire.Prets" AllowSorting="true" AllowPaging="true" PageSize="5"
-                            EmptyText="Aucun prêt en cours">
+                            EmptyText="@L["NoCurrentLoan"]">
                 <Columns>
-                    <RadzenDataGridColumn Property="IdAdherent" Title="Id d'Adhérent" />
-                    <RadzenDataGridColumn Property="Adherent.Nom" Title="Nom d'Adhérent" />
-                    <RadzenDataGridColumn Property="Adherent.Prenom" Title="Prenom d'Adhérent" />
-                    <RadzenDataGridColumn Property="Adherent.Categorie.LibelleCategorie" Title="Categorie d'Adhérent" />
-                    <RadzenDataGridColumn Property="DatePret" Title="Date de prêt" FormatString="{0:dd/MM/yyyy}" />
-                    <RadzenDataGridColumn Property="EtatDuree" Title="État durée" />
+                    <RadzenDataGridColumn Property="IdAdherent" Title="@L["AdherentId"]" />
+                    <RadzenDataGridColumn Property="Adherent.Nom" Title="@L["AdherentName"]" />
+                    <RadzenDataGridColumn Property="Adherent.Prenom" Title="@L["AdherentFirstName"]" />
+                    <RadzenDataGridColumn Property="Adherent.Categorie.LibelleCategorie" Title="@L["AdherentCategory"]" />
+                    <RadzenDataGridColumn Property="DatePret" Title="@L["LoanDate"]" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn Property="EtatDuree" Title="@L["DurationState"]" />
                 </Columns>
             </RadzenDataGrid>
         </RadzenCard>
@@ -60,18 +61,18 @@ else
         <RadzenCard>
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center"
                          JustifyContent="JustifyContent.SpaceBetween" Style="margin-bottom:1rem">
-                <RadzenText TextStyle="TextStyle.H6" Text="Historique des prêts" />
-                <RadzenButton Text="Exporter" Icon="download" Click="@ExportHistory" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
+                <RadzenText TextStyle="TextStyle.DisplayH5" Text="@L["LoanHistory"]" />
+                <RadzenButton Text="@L["Export"]" Icon="download" Click="@ExportHistory" ButtonStyle="ButtonStyle.Light" Size="ButtonSize.Small" />
             </RadzenStack>
             <RadzenDataGrid Data="@exemplaire.HistoriquePrets" AllowSorting="true" AllowPaging="true" PageSize="5"
-                            EmptyText="Aucun historique">
+                            EmptyText="@L["NoHistory"]">
                 <Columns>
-                    <RadzenDataGridColumn Property="IdAdherent" Title="Id d'Adhérent" />
-                    <RadzenDataGridColumn Property="Adherent.Nom" Title="Nom d'Adhérent" />
-                    <RadzenDataGridColumn Property="Adherent.Prenom" Title="Prenom d'Adhérent" />
-                    <RadzenDataGridColumn Property="Adherent.Categorie.LibelleCategorie" Title="Categorie d'Adhérent" />
-                    <RadzenDataGridColumn Property="DatePret" Title="Date de prêt" FormatString="{0:dd/MM/yyyy}" />
-                    <RadzenDataGridColumn Property="DateRetour" Title="Date de retour" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn Property="IdAdherent" Title="@L["AdherentId"]" />
+                    <RadzenDataGridColumn Property="Adherent.Nom" Title="@L["AdherentName"]" />
+                    <RadzenDataGridColumn Property="Adherent.Prenom" Title="@L["AdherentFirstName"]" />
+                    <RadzenDataGridColumn Property="Adherent.Categorie.LibelleCategorie" Title="@L["AdherentCategory"]" />
+                    <RadzenDataGridColumn Property="DatePret" Title="@L["LoanDate"]" FormatString="{0:dd/MM/yyyy}" />
+                    <RadzenDataGridColumn Property="DateRetour" Title="@L["ReturnDate"]" FormatString="{0:dd/MM/yyyy}" />
                 </Columns>
             </RadzenDataGrid>
         </RadzenCard>

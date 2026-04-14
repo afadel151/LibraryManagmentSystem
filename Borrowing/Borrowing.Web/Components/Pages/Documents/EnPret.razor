@@ -1,21 +1,24 @@
 @page "/documents/en_pret"
 @using Borrowing.Web.Extensions
 @using Borrowing.Web.Services
+@using Borrowing.Web.Components.Base
 @using Borrowing.SharedClasses.Models
 @using Borrowing.SharedClasses.Responses.Pret
+@using Microsoft.Extensions.Localization
 
-@inject IPretService _pretService
+@inject IPretService pretService
+@inject IStringLocalizer<EnPret> L
 @inject NavigationManager navigationManager
 
 @inject IExportService exportService
 
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
-    <RadzenText TextStyle="TextStyle.H3">Documents en prêt</RadzenText>
+    <RadzenText TextStyle="TextStyle.H3">@L["DocumentsOnLoan"]</RadzenText>
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-        <RadzenTextBox Placeholder="Rechercher par ID,Nom ou Prenom..." style="width:400px" @bind-Value="SearchText"
+        <RadzenTextBox Placeholder="@L["SearchByIdOrName"]" style="width:400px" @bind-Value="SearchText"
                        @oninput="DoSearch" Change="DoSearch" />
-        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")"  Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
+        <RadzenButton Text="@(isExporting ? L["Exporting"] : L["Export"])"  Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
                       Variant="Variant.Flat" />
     </RadzenStack>
 </RadzenStack>
@@ -27,23 +30,21 @@
                         IsLoading="@isLoading" TItem="PretResponseDto" ShowPagingSummary="true" AllowPaging="true" PageSize="10"
                         AllowSorting="true">
             <Columns>
-                <RadzenDataGridColumn TItem="PretResponseDto" Property="AdherentId" Title="ID Adhérent" Width="120px" />
-                <RadzenDataGridColumn TItem="PretResponseDto" Title="Adhérent" Property="AdherentNom">
+                <RadzenDataGridColumn Property="IdAdherent" Title="@L["AdherentId"]" Width="130px" />
+                <RadzenDataGridColumn Property="Adherent" Title="@L["Adherent"]">
                     <Template Context="data">
                         @($"{data.AdherentNom} {data.AdherentPrenom}")
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="PretResponseDto" Property="NoticeTitrePropre" Title="Titre" />
-                <RadzenDataGridColumn TItem="PretResponseDto" Property="ExemplaireId" Title="Exemplaire"
-                                      Width="150px" />
-                <RadzenDataGridColumn TItem="PretResponseDto" Property="DatePret" Title="Date Prêt" Width="150px">
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="NoticeTitrePropre" Title="@L["Title"]" />
+                <RadzenDataGridColumn Property="IdExemplaire" Title="@L["Copy"]" Width="150px" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Property="DatePret" Title="@L["LoanDate"]" Width="150px">
                     <Template Context="data">
                         @data.DatePret.ToString("dd/MM/yyyy")
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="PretResponseDto" Property="EtatDuree" Title="État" Width="120px" />
-                <RadzenDataGridColumn TItem="PretResponseDto" Title="Actions" Sortable="false" Filterable="false"
-                                      Width="300px">
+                <RadzenDataGridColumn Property="EtatDuree" Title="@L["State"]" Width="120px" />
+                <RadzenDataGridColumn TItem="PretResponseDto" Title="@L["Action"]" Sortable="false" Filterable="false" Width="300px">
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                             <RadzenButton Click=@(args =>
@@ -79,7 +80,7 @@
         isExporting = true;
         try
         {
-            var allData = await _pretService.GetAllPretsAsync(SearchText);
+            var allData = await pretService.GetAllPretsAsync(SearchText);
             await exportService.ExportToExcelAsync(allData, "Documents_en_pret"+ DateTime.Now);
         }
         finally
@@ -101,7 +102,7 @@
                 Search = SearchText
             };
 
-            var result = await _pretService.GetPretsAsync(queryParams);
+            var result = await pretService.GetPretsAsync(queryParams);
             prets = result.Data;
             count = result.TotalCount;
         }

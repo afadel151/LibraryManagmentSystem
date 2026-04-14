@@ -1,10 +1,12 @@
 @page "/documents"
-@using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
+@using Borrowing.Web.Components.Base
 @using Borrowing.SharedClasses.Models
+@using Microsoft.Extensions.Localization
 
 @inject NavigationManager navigationManager
 @inject INoticeService noticeService
+@inject IStringLocalizer<Index> L
 
 
 
@@ -14,11 +16,11 @@
 
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
-    <RadzenText TextStyle="TextStyle.H3">Total documents</RadzenText>
+    <RadzenText TextStyle="TextStyle.H3">@L["TotalDocuments"]</RadzenText>
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-        <RadzenTextBox Placeholder="Rechercher par Cote ou Titre propre..." style="width:400px" @bind-Value="SearchText"
+        <RadzenTextBox Placeholder="@L["SearchByCoteOrTitle"]" style="width:400px" @bind-Value="SearchText"
                        @oninput="DoSearch" Change="DoSearch" />
-        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")" Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
+        <RadzenButton Text="@(isExporting ? L["Exporting"] : L["Export"])" Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
                       Variant="Variant.Flat" />
     </RadzenStack>
 </RadzenStack>
@@ -28,19 +30,16 @@
                         LoadData="@LoadData" IsLoading="@isLoading" TItem="NoticeDto" ShowPagingSummary="true" AllowPaging="true"
                         PageSize="10" AllowSorting="true">
             <Columns>
-                <RadzenDataGridColumn TItem="NoticeDto" Property="Cote" Title="Cote" />
-                <RadzenDataGridColumn TItem="NoticeDto" Property="TitrePropre" Title="Titre propre" />
-                <RadzenDataGridColumn TItem="NoticeDto" Property="TypeNotice1" Title="Type" />
-                <RadzenDataGridColumn TItem="NoticeDto" Property="ExemplaireDispo" Title="Exemplaires disponibles" />
-                <RadzenDataGridColumn TItem="NoticeDto" Property="ExemplaireEnPret" Title="Exemplaires en pret" />
-                <RadzenDataGridColumn TItem="NoticeDto" Property="Reservations" Title="Reservations en cours" />
-                <RadzenDataGridColumn TItem="NoticeDto" Property="CopiesBloques" Title="Copies bloques pour les reservateurs" />
-               
-                <RadzenDataGridColumn TItem="NoticeDto" Title="Action">
+                <RadzenDataGridColumn TItem="NoticeDto" Property="Cote" Title="@L["Cote"]" Width="130px" />
+                <RadzenDataGridColumn TItem="NoticeDto"  Property="TitrePropre" Title="@L["Title"]" />
+                <RadzenDataGridColumn TItem="NoticeDto"  Property="TypeNotice1" Title="@L["Type"]" />
+                <RadzenDataGridColumn TItem="NoticeDto"  Property="ExemplaireDispo" Title="@L["AvailableCopies"]" />
+                <RadzenDataGridColumn TItem="NoticeDto"  Property="ExemplaireEnPret" Title="@L["CopiesOnLoan"]" />
+                <RadzenDataGridColumn TItem="NoticeDto"  Property="Reservations" Title="@L["ActiveReservations"]" />
+                <RadzenDataGridColumn TItem="NoticeDto"  Property="CopiesBloques" Title="@L["BlockedCopies"]" />
+                <RadzenDataGridColumn TItem="NoticeDto" Title="@L["Action"]">
                     <Template Context="data">
-                        <RadzenButton Click=@(args => navigationManager.NavigateTo("/documents/" + data.IdNotice))
-                                      Size="ButtonSize.Small" Shade="Shade.Darker" ButtonStyle="ButtonStyle.Base"
-                                      Icon="visibility" Text="View" />
+                        <RadzenButton Click=@(args => navigationManager.NavigateTo($"/documents/{data.IdNotice}")) Size="ButtonSize.Small" Icon="visibility" Text="@L["View"]" />
                     </Template>
                 </RadzenDataGridColumn>
                 
@@ -49,9 +48,7 @@
     </RadzenColumn>
 </RadzenRow>
 <RadzenCard class="rz-mt-4">
-    <RadzenText TextStyle="TextStyle.H6" class="rz-mb-3">
-        Les Documents les Plus Empruntés
-    </RadzenText>
+    <RadzenText TextStyle="TextStyle.H6" Text="@L["MostBorrowedDocuments"]" />  
 
     @if (topLoaned == null)
     {
@@ -63,7 +60,7 @@
 
             <RadzenLegend Visible="false" />
             <RadzenColumnSeries Data="@topLoaned" CategoryProperty="TitrePropre" ValueProperty="TotalPrets"
-                                Title="Nombre d'emprunts" Fill="var(--rz-primary)">
+                                Title="@L["NumberOfLoans"]" Fill="var(--rz-primary)">
                 <TooltipTemplate Context="data">
                     <div>
                         Document <span>@data.Cote</span> <br>
@@ -74,14 +71,14 @@
             </RadzenColumnSeries>
 
             <RadzenCategoryAxis LabelAutoRotation="-10">
-                <RadzenAxisTitle Text="Document (Titre)" />
+                <RadzenAxisTitle Text="@L["Document"]" />
                 <RadzenTicks>
                 </RadzenTicks>
                 <RadzenGridLines Visible="true" />
             </RadzenCategoryAxis>
 
             <RadzenValueAxis>
-                <RadzenAxisTitle Text="Nombre total de prets" />
+                <RadzenAxisTitle Text="@L["TotalNumberOfLoans"]" />
                 <RadzenGridLines Visible="true" />
             </RadzenValueAxis>
 

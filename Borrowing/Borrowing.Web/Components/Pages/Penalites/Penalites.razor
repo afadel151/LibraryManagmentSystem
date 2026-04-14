@@ -12,17 +12,20 @@
 @using Radzen.Blazor
 @using Common.Models
 @using Borrowing.Web.Components.Base
+@using Microsoft.Extensions.Localization
+
+@inject IStringLocalizer<Penalites> L
 
 @inherits AuthorizedComponentBase
 
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
-    <RadzenText TextStyle="TextStyle.H3">Pénalités</RadzenText>
+    <RadzenText TextStyle="TextStyle.H3">@L["Penalties"]</RadzenText>
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-        <RadzenTextBox Placeholder="Rechercher par catégorie" style="width:300px" @bind-Value="SearchText"
+        <RadzenTextBox Placeholder="@L["SearchByCategory"]" style="width:300px" @bind-Value="SearchText"
                        @oninput="DoSearch" Change="DoSearch" />
         <Microsoft.AspNetCore.Components.Authorization.AuthorizeView Roles="ADMIN">
-            <RadzenButton Text="Ajouter" Icon="add" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Flat"
+            <RadzenButton Text="@L["Add"]" Icon="add" ButtonStyle="ButtonStyle.Primary" Variant="Variant.Flat"
                           Click="OpenCreateModal" />
         </Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
     </RadzenStack>
@@ -34,21 +37,21 @@
                         LoadData="@LoadData" IsLoading="@isLoading" TItem="PenaliteDto" ShowPagingSummary="true"
                         AllowPaging="true" PageSize="10" AllowSorting="true">
             <Columns>
-                <RadzenDataGridColumn TItem="PenaliteDto" Property="IdCategorie" Title="ID Catégorie" />
-                <RadzenDataGridColumn TItem="PenaliteDto" Property="LibelleCategorie" Title="Libelle Catégorie" />
-                <RadzenDataGridColumn TItem="PenaliteDto" Property="JoursRetard" Title="Jours Retard" />
-                <RadzenDataGridColumn TItem="PenaliteDto" Property="NombreJoursRetard" Title="Nombre de Jours Retard" />
-                <RadzenDataGridColumn Visible="isAdmin" TItem="PenaliteDto" Title="Actions">
+                <RadzenDataGridColumn TItem="PenaliteDto" Property="IdCategorie" Title="@L["Category"]" />
+                <RadzenDataGridColumn TItem="PenaliteDto" Property="LibelleCategorie" Title="@L["Label"]" />
+                <RadzenDataGridColumn TItem="PenaliteDto" Property="JoursRetard" Title="@L["DaysDelayed"]" />
+                <RadzenDataGridColumn TItem="PenaliteDto" Property="NombreJoursRetard" Title="@L["NumberOfDaysDelayed"]" />
+                <RadzenDataGridColumn Visible="isAdmin" TItem="PenaliteDto" Title="@L["Actions"]" Width="300px">
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                             <AuthorizeView Roles="ADMIN">
                                 <Authorized>
-                                    <RadzenButton Click=@(args => OpenEditModal(data)) Size="ButtonSize.Small" 
+                                    <RadzenButton Click=@(args => OpenEditModal(data)) Size="ButtonSize.Small"
                                                   Shade="Shade.Darker" ButtonStyle="ButtonStyle.Primary"
-                                                  Icon="edit" Text="Modifier" />
-                                    <RadzenButton Click=@(args => OpenDeleteModal(data)) Size="ButtonSize.Small" 
+                                                  Icon="edit" Text="@L["Edit"]" />
+                                    <RadzenButton Click=@(args => OpenDeleteModal(data)) Size="ButtonSize.Small"
                                                   Shade="Shade.Darker" ButtonStyle="ButtonStyle.Danger"
-                                                  Icon="delete" Text="Supprimer" />
+                                                  Icon="delete" Text="@L["Delete"]" />
                                 </Authorized>
                             </AuthorizeView>
                         </RadzenStack>
@@ -65,7 +68,7 @@
     private int count;
     private bool isLoading;
     private bool _ready = false;
-     private bool isAdmin = false;
+    private bool isAdmin = false;
     protected override async Task OnPageInitializedAsync()
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
@@ -116,26 +119,26 @@
         var categories = await categorieService.GetAllCategoriesAsync();
         var model = new CreatePenaliteDto();
 
-        await dialogService.OpenAsync("Ajouter une pénalité", ds =>
+        await dialogService.OpenAsync(L["AddPenalty"], ds =>
             @<RadzenTemplateForm Data="@model"
                                  Submit="@(async (CreatePenaliteDto args) => { await SubmitCreate(args, ds); })">
                 <RadzenStack Gap="1rem" Style="width: 100%; min-width: 400px;">
-                    <RadzenFormField Text="Catégorie">
+                    <RadzenFormField Text="@L["Category"]">
                         <RadzenDropDown @bind-Value="model.IdCategorie" Data="@categories" TextProperty="LibelleCategorie"
                                         ValueProperty="IdCategorie" Name="IdCategorie" />
-                        <RadzenRequiredValidator Component="IdCategorie" Text="La catégorie est requise" />
+                        <RadzenRequiredValidator Component="IdCategorie" Text="@L["CategoryIsRequired"]" />
                     </RadzenFormField>
-                    <RadzenFormField Text="Jours Retard">
+                    <RadzenFormField Text="@L["DaysDelayed"]">
                         <RadzenNumeric @bind-Value="model.JoursRetard" Name="JoursRetard" Min="0" Style="width: 100%" />
-                        <RadzenRequiredValidator Component="JoursRetard" Text="Les jours de retard sont requis" />
+                        <RadzenRequiredValidator Component="JoursRetard" Text="@L["DaysDelayedIsRequired"]" />
                     </RadzenFormField>
-                    <RadzenFormField Text="Nombre de Jours Retard">
+                    <RadzenFormField Text="@L["NumberOfDaysDelayed"]">
                         <RadzenNumeric @bind-Value="model.NombreJoursRetard" Name="NombreJoursRetard" Min="0" Style="width: 100%" />
                     </RadzenFormField>
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
                                  class="rz-mt-4">
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Enregistrer" Variant="Variant.Flat" />
-                        <RadzenButton Text="Annuler" Variant="Variant.Outlined" Click="() => ds.Close(false)"
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="@L["Save"]" Variant="Variant.Flat" />
+                        <RadzenButton Text="@L["Cancel"]" Variant="Variant.Outlined" Click="() => ds.Close(false)"
                                       ButtonStyle="ButtonStyle.Light" />
                     </RadzenStack>
                 </RadzenStack>
@@ -151,8 +154,8 @@
             notificationService.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Success,
-                Summary = "Succès",
-                Detail = "Pénalité créée avec succès",
+                Summary = L["Success"],
+                Detail = L["PenaltyCreatedSuccess"],
                 Duration = 4000
             });
             ds.Close(true);
@@ -163,8 +166,8 @@
             notificationService.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = "Erreur",
-                Detail = "Erreur lors de la création de la pénalité",
+                Summary = L["Error"],
+                Detail = L["ErrorCreatingPenalty"],
                 Duration = 4000
             });
         }
@@ -180,26 +183,26 @@
             NombreJoursRetard = data.NombreJoursRetard
         };
 
-        await dialogService.OpenAsync("Modifier une pénalité", ds =>
+        await dialogService.OpenAsync(L["EditPenalty"], ds =>
             @<RadzenTemplateForm Data="@model"
                                  Submit="@(async (UpdatePenaliteDto args) => { await SubmitEdit(args, ds); })">
                 <RadzenStack Gap="1rem" Style="width: 100%; min-width: 400px;">
-                    <RadzenFormField Text="Catégorie">
+                    <RadzenFormField Text="@L["Category"]">
                         <RadzenDropDown @bind-Value="model.IdCategorie" Data="@categories" TextProperty="LibelleCategorie"
                                         ValueProperty="IdCategorie" Name="IdCategorie" Disabled="true" />
-                        <RadzenRequiredValidator Component="IdCategorie" Text="La catégorie est requise" />
+                        <RadzenRequiredValidator Component="IdCategorie" Text="@L["CategoryIsRequired"]" />
                     </RadzenFormField>
-                    <RadzenFormField Text="Jours Retard">
+                    <RadzenFormField Text="@L["DaysDelayed"]">
                         <RadzenNumeric @bind-Value="model.JoursRetard" Name="JoursRetard" Min="0" Style="width: 100%" />
-                        <RadzenRequiredValidator Component="JoursRetard" Text="Les jours de retard sont requis" />
+                        <RadzenRequiredValidator Component="JoursRetard" Text="@L["DaysDelayedIsRequired"]" />
                     </RadzenFormField>
-                    <RadzenFormField Text="Nombre de Jours Retard">
+                    <RadzenFormField Text="@L["NumberOfDaysDelayed"]">
                         <RadzenNumeric @bind-Value="model.NombreJoursRetard" Name="NombreJoursRetard" Min="0" Style="width: 100%" />
                     </RadzenFormField>
                     <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Gap="0.5rem"
                                  class="rz-mt-4">
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Mettre à jour" Variant="Variant.Flat" />
-                        <RadzenButton Text="Annuler" Variant="Variant.Outlined" Click="() => ds.Close(false)"
+                        <RadzenButton ButtonType="ButtonType.Submit" Text="@L["Update"]" Variant="Variant.Flat" />
+                        <RadzenButton Text="@L["Cancel"]" Variant="Variant.Outlined" Click="() => ds.Close(false)"
                                       ButtonStyle="ButtonStyle.Light" />
                     </RadzenStack>
                 </RadzenStack>
@@ -215,8 +218,8 @@
             notificationService.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Success,
-                Summary = "Succès",
-                Detail = "Pénalité mise à jour avec succès",
+                Summary = L["Success"],
+                Detail = L["PenaltyUpdatedSuccess"],
                 Duration = 4000
             });
             ds.Close(true);
@@ -227,8 +230,8 @@
             notificationService.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = "Erreur",
-                Detail = "Erreur lors de la mise à jour de la pénalité",
+                Summary = L["Error"],
+                Detail = L["ErrorUpdatingPenalty"],
                 Duration = 4000
             });
         }
@@ -236,8 +239,7 @@
 
     private async Task OpenDeleteModal(PenaliteDto data)
     {
-        var result = await dialogService.Confirm($"Êtes-vous sûr de vouloir supprimer la pénalité pour la catégorie {data.LibelleCategorie} ?", "Confirmation de suppression",
-            new ConfirmOptions() { OkButtonText = "Oui", CancelButtonText = "Non" });
+        var result = await dialogService.Confirm(L["ConfirmDeletePenalty"], L["DeleteConfirmation"], new ConfirmOptions() { OkButtonText = L["Yes"], CancelButtonText = L["No"] });
 
         if (result == true)
         {
@@ -253,8 +255,8 @@
             notificationService.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Success,
-                Summary = "Succès",
-                Detail = "Pénalité supprimée avec succès",
+                Summary = L["Success"],
+                Detail = L["PenaltyDeletedSuccess"],
                 Duration = 4000
             });
             await DoSearch();
@@ -264,8 +266,8 @@
             notificationService.Notify(new NotificationMessage
             {
                 Severity = NotificationSeverity.Error,
-                Summary = "Erreur",
-                Detail = "Erreur lors de la suppression de la pénalité",
+                Summary = L["Error"],
+                Detail = L["ErrorDeletingPenalty"],
                 Duration = 4000
             });
         }

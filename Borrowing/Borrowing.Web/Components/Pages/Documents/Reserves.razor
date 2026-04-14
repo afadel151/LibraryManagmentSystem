@@ -2,7 +2,8 @@
 @using Borrowing.Web.Extensions
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Models
-
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Reserves> L
 @inject IReservationService _reservationService
 @inject NavigationManager navigationManager
 @inject IExportService exportService
@@ -11,11 +12,11 @@
 
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
-    <RadzenText TextStyle="TextStyle.H3">Réservations</RadzenText>
+    <RadzenText TextStyle="TextStyle.H3">@L["Reservations"]</RadzenText>
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-        <RadzenTextBox Placeholder="Rechercher par ID, Nom, Prenom, Cote ou Titre..." style="width:400px" @bind-Value="SearchText"
+        <RadzenTextBox Placeholder="@L["SearchByIdOrName"]" style="width:400px" @bind-Value="SearchText"
                        @oninput="DoSearch" Change="DoSearch" />
-        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")" Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
+        <RadzenButton Text="@(isExporting ? L["Exporting"] : L["Export"])" Icon="get_app" Click="Export" ButtonStyle="ButtonStyle.Base"
                       Variant="Variant.Flat" />
     </RadzenStack>
 </RadzenStack>
@@ -26,27 +27,27 @@
                         IsLoading="@isLoading" TItem="ReservationDto" ShowPagingSummary="true" AllowPaging="true" PageSize="10"
                         AllowSorting="true">
             <Columns>
-                <RadzenDataGridColumn TItem="ReservationDto" Property="IdAdherent" Title="ID Adhérent" Width="120px" />
-                <RadzenDataGridColumn TItem="ReservationDto" Title="Adhérent" Property="Nom">
+                <RadzenDataGridColumn Property="IdAdherent" Title="@L["AdherentId"]" Width="130px" />
+                <RadzenDataGridColumn Property="Nom" Title="@L["Adherent"]">
                     <Template Context="data">
                         @($"{data.Nom} {data.Prenom}")
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ReservationDto" Property="TitrePropre" Title="Titre" />
-                <RadzenDataGridColumn TItem="ReservationDto" Property="Cote" Title="Cote" Width="150px" />
-                <RadzenDataGridColumn TItem="ReservationDto" Property="HeureReservation" Title="Date Réservation" Width="180px">
+                <RadzenDataGridColumn Property="TitrePropre" Title="@L["Title"]" />
+                <RadzenDataGridColumn Property="Cote" Title="@L["Cote"]" Width="150px" />
+                <RadzenDataGridColumn Property="HeureReservation" Title="@L["ReservationDate"]" FormatString="{0:dd/MM/yyyy HH:mm}">
                     <Template Context="data">
                         @data.HeureReservation
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="ReservationDto" Title="Actions" Sortable="false" Filterable="false" >
+                <RadzenDataGridColumn Title="@L["Actions"]" Sortable="false" Filterable="false" >
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                             <RadzenButton Click=@(args => navigationManager.NavigateTo($"/adherents/{data.IdAdherent}"))
-                                          Size="ButtonSize.Small" Icon="person" Text="Adhérent"
+                                          Size="ButtonSize.Small" Icon="person" Text="@L["Adherent"]"
                                           ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
                             <RadzenButton Click=@(args => ConfirmDelete(data))
-                                          Size="ButtonSize.Small" Icon="delete" Text="Supprimer"
+                                          Size="ButtonSize.Small" Icon="delete" Text="@L["Delete"]"
                                           ButtonStyle="ButtonStyle.Danger" Variant="Variant.Flat" />
                         </RadzenStack>
                     </Template>
@@ -75,7 +76,7 @@
         try
         {
             var allData = await _reservationService.GetAllReservationsAsync(SearchText);
-            await exportService.ExportToExcelAsync(allData, "Reservations_" + DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+            await exportService.ExportToExcelAsync(allData, $"{L["Reservations"]}_{DateTime.Now.ToString("yyyyMMdd_HHmmss")}");
         }
         finally
         {
@@ -109,7 +110,7 @@
 
     private async Task ConfirmDelete(ReservationDto data)
     {
-        var result = await dialogService.Confirm($"Voulez-vous vraiment supprimer la réservation de {data.Nom} {data.Prenom} pour '{data.TitrePropre}' ?", "Confirmation de suppression", new ConfirmOptions() { OkButtonText = "Oui", CancelButtonText = "Non" });
+        var result = await dialogService.Confirm($"{L["ConfirmDelete"]}{data.Nom} {data.Prenom} pour '{data.TitrePropre}' ?", L["Confirmation"], new ConfirmOptions() { OkButtonText = L["Yes"], CancelButtonText = L["No"] });
 
         if (result == true)
         {
@@ -122,14 +123,14 @@
         isLoading = true;
         try
         {
-            var success = await _reservationService.DeleteReservationAsync(data.IdAdherent, data.Cote,data.HeureReservation);
+            var success = await _reservationService.DeleteReservationAsync(data.IdAdherent, data.Cote, data.HeureReservation);
             if (success)
             {
                 notificationService.Notify(new NotificationMessage
                 {
                     Severity = NotificationSeverity.Success,
-                    Summary = "Succès",
-                    Detail = "Réservation supprimée avec succès",
+                    Summary = L["Success"],
+                    Detail = L["ReservationDeletedSuccess"],
                     Duration = 4000
                 });
                 await DoSearch();
@@ -139,8 +140,8 @@
                 notificationService.Notify(new NotificationMessage
                 {
                     Severity = NotificationSeverity.Error,
-                    Summary = "Erreur",
-                    Detail = "Impossible de supprimer la réservation",
+                    Summary = L["Error"],
+                    Detail = L["ErrorDeletingReservation"],
                     Duration = 4000
                 });
             }

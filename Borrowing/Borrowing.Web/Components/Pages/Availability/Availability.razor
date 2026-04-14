@@ -2,8 +2,10 @@
 @using Borrowing.Web.Components.Base
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Models
+@using Microsoft.Extensions.Localization
 
 @inject IReservationService reservationService
+@inject IStringLocalizer<Availability> L
 @inject NavigationManager navigationManager
 @inject IExportService exportService
 
@@ -11,11 +13,11 @@
 
 <RadzenStack class="rz-mt-4" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween"
              AlignItems="AlignItems.Center">
-    <RadzenText TextStyle="TextStyle.H3">Avis de disponibilité</RadzenText>
+    <RadzenText TextStyle="TextStyle.H3">@L["AvailabilityNotices"]</RadzenText>
     <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem" AlignItems="AlignItems.Center">
-        <RadzenTextBox Placeholder="Rechercher par ID, Nom, Cote..." style="width:400px" @bind-Value="SearchText"
+        <RadzenTextBox Placeholder="@L["SearchPlaceholder"]" style="width:400px" @bind-Value="SearchText"
                        @oninput="OnSearchChanged" Change="OnSearchChanged" />
-        <RadzenButton Text="@(isExporting ? "Export..." : "Exporter")" Icon="get_app" Click="Export"
+        <RadzenButton Text="@(isExporting ? L["Exporting"] : L["Export"])" Icon="get_app" Click="Export"
                       ButtonStyle="ButtonStyle.Base" Variant="Variant.Flat" />
     </RadzenStack>
 </RadzenStack>
@@ -26,25 +28,25 @@
                         AllowPaging="true" PageSize="10" AllowSorting="true"
                         PagerHorizontalAlign="HorizontalAlign.Justify" ShowPagingSummary="true">
             <Columns>
-                <RadzenDataGridColumn TItem="RelanceDto" Property="IdAdherent" Title="ID Adhérent" Width="130px" />
-                <RadzenDataGridColumn TItem="RelanceDto" Title="Adhérent" Property="Nom">
+                <RadzenDataGridColumn TItem="RelanceDto" Property="IdAdherent" Title="@L["AdherentId"]" Width="130px" />
+                <RadzenDataGridColumn TItem="RelanceDto" Title="@L["Adherent"]" Property="Nom">
                     <Template Context="data">
                         @($"{data.Nom} {data.Prenom}")
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="RelanceDto" Property="Categorie" Title="Catégorie" />
-                <RadzenDataGridColumn TItem="RelanceDto" Property="Position" Title="Position" />
-                <RadzenDataGridColumn TItem="RelanceDto" Property="Cote" Title="Cote" Width="130px" />
-                <RadzenDataGridColumn TItem="RelanceDto" Property="TitrePropre" Title="Titre" />
-                <RadzenDataGridColumn TItem="RelanceDto" Title="Actions" Sortable="false" Filterable="false"
+                <RadzenDataGridColumn TItem="RelanceDto" Property="Categorie" Title="@L["Category"]" />
+                <RadzenDataGridColumn TItem="RelanceDto" Property="Position" Title="@L["Position"]" />
+                <RadzenDataGridColumn TItem="RelanceDto" Property="Cote" Title="@L["Cote"]" Width="130px" />
+                <RadzenDataGridColumn TItem="RelanceDto" Property="TitrePropre" Title="@L["Title"]" />
+                <RadzenDataGridColumn TItem="RelanceDto" Title="@L["Actions"]" Sortable="false" Filterable="false"
                                       Width="250px">
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                             <RadzenButton Click=@(args => navigationManager.NavigateTo($"/adherents/{data.IdAdherent}"))
-                                          Size="ButtonSize.Small" Icon="person" Text="Adhérent"
+                                          Size="ButtonSize.Small" Icon="person" Text="@L["Adherent"]"
                                           ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
                             <RadzenButton Click=@(args => navigationManager.NavigateTo($"/documents/{data.IdNotice}"))
-                                          Size="ButtonSize.Small" Icon="menu_book" Text="Notice"
+                                          Size="ButtonSize.Small" Icon="menu_book" Text="@L["Notice"]"
                                           ButtonStyle="ButtonStyle.Info" Variant="Variant.Flat" />
                         </RadzenStack>
                     </Template>
