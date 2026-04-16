@@ -12,7 +12,6 @@ internal static class ServiceExtensions
         string baseAddress)
     {
         // Auth
-
         services.AddAuthorizationCore();
         services.AddCascadingAuthenticationState();
         services.AddScoped<CookieStorageService>();
@@ -44,6 +43,8 @@ internal static class ServiceExtensions
         services.AddScoped<IEtatAdherentService, EtatAdherentService>();
         services.AddScoped<IJoursFeriesService, JoursFeriesService>();
         services.AddScoped<IPenaliteService, PenaliteService>();
+        services.AddScoped<IImageHelper,ImageHelper>();
+
 
         services.AddScoped<CultureService>();
 

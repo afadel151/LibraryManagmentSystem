@@ -3,14 +3,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Borrowing.Web.Providers;
 
-public class JwtAttachingHandler : DelegatingHandler
+public class JwtAttachingHandler(IHttpContextAccessor httpContextAccessor) : DelegatingHandler
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public JwtAttachingHandler(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request, CancellationToken cancellationToken)

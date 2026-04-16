@@ -5,17 +5,12 @@ using System.Security.Claims;
 
 namespace Borrowing.Web.Providers;
 
-public class JwtAuthStateProvider : AuthenticationStateProvider
+public class JwtAuthStateProvider(IHttpContextAccessor httpContextAccessor) : AuthenticationStateProvider
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     private static readonly AuthenticationState Anonymous =
         new(new ClaimsPrincipal(new ClaimsIdentity()));
-
-    public JwtAuthStateProvider(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
 
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
