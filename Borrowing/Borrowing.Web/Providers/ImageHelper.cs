@@ -8,6 +8,7 @@ namespace Borrowing.Web.Providers;
 public interface IImageHelper
 {
     string EncryptString(string plainText);
+    string GetSmallImageUrl(string matricule);
 }
 
 public class ImageHelper : IImageHelper
@@ -34,6 +35,7 @@ public class ImageHelper : IImageHelper
             : configuration.GetValue<string>("ImageSettings:InitialVector");
     }
 
+
     public string EncryptString(string plainText)
     {
         using Aes aesAlg = Aes.Create();
@@ -48,9 +50,13 @@ public class ImageHelper : IImageHelper
             using StreamWriter swEncrypt = new(csEncrypt);
             swEncrypt.Write(plainText);
         }
-
         string encodedString = Convert.ToBase64String(msEncrypt.ToArray());
         return Base64UrlEncoder.Encode(encodedString);
     }
 
+    public string GetSmallImageUrl(string matricule)
+    {
+        var encrypted = EncryptString(matricule);
+        return _smallByMatriculeUrl + encrypted;
+    }
 }
