@@ -22,22 +22,20 @@
                       Variant="Variant.Flat" />
     </RadzenStack>
 </RadzenStack>
-
-
 <RadzenRow class="rz-mt-4">
     <RadzenColumn>
         <RadzenDataGrid PagerHorizontalAlign="HorizontalAlign.Justify" Data="@prets" Count="@count" LoadData="@LoadData"
                         IsLoading="@isLoading" TItem="PretResponseDto" ShowPagingSummary="true" AllowPaging="true" PageSize="10"
                         AllowSorting="true">
             <Columns>
-                <RadzenDataGridColumn Property="IdAdherent" Title="@L["AdherentId"]" Width="130px" />
-                <RadzenDataGridColumn Property="Adherent" Title="@L["Adherent"]">
+                <RadzenDataGridColumn TItem="PretResponseDto"  Property="AdherentId" Title="@L["AdherentId"]" Width="130px" />
+                <RadzenDataGridColumn TItem="PretResponseDto"  Title="@L["Adherent"]">
                     <Template Context="data">
                         @($"{data.AdherentNom} {data.AdherentPrenom}")
                     </Template>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="PretResponseDto" Property="NoticeTitrePropre" Title="@L["Title"]" />
-                <RadzenDataGridColumn Property="IdExemplaire" Title="@L["Copy"]" Width="150px" />
+                <RadzenDataGridColumn TItem="PretResponseDto"  Property="ExemplaireId" Title="@L["Copy"]" Width="150px" />
                 <RadzenDataGridColumn TItem="PretResponseDto" Property="DatePret" Title="@L["LoanDate"]" Width="150px">
                     <Template Context="data">
                         @data.DatePret.ToString("dd/MM/yyyy")
@@ -47,8 +45,7 @@
                 <RadzenDataGridColumn TItem="PretResponseDto" Title="@L["Action"]" Sortable="false" Filterable="false" Width="300px">
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                            <RadzenButton Click=@(args =>
-                                                                                                                                                                            navigationManager.NavigateTo($"/exemplaire/{data.ExemplaireId}"))
+                            <RadzenButton Click=@(args =>navigationManager.NavigateTo($"/exemplaire/{data.ExemplaireId}"))
                                           Size="ButtonSize.Small" Icon="info" Text="Exemplaire" ButtonStyle="ButtonStyle.Info"
                                           Variant="Variant.Flat" />
                             <RadzenButton Click=@(args => navigationManager.NavigateTo($"/adherents/{data.AdherentId}"))

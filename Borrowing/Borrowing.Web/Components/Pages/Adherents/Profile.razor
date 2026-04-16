@@ -5,6 +5,7 @@
 @using Borrowing.SharedClasses.Responses.Categorie
 @using Borrowing.SharedClasses.Responses.Position
 @using Borrowing.Web.Components.Base
+@using Borrowing.Web.Providers
 @using Borrowing.Web.Services
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.Extensions.Localization
@@ -18,6 +19,7 @@
 @inject Radzen.DialogService DialogService
 @inject Radzen.NotificationService NotificationService
 
+@inject IImageHelper imageHelper
 
 @inherits AuthorizedComponentBase
 
@@ -33,8 +35,8 @@ else
         <RadzenStack Orientation="Orientation.Horizontal" Gap="1.5rem" Style="align-items: stretch;">
             <RadzenCard Style="flex: 0 0 auto;">
                 <RadzenStack AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Style="height: 100%;">
-                    <RadzenImage Path="@adherent.Picture"
-                                 Style="width:200px;height:200px;border-radius:50%;object-fit:cover" />
+                    <RadzenImage Path="@imageUrl"
+                                 Style="height:200px;object-fit:cover" />
                 </RadzenStack>
             </RadzenCard>
             <RadzenCard Style="flex: 1 1 auto;">
@@ -211,6 +213,7 @@ else
     private int confirmationStep = 0;
     private string warningMessage = "";
 
+    private string imageUrl = "";
     private UpdateAdherentDto adherentDto = new();
     private IEnumerable<CategorieDto> categories = Array.Empty<CategorieDto>();
     private IEnumerable<PositionDto> positions = Array.Empty<PositionDto>();
@@ -225,9 +228,7 @@ else
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
         isAdmin = authState.User.IsInRole("ADMIN");
 
-        Console.WriteLine("A");
         adherent = await AdherentService.GetAdherent(Id);
-        Console.WriteLine("B");
 
         if (adherent == null)
         {
@@ -239,6 +240,7 @@ else
             positions = await PositionService.GetAllPositionsAsync();
             etats = await EtatAdherentService.GetAllEtatsAsync();
         }
+        imageUrl = imageHelper.GetSmallImageUrl(Id);
     }
 
     private void EditProfile()

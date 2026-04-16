@@ -57,6 +57,6 @@ public class ImageHelper : IImageHelper
     public string GetSmallImageUrl(string matricule)
     {
         var encrypted = EncryptString(matricule);
-        return _smallByMatriculeUrl + encrypted;
+        return _smallByMatriculeUrl +"/"+ encrypted;
     }
 }
