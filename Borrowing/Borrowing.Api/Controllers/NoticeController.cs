@@ -13,13 +13,10 @@ namespace Borrowing.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class NoticeController(
-    INoticeService noticeService,
-    IPretService pretService,
-    IReservationService reservationService
+    INoticeService noticeService
     ) : ControllerBase
 {
     private readonly INoticeService _noticeService = noticeService;
-    private readonly IPretService _pretService = pretService;
 
     [HttpGet("Pret/Check")]
     public async Task<ActionResult<CheckNoticeResponseDto>> CheckNotice([FromQuery] string cote, [FromQuery] string AdherentId)

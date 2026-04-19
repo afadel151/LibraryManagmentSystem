@@ -1,6 +1,5 @@
 using Borrowing.Api.Repositories;
 using Borrowing.Api.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Borrowing.Api.Extensions;
 
@@ -36,7 +35,6 @@ public static class ServiceExtensions
         services.AddScoped<IPretService, PretService>();
         services.AddScoped<IRelanceService, RelanceService>();
         services.AddScoped<IReservationService, ReservationService>();
-        services.AddScoped<IRestitutionService, RestitutionService>();
         services.AddScoped<IPositionService, PositionService>();
         services.AddScoped<IJoursFeriesService, JoursFeriesService>();
 

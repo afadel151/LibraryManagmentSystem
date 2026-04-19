@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Borrowing.Api.Services;
-using Borrowing.SharedClasses.Requests.Pret;
-using Borrowing.SharedClasses.Responses.Pret;
 using Borrowing.SharedClasses.Responses.Adherent;
 using Borrowing.SharedClasses.Models;
 using Common.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 namespace Borrowing.Api.Controllers;
 
 [Microsoft.AspNetCore.Authorization.Authorize]

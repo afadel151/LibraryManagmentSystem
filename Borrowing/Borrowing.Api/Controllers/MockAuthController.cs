@@ -7,16 +7,11 @@ namespace Borrowing.Api.Controllers;
 
 
 [Route("MockAuth/[action]")]
-public class MockAuthController : Controller
+public class MockAuthController(IConfiguration configuration) : Controller
 {
-    private readonly IConfiguration _config;
+    private readonly IConfiguration _config = configuration;
     // In-memory mapping for idRequest -> compteUtilisateur (for mock; in production, use distributed cache or DB)
     private static readonly ConcurrentDictionary<string, string> _requestUserMapping = new();
-
-    public MockAuthController(IConfiguration configuration)
-    {
-        _config = configuration;
-    }
 
     [HttpGet]
     public IActionResult Login(string IdRequest)
