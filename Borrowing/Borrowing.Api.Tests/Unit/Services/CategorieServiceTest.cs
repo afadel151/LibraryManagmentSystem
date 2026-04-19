@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using Common.Models;
 using Borrowing.Api.Tests.Helpers;
+using Microsoft.Extensions.Logging;
 namespace Borrowing.Api.Tests.Unit.Services;
 
 public class CategorieServiceTests
@@ -11,12 +12,13 @@ public class CategorieServiceTests
     private readonly Mock<ICategorieRepository> _categorieRepositoryMock = new();
     private readonly Mock<IAdherentRepository> _adherentRepositoryMock = new();
     private readonly CategorieService _sut;
-
+    private readonly Mock<ILogger<CategorieService>> _logger = new();
     public CategorieServiceTests()
     {
         _sut = new(
             _categorieRepositoryMock.Object,
-            _adherentRepositoryMock.Object
+            _adherentRepositoryMock.Object,
+            _logger.Object
             );
         _adherentRepositoryMock
             .Setup(r => r.GetQueryable())

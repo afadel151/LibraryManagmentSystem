@@ -5,16 +5,18 @@ using Borrowing.SharedClasses.Requests.JoursFery;
 using FluentAssertions;
 using Moq;
 using Common.Models;
+using Microsoft.Extensions.Logging;
 namespace Borrowing.Api.Tests.Unit.Services;
 
 public class JoursFeriesServiceTest
 {
     private readonly Mock<IJoursFeriesRepository> _joursFeriesRepositoryMock = new();
     private readonly JoursFeriesService _sut;
+     private readonly Mock<ILogger<JoursFeriesService>> _logger = new();
 
     public JoursFeriesServiceTest()
     {
-        _sut = new(_joursFeriesRepositoryMock.Object);
+        _sut = new(_joursFeriesRepositoryMock.Object,_logger.Object);
     }
 
     [Fact]

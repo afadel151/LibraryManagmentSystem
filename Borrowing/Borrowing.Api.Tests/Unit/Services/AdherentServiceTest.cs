@@ -11,9 +11,6 @@ namespace Borrowing.Api.Tests.Unit.Services;
 public class AdherentServiceTest
 {
     private readonly Mock<IAdherentRepository> _adherentRepositoryMock = new();
-    private readonly Mock<IReservationRepository> _reservationRepositoryMock = new();
-    private readonly Mock<IPenaliteAdherentRepository> _penaliteAdherentRepositoryMock = new();
-    private readonly Mock<ICategorieRepository> _categorieRepositoryMock = new();
     private readonly Mock<IJoursFeriesRepository> _joursFeriesRepositoryMock = new();
     private readonly Mock<IPretRepository> _pretRepositoryMock = new();
     private readonly Mock<ILogger<AdherentService>> _logger = new();
