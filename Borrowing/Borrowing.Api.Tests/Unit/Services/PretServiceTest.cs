@@ -1,5 +1,6 @@
 using Borrowing.Api.Repositories;
 using Borrowing.Api.Services;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace Borrowing.Api.Tests.Unit.Services;
@@ -17,6 +18,7 @@ public class PretServiceTest
     private readonly Mock<IJoursFeriesRepository> _jooursFeriesRepositoryMock = new ();
     private readonly Mock<IReservationRepository> _reservationRepositoryMock = new ();
     private readonly Mock<INoticesRepository> _noticeRepositoryMock = new ();
+    private readonly Mock<ILogger<PretService>> _logger = new();
     private readonly PretService _sut;
 
     public PretServiceTest()
@@ -32,7 +34,8 @@ public class PretServiceTest
             _penaliteRepositoryMock.Object,
             _jooursFeriesRepositoryMock.Object,
             _reservationRepositoryMock.Object,
-            _noticeRepositoryMock.Object
+            _noticeRepositoryMock.Object,
+            _logger.Object
             );
     }
 

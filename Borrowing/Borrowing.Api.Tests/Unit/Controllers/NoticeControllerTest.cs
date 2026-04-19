@@ -14,9 +14,7 @@ public class NoticeControllerTest
     public NoticeControllerTest()
     {
         _sut = new(
-            _noticeServiceMock.Object,
-            _pretServiceMock.Object,
-            _reservationServiceMock.Object
+            _noticeServiceMock.Object
         );
     }
 }
