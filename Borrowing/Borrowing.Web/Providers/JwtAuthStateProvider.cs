@@ -40,7 +40,10 @@ public class JwtAuthStateProvider(IHttpContextAccessor httpContextAccessor) : Au
             var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
             return jwt.ValidTo < DateTime.UtcNow;
         }
-        catch (Exception ex) { return true; }
+        catch (Exception ex) { 
+            Console.WriteLine($"Error reading jwt token: {ex.Message} ");
+            return true; 
+        }
     }
 
     private IEnumerable<Claim> ParseClaimsFromJwt(string token)

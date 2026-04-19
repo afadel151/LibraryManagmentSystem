@@ -21,12 +21,15 @@ public interface IReservationService
 public class ReservationService(
     IReservationRepository reservationRepository,
     IPretRepository pretRepository,
-    INoticesRepository noticesRepository
+    INoticesRepository noticesRepository,
+    ILogger<ReservationService> logger
     ) : IReservationService
 {
     private readonly IReservationRepository _reservationRepository = reservationRepository;
     private readonly INoticesRepository _noticesRepository = noticesRepository;
     private readonly IPretRepository _pretRepository = pretRepository;
+
+    private readonly ILogger<ReservationService> _logger = logger;
 
     // Sample method to demonstrate repository usage
     public async Task<Reservation?> CreateReservationAsync(CreateReservationRequestDto reservation)
@@ -46,6 +49,7 @@ public class ReservationService(
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex,"Error adding reservation");
             return null;
         }
     }
@@ -220,8 +224,9 @@ public class ReservationService(
             await _reservationRepository.DeleteAsync(reservation);
             return true;
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex,"Error deleting reservation");
             return false;
         }
     }

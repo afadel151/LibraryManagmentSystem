@@ -33,7 +33,9 @@ public class PretService(
     IPenaliteRepository penaliteRepository,
     IJoursFeriesRepository joursFeriesRepository,
     IReservationRepository reservationRepository,
-    INoticesRepository noticesRepository) : IPretService
+    INoticesRepository noticesRepository,
+    ILogger<PretService> logger
+    ) : IPretService
 {
     private readonly IPretRepository _pretRepository = pretRepository;
     private readonly IJoursFeriesRepository _joursFeriesRepository = joursFeriesRepository;
@@ -46,6 +48,8 @@ public class PretService(
     private readonly IReservationRepository _reservationRepository = reservationRepository;
     private readonly ICategorieRepository _categorieRepository = categorieRepository;
     private readonly INoticesRepository _noticesRepository = noticesRepository;
+
+    private readonly ILogger<PretService> _logger = logger;
 
     public async Task<bool> CreatePretAsync(CreatePretRequestDto pretRequestDTo)
     {
@@ -63,7 +67,7 @@ public class PretService(
         }
         catch (Exception ex)
         {
-
+            _logger.LogError(ex,"Error creating pret");   
             return false;
         }
     }
@@ -81,8 +85,9 @@ public class PretService(
             await _pretRepository.DeleteAsync(pret);
             return true;
         }
-        catch (System.Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex,"Error deleting pret");   
             return false;
         }
     }
@@ -259,8 +264,9 @@ public class PretService(
             await _historiquePretRepository.AddAsync(historique);
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex,"Error adding historiquePret pret");   
             return ApiResult.Fail("Erreur lors d'ajout d'historique ");
         }
         //  Calcul du retard
@@ -350,9 +356,9 @@ public class PretService(
                         });
 
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-
+                        _logger.LogError(ex,"Error Adding penalty");   
                         return ApiResult.Fail("Erreur lors de la penalisation de l'adherent ");
                     }
                 }
@@ -369,8 +375,9 @@ public class PretService(
                         await _penaliteAdherentRepository.UpdateAsync(penaliteAdherentExistante);
 
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        _logger.LogError(ex,"Error updating penalty");   
                         return ApiResult.Fail("Erreur de penalisation s'il existe d'autre documents ");
                     }
                 }
@@ -387,9 +394,9 @@ public class PretService(
                         });
 
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-
+                        _logger.LogError(ex,"Error adding penalty");   
                         return ApiResult.Fail("Erreur lors de penalisation lors du dernier document ");
 
                     }
@@ -405,8 +412,9 @@ public class PretService(
                     await _adherentRepository.UpdateAsync(adherent);
 
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                     _logger.LogError(ex,"Error updating adherent");  
                     return ApiResult.Fail("Erreur lors de la mise a jours d'etat d'adherent ");
                 }
             }
@@ -424,8 +432,9 @@ public class PretService(
 
                         await _penaliteAdherentRepository.UpdateAsync(penaliteAdherentExistante);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                         _logger.LogError(ex,"Error updating penalty");  
                         return ApiResult.Fail("Erreur lors de la mise a jours de penalite ");
                     }
                 }
@@ -454,8 +463,9 @@ public class PretService(
 
                 await _pretRepository.AddAsync(pretFictif);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                 _logger.LogError(ex,"Error adding reservation pret");  
                 return ApiResult.Fail("Erreur lors de bloquage de l'exemplaire ");
             }
             exemplaire.IdEtat = 2; // État Réservé
@@ -469,8 +479,9 @@ public class PretService(
 
             await _exemplairesRepository.UpdateAsync(exemplaire);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+             _logger.LogError(ex,"Error updating exemplaire");  
             return ApiResult.Fail("Erreur lors de la mise a jours de l'exemplaire ");
         }
         try
@@ -478,8 +489,9 @@ public class PretService(
             await _pretRepository.DeleteAsync(pret);
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+             _logger.LogError(ex,"Error deleting pret");  
             return ApiResult.Fail("Erreur lors de suppression de pret ");
         }
 

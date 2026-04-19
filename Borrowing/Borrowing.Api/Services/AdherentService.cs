@@ -192,7 +192,7 @@ public class AdherentService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex,"Error creating adherent");
             return false; // Typically duplicate key exception or generic DB error
         }
     }
@@ -218,7 +218,7 @@ public class AdherentService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex,"Error updating Adherent");
             return false;
         }
     }

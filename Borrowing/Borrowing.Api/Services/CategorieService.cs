@@ -71,7 +71,7 @@ public class CategorieService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex, "error updating category");
             return false;
         }
     }

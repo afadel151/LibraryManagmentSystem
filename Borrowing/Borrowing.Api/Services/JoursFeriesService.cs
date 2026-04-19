@@ -101,7 +101,7 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository,ILo
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex,"Error creating Jours ferie");
             return false;
         }
     }
@@ -134,7 +134,7 @@ public class JoursFeriesService(IJoursFeriesRepository joursFeriesRepository,ILo
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex, "Error deleting jours feries");
             return false;
         }
     }

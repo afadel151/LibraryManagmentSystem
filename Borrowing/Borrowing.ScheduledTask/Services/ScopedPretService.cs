@@ -72,7 +72,7 @@ internal sealed class ScopedPretService(
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError("Erreur lors de mise a jours d'un adherent en etat Bloque");
+                            _logger.LogError(ex,"Erreur lors de mise a jours d'un adherent en etat Bloque");
                         }
                     }
                     else
@@ -92,7 +92,7 @@ internal sealed class ScopedPretService(
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError("Erreur lors de penalisation de l'adherent");
+                            _logger.LogError(ex,"Erreur lors de penalisation de l'adherent");
                         }
                     }
 
@@ -119,13 +119,13 @@ internal sealed class ScopedPretService(
             try { await _pretRepository.DeleteAsync(pret); }
             catch (Exception ex)
             {
-                _logger.LogError("Error deleting Pret 1");
+                _logger.LogError(ex,"Error deleting Pret 1");
             }
             //---------- selectionner le premier qui a reserv�
             try { await _reservationRepository.DeleteAsync(firstreservator); }
             catch (Exception ex)
             {
-                _logger.LogError("Error deleting Reservation 2");
+                _logger.LogError(ex,"Error deleting Reservation 2");
             }
             var exemplaire = pret.Exemplaire;
             exemplaire.IdEtat = 1;
@@ -135,7 +135,7 @@ internal sealed class ScopedPretService(
             }
             catch (Exception ex)
             {
-                _logger.LogError("error editing exemplaire 3");
+                _logger.LogError(ex,"error editing exemplaire 3");
             }
         }
         else
@@ -144,7 +144,7 @@ internal sealed class ScopedPretService(
             try { await _reservationRepository.DeleteAsync(firstreservator); }
             catch (Exception ex)
             {
-                _logger.LogError("Error deleting Reservation 4");
+                _logger.LogError(ex,"Error deleting Reservation 4");
             }
             //------------------ Lancer les relances
             if (mail_connected)
@@ -162,7 +162,7 @@ internal sealed class ScopedPretService(
             { await _pretRepository.UpdateAsync(pret); }
             catch (Exception ex)
             {
-                _logger.LogError("Error updating pret 5");
+                _logger.LogError(ex,"Error updating pret 5");
             }
         }
     }

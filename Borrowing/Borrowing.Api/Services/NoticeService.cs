@@ -52,7 +52,7 @@ public class NoticeService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            _logger.LogError(ex, "Error updating exemplaire");
             return false;
         }
     }
