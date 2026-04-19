@@ -13,7 +13,6 @@ public abstract class AuthorizedComponentBase : ComponentBase
 
     private bool _dataLoaded = false;
 
-    // Override this in your pages instead of OnInitializedAsync / OnAfterRenderAsync
     protected virtual Task OnPageInitializedAsync() => Task.CompletedTask;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

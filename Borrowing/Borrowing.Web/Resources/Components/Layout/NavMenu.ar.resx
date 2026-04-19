@@ -228,6 +228,9 @@
   <data name="Penalised" xml:space="preserve">
     <value>منخرط  مُعاقَب</value>
   </data>
+  <data name="Penalties" xml:space="preserve">
+    <value>العقوبات</value>
+  </data>
   <data name="PenaltyDays" xml:space="preserve">
     <value>عدد أيام الغرامة</value>
   </data>

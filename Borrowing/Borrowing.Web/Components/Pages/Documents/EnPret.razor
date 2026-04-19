@@ -41,15 +41,25 @@
                         @data.DatePret.ToString("dd/MM/yyyy")
                     </Template>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn Property="EtatDuree" Title="@L["State"]" Width="120px" />
+                <RadzenDataGridColumn Property="EtatDuree" Title="@L["State"]" Width="120px">
+                    <Template Context="data">
+                        @if(data.EtatDuree == "F")
+                        {
+                            <RadzenBadge BadgeStyle="BadgeStyle.Warning" Text="@L["F"]" />
+                        }else{
+                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Text="@L["O"]" />
+
+                        }
+                    </Template>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="PretResponseDto" Title="@L["Action"]" Sortable="false" Filterable="false" Width="300px">
                     <Template Context="data">
                         <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
                             <RadzenButton Click=@(args =>navigationManager.NavigateTo($"/exemplaire/{data.ExemplaireId}"))
-                                          Size="ButtonSize.Small" Icon="info" Text="Exemplaire" ButtonStyle="ButtonStyle.Info"
+                                          Size="ButtonSize.Small" Icon="info" Text="@L["Copy"]" ButtonStyle="ButtonStyle.Info"
                                           Variant="Variant.Flat" />
                             <RadzenButton Click=@(args => navigationManager.NavigateTo($"/adherents/{data.AdherentId}"))
-                                          Size="ButtonSize.Small" Icon="person" Text="Adhérent"
+                                          Size="ButtonSize.Small" Icon="person" Text="@L["Adherent"]"
                                           ButtonStyle="ButtonStyle.Secondary" Variant="Variant.Flat" />
                         </RadzenStack>
                     </Template>

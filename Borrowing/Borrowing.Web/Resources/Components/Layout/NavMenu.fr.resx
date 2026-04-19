@@ -228,6 +228,9 @@
   <data name="Penalised" xml:space="preserve">
     <value>Adhérent pénalisé</value>
   </data>
+  <data name="Penalties" xml:space="preserve">
+    <value>Pénalités</value>
+  </data>
   <data name="PenaltyDays" xml:space="preserve">
     <value>Nombre de jours de pénalité</value>
   </data>

@@ -2,6 +2,7 @@
 @using Borrowing.SharedClasses.Requests.Reservation
 @using Borrowing.SharedClasses.Responses.Reservation
 @using Borrowing.Web.Components.Base
+@using Borrowing.Web.Providers
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Responses.Pret
 @using Borrowing.SharedClasses.Models
@@ -16,7 +17,7 @@
 @using Common.Models
 
 @inject NotificationService NotificationService
-
+@inject IImageHelper imageHelper
 @inherits AuthorizedComponentBase
 @inject IStringLocalizer<Prets> L
 <RadzenRow class="rz-text-align-center " Gap="1rem">
@@ -61,7 +62,7 @@
     </RadzenColumn>
 </RadzenRow>
 
-<RadzenText TextStyle="TextStyle.H3" class="rz-mt-8">@L["InsertLoan"]</RadzenText> @**@
+<RadzenText TextStyle="TextStyle.H3" class="rz-mt-4">@L["InsertLoan"]</RadzenText> @**@
 
 <RadzenRow class="rz-mt-4">
     <RadzenColumn Size="12" SizeMD="6">
@@ -86,8 +87,8 @@
                     {
                         <RadzenRow>
                             <RadzenColumn Size="4">
-                                <img src="@(adherentCheck.picture)" style="width: 100%; border-radius: 8px;"
-                                     onerror="this.style.display='none'" />
+                                 <RadzenImage Path="@imageUrl"
+                                        Style="width:100%;object-fit:cover" />
                             </RadzenColumn>
                             <RadzenColumn Size="8">
                                 <RadzenText TextStyle="TextStyle.H6"><b>@(adherentCheck.Adherent?.Nom?.ToUpper())
@@ -138,7 +139,7 @@
                                                 </RadzenRow>
                                             }
                                     }
-                else if (hasSearchedMember && adherentCheck == null)
+                                    else if (hasSearchedMember && adherentCheck == null)
                                     {
                                         <RadzenText TextStyle="TextStyle.Body2" class="rz-color-danger">@L["ErrorWhileVerifyingMember"]
                                         </RadzenText>
@@ -233,7 +234,7 @@
                                               ButtonStyle="ButtonStyle.Secondary" Click=ReserverCote />
                             }
                             @if ((noticeCheck.Status == CheckNoticeEnum.CAN_BORROW || noticeCheck.Status ==
-                                                                                                                                                                                                                    CheckNoticeEnum.CAN_BORROW_RESERVATEUR) && selectedCopyId != null)
+                                                                                                                                                                                                                                                CheckNoticeEnum.CAN_BORROW_RESERVATEUR) && selectedCopyId != null)
                             {
                                 <RadzenButton Disabled="!IsLoanValidatable" Click=ValiderPret Text="@L["ValidateLoan"]"
                                               ButtonStyle="ButtonStyle.Success" Size="ButtonSize.Medium" class="rz-mr-2" />
@@ -284,6 +285,7 @@
     // UI Bound Variables
     string AdherentId = "";
     string Cote = "";
+    private string imageUrl = "";
     string? selectedCopyId;
     DateTime loanDate = DateTime.Now.Date;
 
@@ -337,6 +339,7 @@
         }
         else
         {
+            imageUrl = imageHelper.GetSmallImageUrl(adherentCheck.Adherent!.IdAdherent);
             if (adherentCheck.Etat != CheckAdherentEnum.AUTHORIZED)
             {
                 ShowNotification(new NotificationMessage
