@@ -61,4 +61,106 @@
   <data name="Categories" xml:space="preserve">
     <value>Categories</value>
   </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>Exporting...</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="CategoryId" xml:space="preserve">
+    <value>Category ID</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="DocumentCount" xml:space="preserve">
+    <value>Document Count</value>
+  </data>
+  <data name="LoanDuration" xml:space="preserve">
+    <value>Loan Duration (days)</value>
+  </data>
+  <data name="AdherentCount" xml:space="preserve">
+    <value>Member Count</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="AddCategory" xml:space="preserve">
+    <value>Add Category</value>
+  </data>
+  <data name="IdRequired" xml:space="preserve">
+    <value>ID is required</value>
+  </data>
+  <data name="LabelRequired" xml:space="preserve">
+    <value>Label is required</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="CategoryCreatedSuccess" xml:space="preserve">
+    <value>Category created successfully</value>
+  </data>
+  <data name="ErrorCreatingCategory" xml:space="preserve">
+    <value>Error creating category</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>Edit Category</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="CategoryUpdatedSuccess" xml:space="preserve">
+    <value>Category updated successfully</value>
+  </data>
+  <data name="ErrorUpdatingCategory" xml:space="preserve">
+    <value>Error updating category</value>
+  </data>
+  <data name="DeleteConfirmation" xml:space="preserve">
+    <value>Delete Confirmation</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="DeleteCategoryWarning" xml:space="preserve">
+    <value>You are about to delete this category? This action could affect associated members.</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="FinalConfirmation" xml:space="preserve">
+    <value>Final Confirmation</value>
+  </data>
+  <data name="ConfirmDeleteCategory" xml:space="preserve">
+    <value>Are you sure you want to delete this category? This action is irreversible.</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+  <data name="CategoryDeletedSuccess" xml:space="preserve">
+    <value>Category deleted successfully</value>
+  </data>
+  <data name="ErrorDeletingCategory" xml:space="preserve">
+    <value>Error deleting category</value>
+  </data>
 </root>

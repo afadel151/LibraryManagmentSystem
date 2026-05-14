@@ -175,7 +175,7 @@
     <value>تم إنشاء المنخرط بنجاح</value>
   </data>
   <data name="Penalised" xml:space="preserve">
-    <value>موقوف </value>
+    <value>مُعاقَب</value>
   </data>
   <data name="Position" xml:space="preserve">
     <value>المنصب</value>
@@ -205,7 +205,7 @@
     <value>نجاح</value>
   </data>
   <data name="Suspended" xml:space="preserve">
-    <value> مُعاقَب</value>
+    <value>موقوف</value>
   </data>
   <data name="TotalAdherents" xml:space="preserve">
     <value>إجمالي المنخرطين</value>

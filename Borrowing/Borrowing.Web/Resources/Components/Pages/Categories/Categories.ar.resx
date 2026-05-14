@@ -61,4 +61,106 @@
   <data name="Categories" xml:space="preserve">
     <value>الفئات</value>
   </data>
+  <data name="Exporting" xml:space="preserve">
+    <value>جارٍ التصدير...</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>تصدير</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>إضافة</value>
+  </data>
+  <data name="CategoryId" xml:space="preserve">
+    <value>معرّف الفئة</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>التسمية</value>
+  </data>
+  <data name="DocumentCount" xml:space="preserve">
+    <value>عدد الوثائق</value>
+  </data>
+  <data name="LoanDuration" xml:space="preserve">
+    <value>مدة الإعارة (أيام)</value>
+  </data>
+  <data name="AdherentCount" xml:space="preserve">
+    <value>عدد المنخرطين</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="AddCategory" xml:space="preserve">
+    <value>إضافة فئة</value>
+  </data>
+  <data name="IdRequired" xml:space="preserve">
+    <value>المعرّف مطلوب</value>
+  </data>
+  <data name="LabelRequired" xml:space="preserve">
+    <value>التسمية مطلوبة</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>نجاح</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>خطأ</value>
+  </data>
+  <data name="CategoryCreatedSuccess" xml:space="preserve">
+    <value>تم إنشاء الفئة بنجاح</value>
+  </data>
+  <data name="ErrorCreatingCategory" xml:space="preserve">
+    <value>حدث خطأ أثناء إنشاء الفئة</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>تعديل فئة</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="CategoryUpdatedSuccess" xml:space="preserve">
+    <value>تم تحديث الفئة بنجاح</value>
+  </data>
+  <data name="ErrorUpdatingCategory" xml:space="preserve">
+    <value>حدث خطأ أثناء تحديث الفئة</value>
+  </data>
+  <data name="DeleteConfirmation" xml:space="preserve">
+    <value>تأكيد الحذف</value>
+  </data>
+  <data name="Warning" xml:space="preserve">
+    <value>تحذير</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>انتباه</value>
+  </data>
+  <data name="DeleteCategoryWarning" xml:space="preserve">
+    <value>أنت على وشك حذف هذه الفئة. قد تؤثر هذه العملية على المنخرطين المرتبطين بها.</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>متابعة</value>
+  </data>
+  <data name="Confirmation" xml:space="preserve">
+    <value>تأكيد</value>
+  </data>
+  <data name="FinalConfirmation" xml:space="preserve">
+    <value>التأكيد النهائي</value>
+  </data>
+  <data name="ConfirmDeleteCategory" xml:space="preserve">
+    <value>هل أنت متأكد من حذف هذه الفئة؟ هذا الإجراء لا يمكن التراجع عنه.</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>تأكيد الحذف</value>
+  </data>
+  <data name="CategoryDeletedSuccess" xml:space="preserve">
+    <value>تم حذف الفئة بنجاح</value>
+  </data>
+  <data name="ErrorDeletingCategory" xml:space="preserve">
+    <value>حدث خطأ أثناء حذف الفئة</value>
+  </data>
 </root>

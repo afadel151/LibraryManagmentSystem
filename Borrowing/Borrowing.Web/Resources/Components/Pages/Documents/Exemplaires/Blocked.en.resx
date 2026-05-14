@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BlockedExemplaires" xml:space="preserve">
-    <value>Blocked Exemplaires</value>
+    <value>Blocked Copies</value>
   </data>
   <data name="ExemplaireId" xml:space="preserve">
     <value>Exemplaire ID</value>
