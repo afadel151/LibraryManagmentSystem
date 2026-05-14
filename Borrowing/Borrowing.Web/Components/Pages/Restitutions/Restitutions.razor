@@ -1,6 +1,7 @@
 @page "/restitutions"
 @using Borrowing.SharedClasses.Responses.Adherent
 @using Borrowing.Web.Components.Base
+@using Borrowing.Web.Providers
 @using Borrowing.Web.Services
 @using Borrowing.SharedClasses.Models
 @using Borrowing.SharedClasses.Requests.Restitution
@@ -12,7 +13,7 @@
 @inject IStringLocalizer<Restitutions> L
 
 @inherits AuthorizedComponentBase
-
+@inject IImageHelper imageHelper
 
 
 <RadzenText TextStyle="TextStyle.H2">@L["MakeRestitution"]</RadzenText>
@@ -32,8 +33,8 @@
         {
             <RadzenRow>
                 <RadzenColumn Size="4">
-                    <img src="@(adherentCheck.Picture)" style="width: 50%; border-radius: 8px;"
-                         onerror="this.style.display='none'" />
+                    <RadzenImage Path="@imageUrl"
+                                        Style="width:50%;object-fit:cover" />
                 </RadzenColumn>
                 <RadzenColumn Size="8">
 
@@ -90,7 +91,7 @@
         </RadzenRow>
 
 @code {
-
+    private string imageUrl = "";
     string AdherentId = "";
     string? selectedCopyId;
 
@@ -125,6 +126,7 @@
             });
             ResetMemberState();
         }
+        imageUrl = imageHelper.GetSmallImageUrl(adherentCheck!.Adherent!.IdAdherent);
         isLoadingMember = false;
     }
 

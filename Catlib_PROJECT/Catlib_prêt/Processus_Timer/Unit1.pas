@@ -91,9 +91,9 @@ begin
 
                 Duree_pret := Query1.Fields.FieldByNumber(1).AsInteger ;
 
-                //-------------- Calculer la date prévue pour la restitution
+                //-------------- Calculer la date prï¿½vue pour la restitution
                 //-------------- en d'autres termes est ce que
-                //-------------- l'exemplaire en cours a dépassé les délais de restitution
+                //-------------- l'exemplaire en cours a dï¿½passï¿½ les dï¿½lais de restitution
 
                 date_restitution_prevue := strtodate(DBEdit3.Text) + Duree_pret ;
                 date_restitution_prevue := Traiter_date(date_restitution_prevue) ;
@@ -112,7 +112,7 @@ begin
 
                 if (retard)  then
                         begin
-                                if (DBEdit1.Text = '99/999') then //---- c'est à dire que ce pret est fait pour un reservateur
+                                if (DBEdit1.Text = '99/999') then //---- c'est ï¿½ dire que ce pret est fait pour un reservateur
                                         begin
 
                                                 Query1.SQL.Text := 'select count(*) from pret where upper(id_exemplaire) like ''' + strupper(cote) + '/%'' and id_adherent = ''99/999''' ;
@@ -127,30 +127,30 @@ begin
 
                                              if ( N1 = N2 ) then
                                                 begin
-                                                //----- Supprimer ( 99/999, ????= id_exemplaire ) de la table pret
+                                                        //----- Supprimer ( 99/999, ????= id_exemplaire ) de la table pret
 
-                                                Query1.SQL.Text := ' delete from pret where id_adherent = ''99/999'' and id_exemplaire = ''' + DBEdit2.Text + '''' ;
-                                                Query1.ExecSQL ;
+                                                        Query1.SQL.Text := ' delete from pret where id_adherent = ''99/999'' and id_exemplaire = ''' + DBEdit2.Text + '''' ;
+                                                        Query1.ExecSQL ;
 
-                                                //----- Supprimer ( le premier de la table , cote(id_exemplaire) ) de la table reservation
+                                                        //----- Supprimer ( le premier de la table , cote(id_exemplaire) ) de la table reservation
 
-                                                //---------- selectionner le premier qui a reservé
-                                                Query1.SQL.Text := 'select * from reservation where upper(cote) = ''' + strupper(cote) + ';'' order by heure_reservation asc' ;
-                                                Query1.ExecSQL ; Query1.Active := true ; Query1.First;
+                                                        //---------- selectionner le premier qui a reservï¿½
+                                                        Query1.SQL.Text := 'select * from reservation where upper(cote) = ''' + strupper(cote) + ';'' order by heure_reservation asc' ;
+                                                        Query1.ExecSQL ; Query1.Active := true ; Query1.First;
 
-                                                id_premier_adherent :=   Query1.Fields.FieldByNumber(1).AsString ;
+                                                        id_premier_adherent :=   Query1.Fields.FieldByNumber(1).AsString ;
 
-                                                Query1.SQL.Text := ' delete from reservation where id_adherent = ''' + id_premier_adherent + ''' and upper(cote) = ''' + strupper(cote) + ';''' ;
-                                                Query1.ExecSQL ;
+                                                        Query1.SQL.Text := ' delete from reservation where id_adherent = ''' + id_premier_adherent + ''' and upper(cote) = ''' + strupper(cote) + ';''' ;
+                                                        Query1.ExecSQL ;
 
-                                                Query1.SQL.Text := ' update exemplaire  set id_etat = 1 where id_exemplaire = ''' + DBEdit2.Text + '''' ;
-                                                Query1.ExecSQL ;
+                                                        Query1.SQL.Text := ' update exemplaire  set id_etat = 1 where id_exemplaire = ''' + DBEdit2.Text + '''' ;
+                                                        Query1.ExecSQL ;
 
                                                 end
                                              else
                                                 begin
 
-                                                //---------- selectionner le premier qui a reservé
+                                                //---------- selectionner le premier qui a reservï¿½
                                                 Query1.SQL.Text := 'select * from reservation where upper(cote) = ''' + strupper(cote) + ';'' order by heure_reservation asc' ;
                                                 Query1.ExecSQL ; Query1.Active := true ; Query1.First;
 
@@ -159,7 +159,7 @@ begin
                                                 Query1.ExecSQL ;
 
                                                 //------------------ Lancer les relances
-                                                //---------ici on peut envoyer un mail à l'utilisateur concerné
+                                                //---------ici on peut envoyer un mail ï¿½ l'utilisateur concernï¿½
 
                                                 Query1.SQL.Text := 'select titre_propre from notice where upper(cote) = ''' + strupper(cote) + ';''' ;
 
@@ -169,34 +169,34 @@ begin
 
                                                 titre_propre := Query1.Fields.FieldByNumber(1).AsString ;
 
-                                                Mail.UserID := 'bibliotheque';  //----- il faut changer ici de sorte à indiquer le compte messagerie qui va envoyé les messages de notifications
+                                                Mail.UserID := 'bibliotheque';  //----- il faut changer ici de sorte ï¿½ indiquer le compte messagerie qui va envoyï¿½ les messages de notifications
                                                 Mail.Host := 'mail-server.emp.mdn' ; Mail.Connect;
                                                 if (Mail.Connected) then
                                                         begin
-                                                                //---- ce travail a été fait par faouzi
+                                                                //---- ce travail a ï¿½tï¿½ fait par faouzi
                                                                 //-------- Il faut ici encoder le numero et le mot de passe de la bibliotheque
                                                                 Mail.Writeln('Helo biblio');
                                                                 Mail.Writeln('AUTH LOGIN ' + Base64Encode(Mail.UserID));
                                                                 Mail.Writeln(Base64Encode('ISTCEDOC'));
-                                                                Mail.PostMessage.Body.Clear;  //----- Ré-initialiser le Body du Message à vide
+                                                                Mail.PostMessage.Body.Clear;  //----- Rï¿½-initialiser le Body du Message ï¿½ vide
                                                                 Mail.PostMessage.FromAddress := Mail.UserID + '@emp.mdn' ;
                                                                 Mail.PostMessage.ToAddress.Text := id_premier_adherent + '@emp.mdn' ;
-                                                                Mail.PostMessage.Subject := 'Avis de Disponibilité' ;
+                                                                Mail.PostMessage.Subject := 'Avis de Disponibilitï¿½' ;
 
-                                                                Mail.PostMessage.Body.Add('Avis de disponibilité') ;
+                                                                Mail.PostMessage.Body.Add('Avis de disponibilitï¿½') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
-                                                                Mail.PostMessage.Body.Add('Nous portons à votre connaissance que le document : " ' + titre_propre + ' " ') ;
-                                                                Mail.PostMessage.Body.Add('Qui porte la cote : " ' + cote + ' "' + ' est disponible au niveau de la bibliothèque') ;
-                                                                Mail.PostMessage.Body.Add('Il vous est reservé pour une période de 48h.') ;
+                                                                Mail.PostMessage.Body.Add('Nous portons ï¿½ votre connaissance que le document : " ' + titre_propre + ' " ') ;
+                                                                Mail.PostMessage.Body.Add('Qui porte la cote : " ' + cote + ' "' + ' est disponible au niveau de la bibliothï¿½que') ;
+                                                                Mail.PostMessage.Body.Add('Il vous est reservï¿½ pour une pï¿½riode de 48h.') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
-                                                                Mail.PostMessage.Body.Add('CEDOC/Bibliothèque') ;
+                                                                Mail.PostMessage.Body.Add('CEDOC/Bibliothï¿½que') ;
 
                                                                 Mail.SendMail;
 
@@ -217,9 +217,9 @@ begin
                                 else
                                         begin
 
-                                        //---------- Traiter le cas des pénalités pour les autres utilisateurs autres que les reservateurs
+                                        //---------- Traiter le cas des pï¿½nalitï¿½s pour les autres utilisateurs autres que les reservateurs
 
-                                        //---------- vérifier est ce que l'utilisateur en cours existe dans la table pénalité
+                                        //---------- vï¿½rifier est ce que l'utilisateur en cours existe dans la table pï¿½nalitï¿½
 
                                         Query1.SQL.Text := 'select count(*) from penalite_adherent where id_adherent = ''' +  DBEdit1.Text + '''' ;
                                         Query1.ExecSQL ; Query1.Active := true ; Query1.First;
@@ -241,7 +241,7 @@ begin
               end;  //------ fin de while (not requete_timer.eof)
 
 //---------------------------------------------------------------------------
-                //----------- Cette partie traite les pénalités
+                //----------- Cette partie traite les pï¿½nalitï¿½s
 //---------------------------------------------------------------------------
         Requete_Timer.Active := false ;
 
@@ -257,20 +257,20 @@ begin
         while not Requete_Timer.Eof do
               begin
 
-                if ( strtoint(DBEdit3.Text) > 0 ) then   //--- Ici ça veut dire que la pénalité est active ( le nombre de jours est positif )
+                if ( strtoint(DBEdit3.Text) > 0 ) then   //--- Ici ï¿½a veut dire que la pï¿½nalitï¿½ est active ( le nombre de jours est positif )
                     begin
 
                          date_fin_penalite := strtodate(DBEdit2.Text) + strtoint(DBEdit3.Text); //--- date fin = date debut + nombre jours penalite
 
                          if ( Date_aujourdhui >= date_fin_penalite ) then
                             begin
-                                 //------- sauvegarder les informations de la pénalité en cours dans la table : hitorique_penalite
+                                 //------- sauvegarder les informations de la pï¿½nalitï¿½ en cours dans la table : hitorique_penalite
                                  Query1.SQL.Text := 'insert into  historique_penalite_adherent values (''' + DBEdit1.Text
                                                                                                      + ''',''' + DBEdit2.Text
                                                                                                      + ''',''' + DBEdit3.Text + ''')' ;
                                  Query1.ExecSQL ;
 
-                                 //------- Modifier l'état de l'adhérent s'il n'est pas suspendu
+                                 //------- Modifier l'ï¿½tat de l'adhï¿½rent s'il n'est pas suspendu
                                  Query1.SQL.Text := 'update adherent set etat_adherent = ''1'' where id_adherent = ''' +  DBEdit1.Text + ''' and etat_adherent <> ''3'' ' ;
                                  Query1.ExecSQL ;
 
@@ -283,8 +283,8 @@ begin
                     Requete_Timer.Next;
               end; //----- End While
 
-//-------- pour afficher les infos de la derniere vérification
-Label1.Caption := 'Dernière Vérification réalisée le : '+  datetostr(Date_aujourdhui) + ' à  ' + timetostr(time)  ;
+//-------- pour afficher les infos de la derniere vï¿½rification
+Label1.Caption := 'Derniï¿½re Vï¿½rification rï¿½alisï¿½e le : '+  datetostr(Date_aujourdhui) + ' ï¿½  ' + timetostr(time)  ;
 
 end;
 
@@ -310,7 +310,7 @@ begin
                         end
                 else
                         begin
-                                // ---- Pour voir est ce que la date de retour est un jour férier
+                                // ---- Pour voir est ce que la date de retour est un jour fï¿½rier
                                 // ---- Extraire la liste des jours feriers
                                 Requete_date.SQL.Text := 'select * from jours_feries' ;
                                 Requete_date.ExecSQL ;
@@ -333,7 +333,7 @@ begin
                         end ;
                 if (changement) then  Traiter_date := Traiter_date(date_a_traiter)
                 else Traiter_date := date_a_traiter ;
-                //--- Retour de la valeur finale d'une date valide (pas week end, pas jour férier)
+                //--- Retour de la valeur finale d'une date valide (pas week end, pas jour fï¿½rier)
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -363,11 +363,11 @@ begin
         Requete_Timer.First;
         {
 
-                                                Mail.UserID := 'bibliotheque';  //----- il faut changer ici de sorte à indiquer le compte messagerie qui va envoyé les messages de notifications
+                                                Mail.UserID := 'bibliotheque';  //----- il faut changer ici de sorte ï¿½ indiquer le compte messagerie qui va envoyï¿½ les messages de notifications
                                                 Mail.Host := 'mail-server.emp.mdn' ;
 
                                                 Mail.Connect;
-                                                Showmessage('--->' + Mail.UserID +  '****' + Mail.Host + 'connecté') ;
+                                                Showmessage('--->' + Mail.UserID +  '****' + Mail.Host + 'connectï¿½') ;
 
         }
 
@@ -391,9 +391,9 @@ begin
 
                 Duree_pret := Query1.Fields.FieldByNumber(1).AsInteger ;
 
-                //-------------- Calculer la date prévue pour la restitution
+                //-------------- Calculer la date prï¿½vue pour la restitution
                 //-------------- en d'autres termes est ce que
-                //-------------- l'exemplaire en cours a dépassé les délais de restitution
+                //-------------- l'exemplaire en cours a dï¿½passï¿½ les dï¿½lais de restitution
 
                 date_restitution_prevue := strtodate(DBEdit3.Text) + Duree_pret ;
                 date_restitution_prevue := Traiter_date(date_restitution_prevue) ;
@@ -417,7 +417,7 @@ begin
 
                 if (retard)  then
                         begin
-                                if (DBEdit1.Text = '99/999') then //---- c'est à dire que ce pret est fait pour un reservateur
+                                if (DBEdit1.Text = '99/999') then //---- c'est ï¿½ dire que ce pret est fait pour un reservateur
                                         begin
 
                                                 Query1.SQL.Text := 'select count(*) from pret where upper(id_exemplaire) like ''' + strupper(cote) + '/%'' and id_adherent = ''99/999''' ;
@@ -439,7 +439,7 @@ begin
 
                                                 //----- Supprimer ( le premier de la table , cote(id_exemplaire) ) de la table reservation
 
-                                                //---------- selectionner le premier qui a reservé
+                                                //---------- selectionner le premier qui a reservï¿½
                                                 Query1.SQL.Text := 'select * from reservation where upper(cote) = ''' + strupper(cote) + ';'' order by heure_reservation asc' ;
                                                 Query1.ExecSQL ; Query1.Active := true ; Query1.First;
 
@@ -456,7 +456,7 @@ begin
                                              else
                                                 begin
 
-                                                //---------- selectionner le premier qui a reservé
+                                                //---------- selectionner le premier qui a reservï¿½
                                                 Query1.SQL.Text := 'select * from reservation where upper(cote) = ''' + strupper(cote) + ';'' order by heure_reservation asc' ;
                                                 Query1.ExecSQL ; Query1.Active := true ; Query1.First;
 
@@ -465,7 +465,7 @@ begin
                                                 Query1.ExecSQL ;
 
                                                 //------------------ Lancer les relances
-                                                //---------ici on peut envoyer un mail à l'utilisateur concerné
+                                                //---------ici on peut envoyer un mail ï¿½ l'utilisateur concernï¿½
 
                                                 Query1.SQL.Text := 'select titre_propre from notice where upper(cote) = ''' + strupper(cote) + ';''' ;
 
@@ -476,30 +476,30 @@ begin
                                                 titre_propre := Query1.Fields.FieldByNumber(1).AsString ;
                                                 {
 
-                                                                //---- ce travail a été fait par faouzi
+                                                                //---- ce travail a ï¿½tï¿½ fait par faouzi
                                                                 //-------- Il faut ici encoder le numero et le mot de passe de la bibliotheque
                                                                 Mail.Writeln('Helo biblio');
                                                                 Mail.Writeln('AUTH LOGIN ' + Base64Encode(Mail.UserID));
                                                                 Mail.Writeln(Base64Encode('ISTCEDOC'));
-                                                                Mail.PostMessage.Body.Clear;  //----- Ré-initialiser le Body du Message à vide
+                                                                Mail.PostMessage.Body.Clear;  //----- Rï¿½-initialiser le Body du Message ï¿½ vide
                                                                 Mail.PostMessage.FromAddress := Mail.UserID + '@emp.mdn' ;
                                                                 Mail.PostMessage.ToAddress.Text := id_premier_adherent + '@emp.mdn' ;
-                                                                Mail.PostMessage.Subject := 'Avis de Disponibilité' ;
+                                                                Mail.PostMessage.Subject := 'Avis de Disponibilitï¿½' ;
 
-                                                                Mail.PostMessage.Body.Add('Avis de disponibilité') ;
+                                                                Mail.PostMessage.Body.Add('Avis de disponibilitï¿½') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
-                                                                Mail.PostMessage.Body.Add('Nous portons à votre connaissance que le document : " ' + titre_propre + ' " ') ;
-                                                                Mail.PostMessage.Body.Add('Qui porte la cote : " ' + cote + ' "' + ' est disponible au niveau de la bibliothèque') ;
-                                                                Mail.PostMessage.Body.Add('Il vous est reservé pour une période de 48h.') ;
+                                                                Mail.PostMessage.Body.Add('Nous portons ï¿½ votre connaissance que le document : " ' + titre_propre + ' " ') ;
+                                                                Mail.PostMessage.Body.Add('Qui porte la cote : " ' + cote + ' "' + ' est disponible au niveau de la bibliothï¿½que') ;
+                                                                Mail.PostMessage.Body.Add('Il vous est reservï¿½ pour une pï¿½riode de 48h.') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
                                                                 Mail.PostMessage.Body.Add('') ;
-                                                                Mail.PostMessage.Body.Add('CEDOC/Bibliothèque') ;
+                                                                Mail.PostMessage.Body.Add('CEDOC/Bibliothï¿½que') ;
 
                                                                 Mail.SendMail;
                                                 }
@@ -516,9 +516,9 @@ begin
                                 else
                                         begin
 
-                                        //---------- Traiter le cas des pénalités pour les autres utilisateurs autres que les reservateurs
+                                        //---------- Traiter le cas des pï¿½nalitï¿½s pour les autres utilisateurs autres que les reservateurs
 
-                                        //---------- vérifier est ce que l'utilisateur en cours existe dans la table pénalité
+                                        //---------- vï¿½rifier est ce que l'utilisateur en cours existe dans la table pï¿½nalitï¿½
 
                                         Query1.SQL.Text := 'select count(*) from penalite_adherent where id_adherent = ''' +  DBEdit1.Text + '''' ;
                                         Query1.ExecSQL ; Query1.Active := true ; Query1.First;
@@ -550,7 +550,7 @@ begin
               end;  //------ fin de while (not requete_timer.eof)
 
 //---------------------------------------------------------------------------
-                //----------- Cette partie traite les pénalités
+                //----------- Cette partie traite les pï¿½nalitï¿½s
 //---------------------------------------------------------------------------
         Requete_Timer.Active := false ;
 
@@ -567,21 +567,21 @@ begin
         while not Requete_Timer.Eof do
               begin
 
-                if ( strtoint(DBEdit3.Text) > 0 ) then   //--- Ici ça veut dire que la pénalité est active ( le nombre de jours est positif )
+                if ( strtoint(DBEdit3.Text) > 0 ) then   //--- Ici ï¿½a veut dire que la pï¿½nalitï¿½ est active ( le nombre de jours est positif )
                     begin
 
                          date_fin_penalite := strtodate(DBEdit2.Text) + strtoint(DBEdit3.Text); //--- date fin = date debut + nombre jours penalite
 
                          if ( Date_aujourdhui >= date_fin_penalite ) then
                             begin
-                                 //------- sauvegarder les informations de la pénalité en cours dans la table : hitorique_penalite
+                                 //------- sauvegarder les informations de la pï¿½nalitï¿½ en cours dans la table : hitorique_penalite
                                  Query1.SQL.Text := 'insert into  historique_penalite_adherent values (''' + DBEdit1.Text
                                                                                                      + ''',TO_DATE(''' + DBEdit2.Text
                                                                                                      + ''', ''dd/mm/yyyy''),''' + DBEdit3.Text + ''')' ;
                                  //Showmessage(Query1.SQL.Text) ;
                                  Query1.ExecSQL ;
 
-                                 //------- Modifier l'état de l'adhérent s'il n'est pas suspendu
+                                 //------- Modifier l'ï¿½tat de l'adhï¿½rent s'il n'est pas suspendu
                                  Query1.SQL.Text := 'update adherent set etat_adherent = ''1'' where id_adherent = ''' +  DBEdit1.Text + ''' and etat_adherent <> ''3'' ' ;
                                  Query1.ExecSQL ;
 
@@ -594,8 +594,8 @@ begin
                     Requete_Timer.Next;
               end; //----- End While
 
-//-------- pour afficher les infos de la derniere vérification
-Label1.Caption := 'Dernière Vérification réalisée le : '+  datetostr(Date_aujourdhui) + ' à  ' + timetostr(time)  ;
+//-------- pour afficher les infos de la derniere vï¿½rification
+Label1.Caption := 'Derniï¿½re Vï¿½rification rï¿½alisï¿½e le : '+  datetostr(Date_aujourdhui) + ' ï¿½  ' + timetostr(time)  ;
 
 end;
 
