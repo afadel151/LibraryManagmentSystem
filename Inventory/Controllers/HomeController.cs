@@ -2,10 +2,11 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Inventory.Models;
 using Microsoft.AspNetCore.Authorization;
+using Inventory.Services;
 
 namespace Inventory.Controllers;
 
-public class HomeController : Controller
+public class HomeController(IDashboardService dashboardService)  : Controller
 {
     public IActionResult Index()
     {
@@ -15,6 +16,12 @@ public class HomeController : Controller
     public IActionResult Privacy()
     {
         return View();
+    }
+   [Authorize]
+    public async Task<IActionResult> Dashboard()
+    {
+        var stats = await dashboardService.GetStatsAsync();
+        return View(stats);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
