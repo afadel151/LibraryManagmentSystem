@@ -1,0 +1,123 @@
+@{
+    ViewData["Title"] = "Choisir le type de notice";
+}
+
+<div class="max-w-3xl mx-auto space-y-8">
+
+    <div>
+        <p class="text-md uppercase tracking-widest text-base-content/40 mb-1">Nouvelle notice</p>
+        <h1 class="text-3xl text-base-content" >Quel type de ressource ?</h1>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <a asp-controller="Catalogue" asp-action="AddPeriodique" 
+           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+            <div class="card-body gap-3">
+                <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                        <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+                        <path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-medium text-base-content">Périodique</h2>
+                    <p class="text-md text-base-content/80 mt-0.5">Publication en série, revue, journal</p>
+                </div>
+                <div class="text-warning text-md font-mono">Type 1</div>
+            </div>
+        </a>
+
+        <a asp-controller="Catalogue" asp-action="AddThese" 
+           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+            <div class="card-body gap-3">
+                <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-medium text-base-content">Mémoire / Thèse</h2>
+                    <p class="text-md text-base-content/50 mt-0.5">Travaux académiques, diplômes</p>
+                </div>
+                <div class="text-warning text-md font-mono">Type 2</div>
+            </div>
+        </a>
+
+        <a asp-controller="Catalogue" asp-action="AddMonographie" 
+           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+            <div class="card-body gap-3">
+                <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-medium text-base-content">Monographie</h2>
+                    <p class="text-md text-base-content/50 mt-0.5">Livre, ouvrage, publication unique</p>
+                </div>
+                <div class="text-warning text-md font-mono">Type 3</div>
+            </div>
+        </a>
+
+        <a asp-controller="Catalogue" asp-action="AddArticle" 
+           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+            <div class="card-body gap-3">
+                <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-medium text-base-content">Article</h2>
+                    <p class="text-md text-base-content/50 mt-0.5">Article de revue ou périodique</p>
+                </div>
+                <div class="text-warning text-md font-mono">Type 4</div>
+            </div>
+        </a>
+
+        <a asp-controller="Catalogue" asp-action="AddExtrait" 
+           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+            <div class="card-body gap-3">
+                <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-medium text-base-content">Tiré à part</h2>
+                    <p class="text-md text-base-content/50 mt-0.5">Extrait séparé d'une publication</p>
+                </div>
+                <div class="text-warning text-md font-mono">Type 5</div>
+            </div>
+        </a>
+
+        <a asp-controller="Catalogue" asp-action="AddElectric" 
+           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+            <div class="card-body gap-3">
+                <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="font-medium text-base-content">Ressource électronique</h2>
+                    <p class="text-md text-base-content/50 mt-0.5">CD-ROM, base de données, site web</p>
+                </div>
+                <div class="text-warning text-md font-mono">Type 6</div>
+            </div>
+        </a>
+
+    </div>
+
+</div>

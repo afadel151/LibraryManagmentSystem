@@ -1,0 +1,267 @@
+@using Inventory.Models.Catalogue.Add
+@model PeriodiqueViewModel
+
+<form asp-action="AddPeriodique" asp-controller="Catalogue" method="post" class="w-full">
+    @Html.AntiForgeryToken()
+
+    <div class="tabs tabs-lift w-full">
+        <input type="radio" name="tabs" id="tab-id" class="tab" aria-label="Identification" 
+               @(ViewData.ModelState.IsValid ? "checked=\"checked\"" : "") />
+        <div class="tab-content bg-base-100 border-base-300 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold">Cote</span>
+                        <span class="label-text-alt text-red-500">Obligatoire</span>
+                    </label>
+                    <input type="text" asp-for="Cote" class="input input-bordered w-full" />
+                    <span asp-validation-for="Cote" class="text-error text-xs mt-1"></span>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold">Nombre d'Exemplaires</span>
+                    </label>
+                    <input type="number" asp-for="NbrExemplaires" class="input input-bordered w-full" />
+                    <span asp-validation-for="NbrExemplaires" class="text-error text-xs mt-1"></span>
+                </div>
+
+                <div class="form-control w-full md:col-span-2">
+                    <label class="label">
+                        <span class="label-text font-bold">Titre Propre</span>
+                        <span class="label-text-alt text-red-500">Obligatoire</span>
+                    </label>
+                    <input type="text" asp-for="TitrePropre" class="input input-bordered w-full" />
+                    <span asp-validation-for="TitrePropre" class="text-error text-xs mt-1"></span>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Sous Titre</span>
+                    </label>
+                    <input type="text" asp-for="SousTitre" class="input input-bordered w-full" placeholder="Complément du titre" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Titre Clé (Tri)</span>
+                    </label>
+                    <input type="text" asp-for="TitreCle" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">ISSN</span>
+                    </label>
+                    <input type="text" asp-for="ISSN" class="input input-bordered w-full" placeholder="XXXX-XXXX" />
+                    <span asp-validation-for="ISSN" class="text-error text-xs mt-1"></span>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-bold">Périodicité</span>
+                    </label>
+                    <select asp-for="ID_Periodicite" asp-items="Model.Periodicites" class="select select-bordered w-full">
+                        <option value="">Choisir la périodicité</option>
+                    </select>
+                    <span asp-validation-for="ID_Periodicite" class="text-error text-xs mt-1"></span>
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Date 1ère Pub</span>
+                    </label>
+                    <input type="date" asp-for="Date1Pub" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Numéro Vol</span>
+                    </label>
+                    <input type="text" asp-for="NumeroVol" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full md:col-span-2">
+                    <label class="label">
+                        <span class="label-text font-bold">Accessibilité</span>
+                    </label>
+                    <div class="flex gap-4">
+                        <label class="label cursor-pointer justify-start gap-2 border border-base-300 p-3 rounded-lg hover:bg-base-200 w-full bg-base-100">
+                            <input type="radio" asp-for="Accessibilite" value="true" class="radio radio-primary" />
+                            <span class="label-text">Accessible</span>
+                        </label>
+                        <label class="label cursor-pointer justify-start gap-2 border border-base-300 p-3 rounded-lg hover:bg-base-200 w-full">
+                            <input type="radio" asp-for="Accessibilite" value="false" class="radio radio-primary" />
+                            <span class="label-text">Non Accessible</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-control w-full md:col-span-2">
+                    <label class="label">
+                        <span class="label-text">Localisation (Scan)</span>
+                    </label>
+                    <div class="join w-full">
+                        <span class="btn join-item btn-disabled bg-base-200 text-base-content border-base-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/><polyline points="14 2 14 8 20 8"/><path d="M2 15h10"/><path d="M9 18l3-3-3-3"/></svg>
+                        </span>
+                        <input type="text" asp-for="Localisation" class="input input-bordered join-item w-full" />
+                        <button type="button" class="btn btn-square join-item">...</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input type="radio" name="tabs" class="tab" aria-label="Auteurs" />
+        <div class="tab-content bg-base-100 border-base-300 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="divider md:col-span-2 font-bold">Auteur Principal</div>
+                
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Nom de l'Auteur Principal</span>
+                    </label>
+                    <input type="text" asp-for="NomAuteurPrincipal" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Autre Partie (Prénom / Titre)</span>
+                    </label>
+                    <input type="text" asp-for="AutrePartieAuteurPrincipal" class="input input-bordered w-full" />
+                </div>
+
+                <div class="divider md:col-span-2 font-bold">Co-Auteurs &amp; Secondaires</div>
+                <div class="form-control w-full md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <input type="text" name="CoAuteurs[0].Nom" class="input input-sm input-bordered w-full" placeholder="Nom Co-Auteur" />
+                    <input type="text" name="CoAuteurs[0].AutrePartie" class="input input-sm input-bordered w-full" placeholder="Prénom Co-Auteur" />
+                    <input type="text" name="AuteursSecondaires[0].Nom" class="input input-sm input-bordered w-full" placeholder="Nom Auteur Secondaire" />
+                </div>
+            </div>
+        </div>
+
+        <input type="radio" name="tabs" class="tab" aria-label="Publication" />
+        <div class="tab-content bg-base-100 border-base-300 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="divider md:col-span-3 font-bold">Collation (Description Physique)</div>
+                
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Impression Matérielle</span>
+                    </label>
+                    <input type="text" asp-for="CollationImpMaterielle" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Autres Caractéristiques</span>
+                    </label>
+                    <input type="text" asp-for="CollationAutresCarMat" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Format</span>
+                    </label>
+                    <input type="text" asp-for="CollationFormat" class="input input-bordered w-full" />
+                </div>
+
+                <div class="divider md:col-span-3 font-bold">Adresse Bibliographique</div>
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Année d'édition</span>
+                    </label>
+                    <input type="text" name="AdressesBibliographiques[0].Annee" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Mention d'Édition</span>
+                    </label>
+                    <input type="text" name="AdressesBibliographiques[0].MentionEdition" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Pays Origine</span>
+                    </label>
+                    <select asp-for="PaysList" asp-items="Model.Pays" class="select select-bordered w-full" multiple>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <input type="radio" name="tabs" class="tab" aria-label="Indexation" />
+        <div class="tab-content bg-base-100 border-base-300 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Classification Dewey (CDD)</span>
+                    </label>
+                    <input type="text" asp-for="CDD" class="input input-bordered w-full" />
+                </div>
+
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Thème Associé</span>
+                    </label>
+                    <select asp-for="ID_Theme" asp-items="Model.Themes" class="select select-bordered w-full">
+                        <option value="">-- Choisir un thème --</option>
+                    </select>
+                </div>
+
+                <div class="form-control w-full md:col-span-2">
+                    <label class="label">
+                        <span class="label-text">Mots Clés</span>
+                    </label>
+                    <input type="text" name="MotsCles[0]" class="input input-bordered w-full" placeholder="Mot-clé principal" />
+                </div>
+
+                <div class="form-control w-full md:col-span-2">
+                    <label class="label">
+                        <span class="label-text">Résumé / Analyse</span>
+                    </label>
+                    <textarea asp-for="Resume" class="textarea textarea-bordered h-24 w-full"></textarea>
+                </div>
+
+                <div class="form-control w-full md:col-span-2">
+                    <label class="label">
+                        <span class="label-text">Note Générale</span>
+                    </label>
+                    <textarea asp-for="NoteGenerale" class="textarea textarea-bordered h-20 w-full"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <input type="radio" name="tabs" id="tab-validation" class="tab" aria-label="Validation" 
+               @(!ViewData.ModelState.IsValid ? "checked=\"checked\"" : "") />
+        <div class="tab-content bg-base-100 border-base-300 p-6">
+            <div class="space-y-6">
+                
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-error shadow-sm text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <div>
+                            <span class="font-bold">Des erreurs bloquent la soumission :</span>
+                            <div asp-validation-summary="All" class="mt-1 list-inside list-disc"></div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info shadow-sm text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span>Veuillez vérifier l'exactitude de toutes les données saisies à travers les volets précédents avant d'enregistrer le périodique.</span>
+                    </div>
+                }
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-base-200">
+                    <a asp-action="Index" class="btn btn-ghost">Annuler</a>
+                    <button type="submit" class="btn btn-primary px-8">Enregistrer le Périodique</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
