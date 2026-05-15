@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="xml:space" default="preserve" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <data name="Nav_Catalogue"    xml:space="preserve"><value>Catalogue</value></data>
+  <data name="Nav_Search"       xml:space="preserve"><value>Search</value></data>
+  <data name="Nav_Exemplaires"  xml:space="preserve"><value>Copies</value></data>
+  <data name="Nav_Acquisitions" xml:space="preserve"><value>Acquisitions</value></data>
+  <data name="Nav_Auteurs"      xml:space="preserve"><value>Authors &amp; Publishers</value></data>
+  <data name="Nav_Admin"        xml:space="preserve"><value>Administration</value></data>
+
+  <data name="Sidebar_Toggle"   xml:space="preserve"><value>Toggle sidebar</value></data>
+  <data name="Theme_Toggle"     xml:space="preserve"><value>Dark mode / Light mode</value></data>
+  <data name="Logout"           xml:space="preserve"><value>Sign out</value></data>
+
+  <data name="Lang_Current"     xml:space="preserve"><value>English</value></data>
+  <data name="Lang_Arabic"      xml:space="preserve"><value>العربية</value></data>
+
+  <data name="Role_Admin"       xml:space="preserve"><value>Administrator</value></data>
+  <data name="Role_User"        xml:space="preserve"><value>User</value></data>
+</root>
