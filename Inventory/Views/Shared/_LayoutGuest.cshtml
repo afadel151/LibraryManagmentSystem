@@ -1,0 +1,74 @@
+@using System.Globalization
+@{
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+}
+
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName"
+      dir="@(isRtl ? "rtl" : "ltr")">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Inventory.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Scripts", required: false)
+</head>
+<body class="min-h-screen" style="background:#f4f1ec;">
+
+    <header>
+        <nav class="w-full px-6 py-3 flex items-center justify-between border-b"
+             style="background:#0f1e35; border-color:rgba(184,149,42,.25);">
+
+            <a asp-controller="Home" asp-action="Index"
+               class="text-lg font-normal tracking-wide"
+               style="color:#d4ad3a; font-family:'EB Garamond',Georgia,serif; letter-spacing:.06em;">
+                CATLIB<span style="color:rgba(255,255,255,.5);">_DATA</span>
+            </a>
+
+            <div class="flex items-center space-x-2 ">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Home" asp-action="Privacy"
+                       class="text-sm" style="color:rgba(255,255,255,.65); font-family:'DM Sans',sans-serif;">
+                        Privacy
+                    </a>
+                    <a asp-controller="Exemplaire" asp-action="Index"
+                       class="text-sm" style="color:rgba(255,255,255,.65); font-family:'DM Sans',sans-serif;">
+                        Exemplaires
+                    </a>
+                    @if (User.IsInRole("ADMIN"))
+                    {
+                        <a asp-controller="Admin" asp-action="Index"
+                           class="text-sm" style="color:rgba(255,255,255,.65); font-family:'DM Sans',sans-serif;">
+                            Administration
+                        </a>
+                    }
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="text-sm"
+                                style="color:rgba(255,255,255,.4);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;">
+                            Déconnexion
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login"
+                       class="text-sm px-4 py-1 rounded"
+                       style="background:#b8952a;color:#fff;font-family:'DM Sans',sans-serif;">
+                        Connexion
+                    </a>
+                }
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

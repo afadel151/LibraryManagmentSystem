@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Inventory.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventory.Controllers;
 
@@ -10,7 +11,7 @@ public class HomeController : Controller
     {
         return View();
     }
-
+    [Authorize]
     public IActionResult Privacy()
     {
         return View();

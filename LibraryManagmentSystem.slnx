@@ -5,4 +5,5 @@
   <Project Path="Borrowing/Borrowing.ScheduledTask/Borrowing.ScheduledTask.csproj" />
   <Project Path="Borrowing/Borrowing.SharedClasses/Borrowing.SharedClasses.csproj" />
   <Project Path="Common/Common.csproj" />
+  <Project Path="Inventory/Inventory.csproj" />
 </Solution>

@@ -1,0 +1,100 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Login_PageTitle"];
+    var error     = ViewData["Error"] as string;
+    var returnUrl = ViewData["ReturnUrl"] as string;
+    Layout = "_LayoutGuest";
+}
+
+<div class="min-h-screen flex items-center justify-center bg-[#f4f1ec] px-4 py-10">
+    <div class="w-full max-w-md rounded-md border border-[#e2ddd6] border-t-[3px] border-t-[#b8952a] bg-white shadow-lg overflow-hidden animate-[fadeUp_.45s_ease_both]">
+
+        <div class="bg-[#0f1e35] px-8 py-8 text-center"
+             style="background-image:
+                repeating-linear-gradient(0deg,  transparent, transparent 19px, rgba(184,149,42,.06) 19px, rgba(184,149,42,.06) 20px),
+                repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(184,149,42,.06) 19px, rgba(184,149,42,.06) 20px);">
+
+            <p class="text-[.65rem] uppercase tracking-[.12em] text-[#b8952a]/70 mb-2"
+               style="font-family:'DM Sans',sans-serif;">
+                @Localizer["Login_BannerInstitution"]
+            </p>
+
+            <h1 class="text-[1.9rem] font-normal text-white m-0"
+                style="font-family:'EB Garamond',Georgia,serif;">
+                CATLIB<span class="text-[#b8952a]">_DATA</span>
+            </h1>
+
+            <div class="h-px w-20 mx-auto my-3 bg-linear-to-r from-transparent via-[#b8952a] to-transparent"></div>
+    
+            <p class="text-base italic text-white/40 m-0"
+               style="font-family:'EB Garamond',Georgia,serif;">
+                @Localizer["Login_BannerAccess"]
+            </p>
+        </div>
+
+        <div class="px-8 py-8">
+
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="mb-5 rounded border border-[#f0c4c4] border-l-[3px] border-l-[#c0392b] bg-[#fdf2f2] px-4 py-3 text-sm text-[#7b1a1a]"
+                     style="font-family:'DM Sans',sans-serif;">
+                    ⚠ @error
+                </div>
+            }
+            @if (TempData["Error"] is string tempError)
+            {
+                <div class="mb-5 rounded border border-[#f0c4c4] border-l-[3px] border-l-[#c0392b] bg-[#fdf2f2] px-4 py-3 text-sm text-[#7b1a1a]"
+                     style="font-family:'DM Sans',sans-serif;">
+                    ⚠ @tempError
+                </div>
+            }
+
+            <form asp-action="Login" asp-controller="Account" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+                <div class="mb-5">
+                    <label class="block text-[.78rem] font-medium uppercase tracking-[.04em] text-[#6b6458] mb-2"
+                           style="font-family:'DM Sans',sans-serif;">
+                        @Localizer["Login_UsernameLabel"]
+                    </label>
+                    <input type="text"
+                           name="compte"
+                           placeholder="@Localizer["Login_UsernamePlaceholder"]"
+                           autofocus
+                           required
+                           autocomplete="username"
+                           class="w-full rounded border border-[#ddd8d0] bg-[#faf9f7] px-3 py-2 text-sm text-[#0f1e35] outline-none transition
+                                  placeholder:text-[#b4b0a8]
+                                  focus:border-[#b8952a] focus:bg-white focus:ring-2 focus:ring-[#b8952a]/20"
+                           style="font-family:'DM Sans',sans-serif;" />
+                </div>
+
+                <button type="submit"
+                        class="w-full rounded bg-[#b8952a] px-4 py-[.7rem] text-sm font-medium tracking-[.04em] text-white transition
+                               hover:bg-[#a07d22] hover:shadow-[0_4px_12px_rgba(184,149,42,.3)]
+                               active:bg-[#8c6d1d]"
+                        style="font-family:'DM Sans',sans-serif;">
+                    @Localizer["Login_ButtonContinue"]
+                </button>
+            </form>
+
+            <div class="mt-6 border-t border-[#ece8e0] pt-5 text-center">
+                <p class="text-[.78rem] leading-relaxed text-[#9c9187]"
+                   style="font-family:'DM Sans',sans-serif;">
+                    @Localizer["Login_RedirectInfo"]
+                </p>
+            </div>
+
+        </div>
+
+        <div class="border-t border-[#ece8e0] bg-[#faf9f7] px-8 py-3 text-center">
+            <p class="text-[.7rem] tracking-[.03em] text-[#b4b0a8]"
+               style="font-family:'DM Sans',sans-serif;">
+                @Localizer["Login_FooterCopyright", DateTime.Now.Year]
+            </p>
+        </div>
+
+    </div>
+</div>
