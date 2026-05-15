@@ -26,8 +26,9 @@
                style="color:#d4ad3a; font-family:'EB Garamond',Georgia,serif; letter-spacing:.06em;">
                 CATLIB<span style="color:rgba(255,255,255,.5);">_DATA</span>
             </a>
-
+            
             <div class="flex items-center space-x-2 ">
+                @await Html.PartialAsync("_LanguageSwitcher")
                 @if (User.Identity?.IsAuthenticated == true)
                 {
                     <a asp-controller="Home" asp-action="Privacy"
@@ -61,6 +62,7 @@
                         Connexion
                     </a>
                 }
+                
             </div>
         </nav>
     </header>

@@ -17,6 +17,8 @@
     };
 
     string currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string currentAction     = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
     string userInitial = (User.Claims.FirstOrDefault(c => c.Type == "nom")?.Value ?? User.Identity?.Name ?? "U").Substring(0, 1).ToUpper();
     string userName    =  User.Claims.FirstOrDefault(c => c.Type == "nom")?.Value ?? User.Identity?.Name ?? "—";
 }
@@ -28,7 +30,8 @@
     {
         if (item.AdminOnly && !isAdmin) continue;
 
-        bool active = currentController.Equals(item.Controller, StringComparison.OrdinalIgnoreCase);
+        bool active = currentController.Equals(item.Controller, StringComparison.OrdinalIgnoreCase)
+           && currentAction.Equals(item.Action, StringComparison.OrdinalIgnoreCase);
 
         <li>
             <a asp-controller="@item.Controller"
