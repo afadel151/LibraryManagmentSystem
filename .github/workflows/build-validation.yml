@@ -45,7 +45,7 @@ jobs:
             npm-${{ runner.os }}- 
       - name: Install npm dependencies (Inventory)
         working-directory: Inventory
-        run: npm ci
+        run: npm install
 
       - name: Cache NuGet Packages
         uses: actions/cache@v5
