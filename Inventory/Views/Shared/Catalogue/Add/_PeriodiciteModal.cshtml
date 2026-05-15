@@ -1,0 +1,67 @@
+@model Inventory.Models.Catalogue.Add.PeriodiqueViewModel
+
+<div class="form-control w-full">
+    <label class="label">
+        <span class="label-text">Périodicité</span>
+    </label>
+    <div class="join w-full">
+        <input type="hidden" asp-for="ID_Periodicite" />
+
+        <input type="text" asp-for="Periodicite" id="PeriodiciteDisplay" class="input input-bordered join-item w-full"
+               placeholder="Sélectionner..." readonly />
+
+        <button type="button" class="btn btn-square join-item" onclick="modal_periodicite.showModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6" />
+            </svg>
+        </button>
+    </div>
+</div>
+
+<dialog id="modal_periodicite" class="modal">
+    <div class="modal-box w-11/12 max-w-2xl">
+        <h3 class="font-bold text-lg">Choisir une Périodicité</h3>
+        
+        <div class="overflow-x-auto border rounded-lg mt-4">
+            <table class="table table-zebra table-hover w-full">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Libellé</th>
+                    </tr>
+                </thead>
+                <tbody id="periodiciteTableBody">
+                    @foreach (var p in Model.Periodicites)
+                    {
+                        <tr class="cursor-pointer hover:bg-base-200" data-id="@p.Value" data-libelle="@p.Text"
+                            onclick="selectPeriodiciteFromRow(this)">
+                            <td>@p.Value</td>
+                            <td>@p.Text</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Annuler</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+<script>
+    function selectPeriodiciteFromRow(row) {
+        selectPeriodicite(row.dataset.id, row.dataset.libelle);
+    }
+
+    function selectPeriodicite(id, libelle) {
+        document.getElementById('ID_Periodicite').value = id;
+        document.getElementById('PeriodiciteDisplay').value = libelle;
+        document.getElementById('modal_periodicite').close();
+    }
+</script>
