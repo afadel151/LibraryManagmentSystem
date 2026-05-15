@@ -1,0 +1,238 @@
+@using Inventory.Services
+@model DashboardStats
+@{
+    ViewData["Title"] = "Tableau de bord";
+}
+
+<div class="space-y-8">
+
+    <div class="flex items-end justify-between">
+          
+        <h1 class="text-3xl text-base-content" >Tableau de bord</h1>
+        <a asp-controller="Catalogue" asp-action="Add" class="btn btn-warning btn-sm gap-2">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nouvelle notice
+        </a>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <div class="stat bg-base-200 rounded-2xl p-5">
+            <div class="stat-figure text-warning opacity-60">
+                <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+            </div>
+            <div class=" text-sm uppercase tracking-widest">Notices totales</div>
+            <div class="stat-value text-2xl" >@Model.TotalNotices</div>
+            <div class="stat-xs">dans le catalogue</div>
+        </div>
+
+        <div class="stat bg-base-200 rounded-2xl p-5">
+            <div class="stat-figure text-info opacity-60">
+                <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                    <polyline points="2 17 12 22 22 17"/>
+                    <polyline points="2 12 12 17 22 12"/>
+                </svg>
+            </div>
+            <div class=" text-sm uppercase tracking-widest">Exemplaires</div>
+            <div class="stat-value text-2xl" >@Model.TotalExemplaires</div>
+            <div class="stat-xs">@Model.ExemplairesNonCrees sans exemplaire</div>
+        </div>
+
+        <div class="stat bg-base-200 rounded-2xl p-5">
+            <div class="stat-figure text-success opacity-60">
+                <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+            </div>
+            <div class=" text-sm uppercase tracking-widest">Adhérents</div>
+            <div class="stat-value text-2xl" >@Model.TotalAdherents</div>
+            <div class="stat-xs">@Model.AdherentsActifs actifs</div>
+        </div>
+
+        <div class="stat bg-base-200 rounded-2xl p-5">
+            <div class="stat-figure text-error opacity-60">
+                <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+            </div>
+            <div class=" text-sm uppercase tracking-widest">Non indexées</div>
+            <div class="stat-value text-2xl" >@Model.NoticesNonIndexees</div>
+            <div class="stat-xs">notices à traiter</div>
+        </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <div class="lg:col-span-2 bg-base-200 rounded-2xl p-6">
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-lg" >Répartition par type de notice</h2>
+                <a asp-controller="Catalogue" asp-action="Index" class="btn btn-ghost btn-xs">Voir tout →</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="table table-sm">
+                    <thead>
+                        <tr class="text-sm uppercase tracking-widest">
+                            <th>Type</th>
+                            <th class="text-right">Notices</th>
+                            <th class="text-right">Non indexées</th>
+                            <th class="text-right">Sans exemplaire</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.NoticesByType)
+                        {
+                            <tr class="hover">
+                                <td><span class="badge badge-outline badge-md">@row.TypeNotice</span></td>
+                                <td class="text-right tabular-nums">@row.Total</td>
+                                <td class="text-right tabular-nums">
+                                    @if (row.NonIndexees > 0)
+                                    {
+                                        <span class="text-warning font-medium">@row.NonIndexees</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="opacity-30">0</span>
+                                    }
+                                </td>
+                                <td class="text-right tabular-nums">
+                                    @if (row.SansExemplaire > 0)
+                                    {
+                                        <span class="text-error font-medium">@row.SansExemplaire</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="opacity-30">0</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bg-base-200 rounded-2xl p-6 flex flex-col gap-4">
+            <h2 class="text-lg" >Actions rapides</h2>
+
+            @* <a asp-controller="Catalogue" asp-action="Add" class="btn btn-outline btn-warning justify-start gap-3">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                    <line x1="12" y1="8" x2="12" y2="14"/>
+                    <line x1="9" y1="11" x2="15" y2="11"/>
+                </svg>
+                Ajouter une notice
+            </a> *@
+
+            <a asp-controller="Exemplaire" asp-action="Generate" class="btn btn-outline justify-start gap-3">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                    <polyline points="2 17 12 22 22 17"/>
+                    <polyline points="2 12 12 17 22 12"/>
+                </svg>
+                Générer les exemplaires
+                @if (Model.ExemplairesNonCrees > 0)
+                {
+                    <span class="badge badge-error badge-sm ms-auto">@Model.ExemplairesNonCrees</span>
+                }
+            </a>
+
+            <a asp-controller="Catalogue" asp-action="Index" asp-route-filter="unindexed" class="btn btn-outline justify-start gap-3">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    <line x1="11" y1="8" x2="11" y2="14"/>
+                    <line x1="8" y1="11" x2="14" y2="11"/>
+                </svg>
+                Indexer les termes
+                @if (Model.NoticesNonIndexees > 0)
+                {
+                    <span class="badge badge-warning badge-sm ms-auto">@Model.NoticesNonIndexees</span>
+                }
+            </a>
+
+            <a asp-controller="Acquisition" asp-action="Index" class="btn btn-outline justify-start gap-3">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                </svg>
+                Gérer les acquisitions
+            </a>
+
+            <a asp-controller="Catalogue" asp-action="Search" class="btn btn-outline justify-start gap-3">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                Recherche avancée
+            </a>
+        </div>
+
+    </div>
+
+    <div class="bg-base-200 rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg" >Dernières notices ajoutées</h2>
+            <a asp-controller="Catalogue" asp-action="Index" class="btn btn-ghost btn-xs">Voir tout →</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="table table-md">
+                <thead>
+                    <tr class=" uppercase tracking-widest">
+                        <th>Cote</th>
+                        <th>Titre</th>
+                        <th>Type</th>
+                        <th>Accessibilité</th>
+                        <th>Indexée</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var notice in Model.RecentNotices)
+                    {
+                        <tr class="hover">
+                            <td class="font-mono text-md opacity-60">@notice.Cote</td>
+                            <td class="max-w-xs truncate">@notice.TitrePropre</td>
+                            <td><span class="badge badge-ghost badge-sm">@notice.TypeNotice</span></td>
+                            <td>
+                                @if (notice.Accessibilite == "1")
+                                {
+                                    <span class="badge badge-success badge-sm">Public</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-ghost badge-sm">Restreint</span>
+                                }
+                            </td>
+                            <td>
+                                @if (notice.IsIndexed > 0)
+                                {
+                                    <span class="text-success text-base">✓</span>
+                                }
+                                else
+                                {
+                                    <span class="text-warning text-base">—</span>
+                                }
+                            </td>
+                            <td class="text-right">
+                                <a asp-controller="Catalogue" asp-action="Edit" asp-route-id="@notice.IdNotice" class="btn btn-ghost ">Éditer</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
