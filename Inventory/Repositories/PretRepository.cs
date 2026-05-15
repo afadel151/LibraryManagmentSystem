@@ -1,0 +1,13 @@
+using Common.Models;
+using Common.Data;
+namespace Inventory.Repositories;
+
+public interface IPretRepository : IBaseRepository<Pret>
+{
+}
+public class PretRepository : BaseRepository<Pret>, IPretRepository
+{
+    public PretRepository(LibraryDbContext context) : base(context)
+    {
+    }
+}
