@@ -3,24 +3,34 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 @{
-    var isRtl   = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+    var isRtl = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
     var isAdmin = User.IsInRole("ADMIN");
 
     var navItems = new[]
     {
-        new { Icon = "book-open",    Label = Localizer["Nav_Catalogue"].Value,    Controller = "Catalogue",   Action = "Index",  AdminOnly = false },
-        new { Icon = "search",       Label = Localizer["Nav_Search"].Value,       Controller = "Catalogue",   Action = "Search", AdminOnly = false },
-        new { Icon = "layers",       Label = Localizer["Nav_Exemplaires"].Value,  Controller = "Exemplaire",  Action = "Index",  AdminOnly = false },
-        new { Icon = "shopping-bag", Label = Localizer["Nav_Acquisitions"].Value, Controller = "Acquisition", Action = "Index",  AdminOnly = false },
-        new { Icon = "users",        Label = Localizer["Nav_Auteurs"].Value,      Controller = "Auteur",      Action = "Index",  AdminOnly = false },
-        new { Icon = "settings",     Label = Localizer["Nav_Admin"].Value,        Controller = "Admin",       Action = "Index",  AdminOnly = true  },
+        new { Icon = "home", Label = Localizer["Dashboard"].Value, Controller = "Home", Action = "Dashboard", AdminOnly =
+false },
+        new { Icon = "book-open", Label = Localizer["Nav_Catalogue"].Value, Controller = "Catalogue", Action = "Index",
+AdminOnly =
+false },
+        new { Icon = "search", Label = Localizer["Nav_Search"].Value, Controller = "Catalogue", Action = "Search", AdminOnly
+=false },
+        new { Icon = "layers", Label = Localizer["Nav_Exemplaires"].Value, Controller = "Exemplaire", Action = "Index",AdminOnly
+= false },
+        new { Icon = "shopping-bag", Label = Localizer["Nav_Acquisitions"].Value, Controller = "Acquisition", Action = "Index",
+AdminOnly = false },
+        new { Icon = "users", Label = Localizer["Nav_Auteurs"].Value, Controller = "Auteur", Action = "Index", AdminOnly = false
+},
+        new { Icon = "settings", Label = Localizer["Nav_Admin"].Value, Controller = "Admin", Action = "Index", AdminOnly = true
+},
     };
 
     string currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
-    string currentAction     = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    string currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
 
-    string userInitial = (User.Claims.FirstOrDefault(c => c.Type == "nom")?.Value ?? User.Identity?.Name ?? "U").Substring(0, 1).ToUpper();
-    string userName    =  User.Claims.FirstOrDefault(c => c.Type == "nom")?.Value ?? User.Identity?.Name ?? "—";
+    string userInitial = (User.Claims.FirstOrDefault(c => c.Type == "nom")?.Value ?? User.Identity?.Name ??
+"U").Substring(0, 1).ToUpper();
+    string userName = User.Claims.FirstOrDefault(c => c.Type == "nom")?.Value ?? User.Identity?.Name ?? "—";
 }
 
 
@@ -34,51 +44,63 @@
            && currentAction.Equals(item.Action, StringComparison.OrdinalIgnoreCase);
 
         <li>
-            <a asp-controller="@item.Controller"
-               asp-action="@item.Action"
-               class="@(active ? "active" : "") is-drawer-close:tooltip is-drawer-close:tooltip-right"
-               data-tip="@item.Label">
+            <a asp-controller="@item.Controller" asp-action="@item.Action"
+                   class="@(active ? "active" : "") is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                   data-tip="@item.Label">
 
                 <span class="w-5 h-5 flex items-center justify-center shrink-0">
                     @switch (item.Icon)
                     {
-                        case "book-open":
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
-                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                        case "home":
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                             </svg>
+
+                            break;
+                        case "book-open":
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                            </svg>
+
                             break;
                         case "search":
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
-                                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
                             </svg>
                             break;
                         case "layers":
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
-                                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-                                <polyline points="2 17 12 22 22 17"/>
-                                <polyline points="2 12 12 17 22 12"/>
+                                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                                <polyline points="2 17 12 22 22 17" />
+                                <polyline points="2 12 12 17 22 12" />
                             </svg>
                             break;
                         case "shopping-bag":
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
-                                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                                <line x1="3" y1="6" x2="21" y2="6"/>
-                                <path d="M16 10a4 4 0 0 1-8 0"/>
+                                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                                <line x1="3" y1="6" x2="21" y2="6" />
+                                <path d="M16 10a4 4 0 0 1-8 0" />
                             </svg>
                             break;
                         case "users":
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                             </svg>
                             break;
                         case "settings":
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
-                                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-                                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                                <rect x="3" y="3" width="7" height="7" />
+                                <rect x="14" y="3" width="7" height="7" />
+                                <rect x="14" y="14" width="7" height="7" />
+                                <rect x="3" y="14" width="7" height="7" />
                             </svg>
                             break;
                     }
@@ -97,9 +119,8 @@
 
 <div class="flex items-center gap-2.5 px-4 py-3.5 shrink-0 border-t border-base-300 is-drawer-close:hidden">
     <div class="flex items-center justify-center w-8 h-8 rounded-full shrink-0
-                bg-warning/20 border border-warning">
-        <span class="text-sm leading-none text-warning"
-              style="font-family:'EB Garamond',Georgia,serif;">
+        bg-warning/20 border border-warning">
+        <span class="text-sm leading-none text-warning" style="font-family:'EB Garamond',Georgia,serif;">
             @userInitial
         </span>
     </div>
@@ -107,19 +128,18 @@
     <div class="flex-1 overflow-hidden min-w-0">
         <p class="text-xs font-medium truncate">@userName</p>
         <p class="text-[0.7rem] truncate text-base-content/60">
-            @(isAdmin ? Localizer["Role_Admin"].Value : Localizer["Role_User"].Value)
+            @(isAdmin? Localizer["Role_Admin"].Value : Localizer["Role_User"].Value)
         </p>
     </div>
 
     <form asp-controller="Account" asp-action="Logout" method="post" class="shrink-0">
         @Html.AntiForgeryToken()
-        <button type="submit"
-                title="@Localizer["Logout"]"
+        <button type="submit" title="@Localizer["Logout"]"
                 class="btn btn-ghost btn-xs btn-square text-base-content/50 hover:text-warning">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
         </button>
     </form>
