@@ -2,7 +2,7 @@
     ViewData["Title"] = "Choisir le type de notice";
 }
 
-<div class="max-w-3xl mx-auto space-y-8">
+<div class="max-w-5xl mx-auto space-y-8">
 
     <div>
         <p class="text-md uppercase tracking-widest text-base-content/40 mb-1">Nouvelle notice</p>
@@ -12,7 +12,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
         <a asp-controller="Catalogue" asp-action="AddPeriodique" 
-           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+           class="card bg-base-100 hover:bg-base-200 border border-base-300 hover:border-warning transition-colors cursor-pointer">
             <div class="card-body gap-3">
                 <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
@@ -24,12 +24,11 @@
                     <h2 class="font-medium text-base-content">Périodique</h2>
                     <p class="text-md text-base-content/80 mt-0.5">Publication en série, revue, journal</p>
                 </div>
-                <div class="text-warning text-md font-mono">Type 1</div>
             </div>
         </a>
 
         <a asp-controller="Catalogue" asp-action="AddThese" 
-           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+           class="card bg-base-100 hover:bg-base-200 border border-base-300 hover:border-warning transition-colors cursor-pointer">
             <div class="card-body gap-3">
                 <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
@@ -41,12 +40,11 @@
                     <h2 class="font-medium text-base-content">Mémoire / Thèse</h2>
                     <p class="text-md text-base-content/50 mt-0.5">Travaux académiques, diplômes</p>
                 </div>
-                <div class="text-warning text-md font-mono">Type 2</div>
             </div>
         </a>
 
         <a asp-controller="Catalogue" asp-action="AddMonographie" 
-           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+           class="card bg-base-100 hover:bg-base-200 border border-base-300 hover:border-warning transition-colors cursor-pointer">
             <div class="card-body gap-3">
                 <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
@@ -58,12 +56,11 @@
                     <h2 class="font-medium text-base-content">Monographie</h2>
                     <p class="text-md text-base-content/50 mt-0.5">Livre, ouvrage, publication unique</p>
                 </div>
-                <div class="text-warning text-md font-mono">Type 3</div>
             </div>
         </a>
 
         <a asp-controller="Catalogue" asp-action="AddArticle" 
-           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+           class="card bg-base-100 hover:bg-base-200 border border-base-300 hover:border-warning transition-colors cursor-pointer">
             <div class="card-body gap-3">
                 <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
@@ -78,12 +75,11 @@
                     <h2 class="font-medium text-base-content">Article</h2>
                     <p class="text-md text-base-content/50 mt-0.5">Article de revue ou périodique</p>
                 </div>
-                <div class="text-warning text-md font-mono">Type 4</div>
             </div>
         </a>
 
         <a asp-controller="Catalogue" asp-action="AddExtrait" 
-           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+           class="card bg-base-100 hover:bg-base-200 border border-base-300 hover:border-warning transition-colors cursor-pointer">
             <div class="card-body gap-3">
                 <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
@@ -96,12 +92,11 @@
                     <h2 class="font-medium text-base-content">Tiré à part</h2>
                     <p class="text-md text-base-content/50 mt-0.5">Extrait séparé d'une publication</p>
                 </div>
-                <div class="text-warning text-md font-mono">Type 5</div>
             </div>
         </a>
 
         <a asp-controller="Catalogue" asp-action="AddElectric" 
-           class="card bg-base-200 hover:bg-base-300 border border-base-300 hover:border-warning transition-colors cursor-pointer">
+           class="card bg-base-100 hover:bg-base-200 border border-base-300 hover:border-warning transition-colors cursor-pointer">
             <div class="card-body gap-3">
                 <div class="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24">
@@ -114,7 +109,6 @@
                     <h2 class="font-medium text-base-content">Ressource électronique</h2>
                     <p class="text-md text-base-content/50 mt-0.5">CD-ROM, base de données, site web</p>
                 </div>
-                <div class="text-warning text-md font-mono">Type 6</div>
             </div>
         </a>
 
