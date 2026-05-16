@@ -1,0 +1,191 @@
+@{
+    ViewData["Title"] = "Catalogue";
+    var filterUnindexed = ViewBag.FilterUnindexed as string ?? "";
+}
+
+<div class="space-y-6">
+
+    <div class="flex items-end justify-between">
+        <h1 class="text-3xl text-base-content">Catalogue</h1>
+        <a asp-controller="Catalogue" asp-action="Add" class="btn btn-warning btn-sm gap-2">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Nouvelle notice
+        </a>
+    </div>
+
+    <div class="bg-base-200/50 rounded-2xl p-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="filter-bar">
+            <input id="f-titre" type="text" placeholder="Titre…" class="input input-sm input-bordered w-full" />
+            <input id="f-cote" type="text" placeholder="Cote…" class="input input-sm input-bordered w-full" />
+            <input id="f-isbn" type="text" placeholder="ISBN…" class="input input-sm input-bordered w-full" />
+            <select id="f-type" class="select select-sm select-bordered w-full">
+                <option value="">Tous les types</option>
+            </select>
+        </div>
+        <div class="flex items-center gap-3 mt-3">
+            <label class="label cursor-pointer gap-2 p-0">
+                <input type="checkbox" id="f-unindexed" class="checkbox checkbox-warning checkbox-sm" @(filterUnindexed
+                                                                  == "true" ? "checked" : "") />
+                <span class="label-text text-sm">Non indexées uniquement</span>
+            </label>
+            <button id="btn-reset" class="btn btn-ghost btn-xs ms-auto">Réinitialiser</button>
+        </div>
+    </div>
+
+    <div class="  rounded-2xl p-4  border border-base-content/5 overflow-x-auto">
+        <table id="notices-table" class="table table-zebra  w-full">
+            <thead>
+                <tr class="uppercase tracking-widest">
+                    <th data-col="cote">Cote</th>
+                    <th data-col="titre">Titre</th>
+                    <th data-col="type">Type</th>
+                    <th>Accessibilité</th>
+                    <th>Indexée</th>
+                    <th>Exemplaires</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+        $(function () {
+
+            const TYPES_URL = '@Url.Action("Data", "Catalogue")';
+
+            // ── build type dropdown from first data load ──────────────────────────
+            let typesPopulated = false;
+
+            // ── DataTable ─────────────────────────────────────────────────────────
+            const table = $('#notices-table').DataTable({
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: TYPES_URL,
+                    type: 'GET',
+                    data: function (d) {
+                        // map DataTables native params to our clean params
+                        return {
+                            draw: d.draw,
+                            start: d.start,
+                            length: d.length,
+                            search: d.search?.value ?? '',
+                            filterTitre: $('#f-titre').val(),
+                            filterCote: $('#f-cote').val(),
+                            filterIsbn: $('#f-isbn').val(),
+                            filterType: $('#f-type').val(),
+                            filterUnindexed: $('#f-unindexed').is(':checked') ? 'true' : '',
+                            orderColumn: (() => {
+                                const idx = d.order?.[0]?.column;
+                                return ['cote', 'titre', '', '', '', '', ''][idx] ?? 'cote';
+                            })(),
+                            orderDir: d.order?.[0]?.dir ?? 'asc',
+                        };
+                    },
+                    dataSrc: function (json) {
+                        // populate type dropdown once
+                        if (!typesPopulated && json.data?.length) {
+                            const seen = new Set();
+                            json.data.forEach(r => {
+                                if (r.typeNotice && !seen.has(r.typeNotice)) {
+                                    seen.add(r.typeNotice);
+                                    $('#f-type').append(`<option value="${r.typeNotice}">${r.typeNotice}</option>`);
+                                }
+                            });
+                            typesPopulated = true;
+                        }
+                        return json.data;
+                    }
+                },
+                columns: [
+                    {
+                        data: 'cote',
+                        render: v => `<span class="font-mono text-sm opacity-60">${v}</span>`
+                    },
+                    {
+                        data: 'titrePropre',
+                        className: 'max-w-xs',
+                        render: (v) => `<span class="truncate block max-w-xs" title="${v}">${v}</span>`
+                    },
+                    {
+                        data: 'typeNotice',
+                        render: v => `<span class="badge badge-outline">${v}</span>`
+                    },
+                    {
+                        data: 'accessibilite',
+                        orderable: false,
+                        render: v => v === '1'
+                            ? `<div class="badge  badge-soft  badge-success">Public</div>`
+                            : `<div class="badge  badge-soft  badge-error">Restreint</div>`
+                    },
+                    {
+                        data: 'isIndexed',
+                        orderable: false,
+                        render: v => v === 1
+                            ? `<div class="badge  badge-soft  badge-success">Oui</div>`
+                            : `<div class="badge  badge-soft  badge-warning">Non</div>`
+                    },
+                    {
+                        data: 'hasExemplaires',
+                        orderable: false,
+                        render: v => v === 1
+                            ? `<span class="text-success text-base">✓</span>`
+                            : `<span class="text-error text-base">✗</span>`
+                    },
+                    {
+                        data: 'idNotice',
+                        orderable: false,
+                        className: 'text-right',
+                        render: id =>
+                            `<a href="/Catalogue/Edit/${id}" class="btn btn-sm btn-outlined">
+                                    View 
+                                </a>
+                            <a href="/Catalogue/Edit/${id}" class="btn btn-sm btn-secondary">
+                                    Edit 
+                                </a>`
+                    },
+                ],
+                language: {
+                    processing: 'Chargement…',
+                    search: 'Recherche globale :',
+                    lengthMenu: 'Afficher _MENU_ notices',
+                    info: 'Notices _START_ à _END_ sur _TOTAL_',
+                    infoEmpty: 'Aucune notice',
+                    infoFiltered: '(filtrée sur _MAX_ au total)',
+                    zeroRecords: 'Aucune notice ne correspond',
+                    paginate: { first: '«', previous: '‹', next: '›', last: '»' },
+                },
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 100],
+                order: [[0, 'asc']],
+                // strip DataTables default styles — DaisyUI handles it
+                dom: "<'flex items-center justify-between mb-4'lf>t<'flex items-center justify-between mt-4'ip>",
+            });
+
+            let debounce;
+            function reload() {
+                clearTimeout(debounce);
+                debounce = setTimeout(() => table.ajax.reload(), 350);
+            }
+
+            $('#f-titre, #f-cote, #f-isbn').on('input', reload);
+            $('#f-type, #f-unindexed').on('change', reload);
+
+            $('#btn-reset').on('click', function () {
+                $('#f-titre, #f-cote, #f-isbn').val('');
+                $('#f-type').val('');
+                $('#f-unindexed').prop('checked', false);
+                table.search('').ajax.reload();
+            });
+
+        });
+    </script>
+}
