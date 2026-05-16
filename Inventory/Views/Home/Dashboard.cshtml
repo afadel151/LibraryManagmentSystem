@@ -17,7 +17,7 @@
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-        <div class="stat bg-base-200 rounded-2xl p-4">
+        <div class="stat bg-base-200/50 border border-base-200 rounded-2xl p-4">
             <div class="stat-figure text-warning opacity-60">
                 <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
@@ -29,7 +29,7 @@
             <div class="stat-md">dans le catalogue</div>
         </div>
 
-        <div class="stat bg-base-200 rounded-2xl p-4">
+        <div class="stat bg-base-200/50 border border-base-200 rounded-2xl p-4">
             <div class="stat-figure text-info opacity-60">
                 <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <polygon points="12 2 2 7 12 12 22 7 12 2"/>
@@ -42,7 +42,7 @@
             <div class="stat-md">@Model.ExemplairesNonCrees sans exemplaire</div>
         </div>
 
-        <div class="stat bg-base-200 rounded-2xl p-4">
+        <div class="stat bg-base-200/50 border border-base-200 rounded-2xl p-4">
             <div class="stat-figure text-success opacity-60">
                 <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -56,7 +56,7 @@
             <div class="stat-md">@Model.AdherentsActifs en règle</div>
         </div>
 
-        <div class="stat bg-base-200 rounded-2xl p-4">
+        <div class="stat bg-base-200/50 border border-base-200 rounded-2xl p-4">
             <div class="stat-figure text-error opacity-60">
                 <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"/>
@@ -73,7 +73,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <div class="lg:col-span-2 bg-base-200 rounded-2xl p-6">
+        <div class="lg:col-span-2 bg-base-200/50 border border-base-200 rounded-2xl p-6">
             <div class="flex items-center justify-between mb-5">
                 <h2 class="text-lg" >Répartition par type de notice</h2>
                 <a asp-controller="Catalogue" asp-action="Index" class="btn btn-ghost btn-xs">Voir tout →</a>
@@ -121,7 +121,7 @@
             </div>
         </div>
 
-        <div class="bg-base-200 rounded-2xl p-6 flex flex-col gap-4">
+        <div class="bg-base-200/50 border border-base-200 rounded-2xl p-6 flex flex-col gap-4">
             <h2 class="text-lg" >Actions rapides</h2>
 
             @* <a asp-controller="Catalogue" asp-action="Add" class="btn btn-outline btn-warning justify-start gap-3">
@@ -181,9 +181,9 @@
 
     </div>
 
-    <div class="bg-base-200 rounded-2xl p-6">
+    <div class="bg-base-200/20 border border-base-200 rounded-2xl p-6">
         <div class="flex items-center justify-between mb-5">
-            <h2 class="text-lg" >Dernières notices ajoutées</h2>
+            <h2 class="text-xl" >Dernières notices ajoutées</h2>
             <a asp-controller="Catalogue" asp-action="Index" class="btn btn-ghost btn-xs">Voir tout →</a>
         </div>
         <div class="overflow-x-auto">
@@ -204,15 +204,15 @@
                         <tr class="hover">
                             <td class="font-mono text-md opacity-60">@notice.Cote</td>
                             <td class="max-w-xs truncate">@notice.TitrePropre</td>
-                            <td><span class="badge badge-ghost badge-sm">@notice.TypeNotice</span></td>
+                            <td><span class="badge badge-ghost ">@notice.TypeNotice</span></td>
                             <td>
                                 @if (notice.Accessibilite == "1")
                                 {
-                                    <span class="badge badge-success badge-sm">Public</span>
+                                    <span class="badge badge-success ">Public</span>
                                 }
                                 else
                                 {
-                                    <span class="badge badge-ghost badge-sm">Restreint</span>
+                                    <span class="badge badge-ghost ">Restreint</span>
                                 }
                             </td>
                             <td>
