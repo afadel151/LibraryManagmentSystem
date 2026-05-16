@@ -64,7 +64,7 @@ public class DashboardService(
         var recentRaw = await noticeRepo.GetQueryable()
             .Include(n => n.TypeNotice)
             .OrderByDescending(n => n.IdNotice)
-            .Take(10)
+            .Take(5)
             .ToListAsync();
 
         var recentNotices = recentRaw.Select(n => new NoticeRow(
