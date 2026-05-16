@@ -22,16 +22,15 @@ public class PeriodiqueViewModel
     public string TitrePropre { get; set; } = "";
 
     [StringLength(255)]
-    public string TitreCle { get; set; } = "";
+    public string? TitreCle { get; set; } = "";
 
     [StringLength(512)]
-    public string SousTitre { get; set; } = "";
+    public string? SousTitre { get; set; } = "";
 
     [RegularExpression(@"^\d{4}-\d{3}[\dX]$",
         ErrorMessage = "Format ISSN invalide — attendu : XXXX-XXXX.")]
     public string? ISSN { get; set; }
 
-    // FK to PERIODICITE.ID_PERIODICITE (VARCHAR2(2))
     public string? ID_Periodicite { get; set; }
 
     [DataType(DataType.Date)]
