@@ -1087,7 +1087,24 @@ public partial class LibraryDbContext : DbContext
                    }
                );
 
+            entity.HasMany(e => e.Themes)
+               .WithMany(e => e.Notices)
+               .UsingEntity<NoticeTheme>(
+                   j =>
+                   {
+                       j.HasKey(nt => new { nt.IdNotice, nt.IdTheme });
+                       j.ToTable("NOTICE_TERME_EXACT");
 
+                       j.HasOne(nt => nt.Notice)
+                       .WithMany()
+                       .HasForeignKey(nt => nt.IdNotice);
+
+                       j.HasOne(nt => nt.Theme)
+                       .WithMany()
+                       .HasForeignKey(nt => nt.IdTheme);
+                   }
+               );
+        
 
 
         });
