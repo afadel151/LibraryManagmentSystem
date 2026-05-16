@@ -7,7 +7,7 @@ namespace Inventory.Services;
 
 public interface IPeriodiqueService
 {
-    Task<Notice> CreatePeriodiqueNotice(PeriodiqueViewModel model);
+    Task<Notice?> CreatePeriodiqueNotice(PeriodiqueViewModel model);
 }
 
 public class PeriodiqueService(
@@ -15,7 +15,12 @@ public class PeriodiqueService(
     IMentionResRepository mentionResRepository,
     IVilleRepository villeRepository,
     IEditeurRepository editeurRepository,
-    IMotsCleRepository motsCleRepository
+    IMotsCleRepository motsCleRepository,
+    IDiplomeRepository diplomeRepository,
+    IDisciplineRepository disciplineRepository,
+    IEtablissementRepository etablissementRepository,
+    ILangueRepository langueRepository,
+    IThemeRepository themeRepository
 ) : IPeriodiqueService
 {
     private readonly INoticeRepository _noticeRepository = noticeRepository;
@@ -23,10 +28,15 @@ public class PeriodiqueService(
     private readonly IVilleRepository _villeRepository = villeRepository;
     private readonly IEditeurRepository _editeurRepository = editeurRepository;
     private readonly IMotsCleRepository _motsCleRepository = motsCleRepository;
+    private readonly IDiplomeRepository _diplomeRepository = diplomeRepository;
+    private readonly IDisciplineRepository _disciplineRepository = disciplineRepository;
+    private readonly IEtablissementRepository _etablissementRepository = etablissementRepository;
+    private readonly ILangueRepository _langueRepository = langueRepository;
+    private readonly IThemeRepository _themeRepository = themeRepository;
 
 
 
-    public async Task<Notice> CreatePeriodiqueNotice(PeriodiqueViewModel model)
+    public async Task<Notice?> CreatePeriodiqueNotice(PeriodiqueViewModel model)
     {
         // Create the base Notice entity
         var newNotice = new Notice
@@ -228,7 +238,7 @@ public class PeriodiqueService(
         return await _motsCleRepository.AddAsync(newMot);
     }
 
-    private async Task<Ville> GetOrCreateVille(string villeName)
+    private async Task<Ville?> GetOrCreateVille(string villeName)
     {
         if (string.IsNullOrEmpty(villeName))
             return null;
@@ -246,7 +256,7 @@ public class PeriodiqueService(
         return await _villeRepository.AddAsync(newVille);
     }
 
-    private async Task<Editeur> GetOrCreateEditeur(string editeurName)
+    private async Task<Editeur?> GetOrCreateEditeur(string editeurName)
     {
         if (string.IsNullOrEmpty(editeurName))
             return null;
