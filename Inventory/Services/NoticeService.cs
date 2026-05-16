@@ -1,4 +1,5 @@
 using Common.Models;
+using Inventory.Models.Catalogue;
 using Inventory.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ public interface INoticeService
     Task<IEnumerable<Periodicite>> GetPeriodicites();
     Task<IEnumerable<Fonction>> GetFonctions();
     Task<IEnumerable<Pay>> GetPays();
+    
 }
 
 public class NoticeService(
@@ -18,25 +20,24 @@ public class NoticeService(
     IPaysRepository paysRepository
 ) : INoticeService
 {
-    private readonly INoticeRepository _noticeReporitory = noticeReporitory;    
-    private readonly IPeriodiciteRepository _periodiciteReporitory = periodiciteRepository;    
-    private readonly IFonctionRepository _fonctionReporitory = fonctionRepository;    
-    private readonly IPaysRepository _paysReporitory = paysRepository;    
+  
 
 
 
     public async Task<IEnumerable<Periodicite>> GetPeriodicites()
     {
-        return await _periodiciteReporitory.GetAllAsync();
+        return await periodiciteRepository.GetAllAsync();
     }
 
     public async Task<IEnumerable<Fonction>> GetFonctions()
     {
-        return await _fonctionReporitory.GetAllAsync();
+        return await fonctionRepository.GetAllAsync();
     }
 
     public async Task<IEnumerable<Pay>> GetPays()
     {
-        return await _paysReporitory.GetAllAsync();
+        return await paysRepository.GetAllAsync();
     }
+
+   
 }

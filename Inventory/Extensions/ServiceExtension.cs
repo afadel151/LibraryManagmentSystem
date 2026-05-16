@@ -33,6 +33,7 @@ public static class ServiceExtensions
         services.AddScoped<INoticeService,NoticeService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IPeriodiqueService, PeriodiqueService>();
+        services.AddScoped<ICatalogueService, CatalogueService>();
         return services;
     }
 }

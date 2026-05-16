@@ -1,5 +1,6 @@
 // CatalogueController.cs - Updated with CreatePeriodique action
 using System.Text.Json;
+using Inventory.Models.Catalogue;
 using Inventory.Models.Catalogue.Add;
 using Inventory.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,24 +10,50 @@ namespace Inventory.Controllers;
 
 public class CatalogueController(
     INoticeService noticeService,
-    IPeriodiqueService periodiqueService
-
+    IPeriodiqueService periodiqueService,
+    ICatalogueService catalogueService
 ) : Controller
 {
 
 
-    public ActionResult Index()
+    public ActionResult Index([FromQuery] string? filter)
     {
+        ViewBag.FilterUnindexed = filter == "unindexed" ? "true" : "";
         return View();
     }
 
+    [HttpGet("Catalogue/Data")]
+    public async Task<IActionResult> Data(
+    int draw, int start, int length,
+    string? search,
+    string? filterTitre, string? filterCote, string? filterIsbn,
+    string? filterType, string? filterUnindexed,
+    string? orderColumn, string? orderDir)
+    {
+        var result = await catalogueService.GetPagedAsync(new NoticeDataTableRequest
+        {
+            Draw = draw,
+            Start = start,
+            Length = length,
+            Search = search,
+            FilterTitre = filterTitre,
+            FilterCote = filterCote,
+            FilterIsbn = filterIsbn,
+            FilterType = filterType,
+            FilterUnindexed = filterUnindexed,
+            OrderColumn = orderColumn,
+            OrderDir = orderDir,
+        });
+
+        return Json(result);
+    }
     [HttpGet("Add")]
     public ActionResult Add()
     {
         return View("Add/Index");
     }
 
-   
+
     [HttpPost("Add/Periodique")]
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> CreatePeriodique(PeriodiqueViewModel model)
@@ -41,11 +68,8 @@ public class CatalogueController(
 
         try
         {
-            // Create the notice in the database
             var newNotice = await periodiqueService.CreatePeriodiqueAsync(model);
-            Console.WriteLine("############ notice ?"+newNotice.Success);
             var newNoticeId = newNotice.Value.IdNotice;
-            Console.WriteLine("############ notice id"+newNoticeId);
             TempData["Success"] = "Notice enregistrée avec succès!";
             TempData["NoticeId"] = newNoticeId.ToString();
 
@@ -70,11 +94,11 @@ public class CatalogueController(
         return View("Add/Article");
     }
     [HttpGet("Add/Periodique")]
-    public  async Task<ActionResult> AddPeriodique()
+    public async Task<ActionResult> AddPeriodique()
     {
-        PeriodiqueViewModel model = new ();
+        PeriodiqueViewModel model = new();
         model = await periodiqueService.PopulateFormOptionsAsync(model);
-        return View("Add/Periodique",model);
+        return View("Add/Periodique", model);
     }
 
     [HttpGet("Add/These")]
@@ -101,5 +125,5 @@ public class CatalogueController(
         return View("Add/Extrait");
     }
 
-    
+
 }
