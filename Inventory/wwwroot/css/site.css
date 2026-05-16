@@ -2,5 +2,6 @@
 @source "../../**/*.cshtml";
 @variant dark (&:where(.dark, .dark *));
 @plugin "daisyui" {
-  themes: corporate --default, dark --prefersdark;
+  themes: fantasy --default, dark --prefersdark;
 }
+@import 'datatables.net-dt/css/dataTables.dataTables.css';
