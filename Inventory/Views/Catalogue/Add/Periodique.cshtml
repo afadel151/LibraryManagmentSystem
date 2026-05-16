@@ -1,18 +1,17 @@
 @using Inventory.Models.Catalogue.Add
 @model PeriodiqueViewModel
 
-<form asp-action="AddPeriodique" asp-controller="Catalogue" method="post" class="w-full">
+<form asp-action="CreatePeriodique" asp-controller="Catalogue" method="post" class="w-full">
     @Html.AntiForgeryToken()
-
     <div class="tabs tabs-lift w-full">
-        <input type="radio" name="tabs" id="tab-id" class="tab" aria-label="Identification" 
-               @(ViewData.ModelState.IsValid ? "checked=\"checked\"" : "") />
+        <input type="radio" name="tabs" id="tab-id" class="tab" aria-label="Identification"
+        @(ViewData.ModelState.IsValid ? "checked=\"checked\"" : "") />
         <div class="tab-content bg-base-100 border-base-300 p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text font-bold">Cote</span>
+                        <span class="label-text text-lg font-bold">Cote</span>
                         <span class="label-text-alt text-red-500">Obligatoire</span>
                     </label>
                     <input type="text" asp-for="Cote" class="input input-bordered w-full" />
@@ -21,7 +20,7 @@
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text font-bold">Nombre d'Exemplaires</span>
+                        <span class="label-text text-lg font-bold">Nombre d'Exemplaires</span>
                     </label>
                     <input type="number" asp-for="NbrExemplaires" class="input input-bordered w-full" />
                     <span asp-validation-for="NbrExemplaires" class="text-error text-xs mt-1"></span>
@@ -29,7 +28,7 @@
 
                 <div class="form-control w-full md:col-span-2">
                     <label class="label">
-                        <span class="label-text font-bold">Titre Propre</span>
+                        <span class="label-text text-lg font-bold">Titre Propre</span>
                         <span class="label-text-alt text-red-500">Obligatoire</span>
                     </label>
                     <input type="text" asp-for="TitrePropre" class="input input-bordered w-full" />
@@ -38,21 +37,22 @@
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Sous Titre</span>
+                        <span class="label-text text-lg">Sous Titre</span>
                     </label>
-                    <input type="text" asp-for="SousTitre" class="input input-bordered w-full" placeholder="Complément du titre" />
+                    <input type="text" asp-for="SousTitre" class="input input-bordered w-full"
+                           placeholder="Complément du titre" />
                 </div>
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Titre Clé (Tri)</span>
+                        <span class="label-text text-lg">Titre Clé (Tri)</span>
                     </label>
                     <input type="text" asp-for="TitreCle" class="input input-bordered w-full" />
                 </div>
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">ISSN</span>
+                        <span class="label-text text-lg">ISSN</span>
                     </label>
                     <input type="text" asp-for="ISSN" class="input input-bordered w-full" placeholder="XXXX-XXXX" />
                     <span asp-validation-for="ISSN" class="text-error text-xs mt-1"></span>
@@ -60,9 +60,10 @@
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text font-bold">Périodicité</span>
+                        <span class="label-text text-lg font-bold">Périodicité</span>
                     </label>
-                    <select asp-for="ID_Periodicite" asp-items="Model.Periodicites" class="select select-bordered w-full">
+                    <select asp-for="ID_Periodicite" asp-items="Model.PeriodiciteOptions"
+                            class="select select-bordered w-full">
                         <option value="">Choisir la périodicité</option>
                     </select>
                     <span asp-validation-for="ID_Periodicite" class="text-error text-xs mt-1"></span>
@@ -70,41 +71,50 @@
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Date 1ère Pub</span>
+                        <span class="label-text text-lg">Date 1ère Pub</span>
                     </label>
                     <input type="date" asp-for="Date1Pub" class="input input-bordered w-full" />
                 </div>
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Numéro Vol</span>
+                        <span class="label-text text-lg">Numéro Vol</span>
                     </label>
                     <input type="text" asp-for="NumeroVol" class="input input-bordered w-full" />
                 </div>
 
                 <div class="form-control w-full md:col-span-2">
                     <label class="label">
-                        <span class="label-text font-bold">Accessibilité</span>
+                        <span class="label-text text-lg font-bold">Accessibilité</span>
                     </label>
                     <div class="flex gap-4">
-                        <label class="label cursor-pointer justify-start gap-2 border border-base-300 p-3 rounded-lg hover:bg-base-200 w-full bg-base-100">
+                        <label
+                            class="label cursor-pointer justify-start gap-2 border border-base-300 p-3 rounded-lg hover:bg-base-200 w-full bg-base-100">
                             <input type="radio" asp-for="Accessibilite" value="true" class="radio radio-primary" />
-                            <span class="label-text">Accessible</span>
+                            <span class="label-text text-lg">Accessible</span>
                         </label>
-                        <label class="label cursor-pointer justify-start gap-2 border border-base-300 p-3 rounded-lg hover:bg-base-200 w-full">
+                        <label
+                            class="label cursor-pointer justify-start gap-2 border border-base-300 p-3 rounded-lg hover:bg-base-200 w-full">
                             <input type="radio" asp-for="Accessibilite" value="false" class="radio radio-primary" />
-                            <span class="label-text">Non Accessible</span>
+                            <span class="label-text text-lg">Non Accessible</span>
                         </label>
                     </div>
                 </div>
 
                 <div class="form-control w-full md:col-span-2">
                     <label class="label">
-                        <span class="label-text">Localisation (Scan)</span>
+                        <span class="label-text text-lg">Localisation (Scan)</span>
                     </label>
                     <div class="join w-full">
                         <span class="btn join-item btn-disabled bg-base-200 text-base-content border-base-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"/><polyline points="14 2 14 8 20 8"/><path d="M2 15h10"/><path d="M9 18l3-3-3-3"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round">
+                                <path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <path d="M2 15h10" />
+                                <path d="M9 18l3-3-3-3" />
+                            </svg>
                         </span>
                         <input type="text" asp-for="Localisation" class="input input-bordered join-item w-full" />
                         <button type="button" class="btn btn-square join-item">...</button>
@@ -115,153 +125,334 @@
 
         <input type="radio" name="tabs" class="tab" aria-label="Auteurs" />
         <div class="tab-content bg-base-100 border-base-300 p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="divider md:col-span-2 font-bold">Auteur Principal</div>
-                
+            <div class="space-y-6">
+                <div class="divider font-bold  divider-start text-2xl">Auteur principal</div>
                 <div class="form-control w-full">
-                    <label class="label">
-                        <span class="label-text">Nom de l'Auteur Principal</span>
-                    </label>
-                    <input type="text" asp-for="NomAuteurPrincipal" class="input input-bordered w-full" />
+                    <select name="IdAuteurPrincipal" id="select-auteur-principal"
+                            class="select select-bordered w-full author-select">
+                        <option value="">— Choisir l'auteur principal —</option>
+                        @foreach (var o in Model.AllMentionRes)
+                        {
+                            if (o.Value == Model.IdAuteurPrincipal.ToString())
+                            {
+                                <option value="@o.Value" selected>@o.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@o.Value">@o.Text</option>
+                            }
+                        }
+                    </select>
                 </div>
 
-                <div class="form-control w-full">
-                    <label class="label">
-                        <span class="label-text">Autre Partie (Prénom / Titre)</span>
-                    </label>
-                    <input type="text" asp-for="AutrePartieAuteurPrincipal" class="input input-bordered w-full" />
+                <div class="divider font-bold  divider-start text-2xl">Co-Auteurs</div>
+                <div id="coauteurs-container" class="space-y-2">
+                    @for (int i = 0; i < Model.IdCoAuteurs.Count; i++)
+                    {
+                        <div class="coauteur-row flex items-center gap-2">
+                            <select name="IdCoAuteurs[@i]" class="select select-bordered select-sm flex-1 author-select">
+                                @foreach (var o in Model.AllMentionRes)
+                                {
+                                    if (o.Value == Model.IdCoAuteurs[i].ToString())
+                                    {
+                                        <option value="@o.Value" selected>@o.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@o.Value">@o.Text</option>
+                                    }
+                                }
+                            </select>
+                            <button type="button" class="btn  btn-ghost text-error remove-row" title="Supprimer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2">
+                                    <path d="M18 6 6 18M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    }
                 </div>
+                <button type="button" id="add-coauteur" class="btn  btn-outline gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    Ajouter un co-auteur
+                </button>
 
-                <div class="divider md:col-span-2 font-bold">Co-Auteurs &amp; Secondaires</div>
-                <div class="form-control w-full md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-2">
-                    <input type="text" name="CoAuteurs[0].Nom" class="input input-sm input-bordered w-full" placeholder="Nom Co-Auteur" />
-                    <input type="text" name="CoAuteurs[0].AutrePartie" class="input input-sm input-bordered w-full" placeholder="Prénom Co-Auteur" />
-                    <input type="text" name="AuteursSecondaires[0].Nom" class="input input-sm input-bordered w-full" placeholder="Nom Auteur Secondaire" />
+                <div class="divider font-bold  divider-start text-2xl text-2xl">Auteurs secondaires</div>
+
+                <div id="autsec-container" class="space-y-2">
+                    @for (int i = 0; i < Model.AuteursSecondaires.Count; i++)
+                    {
+                        <div class="autsec-row flex items-center gap-2">
+                            <select name="AuteursSecondaires[@i].IdMentionRes" class="select select-bordered author-select">
+                                @foreach (var o in Model.AllMentionRes)
+                                {
+                                    if (o.Value == Model.AuteursSecondaires[i].IdMentionRes.ToString())
+                                    {
+                                        <option value="@o.Value" selected>@o.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@o.Value">@o.Text</option>
+                                    }
+                                }
+                            </select>
+                            <select name="AuteursSecondaires[@i].ID_Fonction" class="select select-bordered  ">
+                                @foreach (var f in Model.FonctionOptions)
+                                {
+                                    if (f.Value == Model.AuteursSecondaires[i].ID_Fonction.ToString())
+                                    {
+                                        <option value="@f.Value" selected>@f.Text</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@f.Value">@f.Text</option>
+                                    }
+                                }
+                            </select>
+
+                        </div>
+                    }
                 </div>
+                <button type="button" id="add-autsec" class="btn  btn-outline ">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    Ajouter un Auteur secondaire
+                </button>
+
             </div>
         </div>
 
         <input type="radio" name="tabs" class="tab" aria-label="Publication" />
         <div class="tab-content bg-base-100 border-base-300 p-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="divider md:col-span-3 font-bold">Collation (Description Physique)</div>
-                
+                <div class="divider divider-start text-2xl md:col-span-3 font-bold">Collation (Description Physique)</div>
+
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Impression Matérielle</span>
+                        <span class="label-text text-lg">Impression Matérielle</span>
                     </label>
                     <input type="text" asp-for="CollationImpMaterielle" class="input input-bordered w-full" />
                 </div>
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Autres Caractéristiques</span>
+                        <span class="label-text text-lg">Autres Caractéristiques</span>
                     </label>
                     <input type="text" asp-for="CollationAutresCarMat" class="input input-bordered w-full" />
                 </div>
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Format</span>
+                        <span class="label-text text-lg">Format</span>
                     </label>
                     <input type="text" asp-for="CollationFormat" class="input input-bordered w-full" />
                 </div>
 
-                <div class="divider md:col-span-3 font-bold">Adresse Bibliographique</div>
+                <div class="divider divider-start text-2xl md:col-span-3 font-bold">Adresse Bibliographique</div>
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Année d'édition</span>
+                        <span class="label-text text-lg">Année d'édition</span>
                     </label>
                     <input type="text" name="AdressesBibliographiques[0].Annee" class="input input-bordered w-full" />
                 </div>
 
                 <div class="form-control w-full">
                     <label class="label">
-                        <span class="label-text">Mention d'Édition</span>
+                        <span class="label-text text-lg">Mention d'Édition</span>
                     </label>
-                    <input type="text" name="AdressesBibliographiques[0].MentionEdition" class="input input-bordered w-full" />
+                    <input type="text" name="AdressesBibliographiques[0].MentionEdition"
+                           class="input input-bordered w-full" />
                 </div>
 
-                <div class="form-control w-full">
+                <div class="form-control w-full ">
                     <label class="label">
-                        <span class="label-text">Pays Origine</span>
+                        <span class="label-text text-lg ">Pays Origine</span>
                     </label>
-                    <select asp-for="PaysList" asp-items="Model.Pays" class="select select-bordered w-full" multiple>
+                    <select asp-for="PaysCodes" asp-items="Model.PaysOptions"
+                            class="select  w-full  p-2" multiple >
                     </select>
+                    <label class="label">
+                        <span class="label-text-alt text-gray-400">Maintenez Ctrl pour sélectionner plusieurs
+                            pays</span>
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <input type="radio" name="tabs" class="tab" aria-label="Indexation" />
-        <div class="tab-content bg-base-100 border-base-300 p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="form-control w-full">
-                    <label class="label">
-                        <span class="label-text">Classification Dewey (CDD)</span>
-                    </label>
-                    <input type="text" asp-for="CDD" class="input input-bordered w-full" />
-                </div>
 
-                <div class="form-control w-full">
-                    <label class="label">
-                        <span class="label-text">Thème Associé</span>
-                    </label>
-                    <select asp-for="ID_Theme" asp-items="Model.Themes" class="select select-bordered w-full">
-                        <option value="">-- Choisir un thème --</option>
-                    </select>
-                </div>
+            <input type="radio" name="tabs" class="tab" aria-label="Indexation" />
+            <div class="tab-content bg-base-100 border-base-300 p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-control w-full">
+                        <label class="label">
+                            <span class="label-text text-lg">Classification Dewey (CDD)</span>
+                        </label>
+                        <input type="text" asp-for="CDD" class="input input-bordered w-full" />
+                    </div>
 
-                <div class="form-control w-full md:col-span-2">
-                    <label class="label">
-                        <span class="label-text">Mots Clés</span>
-                    </label>
-                    <input type="text" name="MotsCles[0]" class="input input-bordered w-full" placeholder="Mot-clé principal" />
-                </div>
+                    <div class="form-control w-full">
+                        <label class="label">
+                            <span class="label-text text-lg">Thème Associé</span>
+                        </label>
+                        <select asp-for="ID_Theme" asp-items="Model.ThemeOptions" class="select select-bordered w-full">
+                            <option value="">-- Choisir un thème --</option>
+                        </select>
+                    </div>
 
-                <div class="form-control w-full md:col-span-2">
-                    <label class="label">
-                        <span class="label-text">Résumé / Analyse</span>
-                    </label>
-                    <textarea asp-for="Resume" class="textarea textarea-bordered h-24 w-full"></textarea>
-                </div>
+                    <div class="form-control w-full md:col-span-2">
+                        <label class="label">
+                            <span class="label-text text-lg">Mots Clés</span>
+                        </label>
+                        <input type="text" name="MotsCles[0]" class="input input-bordered w-full"
+                               placeholder="Mot-clé principal" />
+                    </div>
 
-                <div class="form-control w-full md:col-span-2">
-                    <label class="label">
-                        <span class="label-text">Note Générale</span>
-                    </label>
-                    <textarea asp-for="NoteGenerale" class="textarea textarea-bordered h-20 w-full"></textarea>
+                    <div class="form-control w-full md:col-span-2">
+                        <label class="label">
+                            <span class="label-text text-lg">Résumé / Analyse</span>
+                        </label>
+                        <textarea asp-for="Resume" class="textarea textarea-bordered h-24 w-full"></textarea>
+                    </div>
+
+                    <div class="form-control w-full md:col-span-2">
+                        <label class="label">
+                            <span class="label-text text-lg">Note Générale</span>
+                        </label>
+                        <textarea asp-for="NoteGenerale" class="textarea textarea-bordered h-20 w-full"></textarea>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <input type="radio" name="tabs" id="tab-validation" class="tab" aria-label="Validation" 
-               @(!ViewData.ModelState.IsValid ? "checked=\"checked\"" : "") />
-        <div class="tab-content bg-base-100 border-base-300 p-6">
-            <div class="space-y-6">
-                
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    <div class="alert alert-error shadow-sm text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        <div>
-                            <span class="font-bold">Des erreurs bloquent la soumission :</span>
-                            <div asp-validation-summary="All" class="mt-1 list-inside list-disc"></div>
+            <input type="radio" name="tabs" id="tab-validation" class="tab" aria-label="Validation"
+            @(!ViewData.ModelState.IsValid ? "checked=\"checked\"" : "") />
+            <div class="tab-content bg-base-100 border-base-300 p-6">
+                <div class="space-y-6">
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-error shadow-sm text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <div>
+                                <span class="font-bold">Des erreurs bloquent la soumission :</span>
+                                <div asp-validation-summary="All" class="mt-1 list-inside list-disc"></div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info shadow-sm text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Veuillez vérifier l'exactitude de toutes les données saisies à travers les volets précédents
+                                avant d'enregistrer le périodique.</span>
+                            </div>
+                        }
+
+                        <div class="flex justify-end gap-3 pt-4 border-t border-base-200">
+                            <a asp-action="Index" class="btn btn-ghost">Annuler</a>
+                            <button type="submit" class="btn btn-primary px-8">Enregistrer le Périodique</button>
                         </div>
                     </div>
-                }
-                else
-                {
-                    <div class="alert alert-info shadow-sm text-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        <span>Veuillez vérifier l'exactitude de toutes les données saisies à travers les volets précédents avant d'enregistrer le périodique.</span>
-                    </div>
-                }
-
-                <div class="flex justify-end gap-3 pt-4 border-t border-base-200">
-                    <a asp-action="Index" class="btn btn-ghost">Annuler</a>
-                    <button type="submit" class="btn btn-primary px-8">Enregistrer le Périodique</button>
                 </div>
             </div>
-        </div>
-    </div>
-</form>
+        </form>
+
+        @section Scripts {
+            <script>
+                (function () {
+                    const ALL_AUTHORS = @Html.Raw(Json.Serialize(
+                                                                                                            Model.AllMentionRes.Select(o => new { value = o.Value, text = o.Text })
+                                    ));
+
+                    const FONCTIONS_HTML = `@Html.Raw(string.Join("", Model.FonctionOptions.Select(f =>
+                                                                                            $"<option value=\"{System.Web.HttpUtility.HtmlAttributeEncode(f.Value)}\">{System.Net.WebUtility.HtmlEncode(f.Text)}</option>")))`;
+
+                    const SVG_REMOVE = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                    </svg>
+                                    `;
+
+                    function getSelectedValues() {
+                        return [...document.querySelectorAll('.author-select')]
+                            .map(s => s.value)
+                            .filter(v => v !== '');
+                    }
+
+                    function refreshOptions(sel) {
+                        const taken = getSelectedValues().filter(v => v !== sel.value);
+                        const current = sel.value;
+                        const emptyLabel = sel.id === 'select-auteur-principal'
+                            ? ' Choisir l\'auteur principal '
+                            : 'Sélectionner';
+                        sel.innerHTML = `<option value="">${emptyLabel}</option>`;   // ← THIS LINE was commented out
+                        ALL_AUTHORS.forEach(({ value, text }) => {
+                            if (taken.includes(String(value))) return;
+                            const opt = document.createElement('option');
+                            opt.value = value;
+                            opt.textContent = text;
+                            if (String(value) === String(current)) opt.selected = true;
+                            sel.appendChild(opt);
+                        });
+                    }
+
+                    function refreshAll() {
+                        document.querySelectorAll('.author-select').forEach(refreshOptions);
+                    }
+
+                    document.addEventListener('change', e => {
+                        if (e.target.classList.contains('author-select')) refreshAll();
+                    });
+
+                    document.addEventListener('click', e => {
+                        const btn = e.target.closest('.remove-row');
+                        if (!btn) return;
+                        btn.closest('.coauteur-row, .autsec-row')?.remove();
+                        refreshAll();
+                    });
+
+                    let coIdx = @Model.IdCoAuteurs.Count;
+
+                    document.getElementById('add-coauteur').addEventListener('click', () => {
+                        const div = document.createElement('div');
+                        div.className = 'coauteur-row flex items-center gap-2';
+                        div.innerHTML = `
+                                                                <select name="IdCoAuteurs[${coIdx}]" class="select select-bordered flex-1 author-select">
+                                                                </select>
+                                                                <button type="button" class="btn  text-error remove-row" title="Supprimer">${SVG_REMOVE}</button>`;
+                        document.getElementById('coauteurs-container').appendChild(div);
+                        coIdx++;
+                        refreshAll();
+                    });
+
+                    let secIdx = @Model.AuteursSecondaires.Count;
+
+                    document.getElementById('add-autsec').addEventListener('click', () => {
+                        const div = document.createElement('div');
+                        div.className = 'autsec-row flex items-center gap-2';
+                        div.innerHTML = `
+                                                                <select name="AuteursSecondaires[${secIdx}].IdMentionRes" class="select select-bordered  flex-1 author-select">
+                                                                </select>
+                                                                <select name="AuteursSecondaires[${secIdx}].ID_Fonction" class="select select-bordered ">
+                                                                    ${FONCTIONS_HTML}
+                                                                </select>
+                                                                <button type="button" class="btn  text-error remove-row" title="Supprimer">${SVG_REMOVE}</button>`;
+                        document.getElementById('autsec-container').appendChild(div);
+                        secIdx++;
+                        refreshAll();
+                    });
+
+                    refreshAll();
+                })();
+            </script>
+        }
