@@ -21,6 +21,12 @@ public static class ServiceExtensions
         services.AddScoped<IMotsCleRepository,MotsCleRepository>();
         services.AddScoped<IEditeurRepository,EditeurRepository>();
         services.AddScoped<IVilleRepository,VilleRepository>();
+
+        services.AddScoped<IDiplomeRepository,DiplomeRepository>();
+        services.AddScoped<IDisciplineRepository,DisciplineRepository>();
+        services.AddScoped<IEtablissementRepository,EtablissementRepository>();
+        services.AddScoped<ILangueRepository,LangueRepository>();
+        services.AddScoped<IThemeRepository,ThemeRepository>();
         
 
         
