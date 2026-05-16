@@ -77,6 +77,7 @@ public partial class Notice
     // on to many  backward
     public virtual ICollection<NoticeEdition> NoticeEditions { get; set; } = [];
     public virtual ICollection<NoticeCollection> NoticeCollections { get; set; } = [];
+    public virtual ICollection<NoticeTheme> NoticeThemes { get; set; } = [];
     public virtual ICollection<AuteurSecondaire> AuteurSecondaires { get; set; } = [];
     public virtual ICollection<NoticeTerme> NoticeTermes { get; set; } = [];
     public virtual ICollection<NoticeTermeExact> NoticeTermeExacts { get; set; } = [];
@@ -98,6 +99,7 @@ public partial class Notice
     public virtual ICollection<Pay> Pays { get; set; } = [];
 
     public virtual ICollection<MotsCle> MotsCles { get; set; } = [];
+    public virtual ICollection<Theme> Themes { get; set; } = [];
     public virtual ICollection<Langue> Langues { get; set; } = [];
     public virtual ICollection<Selection> Selections { get; set; } = [];
 

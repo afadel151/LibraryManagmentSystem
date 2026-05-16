@@ -8,4 +8,7 @@ public partial class Theme
     public string IdTheme { get; set; } = null!;
 
     public string? Theme1 { get; set; }
+
+    public virtual ICollection<Notice> Notices { get; set; } = [];
+
 }
