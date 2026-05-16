@@ -8,21 +8,13 @@
 
     var navItems = new[]
     {
-        new { Icon = "home", Label = Localizer["Dashboard"].Value, Controller = "Home", Action = "Dashboard", AdminOnly =
-false },
-        new { Icon = "book-open", Label = Localizer["Nav_Catalogue"].Value, Controller = "Catalogue", Action = "Index",
-AdminOnly =
-false },
-        new { Icon = "search", Label = Localizer["Nav_Search"].Value, Controller = "Catalogue", Action = "Search", AdminOnly
-=false },
-        new { Icon = "layers", Label = Localizer["Nav_Exemplaires"].Value, Controller = "Exemplaire", Action = "Index",AdminOnly
-= false },
-        new { Icon = "shopping-bag", Label = Localizer["Nav_Acquisitions"].Value, Controller = "Acquisition", Action = "Index",
-AdminOnly = false },
-        new { Icon = "users", Label = Localizer["Nav_Auteurs"].Value, Controller = "Auteur", Action = "Index", AdminOnly = false
-},
-        new { Icon = "settings", Label = Localizer["Nav_Admin"].Value, Controller = "Admin", Action = "Index", AdminOnly = true
-},
+        new { Icon = "home", Label = Localizer["Dashboard"].Value, Controller = "Home", Action = "Dashboard", AdminOnly =false },
+        new { Icon = "book-open", Label = Localizer["Nav_Catalogue"].Value, Controller = "Catalogue", Action = "Index", AdminOnly =false },
+        new { Icon = "search", Label = Localizer["Nav_Search"].Value, Controller = "Catalogue", Action = "Search", AdminOnly = false },
+        new { Icon = "layers", Label = Localizer["Nav_Exemplaires"].Value, Controller = "Exemplaire", Action = "Index",AdminOnly=false },
+        new { Icon = "shopping-bag", Label = Localizer["Nav_Acquisitions"].Value, Controller = "Acquisition", Action = "Index", AdminOnly=false },
+        new { Icon = "users", Label = Localizer["Nav_Auteurs"].Value, Controller = "Auteur", Action = "Index", AdminOnly = false },
+        new { Icon = "settings", Label = Localizer["Nav_Admin"].Value, Controller = "Admin", Action = "Index", AdminOnly = true },
     };
 
     string currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
@@ -45,8 +37,8 @@ AdminOnly = false },
 
         <li>
             <a asp-controller="@item.Controller" asp-action="@item.Action"
-                   class="@(active ? "active" : "") is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                   data-tip="@item.Label">
+               class="@(active ? "active" : "") is-drawer-close:tooltip is-drawer-close:tooltip-right"
+               data-tip="@item.Label">
 
                 <span class="w-5 h-5 flex items-center justify-center shrink-0">
                     @switch (item.Icon)
@@ -117,7 +109,7 @@ AdminOnly = false },
     }
 </ul>
 
-<div class="flex items-center gap-2.5 px-4 py-3.5 shrink-0 border-t border-base-300 is-drawer-close:hidden">
+<div class="flex items-center gap-2.5 px-4 py-3.5 shrink-0  w-full is-drawer-close:hidden">
     <div class="flex items-center justify-center w-8 h-8 rounded-full shrink-0
         bg-warning/20 border border-warning">
         <span class="text-sm leading-none text-warning" style="font-family:'EB Garamond',Georgia,serif;">
@@ -128,7 +120,7 @@ AdminOnly = false },
     <div class="flex-1 overflow-hidden min-w-0">
         <p class="text-xs font-medium truncate">@userName</p>
         <p class="text-[0.7rem] truncate text-base-content/60">
-            @(isAdmin? Localizer["Role_Admin"].Value : Localizer["Role_User"].Value)
+            @(isAdmin ? Localizer["Role_Admin"].Value : Localizer["Role_User"].Value)
         </p>
     </div>
 
